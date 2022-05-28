@@ -1,5 +1,13 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Colors } from "../../constants/colors";
+import { StyleSheet, View } from "react-native";
+import {
+  Ionicons,
+  FontAwesome5,
+  FontAwesome,
+  Feather,
+} from "@expo/vector-icons";
 
 //Screens
 import {
@@ -16,15 +24,169 @@ const Drawer = createDrawerNavigator();
 
 function MenuDrawer() {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Job Order" component={JobOrderStack} />
-      <Drawer.Screen name="Calendar" component={Calendar} />
-      <Drawer.Screen name="Invoices" component={InvoiceStack} />
-      <Drawer.Screen name="Client Book" component={ClientBookStack} />
-      <Drawer.Screen name="Setting" component={Setting} />
+    <Drawer.Navigator
+      screenOptions={{
+        drawerType: "permanent",
+        drawerStyle: {
+          width: 115,
+          backgroundColor: Colors.blackGrey,
+          borderTopRightRadius: 40,
+          borderBottomRightRadius: 40,
+        },
+        drawerActiveTintColor: Colors.hueGrey,
+      }}
+    >
+      <Drawer.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon1}>
+              <Ionicons name="home-sharp" size={45} color={Colors.yellow} />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="Job Order"
+        component={JobOrderStack}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon2}>
+              <FontAwesome5
+                name="clipboard-list"
+                size={45}
+                color={Colors.yellow}
+              />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="Calendar"
+        component={Calendar}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon1}>
+              <Ionicons
+                name="ios-calendar-sharp"
+                size={45}
+                color={Colors.yellow}
+              />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="Invoices"
+        component={InvoiceStack}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon2}>
+              <FontAwesome5
+                name="file-invoice"
+                size={45}
+                color={Colors.yellow}
+              />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="Client Book"
+        component={ClientBookStack}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon1}>
+              <FontAwesome name="book" size={45} color={Colors.yellow} />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 15,
+            marginRight: 15,
+            marginBottom: 15,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon1}>
+              <Feather name="settings" size={45} color={Colors.yellow} />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
     </Drawer.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  icon1: {
+    padding: 15,
+  },
+  icon2: {
+    paddingTop: 13,
+    paddingBottom: 13,
+    paddingLeft: 20,
+  },
+});
 
 export default MenuDrawer;
