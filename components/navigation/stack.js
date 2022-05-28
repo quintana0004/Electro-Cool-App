@@ -31,7 +31,11 @@ const Stack = createNativeStackNavigator();
 function JobOrderStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Job" component={JobOrder} />
+      <Stack.Screen
+        name="Job"
+        component={JobOrder}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Create" component={Create} />
       <Stack.Screen name="Edit" component={Edit} />
       <Stack.Screen name="View" component={Views} />
@@ -42,7 +46,11 @@ function JobOrderStack() {
 function InvoiceStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Invoice" component={Invoice} />
+      <Stack.Screen
+        name="Invoice"
+        component={Invoice}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Client Create" component={ClientCreate} />
       <Stack.Screen name="Client View" component={ClientView} />
       <Stack.Screen name="Pending" component={Pending} />
@@ -53,7 +61,11 @@ function InvoiceStack() {
 function ClientBookStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Book" component={ClientBook} />
+      <Stack.Screen
+        name="Book"
+        component={ClientBook}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Book View" component={BookView} />
     </Stack.Navigator>
   );
