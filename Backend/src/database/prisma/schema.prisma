@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Appointment {
+  id        String   @id @default(uuid()) @db.Uuid
+  reason    String
+  datetime  DateTime @db.Timestamptz(6)
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: NoAction)
+}
+
+model Car {
+  id                  String     @id @default(uuid()) @db.Uuid
+  brand               String     @db.VarChar(100)
+  license             String     @db.VarChar(20)
+  model               String     @db.VarChar(100)
+  year                String     @db.VarChar(4)
+  mileage             String     @db.VarChar(10)
+  color               String     @db.VarChar(15)
+  vinNumber           String     @db.VarChar(20)
+  carHasItems         Boolean
+  carItemsDescription String?
+  customerId          String?    @db.Uuid
+  companyId           String?    @db.Uuid
+  createdAt           DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime   @default(now()) @db.Timestamptz(6)
+  company             Company?   @relation(fields: [companyId], references: [id], onDelete: NoAction)
+  customer            Customer?  @relation(fields: [customerId], references: [id], onDelete: NoAction)
+  jobOrders           JobOrder[]
+}
+
+model Company {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String     @db.VarChar(255)
+  businessType String     @db.VarChar(150)
+  addressLine1 String     @db.VarChar(255)
+  addressLine2 String?    @db.VarChar(255)
+  country      String     @db.VarChar(100)
+  state        String?    @db.VarChar(50)
+  city         String     @db.VarChar(100)
+  zipcode      String     @db.VarChar(10)
+  email        String?    @db.VarChar(255)
+  phone        String?    @db.VarChar(15)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime   @default(now()) @db.Timestamptz(6)
+  cars         Car[]
+  customers    Customer[]
+  invoices     Invoice[]
+  jobOrders    JobOrder[]
+  users        User[]
+}
+
+model Customer {
+  id           String     @id @default(uuid()) @db.Uuid
+  firstName    String     @db.VarChar(255)
+  lastName     String     @db.VarChar(255)
+  addressLine1 String     @db.VarChar(255)
+  addressLine2 String?    @db.VarChar(255)
+  state        String     @db.VarChar(50)
+  city         String     @db.VarChar(100)
+  phone        String     @db.VarChar(15)
+  email        String     @db.VarChar(255)
+  companyId    String?    @db.Uuid
+  createdAt    DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime   @default(now()) @db.Timestamptz(6)
+  company      Company?   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  cars         Car[]
+  invoices     Invoice[]
+  jobOrders    JobOrder[]
+  users        User[]
+}
+
+model Invoice {
+  id           String         @id @default(uuid()) @db.Uuid
+  totalPrice   String         @db.VarChar(50)
+  status       String         @db.VarChar(100)
+  dueDate      DateTime       @db.Timestamptz(6)
+  companyId    String?        @db.Uuid
+  customerId   String?        @db.Uuid
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime       @default(now()) @db.Timestamptz(6)
+  company      Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer     Customer?      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  invoiceItems Invoice_Item[]
+}
+
+model Invoice_Item {
+  id          String   @id @default(uuid()) @db.Uuid
+  description String
+  quantity    String   @db.VarChar(10)
+  unitPrice   String   @db.VarChar(20)
+  totalPrice  String   @db.VarChar(20)
+  warranty    String   @db.VarChar(20)
+  invoiceId   String?  @db.Uuid
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  invoice     Invoice? @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+}
+
+model JobOrder {
+  id             String    @id @default(uuid()) @db.Uuid
+  service        String    @db.VarChar(255)
+  serviceDetails String
+  status         String    @db.VarChar(100)
+  isHeavy        Boolean
+  isLight        Boolean
+  entryDate      DateTime  @db.Timestamptz(6)
+  companyId      String?   @db.Uuid
+  customerId     String?   @db.Uuid
+  carId          String?   @db.Uuid
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @db.Timestamptz(6)
+  car            Car?      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  company        Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer       Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        String   @id @default(uuid()) @db.Uuid
+  text      String
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: NoAction)
+}
+
+model Reminder {
+  id          String   @id @default(uuid()) @db.Uuid
+  description String
+  datetime    DateTime @db.Timestamptz(6)
+  userId      String?  @db.Uuid
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: NoAction)
+}
+
+model User {
+  id           String        @id @default(uuid()) @db.Uuid
+  firstName    String        @db.VarChar(255)
+  lastName     String        @db.VarChar(255)
+  gender       String        @db.VarChar(10)
+  age          Int
+  phone        String        @db.VarChar(15)
+  email        String        @db.VarChar(255)
+  username     String        @db.VarChar(255)
+  password     String        @db.VarChar(255)
+  salt         String        @db.VarChar(255)
+  role         String        @db.VarChar(255)
+  companyId    String?       @db.Uuid
+  customerId   String?       @db.Uuid
+  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @db.Timestamptz(6)
+  company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  notes        Note[]
+  reminders    Reminder[]
+}
