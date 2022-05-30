@@ -1,13 +1,15 @@
 import app from './app';
-import { db, syncrhonize } from './database/index';
+// import { db, syncrhonize } from './database/index';
 import environment from './config/environment';
+import { setupDummyCompany } from './database';
 
 
 let PORT = environment.PORT || 5000;
 
-db.authenticate()
-  .then(() => console.log('Connection has been established successfully.'))
-  .catch((error) => console.error('Unable to connect to the database:', error));
-syncrhonize();
+setupDummyCompany()
+  .then(() => console.log('--- DATABASE IS READY ---'))
+  .catch((e) => {
+    throw e
+  });
 
 app.listen(PORT, () => console.log(`Server is running https://localhost:${PORT}`));
