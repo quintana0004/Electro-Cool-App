@@ -60,6 +60,7 @@ model Company {
 
 model Customer {
   id           String     @id @default(uuid()) @db.Uuid
+  fullName     String     @default("")
   firstName    String     @db.VarChar(255)
   lastName     String     @db.VarChar(255)
   addressLine1 String     @db.VarChar(255)

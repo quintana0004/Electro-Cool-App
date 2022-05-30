@@ -5,6 +5,7 @@ import { formatPhoneNumber, titleCase } from "../../utils/helpers";
 import {
   createCustomer,
   doesCustomerExist,
+  findManyCustomersByName,
 } from "../../models/customers.model";
 import { doesCompanyExist } from "../../models/company.model";
 
@@ -15,13 +16,15 @@ async function httpAddCustomer(req: Request, res: Response) {
     const newCustomer: ICustomer = {
       firstName: titleCase(req.body.firstName),
       lastName: titleCase(req.body.lastName),
+      fullName:
+        titleCase(req.body.firstName) + " " + titleCase(req.body.lastName),
       addressLine1: req.body.addressLine1,
       addressLine2: req.body.addressLine2,
       state: req.body.state,
       city: req.body.city,
       phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
-      companyId: req.body.companyName
+      companyId: req.body.companyName,
     };
 
     // Validate all required fields are received
@@ -40,8 +43,7 @@ async function httpAddCustomer(req: Request, res: Response) {
 
     // Validate that user doesn't already exist
     const customerExists = await doesCustomerExist(
-      newCustomer.firstName,
-      newCustomer.lastName,
+      newCustomer.fullName,
       newCustomer.phone
     );    
     if (customerExists) {
@@ -86,4 +88,35 @@ async function httpAddCustomer(req: Request, res: Response) {
   
 }
 
-export { httpAddCustomer };
+async function httpGetCustomersByName(req: Request, res: Response) {
+
+  try {
+    
+    // Validate customer name is valid
+    let customerNameParam = req.query.customerName?.toString();    
+    if (!customerNameParam) {
+      return res.status(400).json({
+        error: "Customer Name Parameter cannot be empty.",
+      });
+    }
+    
+    const customerName = titleCase(customerNameParam);    
+    const customers = await findManyCustomersByName(customerName);
+    return res.status(200).json(customers);
+  } catch (error) {
+    let errorMessage = "";
+    if (error instanceof Error) {
+      errorMessage = error.toString();
+    }
+
+    return res.status(500).json({
+      error: errorMessage,
+    });
+  }
+
+}
+
+export { 
+  httpAddCustomer, 
+  httpGetCustomersByName
+}

@@ -21,6 +21,15 @@ async function doesCompanyExist(name: string) : Promise<Boolean> {
   return company ? true : false;
 }
 
+function exclude<Company, Key extends keyof Company>(
+  company: Company,
+  ...keys: Key[]
+): Company {
+  for (let key of keys) {
+    delete company[key]
+  }
+  return company
+}
 
 export {
   findCompanyByName,

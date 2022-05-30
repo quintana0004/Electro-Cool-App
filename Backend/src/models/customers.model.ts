@@ -4,6 +4,17 @@ import { prisma } from "../database";
 import { ICustomer } from "../types";
 import { findCompanyByName } from "./company.model";
 
+
+async function doesCustomerExist(
+  name: string,
+  phone: string
+): Promise<Boolean> {
+
+  let customer = await findCustomerByNameAndPhone(name, phone);
+  return customer ? true : false;
+
+}
+
 async function createCustomer(customer: ICustomer): Promise<Customer> {
   try {
     const company = await findCompanyByName(customer.companyId);
@@ -14,6 +25,7 @@ async function createCustomer(customer: ICustomer): Promise<Customer> {
       data: {
         firstName: customer.firstName,
         lastName: customer.lastName,
+        fullName: customer.fullName,
         addressLine1: customer.addressLine1,
         addressLine2: customer.addressLine2,
         state: customer.state,
@@ -31,8 +43,7 @@ async function createCustomer(customer: ICustomer): Promise<Customer> {
 }
 
 async function findCustomerByNameAndPhone(
-  firstName: string,
-  lastName: string,
+  name: string,
   phone: string
 ): Promise<Customer | null> {
   let customer = null;
@@ -40,8 +51,7 @@ async function findCustomerByNameAndPhone(
   try {
     customer = await prisma.customer.findFirst({
       where: {
-        firstName: firstName,
-        lastName: lastName,
+        fullName: name,
         phone: phone,
       },
     });
@@ -52,21 +62,41 @@ async function findCustomerByNameAndPhone(
   return customer;
 }
 
-async function doesCustomerExist(
-  firstName: string,
-  lastName: string,
-  phone: string
-): Promise<Boolean> {
+async function findManyCustomersByName(name: string): Promise<Customer[]> {
+  let customers: Customer[] = [];
 
-  let customer = await findCustomerByNameAndPhone(firstName, lastName, phone);
-  return customer ? true : false;
+  try {    
+    let customersWithId = await prisma.customer.findMany({
+      where: {
+        fullName: {
+          contains: name
+        },
+      },
+    });
 
+    customers = customersWithId.map((c) => exclude(c, "id"));    
+  } catch (error) {    
+    throw error;
+  }
+
+  return customers;
+}
+
+function exclude<Customer, Key extends keyof Customer>(
+  customer: Customer,
+  ...keys: Key[]
+): Customer {
+  for (let key of keys) {
+    delete customer[key]
+  }
+  return customer
 }
 
 
 export {
+  doesCustomerExist,
   createCustomer,
   findCustomerByNameAndPhone,
-  doesCustomerExist
+  findManyCustomersByName
 }
 

@@ -44,7 +44,8 @@ export interface IUser {
 }
 
 export interface ICustomer {
-  id?:            string  
+  id?:            string
+  fullName:       string  
   firstName:      string  
   lastName:       string  
   addressLine1:   string  
