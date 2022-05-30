@@ -1,11 +1,12 @@
 import express from "express";
 
+import customerRouter from "./routes/customers/customers.router";
+
+
 const app = express();
 app.use(express.json());
 
-// Test Route
-app.get('/', (req, res) => {
-  res.send('Typescript Server at port 8000');
-})
+app.use("/customers", customerRouter);
+
 
 export default app;
