@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, AllowNull, Length, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, HasMany, PrimaryKey, Default } from "sequelize-typescript";
 
 import User from "./user";
 import Customer from "./customer";
@@ -12,6 +12,11 @@ import Car from "./car";
 })
 class Company extends Model {
 
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id?: string
+
   @AllowNull(false)
   @Column(DataType.STRING)
   name?: string
@@ -24,6 +29,7 @@ class Company extends Model {
   @Column(DataType.STRING)
   address_line_1?: string
 
+  @AllowNull(true)
   @Column(DataType.STRING)
   address_line_2?: string
 
@@ -31,6 +37,7 @@ class Company extends Model {
   @Column(DataType.STRING(100))
   country?: string
 
+  @AllowNull(true)
   @Column(DataType.STRING(50))
   state?: string
 
@@ -42,9 +49,11 @@ class Company extends Model {
   @Column(DataType.STRING(10))
   zipcode?: string
 
+  @AllowNull(true)
   @Column(DataType.STRING)
   email?: string
 
+  @AllowNull(true)
   @Column(DataType.STRING(15))
   phone?: string
 

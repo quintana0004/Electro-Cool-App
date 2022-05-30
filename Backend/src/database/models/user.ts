@@ -1,4 +1,4 @@
-import { Table, Column, Model, AllowNull, DataType, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, AllowNull, DataType, ForeignKey, BelongsTo, HasMany, PrimaryKey, Default } from "sequelize-typescript";
 
 import Appointment from "./appointment";
 import Customer from "./customer";
@@ -10,6 +10,11 @@ import Reminder from "./reminder";
   tableName: 'User'
 })
 class User extends Model {
+
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id?: string
 
   @AllowNull(false)
   @Column(DataType.STRING)
@@ -52,15 +57,15 @@ class User extends Model {
   role?: string
 
   @ForeignKey(() => Company)
-  @Column(DataType.INTEGER)
-  company_id?: number
+  @Column(DataType.UUID)
+  company_id?: string
   
   @BelongsTo(() => Company)
   company?: Company
 
   @ForeignKey(() => Customer)
-  @Column(DataType.INTEGER)
-  customer_id?: number
+  @Column(DataType.UUID)
+  customer_id?: string
 
   @BelongsTo(() => Customer)
   customer?: Customer

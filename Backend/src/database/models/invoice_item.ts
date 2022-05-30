@@ -1,4 +1,4 @@
-import { Table, Column, Model, AllowNull, DataType, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, AllowNull, DataType, ForeignKey, BelongsTo, PrimaryKey, Default } from "sequelize-typescript";
 import Invoice from "./invoice";
 
 
@@ -7,6 +7,11 @@ import Invoice from "./invoice";
 })
 class InvoiceItem extends Model {
 
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id?: string
+  
   @AllowNull(false)
   @Column(DataType.TEXT)
   description?: string
@@ -28,8 +33,8 @@ class InvoiceItem extends Model {
   warranty?: string
 
   @ForeignKey(() => Invoice)
-  @Column(DataType.INTEGER)
-  invoice_id?: number
+  @Column(DataType.UUID)
+  invoice_id?: string
 
   @BelongsTo(() => Invoice)
   invoice?: Invoice

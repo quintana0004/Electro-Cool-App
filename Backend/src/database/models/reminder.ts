@@ -1,4 +1,4 @@
-import { AllowNull, BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 import User from "./user";
 
@@ -7,6 +7,11 @@ import User from "./user";
   tableName: 'Reminder'
 })
 class Reminder extends Model {
+
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id?: string
 
   @AllowNull(false)
   @Column(DataType.TEXT)
@@ -17,8 +22,8 @@ class Reminder extends Model {
   datetime?: Date
   
   @ForeignKey(() => User)
-  @Column(DataType.INTEGER)
-  user_id?: number
+  @Column(DataType.UUID)
+  user_id?: string
 
   @BelongsTo(() => User)
   user?: User
