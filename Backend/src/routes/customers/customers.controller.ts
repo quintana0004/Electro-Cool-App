@@ -62,18 +62,7 @@ async function httpAddCustomer(req: Request, res: Response) {
 
 
     const createdCustomer = await createCustomer(newCustomer);
-    return res.status(201).json({
-      firstName: createdCustomer.firstName,
-      lastName: createdCustomer.lastName,
-      addressLine1: createdCustomer.addressLine1,
-      addressLine2: createdCustomer.addressLine2,
-      state: createdCustomer.state,
-      city: createdCustomer.city,
-      phone: createdCustomer.phone,
-      email: createdCustomer.email,
-      createdAt: createdCustomer.createdAt,
-      updatedAt: createdCustomer.updatedAt
-    });
+    return res.status(201).json({ createdCustomer });
     
   } catch (error) {
     let errorMessage = "";

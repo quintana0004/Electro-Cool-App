@@ -16,6 +16,7 @@ async function doesCustomerExist(
 }
 
 async function createCustomer(customer: ICustomer): Promise<Customer> {
+  
   try {
     const company = await findCompanyByName(customer.companyId);
 
@@ -36,10 +37,12 @@ async function createCustomer(customer: ICustomer): Promise<Customer> {
       },
     });
 
-    return createdCustomer;
+    const createdCustomerWithoutId = exclude(createdCustomer, "id");
+    return createdCustomerWithoutId;
   } catch (error) {
     throw error;
   }
+
 }
 
 async function findCustomerByNameAndPhone(
