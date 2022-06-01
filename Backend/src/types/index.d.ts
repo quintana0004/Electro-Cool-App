@@ -54,7 +54,7 @@ export interface ICustomer {
   city:           string  
   phone:          string  
   email?:         string  
-  companyId:      string
+  companyName:    string
   createdAt?:     Date
   updatedAt?:     Date
   company?:       Company
@@ -67,16 +67,17 @@ export interface ICustomer {
 export interface ICar {
   id?:                   string     
   brand:                 string     
-  license:               string     
+  licensePlate:          string     
   model:                 string     
   year:                  string     
   mileage:               string     
   color:                 string     
   vinNumber:             string     
-  carHasItems:           Boolean
+  carHasItems:           boolean
   carItemsDescription?:  string
-  customerId?:           string    
-  companyId?:            string    
+  customerName:          string    
+  customerPhone:         string    
+  companyName:           string    
   createdAt?:            Date   
   updatedAt?:            Date   
   company?:              Company   
@@ -116,8 +117,8 @@ export interface IJobOder {
   service:         string    
   serviceDetails:  string
   status:          string    
-  isHeavy:         Boolean
-  isLight:         Boolean
+  isHeavy:         boolean
+  isLight:         boolean
   entryDate:       Date  
   companyId?:      string   
   customerId?:     string   
@@ -156,4 +157,9 @@ export interface IAppointment {
   createdAt?:  Date 
   updatedAt?:  Date 
   user?:       IUser    
+}
+
+export interface IErrorResponse {
+  errorCode:     number
+  errorMessage:  string
 }

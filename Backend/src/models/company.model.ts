@@ -16,11 +16,6 @@ async function findCompanyByName(name: string): Promise<Company | null> {
   return company;
 }
 
-async function doesCompanyExist(name: string) : Promise<Boolean> {
-  let company = await findCompanyByName(name);
-  return company ? true : false;
-}
-
 function exclude<Company, Key extends keyof Company>(
   company: Company,
   ...keys: Key[]
@@ -32,6 +27,5 @@ function exclude<Company, Key extends keyof Company>(
 }
 
 export {
-  findCompanyByName,
-  doesCompanyExist
+  findCompanyByName
 }
