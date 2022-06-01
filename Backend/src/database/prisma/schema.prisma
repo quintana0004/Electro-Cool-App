@@ -20,20 +20,20 @@ model Appointment {
 model Car {
   id                  String     @id @default(uuid()) @db.Uuid
   brand               String     @db.VarChar(100)
-  license             String     @db.VarChar(20)
+  licensePlate        String     @db.VarChar(20)
   model               String     @db.VarChar(100)
   year                String     @db.VarChar(4)
   mileage             String     @db.VarChar(10)
-  color               String     @db.VarChar(15)
-  vinNumber           String     @db.VarChar(20)
+  color               String     @db.VarChar(50)
+  vinNumber           String     @unique @db.VarChar(20)
   carHasItems         Boolean
   carItemsDescription String?
-  customerId          String?    @db.Uuid
-  companyId           String?    @db.Uuid
+  customerId          String    @db.Uuid
+  companyId           String    @db.Uuid
   createdAt           DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt           DateTime   @default(now()) @db.Timestamptz(6)
-  company             Company?   @relation(fields: [companyId], references: [id], onDelete: NoAction)
-  customer            Customer?  @relation(fields: [customerId], references: [id], onDelete: NoAction)
+  company             Company   @relation(fields: [companyId], references: [id], onDelete: NoAction)
+  customer            Customer  @relation(fields: [customerId], references: [id], onDelete: NoAction)
   jobOrders           JobOrder[]
 }
 
@@ -77,6 +77,7 @@ model Customer {
   invoices     Invoice[]
   jobOrders    JobOrder[]
   user         User?
+  @@unique([fullName, phone])
 }
 
 model Invoice {

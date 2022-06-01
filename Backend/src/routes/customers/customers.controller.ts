@@ -1,17 +1,13 @@
 import { Request, Response } from "express";
-import { ICustomer } from "./../../types/index.d";
+import { ICustomer, IErrorResponse } from "./../../types/index.d";
 
 import { formatPhoneNumber, titleCase } from "../../utils/helpers";
 import {
   createCustomer,
-  doesCustomerExist,
   findManyCustomersByName,
 } from "../../models/customers.model";
-import { doesCompanyExist } from "../../models/company.model";
-
 
 async function httpAddCustomer(req: Request, res: Response) {
-
   try {
     const newCustomer: ICustomer = {
       firstName: titleCase(req.body.firstName),
@@ -24,96 +20,72 @@ async function httpAddCustomer(req: Request, res: Response) {
       city: req.body.city,
       phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
-      companyId: req.body.companyName,
+      companyName: req.body.companyName,
     };
 
-    // Validate all required fields are received
+
     if (
       !newCustomer.firstName ||
       !newCustomer.lastName ||
       !newCustomer.addressLine1 ||
       !newCustomer.city ||
       !newCustomer.phone ||
-      !newCustomer.companyId
+      !newCustomer.companyName
     ) {
-      return res.status(400).json({
-        error: "Customer does not have all required fields to be created.",
-      });
-    }
-
-    // Validate that user doesn't already exist
-    const customerExists = await doesCustomerExist(
-      newCustomer.fullName,
-      newCustomer.phone
-    );    
-    if (customerExists) {
-      return res.status(400).json({
-        error: "Customer already exists.",
-      });
-    }
-
-    // Validate that company exists
-    const companyExists = await doesCompanyExist(newCustomer.companyId);
-    if (!companyExists) {
-      return res.status(400).json({
-        error: "Company with that name doesn't exist.",
-      });
+      const error: IErrorResponse = {
+        errorCode: 400,
+        errorMessage: "Customer is missing required fields for creation."
+      };
+      return res.status(error.errorCode).json({ error });
     }
 
 
-    const createdCustomer = await createCustomer(newCustomer);
-    return res.status(201).json({
-      firstName: createdCustomer.firstName,
-      lastName: createdCustomer.lastName,
-      addressLine1: createdCustomer.addressLine1,
-      addressLine2: createdCustomer.addressLine2,
-      state: createdCustomer.state,
-      city: createdCustomer.city,
-      phone: createdCustomer.phone,
-      email: createdCustomer.email,
-      createdAt: createdCustomer.createdAt,
-      updatedAt: createdCustomer.updatedAt
-    });
-    
+    const response = await createCustomer(newCustomer);
+
+    if ('errorCode' in response) {
+      return res.status(response.errorCode).json({
+        error: response
+      });
+    }
+
+    return res.status(201).json(response);
+
   } catch (error) {
-    let errorMessage = "";
-    if (error instanceof Error) {
-      errorMessage = error.toString();
-    } 
-    
-    return res.status(500).json({
-      error: errorMessage
+    const errorResponse: IErrorResponse = {
+      errorCode: 500,
+      errorMessage: "The resquest to create a customer failed. Please report this to Tech Support for further investigation."
+    };
+    return res.status(errorResponse.errorCode).json({
+      error: errorResponse
     });
-  }
-  
+  }  
 }
 
 async function httpGetCustomersByName(req: Request, res: Response) {
-
   try {
     
-    // Validate customer name is valid
     let customerNameParam = req.query.customerName?.toString();    
     if (!customerNameParam) {
-      return res.status(400).json({
-        error: "Customer Name Parameter cannot be empty.",
-      });
+      const error: IErrorResponse = {
+        errorCode: 400,
+        errorMessage: "The 'customerName' parameter is empty. Please provide 'customerName' in request."
+      };
+      return res.status(error.errorCode).json({ error });
     }
     
     const customerName = titleCase(customerNameParam);    
     const customers = await findManyCustomersByName(customerName);
     return res.status(200).json(customers);
-  } catch (error) {
-    let errorMessage = "";
-    if (error instanceof Error) {
-      errorMessage = error.toString();
-    }
 
-    return res.status(500).json({
-      error: errorMessage,
+  } catch (error) {
+    const errorResponse: IErrorResponse = {
+      errorCode: 500,
+      errorMessage: "The resquest to find customers by name failed. Please report this to Tech Support for further investigation."
+    };
+    return res.status(errorResponse.errorCode).json({
+      error: errorResponse
     });
   }
-
 }
 
 export { 

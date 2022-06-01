@@ -1,25 +1,36 @@
 import { Customer } from "@prisma/client";
 import { prisma } from "../database";
 
-import { ICustomer } from "../types";
+import { ICustomer, IErrorResponse } from "../types";
 import { findCompanyByName } from "./company.model";
 
-
-async function doesCustomerExist(
-  name: string,
-  phone: string
-): Promise<Boolean> {
-
-  let customer = await findCustomerByNameAndPhone(name, phone);
-  return customer ? true : false;
-
-}
-
-async function createCustomer(customer: ICustomer): Promise<Customer> {
+async function createCustomer(
+  customer: ICustomer
+): Promise<Customer | IErrorResponse> {
   try {
-    const company = await findCompanyByName(customer.companyId);
 
-    if (!company) throw new Error("Company does not exist");
+    const company = await findCompanyByName(customer.companyName);
+    if (!company) {
+      const error: IErrorResponse = {
+        errorCode: 400,
+        errorMessage:
+          "The company name was not found in the system. Please assure you pass a valid company name.",
+      };
+      return error;
+    }
+
+    const existingCustomer = await findCustomerByNameAndPhone(
+      customer.fullName,
+      customer.phone
+    );
+    if (existingCustomer) {
+      const error: IErrorResponse = {
+        errorCode: 400,
+        errorMessage:
+          "A Customer with this Name and Phone Number already exists. Please provide another Name or Phone Number.",
+      };
+      return error;
+    }
 
     const createdCustomer = await prisma.customer.create({
       data: {
@@ -36,7 +47,9 @@ async function createCustomer(customer: ICustomer): Promise<Customer> {
       },
     });
 
-    return createdCustomer;
+    const createdCustomerWithoutId = exclude(createdCustomer, "id", "companyId");
+    return createdCustomerWithoutId;
+
   } catch (error) {
     throw error;
   }
@@ -46,40 +59,38 @@ async function findCustomerByNameAndPhone(
   name: string,
   phone: string
 ): Promise<Customer | null> {
-  let customer = null;
-
   try {
-    customer = await prisma.customer.findFirst({
+
+    const customer = await prisma.customer.findFirst({
       where: {
         fullName: name,
         phone: phone,
       },
     });
+    
+    return customer;
+
   } catch (error) {
     throw error;
   }
-
-  return customer;
 }
 
 async function findManyCustomersByName(name: string): Promise<Customer[]> {
-  let customers: Customer[] = [];
-
-  try {    
+  try {
     let customersWithId = await prisma.customer.findMany({
       where: {
         fullName: {
-          contains: name
+          contains: name,
         },
       },
     });
 
-    customers = customersWithId.map((c) => exclude(c, "id"));    
-  } catch (error) {    
+    const customers = customersWithId.map((c) => exclude(c, "id", "companyId"));
+    return customers;
+
+  } catch (error) {
     throw error;
   }
-
-  return customers;
 }
 
 function exclude<Customer, Key extends keyof Customer>(
@@ -87,16 +98,13 @@ function exclude<Customer, Key extends keyof Customer>(
   ...keys: Key[]
 ): Customer {
   for (let key of keys) {
-    delete customer[key]
+    delete customer[key];
   }
-  return customer
+  return customer;
 }
 
-
-export {
-  doesCustomerExist,
-  createCustomer,
-  findCustomerByNameAndPhone,
-  findManyCustomersByName
-}
-
+export { 
+  createCustomer, 
+  findCustomerByNameAndPhone, 
+  findManyCustomersByName 
+};
