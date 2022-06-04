@@ -119,10 +119,10 @@ export interface IJobOder {
   status:          string    
   isHeavy:         boolean
   isLight:         boolean
-  entryDate:       Date  
-  companyId?:      string   
-  customerId?:     string   
-  carId?:          string   
+  companyName:     string   
+  customerName:    string   
+  customerPhone:   string   
+  carVinNumber:    string   
   createdAt?:      Date  
   updatedAt?:      Date  
   car?:            ICar      
