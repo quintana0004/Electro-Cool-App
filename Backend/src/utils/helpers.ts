@@ -1,5 +1,5 @@
 
-function titleCase(str: string) {
+function titleCase(str: string) : string {
   if (!str) {
     return "";
   }
@@ -13,7 +13,7 @@ function titleCase(str: string) {
     .join(" ");
 }
 
-function formatPhoneNumber(phoneNumberString: string) {
+function formatPhoneNumber(phoneNumberString: string) : string {
   var cleaned = ("" + phoneNumberString).replace(/\D/g, "");
   var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
   if (match) {

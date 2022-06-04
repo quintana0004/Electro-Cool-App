@@ -114,7 +114,6 @@ model JobOrder {
   status         String    @db.VarChar(100)
   isHeavy        Boolean
   isLight        Boolean
-  entryDate      DateTime  @db.Timestamptz(6)
   companyId      String    @db.Uuid
   customerId     String    @db.Uuid
   carId          String    @db.Uuid

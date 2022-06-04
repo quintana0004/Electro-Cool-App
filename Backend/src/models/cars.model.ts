@@ -56,7 +56,7 @@ async function createCar(car: ICar): Promise<Car | IErrorResponse> {
       },
     });
 
-    const createdCarWithoutId = exclude(createdCar, "id");
+    const createdCarWithoutId = carsExclude(createdCar, "id");
     return createdCarWithoutId;
 
   } catch (error) {
@@ -77,19 +77,18 @@ async function findCarByVIN(vinNumber: string): Promise<Car | null> {
       return null;
     }
 
-    const carWithoutId = exclude(car, "id", "customerId", "companyId");
-    return carWithoutId;
+    return car;
 
   } catch (error) {
     throw error;
   }
 }
 
-function exclude<Car, Key extends keyof Car>(car: Car, ...keys: Key[]): Car {
+function carsExclude<Car, Key extends keyof Car>(car: Car, ...keys: Key[]): Car {
   for (let key of keys) {
     delete car[key];
   }
   return car;
 }
 
-export { createCar, findCarByVIN };
+export { createCar, findCarByVIN, carsExclude };

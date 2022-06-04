@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createCar, findCarByVIN } from '../../models/cars.model';
+import { carsExclude, createCar, findCarByVIN } from '../../models/cars.model';
 import { formatPhoneNumber, titleCase } from '../../utils/helpers';
 import { ICar, IErrorResponse } from './../../types/index.d';
 
@@ -87,8 +87,8 @@ async function httpGetCarByVIN( req: Request, res: Response ) {
       };
       return res.status(error.errorCode).json({ error });
     }
-
-    return res.status(200).json(car);
+    const carWithoutIds = carsExclude(car, 'id', 'customerId', 'companyId');
+    return res.status(200).json(carWithoutIds);
     
   } catch (error) {
     const errorResponse: IErrorResponse = {
