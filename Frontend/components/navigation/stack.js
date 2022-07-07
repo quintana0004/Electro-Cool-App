@@ -36,7 +36,11 @@ function JobOrderStack() {
         component={JobOrder}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Create" component={Create} />
+      <Stack.Screen
+        name="Create"
+        component={Create}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Edit" component={Edit} />
       <Stack.Screen name="View" component={Views} />
     </Stack.Navigator>
