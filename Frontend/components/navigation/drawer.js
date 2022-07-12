@@ -7,6 +7,7 @@ import {
   FontAwesome5,
   FontAwesome,
   Feather,
+  MaterialIcons,
 } from "@expo/vector-icons";
 
 //Screens
@@ -19,6 +20,7 @@ import {
 import Home from "../../screens/Home";
 import Calendar from "../../screens/Calendar";
 import Setting from "../../screens/Setting";
+import LogIn from "../../screens/LogIn";
 
 const Drawer = createDrawerNavigator();
 
@@ -29,9 +31,13 @@ function MenuDrawer() {
         drawerType: "permanent",
         drawerStyle: {
           width: 115,
-          backgroundColor: Colors.blackGrey,
+          backgroundColor: Colors.blackGreyDark,
           borderTopRightRadius: 40,
           borderBottomRightRadius: 40,
+          marginTop: 30,
+          marginBottom: 30,
+          position: "absolute",
+          right: 0,
         },
         drawerActiveTintColor: Colors.hueGrey,
       }}
@@ -47,7 +53,7 @@ function MenuDrawer() {
             borderRadius: 20,
             marginTop: 15,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon1}>
@@ -58,7 +64,7 @@ function MenuDrawer() {
         }}
       />
       <Drawer.Screen
-        name="Job Order"
+        name="JobOrder"
         component={JobOrderStack}
         options={{
           headerShown: false,
@@ -66,9 +72,9 @@ function MenuDrawer() {
             width: 90,
             height: 90,
             borderRadius: 20,
-            marginTop: 15,
+            marginTop: 10,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon2}>
@@ -91,9 +97,9 @@ function MenuDrawer() {
             width: 90,
             height: 90,
             borderRadius: 20,
-            marginTop: 15,
+            marginTop: 10,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon1}>
@@ -116,9 +122,9 @@ function MenuDrawer() {
             width: 90,
             height: 90,
             borderRadius: 20,
-            marginTop: 15,
+            marginTop: 10,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon2}>
@@ -141,9 +147,9 @@ function MenuDrawer() {
             width: 90,
             height: 90,
             borderRadius: 20,
-            marginTop: 15,
+            marginTop: 10,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon1}>
@@ -162,13 +168,34 @@ function MenuDrawer() {
             width: 90,
             height: 90,
             borderRadius: 20,
-            marginTop: 15,
+            marginTop: 10,
             marginRight: 15,
-            marginBottom: 15,
+            marginBottom: 10,
           },
           drawerIcon: () => (
             <View style={styles.icon1}>
               <Feather name="settings" size={45} color={Colors.yellow} />
+            </View>
+          ),
+          drawerLabel: "",
+        }}
+      />
+      <Drawer.Screen
+        name="LogOut"
+        component={LogIn}
+        options={{
+          headerShown: false,
+          drawerItemStyle: {
+            width: 90,
+            height: 90,
+            borderRadius: 20,
+            marginTop: 10,
+            marginRight: 15,
+            marginBottom: 10,
+          },
+          drawerIcon: () => (
+            <View style={styles.icon1}>
+              <MaterialIcons name="logout" size={45} color={Colors.yellow} />
             </View>
           ),
           drawerLabel: "",

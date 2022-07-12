@@ -37,8 +37,16 @@ function JobOrderStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Create" component={Create} />
-      <Stack.Screen name="Edit" component={Edit} />
-      <Stack.Screen name="View" component={Views} />
+      <Stack.Screen
+        name="Edit"
+        component={Edit}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="View"
+        component={Views}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
