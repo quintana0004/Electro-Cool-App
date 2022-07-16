@@ -5,6 +5,7 @@ const Clients = [
     ClientLastName: "Quintana Rivera",
     JobOrderStatus: "New",
     JobOrderEntryDate: "09/07/2022",
+    levelJobOrder: "Heavy",
   },
   {
     id: "0002",
@@ -12,6 +13,7 @@ const Clients = [
     ClientLastName: "Montalvo Medina",
     JobOrderStatus: "New",
     JobOrderEntryDate: "10/07/2022",
+    levelJobOrder: "Heavy",
   },
   {
     id: "0003",
@@ -19,6 +21,7 @@ const Clients = [
     ClientLastName: "Rivera Acevedo",
     JobOrderStatus: "New",
     JobOrderEntryDate: "11/07/2022",
+    levelJobOrder: "Heavy",
   },
   {
     id: "0004",
@@ -26,6 +29,7 @@ const Clients = [
     ClientLastName: "Acevedo Cardona",
     JobOrderStatus: "New",
     JobOrderEntryDate: "12/07/2022",
+    levelJobOrder: "Heavy",
   },
   {
     id: "0005",
@@ -33,6 +37,7 @@ const Clients = [
     ClientLastName: "Quintana Rivera",
     JobOrderStatus: "New",
     JobOrderEntryDate: "13/07/2022",
+    levelJobOrder: "Light",
   },
   {
     id: "0006",
@@ -40,6 +45,7 @@ const Clients = [
     ClientLastName: "Rivera Acevedo",
     JobOrderStatus: "New",
     JobOrderEntryDate: "14/07/2022",
+    levelJobOrder: "Light",
   },
   {
     id: "0007",
@@ -47,6 +53,7 @@ const Clients = [
     ClientLastName: "Acevedo Cardona",
     JobOrderStatus: "New",
     JobOrderEntryDate: "15/07/2022",
+    levelJobOrder: "Light",
   },
 ];
 

@@ -6,11 +6,6 @@ import { useState } from "react";
 function SearchBar({ onSearch }) {
   const [searchValue, setSearchValue] = useState("");
 
-  function handleSearch(search) {
-    setSearchValue(search);
-    onSearch(search);
-  }
-
   return (
     <View style={styles.container}>
       <Input
@@ -30,7 +25,9 @@ function SearchBar({ onSearch }) {
             size={40}
             bgColor="yellow.500"
             variant="subtle"
-            onPress={handleSearch}
+            onPress={() => {
+              onSearch(searchValue);
+            }}
             _text={{ fontSize: 25, fontWeight: "bold", color: "black" }}
           >
             Search
@@ -38,7 +35,7 @@ function SearchBar({ onSearch }) {
         }
         value={searchValue}
         onChangeText={(search) => {
-          handleSearch(search);
+          setSearchValue(search);
         }}
       />
     </View>

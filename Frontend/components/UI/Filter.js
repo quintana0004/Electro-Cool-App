@@ -7,16 +7,6 @@ function Filter({ onFilter }) {
   const [typeJobOrder, setTypeJobOrder] = useState([]);
   const [levelJobOrder, setLevelJobOrder] = useState([]);
 
-  function onSave() {
-    onFilter(typeJobOrder, levelJobOrder);
-  }
-
-  function onReset() {
-    setLevelJobOrder([]);
-    setTypeJobOrder([]);
-    onFilter(typeJobOrder, levelJobOrder);
-  }
-
   return (
     <View>
       <View style={styles.container}>
@@ -34,7 +24,12 @@ function Filter({ onFilter }) {
           <Text fontSize="md" color="black" fontWeight="semibold" mb={2}>
             Choose a type of Job Order:
           </Text>
-          <Checkbox.Group onChange={setTypeJobOrder} value={typeJobOrder}>
+          <Checkbox.Group
+            onChange={(prev) => {
+              setTypeJobOrder(prev || []);
+            }}
+            value={typeJobOrder}
+          >
             <Checkbox value="New" bgColor="yellow.500" size="lg" my="1">
               New
             </Checkbox>
@@ -52,7 +47,12 @@ function Filter({ onFilter }) {
           <Text fontSize="md" color="black" fontWeight="semibold" mb={2}>
             Choose level of Job Order:
           </Text>
-          <Checkbox.Group onChange={setLevelJobOrder} value={levelJobOrder}>
+          <Checkbox.Group
+            onChange={(prev) => {
+              setLevelJobOrder(prev || []);
+            }}
+            value={levelJobOrder}
+          >
             <Checkbox value="Heavy" bgColor="yellow.500" size="lg" my="1">
               Heavy
             </Checkbox>
@@ -69,7 +69,11 @@ function Filter({ onFilter }) {
                 width={100}
                 bgColor="yellow.500"
                 _text={{ color: "black", fontWeight: "bold" }}
-                onPress={onSave}
+                onPress={() => {
+                  console.log("Type: ", typeJobOrder);
+                  console.log("Level: ", levelJobOrder);
+                  onFilter(typeJobOrder, levelJobOrder);
+                }}
               >
                 Save
               </Button>
@@ -81,7 +85,11 @@ function Filter({ onFilter }) {
                 width={100}
                 bgColor="yellow.500"
                 _text={{ color: "black", fontWeight: "bold" }}
-                onPress={onReset}
+                onPress={() => {
+                  setLevelJobOrder([]);
+                  setTypeJobOrder([]);
+                  onFilter([], []);
+                }}
               >
                 Reset
               </Button>
