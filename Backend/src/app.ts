@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log("Client Host: ", process.env.CLIENT_HOST);
-
 const CLIENT_HOST = process.env.CLIENT_HOST ?? "";
 
 const app = express();
