@@ -13,7 +13,7 @@ npm install
 
 @REM 2. First CD to the prisma folder
 @REM 3. Run the following command to create the SQL tables in your Postgre Database: 
-npx prisma migrate dev --name mech-driven-[X.X.X]
+npx prisma migrate dev --name DB
 
 @REM Note: If prompted for any confirmations just input "Yes". Since this is a dev environment it doesnt really have much affects.
 
