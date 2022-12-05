@@ -43,6 +43,8 @@ model User {
   username     String        @db.VarChar(255)
   password     String        @db.VarChar(255)
   salt         String        @db.VarChar(255)
+  accessToken  String        @db.VarChar(255)
+  refreshToken String        @db.VarChar(255)
   role         String        @db.VarChar(255)
   createdDate  DateTime      @default(now()) @db.Timestamptz(6)
   lastModified DateTime      @default(now()) @db.Timestamptz(6)
@@ -182,13 +184,19 @@ model Payment {
 }
 
 model Appointment {
-  id           Int      @id @default(autoincrement())
-  reason       String
-  datetime     DateTime @db.Timestamptz(6)
-  createdDate  DateTime @default(now()) @db.Timestamptz(6)
-  lastModified DateTime @default(now()) @db.Timestamptz(6)
-  userId       String   @db.Uuid
-  user         User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+  id              Int      @id @default(autoincrement())
+  service         String   @db.VarChar(255)
+  description     String
+  arrivalDateTime DateTime @db.Timestamptz(6)
+  model           String   @db.VarChar(255)
+  licensePlate    String   @db.VarChar(255)
+  customerName    String   @db.VarChar(255)
+  phone           String   @db.VarChar(10)
+  email           String   @db.VarChar(255)
+  createdDate     DateTime @default(now()) @db.Timestamptz(6)
+  lastModified    DateTime @default(now()) @db.Timestamptz(6)
+  userId          String   @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: NoAction)
 }
 
 model Task {
