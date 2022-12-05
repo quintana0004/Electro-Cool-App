@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 function CarSelection({ navigation }) {
   return (
     <View>
-      <Text>CarSelection</Text>
+      <Text>CarSelection aqui toy!!!</Text>
     </View>
   );
 }
