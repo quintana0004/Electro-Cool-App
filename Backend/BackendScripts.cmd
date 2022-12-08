@@ -22,3 +22,6 @@ npx prisma generate
 
 @REM 5. Run the following command to start the server
 npm run dev
+
+@REM 6. If you want to view data from the Database without opening a DBMS, use the following command in the prisma folder
+npx prisma studio
