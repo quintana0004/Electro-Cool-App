@@ -1,32 +1,20 @@
-import { Customer } from "@prisma/client";
-import { ICustomer } from "./../../types/index.d";
 import { Request, Response } from "express";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
-import {
-  upsertCustomer,
-  findAllCustomerName,
-} from "../../models/customers.model";
+
+import { ICustomer } from "./../../types/index.d";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import { upsertCustomer, findAllCustomers } from "../../models/customers.model";
 import { isValidUUID } from "../../utils/db.utils";
-import { json } from "stream/consumers";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let Firstname = req.query.Firstname ? req.query.Firstname : "";
-    let Lastname = req.query.Lastname ? req.query.Lastname : "";
-    const Customer = await findAllCustomerName(
-      skip,
-      take,
-      Firstname.toString(),
-      Lastname.toString()
-    );
-    res.status(200).json(Customer);
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+
+    const customers = await findAllCustomers(skip, take, searchTerm);
+    return res.status(200).json(customers);
   } catch (error) {
-    res.status(500).json("Error in Get All Names");
+    return handleExceptionErrorResponse("get all customers", error, res);
   }
 }
 
@@ -61,7 +49,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
     }
 
     const upsertedCustomer = await upsertCustomer(customerInfo);
-    res.status(200).json(upsertedCustomer);
+    return res.status(200).json(upsertedCustomer);
   } catch (error) {
     return handleExceptionErrorResponse("upsert customer", error, res);
   }

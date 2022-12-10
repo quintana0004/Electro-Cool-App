@@ -1,15 +1,16 @@
-import { ICustomer } from "./../types/index.d";
 import prisma from "../database/prisma";
-import { Customer } from "@prisma/client";
-import { StringifyOptions } from "querystring";
+
+import { ICustomer } from "./../types/index.d";
 
 async function upsertCustomer(customerInfo: ICustomer) {
   try {
+    const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
     const customer = await prisma.customer.upsert({
       where: {
         id: customerInfo?.id ?? -1,
       },
       create: {
+        fullName: fullName,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,
         addressLine1: customerInfo.addressLine1,
@@ -21,6 +22,7 @@ async function upsertCustomer(customerInfo: ICustomer) {
         companyId: customerInfo.companyId,
       },
       update: {
+        fullName: fullName,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,
         addressLine1: customerInfo.addressLine1,
@@ -38,29 +40,23 @@ async function upsertCustomer(customerInfo: ICustomer) {
     throw error;
   }
 }
-async function findAllCustomerName(
-  skip: number,
-  take: number,
-  firstname: string,
-  lastname: string
-) {
+async function findAllCustomers(skip: number, take: number, searchTerm: string) {
   try {
-    const customerNames = await prisma.customer.findMany({
+    const name = searchTerm ? searchTerm : undefined;
+    const customers = await prisma.customer.findMany({
       skip,
       take,
       where: {
-        firstName: firstname
-          ? firstname
-          : undefined && lastname
-          ? lastname
-          : undefined,
+        fullName: {
+          contains: name,
+        },
       },
     });
-    return customerNames;
+
+    return customers;
   } catch (error) {
     throw error;
   }
 }
 
-export { upsertCustomer };
-export { findAllCustomerName };
+export { upsertCustomer, findAllCustomers };
