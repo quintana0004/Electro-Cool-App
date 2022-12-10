@@ -17,8 +17,7 @@ function excludeFields<T, Key extends keyof T>(record: T, ...keys: Key[]): T {
 async function createDummyCompany() {
   const existingCompany = await findCompanyByName("Electro Cool");
   if (existingCompany == null) {
-    console.log("Does Not Exist");
-
+    console.log("Company does not exist, creating dummy Electro Cool Company.");
     const companyInfo: ICompany = {
       name: "Electro Cool",
       businessType: "Exotic Motor Sports",
