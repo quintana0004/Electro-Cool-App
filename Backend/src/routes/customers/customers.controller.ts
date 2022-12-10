@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 
 import { ICustomer } from "./../../types/index.d";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { upsertCustomer, findAllCustomers } from "../../models/customers.model";
 import { isValidUUID } from "../../utils/db.utils";
 
@@ -9,7 +12,9 @@ async function httpGetAllCustomers(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
 
     const customers = await findAllCustomers(skip, take, searchTerm);
     return res.status(200).json(customers);

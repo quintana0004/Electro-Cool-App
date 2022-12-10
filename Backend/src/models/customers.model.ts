@@ -40,7 +40,11 @@ async function upsertCustomer(customerInfo: ICustomer) {
     throw error;
   }
 }
-async function findAllCustomers(skip: number, take: number, searchTerm: string) {
+async function findAllCustomers(
+  skip: number,
+  take: number,
+  searchTerm: string
+) {
   try {
     const name = searchTerm ? searchTerm : undefined;
     const customers = await prisma.customer.findMany({
