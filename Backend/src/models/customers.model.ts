@@ -1,5 +1,7 @@
 import { ICustomer } from "./../types/index.d";
 import prisma from "../database/prisma";
+import { Customer } from "@prisma/client";
+import { StringifyOptions } from "querystring";
 
 async function upsertCustomer(customerInfo: ICustomer) {
   try {
@@ -36,5 +38,29 @@ async function upsertCustomer(customerInfo: ICustomer) {
     throw error;
   }
 }
+async function findAllCustomerName(
+  skip: number,
+  take: number,
+  firstname: string,
+  lastname: string
+) {
+  try {
+    const customerNames = await prisma.customer.findMany({
+      skip,
+      take,
+      where: {
+        firstName: firstname
+          ? firstname
+          : undefined && lastname
+          ? lastname
+          : undefined,
+      },
+    });
+    return customerNames;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export { upsertCustomer };
+export { findAllCustomerName };

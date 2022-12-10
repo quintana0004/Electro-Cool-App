@@ -1,17 +1,32 @@
+import { Customer } from "@prisma/client";
 import { ICustomer } from "./../../types/index.d";
 import { Request, Response } from "express";
 import {
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
-import { upsertCustomer } from "../../models/customers.model";
+import {
+  upsertCustomer,
+  findAllCustomerName,
+} from "../../models/customers.model";
 import { isValidUUID } from "../../utils/db.utils";
+import { json } from "stream/consumers";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
-    res.status(200).json("Get All Customers");
+    let skip = req.query.skip ? +req.query.skip : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let Firstname = req.query.Firstname ? req.query.Firstname : "";
+    let Lastname = req.query.Lastname ? req.query.Lastname : "";
+    const Customer = await findAllCustomerName(
+      skip,
+      take,
+      Firstname.toString(),
+      Lastname.toString()
+    );
+    res.status(200).json(Customer);
   } catch (error) {
-    return handleExceptionErrorResponse("get all customers", error, res);
+    res.status(500).json("Error in Get All Names");
   }
 }
 
