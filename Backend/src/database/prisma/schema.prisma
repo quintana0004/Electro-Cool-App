@@ -83,7 +83,7 @@ model Car {
   mileage             String     @db.VarChar(10)
   color               String     @db.VarChar(50)
   vinNumber           String     @unique @db.VarChar(20)
-  carHasItems         Boolean
+  carHasItems         Boolean?   @default(false)
   carItemsDescription String?
   createdDate         DateTime   @default(now()) @db.Timestamptz(6)
   lastModified        DateTime   @default(now()) @db.Timestamptz(6)

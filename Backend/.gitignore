@@ -53,3 +53,6 @@ config.json
 
 # Output Typescript Folder
 dist/
+
+# Enviorment Variables
+Electro-Cool-App\Backend\.env
