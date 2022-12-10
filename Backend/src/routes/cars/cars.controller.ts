@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
 import { isUniqueCar, upsertCar } from "../../models/cars.model";
 import { ICar } from "../../types";
-import { isNumeric, isValidUUID } from "../../utils/db.utils";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
+import { isNumeric, isValidUUID } from "../../utils/validators.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
@@ -49,11 +46,7 @@ async function httpUpsertCar(req: Request, res: Response) {
         res
       );
     }
-    const isCarUnique = await isUniqueCar(
-      carInfo.licensePlate,
-      carInfo.vinNumber,
-      carInfo.id
-    );
+    const isCarUnique = await isUniqueCar(carInfo.licensePlate, carInfo.vinNumber, carInfo.id);
     if (!isCarUnique) {
       return handleBadResponse(
         400,

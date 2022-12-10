@@ -1,11 +1,8 @@
 import { ICustomer } from "./../../types/index.d";
 import { Request, Response } from "express";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { upsertCustomer } from "../../models/customers.model";
-import { isValidUUID } from "../../utils/db.utils";
+import { isValidUUID } from "../../utils/validators.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {

@@ -1,6 +1,20 @@
 import { ICar } from "./../types/index.d";
 import prisma from "../database/prisma";
 
+async function findCarById(id: number) {
+  try {
+    const car = await prisma.car.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertCar(carInfo: ICar) {
   try {
     const car = await prisma.car.upsert({
@@ -71,4 +85,4 @@ async function isUniqueCar(
   }
 }
 
-export { upsertCar, isUniqueCar };
+export { findCarById, upsertCar, isUniqueCar };

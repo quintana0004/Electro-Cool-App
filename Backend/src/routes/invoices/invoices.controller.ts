@@ -1,7 +1,14 @@
 import { IInvoice } from "./../../types/index.d";
 import { Request, Response } from "express";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
-import { hasRequiredInvoiceFields } from "./invoices.validation";
+import {
+  isValidCarId,
+  isValidCompanyId,
+  isValidCustomerId,
+  isValidDespositId,
+  hasRequiredInvoiceFields,
+  hasRequiredInvoiceItemFields,
+} from "../../utils/validators.utils";
 
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
@@ -28,8 +35,6 @@ async function httpUpsertInvoices(req: Request, res: Response) {
       depositIds: req.body.depositIds,
     };
 
-    // Todo:
-    // 1. Validation of Required Fields
     const hasRequiredFields = hasRequiredInvoiceFields(invoiceInfo);
     if (!hasRequiredFields) {
       return handleBadResponse(
@@ -39,15 +44,60 @@ async function httpUpsertInvoices(req: Request, res: Response) {
       );
     }
 
-    // 2. Validation of Company
-    // 3. Validation of Customer
-    // 4. Validation of Car
-    // 5. Validation of InvoiceItems
-    // 6. Validation of Deposit
+    const isCompanyIdValid = await isValidCompanyId(invoiceInfo.companyId);
+    if (!isCompanyIdValid) {
+      return handleBadResponse(
+        400,
+        "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const isCustomerIdValid = await isValidCustomerId(invoiceInfo.customerId);
+    if (!isCustomerIdValid) {
+      return handleBadResponse(
+        400,
+        "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const isCarIdValid = await isValidCarId(invoiceInfo.carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    for (const item of invoiceInfo.invoiceItems) {
+      const hasRequiredFields = hasRequiredInvoiceItemFields(item);
+      if (!hasRequiredFields) {
+        return handleBadResponse(
+          400,
+          "One of the provided Invoice Items has missing required fields. Please assure you are providing the following fields for each invoice item: description, quantity, unitPrice, totalPrice and warranty.",
+          res
+        );
+      }
+    }
+
+    if (invoiceInfo.depositIds?.length) {
+      for (const id of invoiceInfo.depositIds) {
+        const isDepositIdValid = await isValidDespositId(id);
+        if (!isDepositIdValid) {
+          return handleBadResponse(
+            400,
+            `The desposit Id: "${id}" provided is invalid or does not exist in the database. Please try again with a valid Id.`,
+            res
+          );
+        }
+      }
+    }
 
     return res.status(200).json("Upsert Invoices");
   } catch (error) {
-    return handleExceptionErrorResponse("get all invoices", error, res);
+    return handleExceptionErrorResponse("upsert invoices", error, res);
   }
 }
 
