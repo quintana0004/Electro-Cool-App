@@ -46,6 +46,20 @@ export interface ICar {
   customerId: Int;
 }
 
+export interface IJobOrder {
+  id: Int;
+  requestedService: string;
+  serviceDetails: string;
+  status: string;
+  jobLoadType: string;
+  policySignature: string;
+  createdDate?: DateTime;
+  lastModified?: DateTime;
+  carId: Int;
+  companyId: string;
+  customerId: Int;
+}
+
 export interface IErrorResponse {
   errorCode: number;
   errorMessage: string;
