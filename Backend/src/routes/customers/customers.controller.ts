@@ -1,7 +1,11 @@
 import { ICustomer } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { upsertCustomer } from "../../models/customers.model";
+import { isValidUUID } from "../../utils/db.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
@@ -32,7 +36,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       !customerInfo.addressLine1 ||
       !customerInfo.city ||
       !customerInfo.phone ||
-      !customerInfo.companyId
+      !isValidUUID(customerInfo.companyId)
     ) {
       return handleBadResponse(
         400,
