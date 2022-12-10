@@ -1,5 +1,5 @@
-import { ICustomer } from "./../types/index.d";
 import prisma from "../database/prisma";
+import { ICustomer } from "./../types/index.d";
 
 async function findCustomerById(id: number) {
   try {
@@ -17,11 +17,13 @@ async function findCustomerById(id: number) {
 
 async function upsertCustomer(customerInfo: ICustomer) {
   try {
+    const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
     const customer = await prisma.customer.upsert({
       where: {
         id: customerInfo?.id ?? -1,
       },
       create: {
+        fullName: fullName,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,
         addressLine1: customerInfo.addressLine1,
@@ -33,6 +35,7 @@ async function upsertCustomer(customerInfo: ICustomer) {
         companyId: customerInfo.companyId,
       },
       update: {
+        fullName: fullName,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,
         addressLine1: customerInfo.addressLine1,
@@ -50,5 +53,23 @@ async function upsertCustomer(customerInfo: ICustomer) {
     throw error;
   }
 }
+async function findAllCustomers(skip: number, take: number, searchTerm: string) {
+  try {
+    const name = searchTerm ? searchTerm : undefined;
+    const customers = await prisma.customer.findMany({
+      skip,
+      take,
+      where: {
+        fullName: {
+          contains: name,
+        },
+      },
+    });
 
-export { findCustomerById, upsertCustomer };
+    return customers;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findCustomerById, upsertCustomer, findAllCustomers };
