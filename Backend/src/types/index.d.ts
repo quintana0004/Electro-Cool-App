@@ -29,6 +29,23 @@ export interface ICustomer {
   companyId: string;
 }
 
+export interface ICar {
+  id?: Int;
+  brand: string;
+  licensePlate: string;
+  model: string;
+  year: string;
+  mileage: string;
+  color: string;
+  vinNumber: string;
+  carHasItems: boolean;
+  carItemsDescription?: string;
+  createdDate?: DateTime;
+  lastModified?: DateTime;
+  companyId: string;
+  customerId: Int;
+}
+
 export interface IErrorResponse {
   errorCode: number;
   errorMessage: string;

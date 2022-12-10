@@ -1,8 +1,10 @@
 import express from "express";
-import { httpGetAllCars } from "./cars.controller";
+import { httpGetAllCars, httpUpsertCar } from "./cars.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllCars);
+
+router.post("/", httpUpsertCar);
 
 export default router;
