@@ -1,3 +1,6 @@
+import { createCompany, findCompanyByName } from "../models/company.model";
+import { ICompany } from "../types";
+
 function isValidUUID(str: string): boolean {
   const regexExp =
     /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
@@ -11,4 +14,26 @@ function excludeFields<T, Key extends keyof T>(record: T, ...keys: Key[]): T {
   return record;
 }
 
-export { isValidUUID, excludeFields };
+async function createDummyCompany() {
+  const existingCompany = await findCompanyByName("Electro Cool");
+  if (existingCompany == null) {
+    console.log("Does Not Exist");
+
+    const companyInfo: ICompany = {
+      name: "Electro Cool",
+      businessType: "Exotic Motor Sports",
+      addressLine1: "Av. Orquídea",
+      addressLine2: "Casa de Juan",
+      country: "Bayamon",
+      state: "PR",
+      city: "Parque Valencia",
+      zipcode: "00959",
+      email: "jmontalvo@cobaltopr.com",
+      phone: "7877101074",
+    };
+
+    await createCompany(companyInfo);
+  }
+}
+
+export { isValidUUID, excludeFields, createDummyCompany };
