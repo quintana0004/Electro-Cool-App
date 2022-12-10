@@ -35,4 +35,8 @@ async function createDummyCompany() {
   }
 }
 
-export { isValidUUID, excludeFields, createDummyCompany };
+function isNumeric(value: number) {
+  return !isNaN(value) && isFinite(value);
+}
+
+export { isValidUUID, excludeFields, createDummyCompany, isNumeric };

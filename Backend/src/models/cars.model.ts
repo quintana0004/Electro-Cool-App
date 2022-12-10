@@ -40,4 +40,35 @@ async function upsertCar(carInfo: ICar) {
   }
 }
 
-export { upsertCar };
+async function isUniqueCar(
+  licensePlate: string,
+  vinNumber: string,
+  id: number | undefined
+): Promise<boolean> {
+  try {
+    const car = await prisma.car.findFirst({
+      where: {
+        OR: [
+          {
+            licensePlate: licensePlate,
+          },
+          {
+            vinNumber: vinNumber,
+          },
+        ],
+      },
+    });
+
+    if (!car) {
+      return true;
+    } else if (car.id === id) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { upsertCar, isUniqueCar };

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { upsertCar } from "../../models/cars.model";
+import { isUniqueCar, upsertCar } from "../../models/cars.model";
 import { ICar } from "../../types";
-import { isValidUUID } from "../../utils/db.utils";
+import { isNumeric, isValidUUID } from "../../utils/db.utils";
 import {
   handleBadResponse,
   handleExceptionErrorResponse,
@@ -41,11 +41,23 @@ async function httpUpsertCar(req: Request, res: Response) {
       !carInfo.color ||
       !carInfo.vinNumber ||
       !isValidUUID(carInfo.companyId) ||
-      !carInfo.customerId
+      !isNumeric(carInfo.customerId)
     ) {
       return handleBadResponse(
         400,
         "Missing required fields to create car. Please provide the following fields: brand, licensePlate, model, year, mileage, color, vinNumber, companyId, customerId.",
+        res
+      );
+    }
+    const isCarUnique = await isUniqueCar(
+      carInfo.licensePlate,
+      carInfo.vinNumber,
+      carInfo.id
+    );
+    if (!isCarUnique) {
+      return handleBadResponse(
+        400,
+        "Car does not have a unique license plate and/or vin number.",
         res
       );
     }
