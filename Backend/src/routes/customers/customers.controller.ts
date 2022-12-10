@@ -15,7 +15,7 @@ async function httpGetAllCustomers(req: Request, res: Response) {
     let searchTerm = req.query.searchTerm
       ? req.query.searchTerm.toString()
       : "";
-
+    //test
     const customers = await findAllCustomers(skip, take, searchTerm);
     return res.status(200).json(customers);
   } catch (error) {
