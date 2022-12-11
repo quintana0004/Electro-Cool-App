@@ -65,4 +65,18 @@ async function updateDepositsParentInvoice(depositIds: number[], invoiceId: numb
   }
 }
 
-export { findDespositById, upsertDeposit, updateDepositsParentInvoice };
+async function deleteDeposit(id: number) {
+  try {
+    const deposit = await prisma.deposit.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return deposit;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findDespositById, upsertDeposit, updateDepositsParentInvoice, deleteDeposit };

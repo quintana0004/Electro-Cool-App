@@ -6,8 +6,9 @@ import {
   isValidCompanyId,
   isValidCustomerId,
   hasRequiredDepositFields,
+  isValidDespositId,
 } from "../../utils/validators.utils";
-import { upsertDeposit } from "../../models/deposits.model";
+import { deleteDeposit, upsertDeposit } from "../../models/deposits.model";
 
 async function httpGetAllDeposits(req: Request, res: Response) {
   try {
@@ -72,4 +73,24 @@ async function httpUpsertDeposit(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllDeposits, httpUpsertDeposit };
+async function httpDeleteDeposit(req: Request, res: Response) {
+  try {
+    const depositId = req.params.id;
+
+    const isDepositIdValid = await isValidDespositId(depositId);
+    if (!isDepositIdValid) {
+      return handleBadResponse(
+        400,
+        "The deposit Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const deletedDeposit = await deleteDeposit(Number(depositId));
+    return res.status(200).json(deletedDeposit);
+  } catch (error) {
+    return handleExceptionErrorResponse("delete deposit", error, res);
+  }
+}
+
+export { httpGetAllDeposits, httpUpsertDeposit, httpDeleteDeposit };
