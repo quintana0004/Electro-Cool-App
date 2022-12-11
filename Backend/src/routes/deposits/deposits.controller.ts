@@ -33,7 +33,7 @@ async function httpUpsertDeposit(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create deposit. Please provide the following fields: , amount, description, isAvailable, customerId, carId, invoiceId and companyId.",
+        "Missing required fields to create/update deposit. Please provide the following fields: , amount, description, isAvailable, customerId, carId, invoiceId and companyId.",
         res
       );
     }

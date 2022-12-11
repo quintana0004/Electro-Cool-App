@@ -1,9 +1,11 @@
-import { ICustomer } from "./../types/index.d";
+import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
 import { findDespositById } from "../models/deposits.model";
-import { IInvoice, IInvoiceItem, ICar, IDeposit } from "../types";
+import { formatStringToISOFormat } from "./formatters.utils";
+import { findAppointmentById } from "../models/appointments.model";
+import { findTaskById } from "../models/tasks.model";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -15,6 +17,15 @@ function isValidUUID(str: string): boolean {
 function isNumeric(value: number | string) {
   const num = Number(value);
   return !isNaN(num) && isFinite(num);
+}
+
+function isValidDateFormat(dateText: string) {
+  try {
+    formatStringToISOFormat(dateText);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 // --- Entity Validators ---
@@ -68,6 +79,34 @@ async function isValidDespositId(id: number | string) {
 
   const doesDespositExist = await findDespositById(id);
   if (!doesDespositExist) {
+    return false;
+  }
+
+  return true;
+}
+
+async function isValidAppointmentId(id: number | string) {
+  id = Number(id);
+  if (isNaN(id)) {
+    return false;
+  }
+
+  const doesAppointmentExist = await findAppointmentById(id);
+  if (!doesAppointmentExist) {
+    return false;
+  }
+
+  return true;
+}
+
+async function isValidTaskId(id: number | string) {
+  id = Number(id);
+  if (isNaN(id)) {
+    return false;
+  }
+
+  const doesTaskExist = await findTaskById(id);
+  if (!doesTaskExist) {
     return false;
   }
 
@@ -154,16 +193,47 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
   return true;
 }
 
+function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
+  if (
+    !appointmentInfo.service ||
+    !appointmentInfo.description ||
+    !appointmentInfo.arrivalDateTime ||
+    !appointmentInfo.model ||
+    !appointmentInfo.licensePlate ||
+    !appointmentInfo.customerName ||
+    !appointmentInfo.phone ||
+    !appointmentInfo.email ||
+    !appointmentInfo.companyId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredTaskFields(taskInfo: ITask) {
+  if (!taskInfo.text || !taskInfo.dueDate || !taskInfo.companyId) {
+    return false;
+  }
+
+  return true;
+}
+
 export {
   isValidUUID,
   isNumeric,
+  isValidDateFormat,
   isValidCompanyId,
   isValidCustomerId,
   isValidCarId,
   isValidDespositId,
+  isValidAppointmentId,
+  isValidTaskId,
   hasRequiredCustomerFields,
   hasRequiredCarFields,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   hasRequiredDepositFields,
+  hasRequiredAppointmentFields,
+  hasRequiredTaskFields,
 };

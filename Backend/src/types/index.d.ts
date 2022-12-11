@@ -29,6 +29,23 @@ export interface ICustomer {
   companyId: string;
 }
 
+export interface ICar {
+  id?: number;
+  brand: string;
+  licensePlate: string;
+  model: string;
+  year: string;
+  mileage: string;
+  color: string;
+  vinNumber: string;
+  carHasItems: boolean;
+  carItemsDescription?: string;
+  createdDate?: DateTime;
+  lastModified?: DateTime;
+  companyId: string;
+  customerId: number;
+}
+
 export interface IInvoice {
   id?: number;
   status: string;
@@ -68,21 +85,27 @@ export interface IDeposit {
   companyId: string;
 }
 
-export interface ICar {
+export interface IAppointment {
   id?: number;
-  brand: string;
-  licensePlate: string;
+  service: string;
+  description: string;
+  arrivalDateTime: string;
   model: string;
-  year: string;
-  mileage: string;
-  color: string;
-  vinNumber: string;
-  carHasItems: boolean;
-  carItemsDescription?: string;
-  createdDate?: DateTime;
-  lastModified?: DateTime;
+  licensePlate: string;
+  customerName: string;
+  phone: string;
+  email: string;
+  createdDate?: Date;
+  lastModified?: Date;
   companyId: string;
-  customerId: number;
+}
+
+export interface ITask {
+  text: string;
+  dueDate: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
 }
 
 export interface IErrorResponse {

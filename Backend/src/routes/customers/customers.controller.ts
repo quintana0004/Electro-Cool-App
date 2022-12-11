@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 
 import { ICustomer } from "./../../types/index.d";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { upsertCustomer, findAllCustomers } from "../../models/customers.model";
 import {
   hasRequiredCustomerFields,
@@ -16,9 +13,7 @@ async function httpGetAllCustomers(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm
-      ? req.query.searchTerm.toString()
-      : "";
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
     const customers = await findAllCustomers(skip, take, searchTerm);
     return res.status(200).json(customers);
   } catch (error) {
@@ -45,7 +40,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
     if (hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create customer. Please provide the following fields: firstName, lastName, addressLine1, city, phone and companyId.",
+        "Missing required fields to create/update customer. Please provide the following fields: firstName, lastName, addressLine1, city, phone and companyId.",
         res
       );
     }

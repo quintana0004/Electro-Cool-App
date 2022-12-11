@@ -40,7 +40,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create invoice. Please provide the following fields: status, totalPrice, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
+        "Missing required fields to create/update invoice. Please provide the following fields: status, totalPrice, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
         res
       );
     }

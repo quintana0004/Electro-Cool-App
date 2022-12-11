@@ -1,8 +1,16 @@
 import express from "express";
-import { httpGetAllAppointments } from "./appointments.controller";
+import {
+  httpDeleteAppointment,
+  httpGetAllAppointments,
+  httpUpsertAppointment,
+} from "./appointments.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllAppointments);
+
+router.post("/", httpUpsertAppointment);
+
+router.delete("/:id", httpDeleteAppointment);
 
 export default router;
