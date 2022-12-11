@@ -3,10 +3,8 @@ import { isUniqueCar, upsertCar } from "../../models/cars.model";
 import { ICar } from "../../types";
 import {
   hasRequiredCarFields,
-  isNumeric,
   isValidCompanyId,
   isValidCustomerId,
-  isValidUUID,
 } from "../../utils/validators.utils";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 
