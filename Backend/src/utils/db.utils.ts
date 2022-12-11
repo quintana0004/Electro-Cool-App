@@ -1,12 +1,6 @@
 import { createCompany, findCompanyByName } from "../models/company.model";
 import { ICompany } from "../types";
 
-function isValidUUID(str: string): boolean {
-  const regexExp =
-    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
-  return regexExp.test(str);
-}
-
 function excludeFields<T, Key extends keyof T>(record: T, ...keys: Key[]): T {
   for (let key of keys) {
     delete record[key];
@@ -14,6 +8,7 @@ function excludeFields<T, Key extends keyof T>(record: T, ...keys: Key[]): T {
   return record;
 }
 
+// --- Temporary Dummy Data Inserts ---
 async function createDummyCompany() {
   const existingCompany = await findCompanyByName("Electro Cool");
   if (existingCompany == null) {
@@ -35,8 +30,4 @@ async function createDummyCompany() {
   }
 }
 
-function isNumeric(value: number) {
-  return !isNaN(value) && isFinite(value);
-}
-
-export { isValidUUID, excludeFields, createDummyCompany, isNumeric };
+export { excludeFields, createDummyCompany };

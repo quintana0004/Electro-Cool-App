@@ -1,6 +1,19 @@
 import prisma from "../database/prisma";
-
 import { ICustomer } from "./../types/index.d";
+
+async function findCustomerById(id: number) {
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return customer;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function upsertCustomer(customerInfo: ICustomer) {
   try {
@@ -63,4 +76,4 @@ async function findAllCustomers(
   }
 }
 
-export { upsertCustomer, findAllCustomers };
+export { findCustomerById, upsertCustomer, findAllCustomers };
