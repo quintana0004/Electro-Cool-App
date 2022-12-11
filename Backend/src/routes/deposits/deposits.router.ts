@@ -1,10 +1,12 @@
 import express from "express";
-import { httpGetAllDeposits, httpUpsertDeposit } from "./deposits.controller";
+import { httpDeleteDeposit, httpGetAllDeposits, httpUpsertDeposit } from "./deposits.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllDeposits);
 
 router.post("/", httpUpsertDeposit);
+
+router.delete("/:id", httpDeleteDeposit);
 
 export default router;
