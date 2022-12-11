@@ -9,6 +9,7 @@ import {
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
 } from "../../utils/validators.utils";
+import { upsertInvoice } from "../../models/invoices.model";
 
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
@@ -18,7 +19,7 @@ async function httpGetAllInvoices(req: Request, res: Response) {
   }
 }
 
-async function httpUpsertInvoices(req: Request, res: Response) {
+async function httpUpsertInvoice(req: Request, res: Response) {
   try {
     const invoiceInfo: IInvoice = {
       id: req.body.id,
@@ -95,10 +96,11 @@ async function httpUpsertInvoices(req: Request, res: Response) {
       }
     }
 
-    return res.status(200).json("Upsert Invoices");
+    const upsertedInvoice = await upsertInvoice(invoiceInfo);
+    return res.status(200).json(upsertedInvoice);
   } catch (error) {
     return handleExceptionErrorResponse("upsert invoices", error, res);
   }
 }
 
-export { httpGetAllInvoices, httpUpsertInvoices };
+export { httpGetAllInvoices, httpUpsertInvoice };

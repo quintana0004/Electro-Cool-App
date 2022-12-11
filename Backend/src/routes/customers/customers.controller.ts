@@ -3,7 +3,11 @@ import { Request, Response } from "express";
 import { ICustomer } from "./../../types/index.d";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { upsertCustomer, findAllCustomers } from "../../models/customers.model";
-import { isValidUUID } from "../../utils/validators.utils";
+import {
+  hasRequiredCustomerFields,
+  isValidCompanyId,
+  isValidUUID,
+} from "../../utils/validators.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
@@ -33,17 +37,20 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       companyId: req.body.companyId,
     };
 
-    if (
-      !customerInfo.firstName ||
-      !customerInfo.lastName ||
-      !customerInfo.addressLine1 ||
-      !customerInfo.city ||
-      !customerInfo.phone ||
-      !isValidUUID(customerInfo.companyId)
-    ) {
+    const hasRequiredFields = hasRequiredCustomerFields(customerInfo);
+    if (hasRequiredFields) {
       return handleBadResponse(
         400,
         "Missing required fields to create customer. Please provide the following fields: firstName, lastName, addressLine1, city, phone and companyId.",
+        res
+      );
+    }
+
+    const isCompanyIdValid = await isValidCompanyId(customerInfo.companyId);
+    if (!isCompanyIdValid) {
+      return handleBadResponse(
+        400,
+        "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
       );
     }

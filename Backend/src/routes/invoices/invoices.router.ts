@@ -1,10 +1,10 @@
 import express from "express";
-import { httpGetAllInvoices, httpUpsertInvoices } from "./invoices.controller";
+import { httpGetAllInvoices, httpUpsertInvoice } from "./invoices.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllInvoices);
 
-router.post("/", httpUpsertInvoices);
+router.post("/", httpUpsertInvoice);
 
 export default router;

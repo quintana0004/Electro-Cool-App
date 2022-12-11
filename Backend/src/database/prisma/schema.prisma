@@ -27,6 +27,7 @@ model Company {
   cars         Car[]
   customers    Customer[]
   invoices     Invoice[]
+  deposits     Deposit[]
   jobOrders    JobOrder[]
   users        User[]
   payments     Payment[]
@@ -159,6 +160,8 @@ model Deposit {
   car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
   invoiceId    Int?
   invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  companyId    String   @db.Uuid
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model Payment {

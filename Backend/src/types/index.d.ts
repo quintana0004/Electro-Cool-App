@@ -64,11 +64,12 @@ export interface IDeposit {
   lastModified?: Date;
   customerId: number;
   carId: number;
-  invoiceId: number;
+  invoiceId?: number;
+  companyId: string;
 }
 
 export interface ICar {
-  id?: Int;
+  id?: number;
   brand: string;
   licensePlate: string;
   model: string;
@@ -81,7 +82,7 @@ export interface ICar {
   createdDate?: DateTime;
   lastModified?: DateTime;
   companyId: string;
-  customerId: Int;
+  customerId: number;
 }
 
 export interface IErrorResponse {

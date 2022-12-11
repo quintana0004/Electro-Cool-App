@@ -1,8 +1,9 @@
+import { ICustomer } from "./../types/index.d";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
-import { findDespositById } from "../models/desposits.model";
-import { IInvoice, IInvoiceItem } from "../types";
+import { findDespositById } from "../models/deposits.model";
+import { IInvoice, IInvoiceItem, ICar, IDeposit } from "../types";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -33,7 +34,7 @@ async function isValidCompanyId(id: string) {
 
 async function isValidCustomerId(id: number | string) {
   id = Number(id);
-  if (!isNaN(id)) {
+  if (isNaN(id)) {
     return false;
   }
 
@@ -47,7 +48,7 @@ async function isValidCustomerId(id: number | string) {
 
 async function isValidCarId(id: number | string) {
   id = Number(id);
-  if (!isNaN(id)) {
+  if (isNaN(id)) {
     return false;
   }
 
@@ -61,7 +62,7 @@ async function isValidCarId(id: number | string) {
 
 async function isValidDespositId(id: number | string) {
   id = Number(id);
-  if (!isNaN(id)) {
+  if (isNaN(id)) {
     return false;
   }
 
@@ -74,6 +75,39 @@ async function isValidDespositId(id: number | string) {
 }
 
 // --- Required Fields Validators ---
+function hasRequiredCustomerFields(customerInfo: ICustomer) {
+  if (
+    !customerInfo.firstName ||
+    !customerInfo.lastName ||
+    !customerInfo.addressLine1 ||
+    !customerInfo.city ||
+    !customerInfo.phone ||
+    !isValidUUID(customerInfo.companyId)
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredCarFields(carInfo: ICar) {
+  if (
+    !carInfo.brand ||
+    !carInfo.licensePlate ||
+    !carInfo.model ||
+    !carInfo.year ||
+    !carInfo.mileage ||
+    !carInfo.color ||
+    !carInfo.vinNumber ||
+    !isValidUUID(carInfo.companyId) ||
+    !isNumeric(carInfo.customerId)
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
@@ -105,6 +139,21 @@ function hasRequiredInvoiceItemFields(invoiceItemInfo: IInvoiceItem) {
   return true;
 }
 
+function hasRequiredDepositFields(depositInfo: IDeposit) {
+  if (
+    !depositInfo.amount ||
+    !depositInfo.description ||
+    !depositInfo.isAvailable ||
+    !depositInfo.customerId ||
+    !depositInfo.carId ||
+    !depositInfo.companyId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 export {
   isValidUUID,
   isNumeric,
@@ -112,6 +161,9 @@ export {
   isValidCustomerId,
   isValidCarId,
   isValidDespositId,
+  hasRequiredCustomerFields,
+  hasRequiredCarFields,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
+  hasRequiredDepositFields,
 };

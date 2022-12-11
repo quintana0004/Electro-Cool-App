@@ -32,7 +32,7 @@ async function upsertCar(carInfo: ICar) {
         carHasItems: carInfo.carHasItems,
         carItemsDescription: carInfo.carItemsDescription,
         companyId: carInfo.companyId,
-        customerId: carInfo.customerId,
+        customerId: Number(carInfo.customerId),
       },
       update: {
         brand: carInfo.brand,
