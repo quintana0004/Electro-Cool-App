@@ -200,6 +200,7 @@ model Appointment {
 model Task {
   id           Int      @id @default(autoincrement())
   text         String
+  dueDate      DateTime @db.Timestamptz(6)
   createdDate  DateTime @default(now()) @db.Timestamptz(6)
   lastModified DateTime @default(now()) @db.Timestamptz(6)
   companyId    String   @db.Uuid

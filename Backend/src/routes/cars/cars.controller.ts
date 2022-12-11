@@ -37,7 +37,7 @@ async function httpUpsertCar(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create car. Please provide the following fields: brand, licensePlate, model, year, mileage, color, vinNumber, companyId, customerId. Additionally assure that your numeric ids are in number format.",
+        "Missing required fields to create/update car. Please provide the following fields: brand, licensePlate, model, year, mileage, color, vinNumber, companyId, customerId. Additionally assure that your numeric ids are in number format.",
         res
       );
     }
