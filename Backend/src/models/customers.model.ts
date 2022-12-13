@@ -59,17 +59,20 @@ async function findAllCustomers(
   searchTerm: string
 ) {
   try {
-    const name = searchTerm ? searchTerm : undefined;
+    const term = searchTerm ? searchTerm : undefined;
     const customers = await prisma.customer.findMany({
       skip,
       take,
       where: {
+        phone: {
+          contains: term,
+        },
         fullName: {
-          contains: name,
+          contains: term,
         },
       },
     });
-
+    //
     return customers;
   } catch (error) {
     throw error;

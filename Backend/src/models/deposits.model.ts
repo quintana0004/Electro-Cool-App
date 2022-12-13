@@ -46,7 +46,10 @@ async function upsertDeposit(depositInfo: IDeposit) {
   }
 }
 
-async function updateDepositsParentInvoice(depositIds: number[], invoiceId: number) {
+async function updateDepositsParentInvoice(
+  depositIds: number[],
+  invoiceId: number
+) {
   try {
     let deposits = await prisma.deposit.updateMany({
       where: {
@@ -78,5 +81,34 @@ async function deleteDeposit(id: number) {
     throw error;
   }
 }
+async function findAllDeposits(
+  skip: number,
+  take: number,
+  searchTerm: string | undefined
+) {
+  try {
+    const name = searchTerm ? searchTerm : undefined;
+    const AllDeposit = await prisma.deposit.findMany({
+      skip,
+      take,
+      where: {
+        customer: {
+          fullName: {
+            contains: name,
+          },
+        },
+      },
+    });
+    return AllDeposit;
+  } catch (error) {
+    throw error;
+  }
+}
 
-export { findDespositById, upsertDeposit, updateDepositsParentInvoice, deleteDeposit };
+export {
+  findDespositById,
+  upsertDeposit,
+  updateDepositsParentInvoice,
+  deleteDeposit,
+  findAllDeposits,
+};

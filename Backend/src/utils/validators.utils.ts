@@ -1,4 +1,12 @@
-import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
+import {
+  IInvoice,
+  IInvoiceItem,
+  ICar,
+  IDeposit,
+  IAppointment,
+  ICustomer,
+  ITask,
+} from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
