@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput } from "react-native";
+import Colors from "../../constants/Colors/Colors";
 
 function TextInputComponent({
   label,
@@ -14,7 +15,10 @@ function TextInputComponent({
     <View style={styles.container}>
       <Text style={styles.labelStyle}> {label} </Text>
 
-      <TextInput {...textInputConfig} style={styles.input} />
+      <TextInput
+        {...textInputConfig}
+        style={[styles.input, styles.placeholderStyle]}
+      />
       {invalid && <Text style={styles.textErrorStyle}> {messageinvalid}</Text>}
     </View>
   );

@@ -64,6 +64,7 @@ const ClientInformation = ({ navigation }) => {
               <Text style={styles.container}>
                 View the client personal information
               </Text>
+
               <View>
                 <View style={{ paddingBottom: 30 }}>
                   <View style={styles.inputfirstname}>
@@ -72,6 +73,8 @@ const ClientInformation = ({ navigation }) => {
                       textInputConfig={{
                         onChangeText: handleChange("firstName"),
                         value: values.firstName,
+                        placeholder: "Enter Name",
+                        placeholderTextColor: "gray",
                       }}
                       invalid={errors.firstName}
                       messageinvalid={errors.firstName}
