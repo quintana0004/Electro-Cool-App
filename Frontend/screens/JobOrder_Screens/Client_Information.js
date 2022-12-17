@@ -5,8 +5,9 @@ import * as yup from "yup";
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import TextInputComponent from "../../components/UI/TextInput";
+import NavBtn from "../../components/UI/NavBtns";
 
-const ClientInformation = ({ navigation }) => {
+function ClientInformation({ navigation }) {
   const validationSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -17,7 +18,7 @@ const ClientInformation = ({ navigation }) => {
       .required("Field is Required")
       .matches("^[A-Za-z.-]+(s*[A-Za-z.-]+)*$", "Invalid. Try Again!"),
     address: yup.string().required("Field is Required"),
-    address2: yup.string().required("Field is Required"),
+    address2: yup.string(),
     state: yup
       .string()
       .required("Field is Required")
@@ -26,13 +27,24 @@ const ClientInformation = ({ navigation }) => {
       .string()
       .required("Field is Required")
       .matches("^[A-Za-z.-]+(s*[A-Za-z.-]+)*$", "Invalid. Try again!"),
-    phonenumber: yup.string().required("Field is Required"),
+    phonenumber: yup.string().matches(""),
     email: yup
       .string()
       .required("Field is Required")
-      .matches("^[A-Za-z.-]+(s*[A-Za-z.-]+)*$", "Invalid. Try Again!"),
+      .matches(
+        "^[A-Za-z0-9_!#$%&'* +/=?`{|}~^.-]+@[A-Za-z0-9.-]+$",
+        "Invalid. Try Again!"
+      ),
   });
-
+  function navCustomerSelection() {
+    navigation.navigate("CustomerSelection");
+  }
+  function navJobOrder() {
+    navigation.navigate("JobOrderMain");
+  }
+  function navCarSelection() {
+    navigation.navigate("CarSelection");
+  }
   return (
     <View>
       <View>
@@ -65,7 +77,14 @@ const ClientInformation = ({ navigation }) => {
                 View the client personal information
               </Text>
 
-              <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 20,
+                  paddingTop: 20,
+                }}
+              >
                 <View style={{ paddingBottom: 30 }}>
                   <View style={styles.inputfirstname}>
                     <TextInputComponent
@@ -73,13 +92,128 @@ const ClientInformation = ({ navigation }) => {
                       textInputConfig={{
                         onChangeText: handleChange("firstName"),
                         value: values.firstName,
-                        placeholder: "Enter Name",
-                        placeholderTextColor: "gray",
                       }}
                       invalid={errors.firstName}
                       messageinvalid={errors.firstName}
                     />
                   </View>
+                </View>
+                <View>
+                  <View style={styles.inputlastname}>
+                    <TextInputComponent
+                      label="Last Name"
+                      textInputConfig={{
+                        onChangeText: handleChange("lastName"),
+                        value: values.lastName,
+                      }}
+                      invalid={errors.lastName}
+                      messageinvalid={errors.lastName}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "column",
+                }}
+              >
+                <View style={styles.inputaddress}>
+                  <TextInputComponent
+                    label="Address Line"
+                    textInputConfig={{
+                      onChangeText: handleChange("address"),
+                      value: values.address,
+                    }}
+                    invalid={errors.address}
+                    messageinvalid={errors.address}
+                  />
+                </View>
+                <View style={styles.inputaddresstwo}>
+                  <TextInputComponent
+                    label="Address Line 2 (optional)"
+                    textInputConfig={{
+                      onChangeText: handleChange("address2"),
+                      value: values.address2,
+                    }}
+                    invalid={errors.address2}
+                    messageinvalid={errors.address2}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                <View>
+                  <View style={styles.inputstate}>
+                    <TextInputComponent
+                      label="State"
+                      textInputConfig={{
+                        onChangeText: handleChange("state"),
+                        value: values.state,
+                        placeholder: "Enter State",
+                        placeholderTextColor: "gray",
+                      }}
+                      invalid={errors.state}
+                      messageinvalid={errors.state}
+                    />
+                  </View>
+
+                  <View style={styles.inputnumber}>
+                    <TextInputComponent
+                      label="Phone Number"
+                      textInputConfig={{
+                        onChangeText: handleChange("number"),
+                        placeholder: "Enter Number",
+                        placeholderTextColor: "gray",
+                        keyboardType: "numeric",
+                      }}
+                      invalid={errors.phonenumber}
+                      messageinvalid={errors.phonenumber}
+                    />
+                  </View>
+                </View>
+
+                <View style={{ paddingLeft: 170 }}>
+                  <View style={styles.inputcity}>
+                    <TextInputComponent
+                      label="City"
+                      textInputConfig={{
+                        onChangeText: handleChange("city"),
+                        placeholder: "Enter City",
+                        placeholderTextColor: "gray",
+                      }}
+                      invalid={errors.city}
+                      messageinvalid={errors.city}
+                    />
+                  </View>
+
+                  <View style={styles.email}>
+                    <TextInputComponent
+                      label="E-mail"
+                      textInputConfig={{
+                        placeholder: "Enter E-mail",
+                        placeholderTextColor: "gray",
+                        onChangeText: handleChange("email"),
+                      }}
+                      invalid={errors.email}
+                      messageinvalid={errors.email}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={styles.navbuttons}>
+                <View style={{ marginRight: 180 }}>
+                  <NavBtn choice={"Back"} nav={navCustomerSelection} />
+                </View>
+                <View style={{ marginRight: 10 }}>
+                  <NavBtn choice={"Cancel"} nav={navJobOrder} />
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <NavBtn choice={"Next"} nav={navCarSelection} />
                 </View>
               </View>
             </View>
@@ -88,7 +222,7 @@ const ClientInformation = ({ navigation }) => {
       </View>
     </View>
   );
-};
+}
 const styles = StyleSheet.create({
   title: {
     fontSize: 45,
@@ -110,7 +244,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 25,
     fontWeight: "500",
-    paddingLeft: 20,
   },
   inputfirstname: {
     width: 350,
@@ -120,12 +253,19 @@ const styles = StyleSheet.create({
   },
   inputaddress: {
     width: "100%",
+    paddingBottom: 40,
+  },
+  inputaddresstwo: {
+    width: "100%",
+    paddingBottom: 40,
   },
   inputstate: {
     width: 230,
+    paddingBottom: 40,
   },
   inputcity: {
     width: 250,
+    paddingBottom: 40,
   },
   inputnumber: {
     width: 300,
@@ -137,6 +277,10 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 20,
     fontWeight: "50",
+  },
+  navbuttons: {
+    flexDirection: "row",
+    marginTop: 230,
   },
 });
 
