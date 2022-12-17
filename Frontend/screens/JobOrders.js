@@ -7,7 +7,7 @@ import Colors from "../constants/Colors/Colors";
 function JobOrders({ navigation }) {
   //Function of the btns
   function navSelectClient() {
-    navigation.navigate("ClientSelection");
+    navigation.navigate("CustomerSelection");
   }
 
   function navSelectCar() {

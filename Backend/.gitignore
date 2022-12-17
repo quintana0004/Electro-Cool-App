@@ -50,6 +50,10 @@ node_modules/
 
 # dotenv environment variables file
 config.json
+.env
 
 # Output Typescript Folder
 dist/
+
+# Enviorment Variables
+Electro-Cool-App\Backend\.env
