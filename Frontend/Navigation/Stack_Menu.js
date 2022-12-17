@@ -14,7 +14,9 @@ const Stack = createStackNavigator();
 
 function MenuStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{ cardStyle: { backgroundColor: "white" } }}
+    >
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}

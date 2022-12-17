@@ -17,11 +17,16 @@ const JobOrderStack = createStackNavigator();
 
 function JobOrderStackOption() {
   return (
-    <JobOrderStack.Navigator>
+    <JobOrderStack.Navigator
+      screenOptions={{ cardStyle: { backgroundColor: "white" } }}
+    >
       <JobOrderStack.Screen
         name="JobOrderMain"
         component={JobOrder}
-        options={{ headerShown: false, animationEnabled: false }}
+        options={{
+          headerShown: false,
+          animationEnabled: false,
+        }}
       />
       <JobOrderStack.Screen
         name="ExistingCar"
