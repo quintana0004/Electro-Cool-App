@@ -9,7 +9,7 @@ import ClientInformation from "../screens/JobOrder_Screens/Client_Information";
 import CompanyPolicy from "../screens/JobOrder_Screens/Company_Policy";
 import RequestedService from "../screens/JobOrder_Screens/Requested_Service";
 import VehicleInformation from "../screens/JobOrder_Screens/Vehicle_Information";
-import ClientSelection from "../screens/BtnSelection/ClientSelection";
+import CustomerSelection from "../screens/BtnSelection/CustomerSelection";
 import CarSelection from "../screens/BtnSelection/CarSelection";
 
 //Connects the pages of Job Orders
@@ -64,8 +64,8 @@ function JobOrderStackOption() {
         options={{ headerShown: false, animationEnabled: false }}
       />
       <JobOrderStack.Screen
-        name="ClientSelection"
-        component={ClientSelection}
+        name="CustomerSelection"
+        component={CustomerSelection}
         options={{ headerShown: false, animationEnabled: false }}
       />
     </JobOrderStack.Navigator>
