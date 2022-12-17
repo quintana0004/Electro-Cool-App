@@ -4,8 +4,6 @@ import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 
-// import NavBtn from "../../components/UI/NavBtns";
-
 function ClientSelection({ navigation }) {
   function navNext() {
     if (toggleNewCustomer) navigation.navigate("ClientInformation");
@@ -63,12 +61,7 @@ function ClientSelection({ navigation }) {
       return (
         <View style={styles.Button}>
           <Image
-            style={{
-              position: "relative",
-              width: 184,
-              height: 136,
-              marginBottom: 30,
-            }}
+            style={styles.ExistingCustomerIconStyle}
             source={ExistingCustomerIcon}
           />
           <Text style={styles.ButtonText}>Existing Customer</Text>
@@ -105,12 +98,7 @@ function ClientSelection({ navigation }) {
             <View>{ExistingCustomer(toggleExistingCustomer)}</View>
           </Pressable>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 100,
-          }}
-        >
+        <View style={styles.navBtnsPosition}>
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navJobOrder} />
           </View>
@@ -158,7 +146,7 @@ const styles = StyleSheet.create({
     height: 380,
     margin: 10,
   },
-  ButtonText: { fontSize: 60, textAlign: "center" },
+  ButtonText: { fontSize: 55, textAlign: "center" },
   NewCustomerIconStyle: {
     width: 135,
     height: 172,
@@ -167,10 +155,15 @@ const styles = StyleSheet.create({
   ExistingCustomerIconStyle: {
     width: 184,
     height: 136,
-    marginBottom: 30,
+    marginBottom: 15,
   },
-  navCancelBtn: { marginRight: 200 },
-  navNextBtn: { marginLeft: 200 },
+  navCancelBtn: { marginRight: 10 },
+  navNextBtn: { marginLeft: 10 },
+  navBtnsPosition: {
+    flexDirection: "row",
+    marginTop: 100,
+    marginLeft: 400,
+  },
 });
 
 export default ClientSelection;
