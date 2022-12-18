@@ -7,7 +7,7 @@ import Colors from "../constants/Colors/Colors";
 function Invoices({ navigation }) {
   return (
     <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+      <Header divideH={7} divideW={1} colorHeader={Colors.darkBlack}>
         <MenuDropDown />
       </Header>
       <View style={styles.body}>

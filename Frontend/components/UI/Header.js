@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
   header: {
     position: "absolute",
     top: 0,
-    borderBottomLeftRadius: 35,
-    borderBottomRightRadius: 35,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
     flexDirection: "row",
   },
 });

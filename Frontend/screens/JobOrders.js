@@ -5,35 +5,12 @@ import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
 
 function JobOrders({ navigation }) {
-  //Function of the btns
-  function navSelectClient() {
-    navigation.navigate("CustomerSelection");
-  }
-
-  function navSelectCar() {
-    navigation.navigate("CarSelection");
-  }
-
-  function navClientInformation() {
-    navigation.navigate("ClientInformation");
-  }
-
-  function navCompanyPolicy() {
-    navigation.navigate("CompanyPolicy");
-  }
-
   return (
     <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+      <Header divideH={7} divideW={1} colorHeader={Colors.darkBlack}>
         <MenuDropDown />
       </Header>
-      <View style={styles.body}>
-        <Text>JobOrder Screen!</Text>
-        <Button title="Gabbox01" onPress={() => navSelectClient()} />
-        <Button title="Gabbox02" onPress={() => navSelectCar()} />
-        <Button title="Shelly01" onPress={() => navClientInformation()} />
-        <Button title="Shelly02" onPress={() => navCompanyPolicy()} />
-      </View>
+      <View style={styles.body}></View>
     </View>
   );
 }

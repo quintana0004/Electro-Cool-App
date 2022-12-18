@@ -89,15 +89,15 @@ function MenuDropDown() {
 
 const styles = StyleSheet.create({
   circle: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     backgroundColor: Colors.white,
     borderColor: Colors.lightGrey,
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 50,
-    marginTop: 40,
+    marginTop: 25,
     marginLeft: 30,
   },
   boxOption: {},

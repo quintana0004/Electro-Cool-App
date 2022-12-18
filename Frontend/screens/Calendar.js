@@ -7,7 +7,7 @@ import Colors from "../constants/Colors/Colors";
 function Calendar({ navigation }) {
   return (
     <View style={styles.container}>
-      <Header divideH={8} colorHeader={Colors.darkBlack} divideW={1}>
+      <Header divideH={7} colorHeader={Colors.darkBlack} divideW={1}>
         <MenuDropDown />
       </Header>
       <View style={styles.body}>
