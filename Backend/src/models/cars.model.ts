@@ -85,4 +85,52 @@ async function isUniqueCar(
   }
 }
 
-export { findCarById, upsertCar, isUniqueCar };
+async function findAllCars(
+  skip: number,
+  take: number,
+  searchTerm: string | undefined
+) {
+  try {
+    const plates = searchTerm ? searchTerm : undefined;
+    const cars = await prisma.car.findMany({
+      skip,
+      take,
+      where: {
+        licensePlate: {
+          contains: plates,
+        },
+      },
+    });
+
+    return cars;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCarsByCustomer(
+  licensePlate: string | undefined,
+  customerId: number
+) {
+  try {
+    const plates = licensePlate ? licensePlate : undefined;
+    const clientCars = await prisma.car.findMany({
+      where: {
+        AND: [
+          {
+            licensePlate: {
+              contains: plates,
+            },
+          },
+          { customerId: customerId },
+        ],
+      },
+    });
+
+    return clientCars;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer };
