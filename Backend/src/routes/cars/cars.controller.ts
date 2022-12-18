@@ -24,7 +24,7 @@ async function httpGetAllCars(req: Request, res: Response) {
       ? req.query.searchTerm.toString()
       : "";
     const cars = await findAllCars(skip, take, searchTerm);
-    res.status(200).json(cars);
+    return res.status(200).json(cars);
   } catch (error) {
     return handleExceptionErrorResponse("get all cars", error, res);
   }
@@ -37,7 +37,7 @@ async function httpGetCarsByCustomer(req: Request, res: Response) {
       ? req.query.searchTerm.toString()
       : "";
     const cars = await findCarsByCustomer(searchTerm, customerId);
-    res.status(200).json(cars);
+    return res.status(200).json(cars);
   } catch (error) {
     return handleExceptionErrorResponse("get all cars by customer", error, res);
   }
