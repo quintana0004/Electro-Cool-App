@@ -1,6 +1,5 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
 import Colors from "../../constants/Colors/Colors";
 
 function NavBtn({ choice, nav }) {
@@ -9,7 +8,7 @@ function NavBtn({ choice, nav }) {
   let BackgroundColor = Colors.yellowDark;
   let BtnBorderColor = Colors.yellowDark;
   let Direction = "row";
-  let PaddingLeft = 20;
+  let PaddingLeft = 10;
   let TextColor = Colors.black;
 
   switch (choice) {
@@ -17,7 +16,7 @@ function NavBtn({ choice, nav }) {
       icon = (
         <Ionicons
           name="arrow-back-circle"
-          size={55}
+          size={40}
           color={Colors.yellowDark}
         />
       );
@@ -33,11 +32,11 @@ function NavBtn({ choice, nav }) {
       BackgroundColor = "#D9D9D9";
       BtnBorderColor = "#D9D9D9";
       TextColor = Colors.darkGreyAsh;
-      PaddingLeft = 10;
+      PaddingLeft = 0;
 
       break;
     case "Next":
-      icon = <Ionicons name="arrow-forward-circle" size={50} color="black" />;
+      icon = <Ionicons name="arrow-forward-circle" size={40} color="black" />;
       break;
   }
 
@@ -65,15 +64,15 @@ function NavBtn({ choice, nav }) {
 const styles = StyleSheet.create({
   Buttons: {
     borderRadius: 60,
-    height: 90,
-    width: 200,
+    height: 70,
+    width: 130,
     alignItems: "center",
-    borderWidth: 6,
-    paddingRight: 10,
+    borderWidth: 4,
+    paddingRight: 2,
   },
   TextInBtn: {
     fontWeight: "500",
-    fontSize: 43,
+    fontSize: 30,
     paddingBottom: 5,
   },
 });
