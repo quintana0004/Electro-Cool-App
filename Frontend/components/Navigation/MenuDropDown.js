@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
     marginTop: 25,
-    marginLeft: 30,
+    marginLeft: 15,
   },
   boxOption: {},
 });
