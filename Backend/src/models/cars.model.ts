@@ -1,6 +1,20 @@
 import { ICar } from "./../types/index.d";
 import prisma from "../database/prisma";
 
+async function findCarById(id: number) {
+  try {
+    const car = await prisma.car.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertCar(carInfo: ICar) {
   try {
     const car = await prisma.car.upsert({
@@ -18,7 +32,7 @@ async function upsertCar(carInfo: ICar) {
         carHasItems: carInfo.carHasItems,
         carItemsDescription: carInfo.carItemsDescription,
         companyId: carInfo.companyId,
-        customerId: carInfo.customerId,
+        customerId: Number(carInfo.customerId),
       },
       update: {
         brand: carInfo.brand,
@@ -71,4 +85,52 @@ async function isUniqueCar(
   }
 }
 
-export { upsertCar, isUniqueCar };
+async function findAllCars(
+  skip: number,
+  take: number,
+  searchTerm: string | undefined
+) {
+  try {
+    const plates = searchTerm ? searchTerm : undefined;
+    const cars = await prisma.car.findMany({
+      skip,
+      take,
+      where: {
+        licensePlate: {
+          contains: plates,
+        },
+      },
+    });
+
+    return cars;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCarsByCustomer(
+  licensePlate: string | undefined,
+  customerId: number
+) {
+  try {
+    const plates = licensePlate ? licensePlate : undefined;
+    const clientCars = await prisma.car.findMany({
+      where: {
+        AND: [
+          {
+            licensePlate: {
+              contains: plates,
+            },
+          },
+          { customerId: customerId },
+        ],
+      },
+    });
+
+    return clientCars;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer };

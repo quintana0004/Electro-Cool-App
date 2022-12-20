@@ -27,6 +27,7 @@ model Company {
   cars         Car[]
   customers    Customer[]
   invoices     Invoice[]
+  deposits     Deposit[]
   jobOrders    JobOrder[]
   users        User[]
   payments     Payment[]
@@ -56,6 +57,7 @@ model User {
 
 model Customer {
   id           Int        @id @default(autoincrement())
+  fullName     String
   firstName    String     @db.VarChar(255)
   lastName     String     @db.VarChar(255)
   addressLine1 String     @db.VarChar(255)
@@ -156,8 +158,10 @@ model Deposit {
   customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   carId        Int
   car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-  invoiceId    Int
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  invoiceId    Int?
+  invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  companyId    String   @db.Uuid
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
@@ -196,6 +200,7 @@ model Appointment {
 model Task {
   id           Int      @id @default(autoincrement())
   text         String
+  dueDate      DateTime @db.Timestamptz(6)
   createdDate  DateTime @default(now()) @db.Timestamptz(6)
   lastModified DateTime @default(now()) @db.Timestamptz(6)
   companyId    String   @db.Uuid

@@ -50,6 +50,7 @@ node_modules/
 
 # dotenv environment variables file
 config.json
+.env
 
 # Output Typescript Folder
 dist/
