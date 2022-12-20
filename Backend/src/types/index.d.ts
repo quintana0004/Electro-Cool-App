@@ -108,6 +108,20 @@ export interface ITask {
   companyId: string;
 }
 
+export interface IJobOrder {
+  id?: number;
+  requestedService: string;
+  serviceDetails: string;
+  status: string;
+  jobLoadType: string;
+  policySignature: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  carId: number;
+  companyId: string;
+  customerId: number;
+}
+
 export interface IErrorResponse {
   errorCode: number;
   errorMessage: string;

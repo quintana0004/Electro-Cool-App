@@ -44,6 +44,7 @@ async function upsertCar(carInfo: ICar) {
         vinNumber: carInfo.vinNumber,
         carHasItems: carInfo.carHasItems,
         carItemsDescription: carInfo.carItemsDescription,
+        customerId: Number(carInfo.customerId),
         lastModified: new Date(),
       },
     });
@@ -85,19 +86,15 @@ async function isUniqueCar(
   }
 }
 
-async function findAllCars(
-  skip: number,
-  take: number,
-  searchTerm: string | undefined
-) {
+async function findAllCars(skip: number, take: number, searchTerm: string | undefined) {
   try {
-    const plates = searchTerm ? searchTerm : undefined;
+    const licensePlate = searchTerm ? searchTerm : undefined;
     const cars = await prisma.car.findMany({
       skip,
       take,
       where: {
         licensePlate: {
-          contains: plates,
+          contains: licensePlate,
         },
       },
     });
@@ -108,18 +105,15 @@ async function findAllCars(
   }
 }
 
-async function findCarsByCustomer(
-  licensePlate: string | undefined,
-  customerId: number
-) {
+async function findCarsByCustomer(searchTerm: string | undefined, customerId: number) {
   try {
-    const plates = licensePlate ? licensePlate : undefined;
+    const licensePlate = searchTerm ? searchTerm : undefined;
     const clientCars = await prisma.car.findMany({
       where: {
         AND: [
           {
             licensePlate: {
-              contains: plates,
+              contains: licensePlate,
             },
           },
           { customerId: customerId },
