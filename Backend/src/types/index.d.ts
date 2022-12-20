@@ -109,17 +109,17 @@ export interface ITask {
 }
 
 export interface IJobOrder {
-  id: Int;
+  id?: number;
   requestedService: string;
   serviceDetails: string;
   status: string;
   jobLoadType: string;
   policySignature: string;
-  createdDate?: DateTime;
-  lastModified?: DateTime;
-  carId: Int;
+  createdDate?: Date;
+  lastModified?: Date;
+  carId: number;
   companyId: string;
-  customerId: Int;
+  customerId: number;
 }
 
 export interface IErrorResponse {

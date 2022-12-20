@@ -1,28 +1,19 @@
 import { Request, Response } from "express";
-import {
-  isUniqueCar,
-  upsertCar,
-  findAllCars,
-  findCarsByCustomer,
-} from "../../models/cars.model";
+import { isUniqueCar, upsertCar, findAllCars, findCarsByCustomer } from "../../models/cars.model";
 import { ICar } from "../../types";
 import {
   hasRequiredCarFields,
   isValidCompanyId,
   isValidCustomerId,
 } from "../../utils/validators.utils";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm
-      ? req.query.searchTerm.toString()
-      : "";
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+
     const cars = await findAllCars(skip, take, searchTerm);
     return res.status(200).json(cars);
   } catch (error) {
@@ -33,9 +24,7 @@ async function httpGetAllCars(req: Request, res: Response) {
 async function httpGetCarsByCustomer(req: Request, res: Response) {
   try {
     let customerId = req.query.customerId ? +req.query.customerId : 0;
-    let searchTerm = req.query.searchTerm
-      ? req.query.searchTerm.toString()
-      : "";
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
     const cars = await findCarsByCustomer(searchTerm, customerId);
     return res.status(200).json(cars);
   } catch (error) {
@@ -87,11 +76,7 @@ async function httpUpsertCar(req: Request, res: Response) {
       );
     }
 
-    const isCarUnique = await isUniqueCar(
-      carInfo.licensePlate,
-      carInfo.vinNumber,
-      carInfo.id
-    );
+    const isCarUnique = await isUniqueCar(carInfo.licensePlate, carInfo.vinNumber, carInfo.id);
     if (!isCarUnique) {
       return handleBadResponse(
         400,
