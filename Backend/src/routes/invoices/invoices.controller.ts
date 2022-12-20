@@ -1,6 +1,9 @@
 import { IInvoice } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   isValidCarId,
   isValidCompanyId,
@@ -10,10 +13,17 @@ import {
   hasRequiredInvoiceItemFields,
 } from "../../utils/validators.utils";
 import { upsertInvoice } from "../../models/invoices.model";
-
+import { FindAllInvoices } from "../../models/invoices.model";
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
-    return res.status(200).json(`Get All Invoices Take`);
+    let skip = req.query.skip ? +req.query.skip : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    //this variable will work with both full name and phone number to convert it to string.
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+    const Invoices = await FindAllInvoices(skip, take, searchTerm);
+    return res.status(200).json(Invoices);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
   }
