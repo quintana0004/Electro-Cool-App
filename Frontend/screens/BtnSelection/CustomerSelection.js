@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     height: 106,
     marginBottom: 30,
   },
-  navBtnsPosition: {
+  naviBtnsPosition: {
     width: 540,
     height: 150,
     justifyContent: "flex-end",
