@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  Dimensions,
+} from "react-native";
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
@@ -77,6 +84,7 @@ function ClientSelection({ navigation }) {
           <Text style={styles.title}>Select customer for Job Order</Text>
         </View>
       </Header>
+
       <View style={styles.Container}>
         <View>
           <Pressable
@@ -98,6 +106,7 @@ function ClientSelection({ navigation }) {
             <View>{ExistingCustomer(toggleExistingCustomer)}</View>
           </Pressable>
         </View>
+
         <View style={styles.navBtnsPosition}>
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navJobOrder} />
@@ -118,19 +127,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: "700",
   },
   Container: {
     alignItems: "center",
-    margin: 200,
+    margin: 130,
   },
   Button: {
     borderColor: "#cccccc",
     borderWidth: 4,
     borderRadius: 30,
-    width: 450,
-    height: 380,
+    width: 350,
+    height: 280,
     justifyContent: "center",
     alignItems: "center",
     margin: 10,
@@ -142,28 +151,30 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black,
     borderWidth: 4,
     borderRadius: 30,
-    width: 450,
-    height: 380,
+    width: 350,
+    height: 280,
     margin: 10,
   },
-  ButtonText: { fontSize: 55, textAlign: "center" },
+  ButtonText: { fontSize: 35 },
   NewCustomerIconStyle: {
-    width: 135,
-    height: 172,
-    marginBottom: 30,
+    width: 100,
+    height: 130,
+    marginBottom: 20,
   },
   ExistingCustomerIconStyle: {
-    width: 184,
-    height: 136,
-    marginBottom: 15,
+    width: 143,
+    height: 106,
+    marginBottom: 30,
+  },
+  navBtnsPosition: {
+    width: 540,
+    height: 150,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
   navCancelBtn: { marginRight: 10 },
   navNextBtn: { marginLeft: 10 },
-  navBtnsPosition: {
-    flexDirection: "row",
-    marginTop: 100,
-    marginLeft: 400,
-  },
 });
 
 export default ClientSelection;
