@@ -98,7 +98,7 @@ function CarSelection({ navigation }) {
             <View>{ExistingCarView(toggleExistingCar)}</View>
           </Pressable>
         </View>
-        <View style={styles.navBtnsPosition}>
+        <View style={styles.naviBtnsPosition}>
           <View style={styles.navBackBtn}>
             <NavBtn choice={"Back"} nav={navClientInformation} />
           </View>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     width: 124,
     marginBottom: 30,
   },
-  navBtnsPosition: {
+  naviBtnsPosition: {
     width: 540,
     height: 150,
     justifyContent: "flex-end",
