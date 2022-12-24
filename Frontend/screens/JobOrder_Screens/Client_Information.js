@@ -48,7 +48,7 @@ function ClientInformation({ navigation }) {
   return (
     <View>
       <View>
-        <Header divideH={8} divideW={1.1} colorHeader={Colors.lightGreen}>
+        <Header divideH={8} divideW={1} colorHeader={Colors.lightGreen}>
           <Text style={styles.title}>Client Information</Text>
         </Header>
         <Formik
@@ -68,9 +68,9 @@ function ClientInformation({ navigation }) {
           {({ handleChange, handleSubmit, values, errors }) => (
             <View
               style={{
-                top: 180,
-                paddingLeft: 40,
-                paddingRight: 40,
+                top: 90,
+                paddingLeft: 30,
+                paddingRight: 20,
               }}
             >
               <Text style={styles.container}>
@@ -81,11 +81,11 @@ function ClientInformation({ navigation }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  marginBottom: 20,
+                  marginBottom: 10,
                   paddingTop: 20,
                 }}
               >
-                <View style={{ paddingBottom: 30 }}>
+                <View style={{ paddingBottom: 10 }}>
                   <View style={styles.inputfirstname}>
                     <TextInputComponent
                       label="First Name"
@@ -177,7 +177,7 @@ function ClientInformation({ navigation }) {
                   </View>
                 </View>
 
-                <View style={{ paddingLeft: 170 }}>
+                <View style={{ paddingLeft: 50 }}>
                   <View style={styles.inputcity}>
                     <TextInputComponent
                       label="City"
@@ -205,14 +205,14 @@ function ClientInformation({ navigation }) {
                   </View>
                 </View>
               </View>
-              <View style={styles.navbuttons}>
-                <View style={{ marginRight: 180 }}>
+              <View style={styles.naviBtnsPosition}>
+                <View style={styles.navBackBtn}>
                   <NavBtn choice={"Back"} nav={navCustomerSelection} />
                 </View>
-                <View style={{ marginRight: 10 }}>
+                <View style={styles.navCancelBtn}>
                   <NavBtn choice={"Cancel"} nav={navJobOrder} />
                 </View>
-                <View style={{ marginLeft: 10 }}>
+                <View style={styles.navNextBtn}>
                   <NavBtn choice={"Next"} nav={navCarSelection} />
                 </View>
               </View>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 45,
     fontWeight: "700",
     textAlignVertical: "center",
-    left: 225,
+    left: 120,
   },
   Frame1: {
     justifyContent: "space-between",
@@ -236,39 +236,36 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   container: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "700",
     textAlign: "center",
-    paddingBottom: 20,
-  },
-  text: {
-    fontSize: 25,
-    fontWeight: "500",
+    paddingVertical: 40,
+    paddingBottom: 1,
   },
   inputfirstname: {
-    width: 350,
+    width: 250,
   },
   inputlastname: {
-    width: 350,
+    width: 250,
   },
   inputaddress: {
     width: "100%",
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
   inputaddresstwo: {
     width: "100%",
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
   inputstate: {
     width: 230,
-    paddingBottom: 40,
+    paddingBottom: 25,
   },
   inputcity: {
     width: 250,
-    paddingBottom: 40,
+    paddingBottom: 25,
   },
   inputnumber: {
-    width: 300,
+    width: 250,
   },
   inputemail: {
     width: 350,
@@ -278,9 +275,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "50",
   },
-  navbuttons: {
+  naviBtnsPosition: {
+    width: 540,
+    height: 176,
+    justifyContent: "flex-end",
     flexDirection: "row",
-    marginTop: 230,
+    alignItems: "flex-end",
+  },
+  navBackBtn: {
+    marginRight: 130,
+  },
+  navCancelBtn: {
+    marginRight: 10,
+  },
+  navNextBtn: {
+    marginLeft: 10,
   },
 });
 

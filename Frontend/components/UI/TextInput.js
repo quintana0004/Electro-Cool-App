@@ -41,5 +41,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   placeholderStyle: { fontSize: 20 },
-  textErrorStyle: { fontSize: 16, color: "red", fontWeight: "bold" },
+  textErrorStyle: { fontSize: 12, color: "red", fontWeight: "bold" },
 });
