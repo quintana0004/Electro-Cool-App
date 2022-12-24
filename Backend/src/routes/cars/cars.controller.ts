@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { isUniqueCar, upsertCar } from "../../models/cars.model";
+import { isUniqueCar, upsertCar, findAllCars, findCarsByCustomer } from "../../models/cars.model";
 import { ICar } from "../../types";
 import {
   hasRequiredCarFields,
@@ -10,9 +10,25 @@ import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/err
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
-    res.status(200).json("Get All Cars");
+    let skip = req.query.skip ? +req.query.skip : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+
+    const cars = await findAllCars(skip, take, searchTerm);
+    return res.status(200).json(cars);
   } catch (error) {
     return handleExceptionErrorResponse("get all cars", error, res);
+  }
+}
+
+async function httpGetCarsByCustomer(req: Request, res: Response) {
+  try {
+    let customerId = req.query.customerId ? +req.query.customerId : 0;
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    const cars = await findCarsByCustomer(searchTerm, customerId);
+    return res.status(200).json(cars);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all cars by customer", error, res);
   }
 }
 
@@ -76,4 +92,4 @@ async function httpUpsertCar(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllCars, httpUpsertCar };
+export { httpGetAllCars, httpGetCarsByCustomer, httpUpsertCar };

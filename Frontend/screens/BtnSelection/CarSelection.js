@@ -98,12 +98,7 @@ function CarSelection({ navigation }) {
             <View>{ExistingCarView(toggleExistingCar)}</View>
           </Pressable>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 100,
-          }}
-        >
+        <View style={styles.naviBtnsPosition}>
           <View style={styles.navBackBtn}>
             <NavBtn choice={"Back"} nav={navClientInformation} />
           </View>
@@ -111,7 +106,7 @@ function CarSelection({ navigation }) {
             <NavBtn choice={"Cancel"} nav={navJobOrder} />
           </View>
           <View style={styles.navNextBtn}>
-            <NavBtn style={{}} choice={"Next"} nav={navNext} />
+            <NavBtn choice={"Next"} nav={navNext} />
           </View>
         </View>
       </View>
@@ -126,19 +121,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 40,
+    fontSize: 27,
     fontWeight: "700",
   },
   Container: {
     alignItems: "center",
-    margin: 200,
+    margin: 130,
   },
   Button: {
     borderColor: "#cccccc",
     borderWidth: 4,
     borderRadius: 30,
-    width: 450,
-    height: 380,
+    width: 350,
+    height: 280,
     justifyContent: "center",
     alignItems: "center",
     margin: 10,
@@ -150,23 +145,30 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black,
     borderWidth: 4,
     borderRadius: 30,
-    width: 450,
-    height: 380,
+    width: 350,
+    height: 280,
     margin: 10,
   },
-  ButtonText: { fontSize: 60 },
+  ButtonText: { fontSize: 40 },
   NewCarIconStyle: {
-    width: 180,
-    height: 125,
-    marginBottom: 30,
+    width: 150,
+    height: 100,
+    marginBottom: 25,
   },
   ExistingCarIconStyle: {
-    height: 170,
-    width: 164,
+    height: 130,
+    width: 124,
     marginBottom: 30,
   },
+  naviBtnsPosition: {
+    width: 540,
+    height: 150,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
   navBackBtn: {
-    marginRight: 180,
+    marginRight: 130,
   },
   navCancelBtn: {
     marginRight: 10,

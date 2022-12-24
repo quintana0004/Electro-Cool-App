@@ -1,12 +1,5 @@
-import {
-  IInvoice,
-  IInvoiceItem,
-  ICar,
-  IDeposit,
-  IAppointment,
-  ICustomer,
-  ITask,
-} from "../types";
+import { IJobOrder } from "./../types/index.d";
+import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
@@ -155,6 +148,23 @@ function hasRequiredCarFields(carInfo: ICar) {
   return true;
 }
 
+function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
+  if (
+    !jobOrderInfo.requestedService ||
+    !jobOrderInfo.serviceDetails ||
+    !jobOrderInfo.status ||
+    !jobOrderInfo.jobLoadType ||
+    !jobOrderInfo.policySignature ||
+    !jobOrderInfo.carId ||
+    !jobOrderInfo.companyId ||
+    !jobOrderInfo.customerId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
@@ -239,6 +249,7 @@ export {
   isValidTaskId,
   hasRequiredCustomerFields,
   hasRequiredCarFields,
+  hasRequiredJobOrderFields,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   hasRequiredDepositFields,
