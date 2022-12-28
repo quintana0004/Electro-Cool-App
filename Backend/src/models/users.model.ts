@@ -46,20 +46,6 @@ async function findUserByEmailOrUserName(email: string, username: string) {
   }
 }
 
-async function findUserByUsername(username: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-    });
-
-    return user;
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function findUserByToken(token: string) {
   try {
     const userId = getUserIdFromToken(token);
