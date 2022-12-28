@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { createCompany, findCompanyByName } from "../models/company.model";
 import { ICompany } from "../types";
 
@@ -6,6 +7,20 @@ function excludeFields<T, Key extends keyof T>(record: T, ...keys: Key[]): T {
     delete record[key];
   }
   return record;
+}
+
+function generateSalt(length: number): string {
+  return crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString("hex")
+    .slice(0.16);
+}
+
+function sha512(password: string, salt: string) {
+  let HMAC = crypto.createHmac("sha256", salt);
+  HMAC.update(password);
+  let hashedPassword = HMAC.digest("hex");
+  return hashedPassword;
 }
 
 // --- Temporary Dummy Data Inserts ---
@@ -30,4 +45,4 @@ async function createDummyCompany() {
   }
 }
 
-export { excludeFields, createDummyCompany };
+export { excludeFields, generateSalt, sha512, createDummyCompany };
