@@ -1,5 +1,6 @@
 import http from "http";
 import app from "./app";
+
 import { createDummyCompany } from "./utils/db.utils";
 
 const SERVER_HOST = process.env.SERVER_HOST;

@@ -31,6 +31,11 @@ async function findAllJobOrders(
       },
     });
 
+    // Append Asset Url for Frontend
+    for (const job of jobOrders) {
+      job.policySignature = process.env.DO_SPACES_ASSET_URL + job.policySignature;
+    }
+
     return jobOrders;
   } catch (error) {
     throw error;
@@ -41,7 +46,7 @@ async function upsertJobOrder(jobInfo: IJobOrder) {
   try {
     const job = await prisma.jobOrder.upsert({
       where: {
-        id: jobInfo?.id ?? -1,
+        id: jobInfo?.id ? Number(jobInfo.id) : -1,
       },
       create: {
         requestedService: jobInfo.requestedService,
