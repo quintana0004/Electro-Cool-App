@@ -39,7 +39,10 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     });
 
     // Collect all invoiceItems with Ids from incoming list of invoice items in request.
-    let invoiceItemIdsMapInRequest: Map<number, IInvoiceItem> = new Map<number, IInvoiceItem>();
+    let invoiceItemIdsMapInRequest: Map<number, IInvoiceItem> = new Map<
+      number,
+      IInvoiceItem
+    >();
     for (const invoiceItem of invoiceInfo.invoiceItems) {
       if (invoiceItem.id != undefined) {
         invoiceItemIdsMapInRequest.set(invoiceItem.id, invoiceItem);
@@ -48,7 +51,9 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
 
     // Compare Ids from Request and DB to determine whic Invoice Items to Delete
     let invoiceItemIdsToDelete: number[] = [];
-    let invoiceItemIdsInDB: number[] = invoiceItemsInDB.map((invoiceItem) => invoiceItem.id);
+    let invoiceItemIdsInDB: number[] = invoiceItemsInDB.map(
+      (invoiceItem) => invoiceItem.id
+    );
     for (const itemIdInDB of invoiceItemIdsInDB) {
       let invoiceItem = invoiceItemIdsMapInRequest.get(itemIdInDB);
       if (invoiceItem === undefined) {
@@ -118,5 +123,27 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     throw error;
   }
 }
-
-export { upsertInvoice };
+async function FindAllInvoices(
+  skip: number,
+  take: number,
+  searchTerm: string | undefined
+) {
+  try {
+    const term = searchTerm ? searchTerm : undefined;
+    const Invoice = await prisma.invoice.findMany({
+      skip,
+      take,
+      where: {
+        customer: {
+          fullName: {
+            contains: term,
+          },
+        },
+      },
+    });
+    return Invoice;
+  } catch (error) {
+    throw error;
+  }
+}
+export { upsertInvoice, FindAllInvoices };
