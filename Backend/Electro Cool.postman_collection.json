@@ -259,16 +259,11 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"mode": "formdata",
+							"formdata": []
 						},
 						"url": {
-							"raw": "{{HOST}}/job-orders?take=5&searchTerm=Medina&skip=2",
+							"raw": "{{HOST}}/job-orders?take=5",
 							"host": [
 								"{{HOST}}"
 							],
@@ -282,11 +277,13 @@
 								},
 								{
 									"key": "searchTerm",
-									"value": "Medina"
+									"value": "Medina",
+									"disabled": true
 								},
 								{
 									"key": "skip",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								}
 							]
 						}
@@ -299,13 +296,54 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"requestedService\": \"Test Service 11\",\r\n    \"serviceDetails\": \"Car needs new air filter\",\r\n    \"status\": \"New\",\r\n    \"jobLoadType\": \"Heavy\",\r\n    \"policySignature\": \"Jan Montalvo Medina\",\r\n    \"carId\": \"3\",\r\n    \"customerId\": \"5\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "requestedService",
+									"value": "Test Service 11",
+									"type": "text"
+								},
+								{
+									"key": "serviceDetails",
+									"value": "Car needs new air filter",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "New",
+									"type": "text"
+								},
+								{
+									"key": "jobLoadType",
+									"value": "Heavy",
+									"type": "text"
+								},
+								{
+									"key": "carId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "customerId",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "companyId",
+									"value": "0b22c1e3-0449-45e5-9762-c2db75f80ea7",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{HOST}}/job-orders",
@@ -330,7 +368,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/invoices?skip=10&take=20",
+							"raw": "{{HOST}}/invoices?take=20",
 							"host": [
 								"{{HOST}}"
 							],
@@ -338,10 +376,6 @@
 								"invoices"
 							],
 							"query": [
-								{
-									"key": "skip",
-									"value": "10"
-								},
 								{
 									"key": "take",
 									"value": "20"
@@ -592,6 +626,43 @@
 							"path": [
 								"deposits",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File-Upload",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Uplay/Smiley Face Java.png"
+								},
+								{
+									"key": "test",
+									"value": "I am information",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/file-upload",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"file-upload"
 							]
 						}
 					},
