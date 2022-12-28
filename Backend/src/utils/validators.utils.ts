@@ -1,4 +1,4 @@
-import { IJobOrder } from "./../types/index.d";
+import { IJobOrder, IUser } from "./../types/index.d";
 import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
@@ -7,6 +7,7 @@ import { findDespositById } from "../models/deposits.model";
 import { formatStringToISOFormat } from "./formatters.utils";
 import { findAppointmentById } from "../models/appointments.model";
 import { findTaskById } from "../models/tasks.model";
+import { findUserByEmailOrUserName } from "../models/users.model";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -115,6 +116,21 @@ async function isValidTaskId(id: number | string) {
 }
 
 // --- Required Fields Validators ---
+function hasRequiredUserFields(userInfo: IUser) {
+  if (
+    !userInfo.email ||
+    !userInfo.password ||
+    !userInfo.firstName ||
+    !userInfo.lastName ||
+    !userInfo.phone ||
+    !userInfo.username
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function hasRequiredCustomerFields(customerInfo: ICustomer) {
   if (
     !customerInfo.firstName ||
@@ -247,6 +263,7 @@ export {
   isValidDespositId,
   isValidAppointmentId,
   isValidTaskId,
+  hasRequiredUserFields,
   hasRequiredCustomerFields,
   hasRequiredCarFields,
   hasRequiredJobOrderFields,
