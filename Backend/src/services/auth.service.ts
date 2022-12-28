@@ -41,9 +41,7 @@ function generateAccessToken(userId: string): string {
 
 function generateRefreshToken(userId: string): string {
   const user = { id: userId };
-  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET || "", {
-    expiresIn: "720h",
-  });
+  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET || "");
 }
 
 function verifyRefreshToken(refreshToken: string): [string, string] | IErrorResponse {
