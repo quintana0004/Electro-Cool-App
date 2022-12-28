@@ -55,5 +55,8 @@ config.json
 # Output Typescript Folder
 dist/
 
+# Output Directory for Temporary Assets
+uploads
+
 # Enviorment Variables
 Electro-Cool-App\Backend\.env
