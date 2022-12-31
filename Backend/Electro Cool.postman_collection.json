@@ -123,7 +123,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/customers?take=5&skip=1",
+							"raw": "{{HOST}}/customers?take=5&skip=1&isActiveJobs=true",
 							"host": [
 								"{{HOST}}"
 							],
@@ -143,6 +143,10 @@
 									"key": "searchTerm",
 									"value": "",
 									"disabled": true
+								},
+								{
+									"key": "isActiveJobs",
+									"value": "true"
 								}
 							]
 						}
@@ -156,7 +160,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Jessica\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Michael\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo2@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -216,7 +220,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"1\"\r\n}",
+							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"12\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -259,8 +263,8 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": []
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{HOST}}/job-orders?take=5",
@@ -301,7 +305,8 @@
 								{
 									"key": "id",
 									"value": "2",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "requestedService",
@@ -315,7 +320,7 @@
 								},
 								{
 									"key": "status",
-									"value": "New",
+									"value": "Complete",
 									"type": "text"
 								},
 								{
@@ -325,12 +330,12 @@
 								},
 								{
 									"key": "carId",
-									"value": "3",
+									"value": "6",
 									"type": "text"
 								},
 								{
 									"key": "customerId",
-									"value": "5",
+									"value": "12",
 									"type": "text"
 								},
 								{
@@ -341,7 +346,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": []
+									"src": "/C:/Users/janmm/Pictures/Camera Roll/afa-ah-loo-y9hlJqdD0vQ-unsplash.jpg"
 								}
 							]
 						},
