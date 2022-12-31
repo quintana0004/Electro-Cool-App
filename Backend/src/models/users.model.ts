@@ -16,6 +16,7 @@ async function createUser(userInfo: IUser) {
       data: {
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
+        fullName: `${userInfo.firstName} ${userInfo.lastName}`,
         phone: userInfo.phone,
         email: userInfo.email,
         username: userInfo.username,
@@ -41,6 +42,25 @@ async function findUserByEmailOrUserName(email: string, username: string) {
     });
 
     return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findUserByName(name: string | undefined) {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        fullName: {
+          contains: name,
+        },
+      },
+    });
+
+    const usersFiltered = users.map((user) =>
+      excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken")
+    );
+    return usersFiltered;
   } catch (error) {
     throw error;
   }
@@ -107,6 +127,7 @@ async function isUserAuthorized(email: string, username: string, password: strin
 export {
   createUser,
   findUserByEmailOrUserName,
+  findUserByName,
   findUserByToken,
   isUserAuthorized,
   updateUserTokens,
