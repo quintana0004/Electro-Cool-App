@@ -19,37 +19,39 @@ async function httpLogin(req: Request, res: Response) {
       username: req.body.username,
     };
 
-    if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
-      return handleBadResponse(
-        400,
-        "User requires username or email and a password to login into the system.",
-        res
-      );
-    }
+    throw new Error("Just a test");
 
-    const userResponse = await isUserAuthorized(
-      userInfo.email,
-      userInfo.username,
-      userInfo.password
-    );
-    if ("errorCode" in userResponse) {
-      return res.status(userResponse.errorCode).json({
-        error: userResponse,
-      });
-    }
+    // if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
+    //   return handleBadResponse(
+    //     400,
+    //     "User requires username or email and a password to login into the system.",
+    //     res
+    //   );
+    // }
 
-    const accessToken = generateAccessToken(userResponse.id);
-    await updateUserTokens(userResponse.id, accessToken);
+    // const userResponse = await isUserAuthorized(
+    //   userInfo.email,
+    //   userInfo.username,
+    //   userInfo.password
+    // );
+    // if ("errorCode" in userResponse) {
+    //   return res.status(userResponse.errorCode).json({
+    //     error: userResponse,
+    //   });
+    // }
 
-    const user = await findUserByToken(accessToken);
-    return res.status(200).json({
-      accessToken: user?.accessToken,
-      refreshToken: user?.refreshToken,
-      email: userResponse.email,
-      role: userResponse.role,
-      isApproved: userResponse.isApproved,
-      companyId: user?.companyId,
-    });
+    // const accessToken = generateAccessToken(userResponse.id);
+    // await updateUserTokens(userResponse.id, accessToken);
+
+    // const user = await findUserByToken(accessToken);
+    // return res.status(200).json({
+    //   accessToken: user?.accessToken,
+    //   refreshToken: user?.refreshToken,
+    //   email: userResponse.email,
+    //   role: userResponse.role,
+    //   isApproved: userResponse.isApproved,
+    //   companyId: user?.companyId,
+    // });
   } catch (error) {
     return handleExceptionErrorResponse("login", error, res);
   }
