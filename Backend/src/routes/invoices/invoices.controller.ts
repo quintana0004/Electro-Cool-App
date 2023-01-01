@@ -34,7 +34,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
       amountDue: req.body.amountDue,
       createdDate: req.body.createdDate,
       lastModified: req.body.lastModified,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
       customerId: req.body.customerId,
       carId: req.body.carId,
       invoiceItems: req.body.invoiceItems,

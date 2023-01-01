@@ -33,7 +33,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
       jobLoadType: req.body.jobLoadType,
       policySignature: "N/A",
       carId: req.body.carId,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
       customerId: req.body.customerId,
     };
 

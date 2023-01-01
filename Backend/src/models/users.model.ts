@@ -16,12 +16,12 @@ async function createUser(userInfo: IUser) {
       data: {
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
+        fullName: `${userInfo.firstName} ${userInfo.lastName}`,
         phone: userInfo.phone,
         email: userInfo.email,
         username: userInfo.username,
         password: hashedPassword,
         passwordSalt: salt,
-        isApproved: userInfo.isApproved,
         companyId: String(company?.id),
       },
     });
@@ -32,7 +32,21 @@ async function createUser(userInfo: IUser) {
   }
 }
 
-async function findUserByEmailOrUserName(email: string, username: string) {
+async function findUserById(id: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findUserByEmailOrUserName(email?: string, username?: string) {
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -41,6 +55,25 @@ async function findUserByEmailOrUserName(email: string, username: string) {
     });
 
     return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findUserByName(name?: string) {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        fullName: {
+          contains: name,
+        },
+      },
+    });
+
+    const usersFiltered = users.map((user) =>
+      excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken")
+    );
+    return usersFiltered;
   } catch (error) {
     throw error;
   }
@@ -57,6 +90,65 @@ async function findUserByToken(token: string) {
     });
 
     return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function isUserAuthorized(email: string, username: string, password: string) {
+  try {
+    const user = await findUserByEmailOrUserName(email, username);
+    if (!user) {
+      return buildErrorObject(401, "A user doesn't exist with this email nor username.");
+    }
+
+    let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
+    if (hashedPasswordFromRequest !== user.password) {
+      return buildErrorObject(401, "Provided password is incorrect for this user.");
+    }
+
+    if (user.accessState != "Active") {
+      return buildErrorObject(400, "User does not have approval to access the system.");
+    }
+
+    const userWithoutPassord = excludeFields(user, "password", "passwordSalt");
+    return userWithoutPassord;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUser(userInfo: IUser) {
+  try {
+    let fullName = undefined;
+    if (!!userInfo.firstName && !!userInfo.lastName) {
+      fullName = userInfo.firstName + " " + userInfo.lastName;
+    }
+
+    let salt = undefined;
+    let hashedPassword = undefined;
+    if (!!userInfo.password) {
+      salt = generateSalt(32);
+      hashedPassword = sha512(userInfo.password, salt);
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: userInfo.id,
+      },
+      data: {
+        fullName: fullName,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        phone: userInfo.phone,
+        email: userInfo.email,
+        username: userInfo.username,
+        password: hashedPassword,
+        passwordSalt: salt,
+      },
+    });
+
+    return excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken");
   } catch (error) {
     throw error;
   }
@@ -81,24 +173,117 @@ async function updateUserTokens(userId: string, accessToken: string, refreshToke
   }
 }
 
-async function isUserAuthorized(email: string, username: string, password: string) {
+async function updateUserAccessState(
+  userId: string,
+  role: string,
+  approval: string,
+  startDate?: string,
+  endDate?: string
+) {
   try {
-    const user = await findUserByEmailOrUserName(email, username);
-    if (!user) {
-      return buildErrorObject(401, "A user doesn't exist with this email nor username.");
-    }
+    const user = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        accessState: approval,
+        role: role,
+        accessStartDate: startDate,
+        accessEndDate: endDate,
+      },
+    });
 
-    let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
-    if (hashedPasswordFromRequest !== user.password) {
-      return buildErrorObject(401, "Provided password is incorrect for this user.");
-    }
+    return excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken");
+  } catch (error) {
+    throw error;
+  }
+}
 
-    if (!user.isApproved) {
-      return buildErrorObject(400, "User does not have approval to access the system.");
-    }
+async function updateTemporaryAdminsByStartDate() {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            role: "Temp. Admin",
+          },
+          {
+            accessState: "Pending",
+          },
+          {
+            accessStartDate: {
+              lte: new Date(),
+            },
+          },
+        ],
+      },
+    });
 
-    const userWithoutPassord = excludeFields(user, "password", "passwordSalt");
-    return userWithoutPassord;
+    const tempAdminsIds = users.map((user) => user.id);
+    const updatedUsers = await prisma.user.updateMany({
+      where: {
+        id: {
+          in: tempAdminsIds,
+        },
+      },
+      data: {
+        accessState: "Active",
+      },
+    });
+
+    return updatedUsers;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateTemporaryAdminsByEndDate() {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            role: "Temp. Admin",
+          },
+          {
+            accessState: "Active",
+          },
+          {
+            accessEndDate: {
+              lte: new Date(),
+            },
+          },
+        ],
+      },
+    });
+
+    const tempAdminsIds = users.map((user) => user.id);
+    const updatedUsers = await prisma.user.updateMany({
+      where: {
+        id: {
+          in: tempAdminsIds,
+        },
+      },
+      data: {
+        accessState: "Inactive",
+      },
+    });
+
+    return updatedUsers;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteUser(id: string) {
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return user;
   } catch (error) {
     throw error;
   }
@@ -106,8 +291,15 @@ async function isUserAuthorized(email: string, username: string, password: strin
 
 export {
   createUser,
+  findUserById,
   findUserByEmailOrUserName,
+  findUserByName,
   findUserByToken,
   isUserAuthorized,
+  updateUser,
   updateUserTokens,
+  updateUserAccessState,
+  updateTemporaryAdminsByStartDate,
+  updateTemporaryAdminsByEndDate,
+  deleteUser,
 };
