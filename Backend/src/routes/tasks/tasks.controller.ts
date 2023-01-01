@@ -22,7 +22,7 @@ async function httpCreateTask(req: Request, res: Response) {
     const taskInfo: ITask = {
       text: req.body.text,
       dueDate: req.body.dueDate,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
     };
 
     const hasRequiredFields = hasRequiredTaskFields(taskInfo);

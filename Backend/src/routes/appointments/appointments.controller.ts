@@ -29,7 +29,7 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       customerName: req.body.customerName,
       phone: req.body.phone,
       email: req.body.email,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
     };
 
     const hasRequiredFields = hasRequiredAppointmentFields(appointmentInfo);

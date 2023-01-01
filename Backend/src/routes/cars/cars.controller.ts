@@ -45,7 +45,7 @@ async function httpUpsertCar(req: Request, res: Response) {
       vinNumber: req.body.vinNumber,
       carHasItems: req.body.carHasItems,
       carItemsDescription: req.body.carItemsDescription,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
       customerId: req.body.customerId,
     };
 
