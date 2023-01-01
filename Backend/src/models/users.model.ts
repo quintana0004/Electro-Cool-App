@@ -46,7 +46,7 @@ async function findUserById(id: string) {
   }
 }
 
-async function findUserByEmailOrUserName(email: string, username: string) {
+async function findUserByEmailOrUserName(email?: string, username?: string) {
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -113,6 +113,42 @@ async function isUserAuthorized(email: string, username: string, password: strin
 
     const userWithoutPassord = excludeFields(user, "password", "passwordSalt");
     return userWithoutPassord;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUser(userInfo: IUser) {
+  try {
+    let fullName = undefined;
+    if (!!userInfo.firstName && !!userInfo.lastName) {
+      fullName = userInfo.firstName + " " + userInfo.lastName;
+    }
+
+    let salt = undefined;
+    let hashedPassword = undefined;
+    if (!!userInfo.password) {
+      salt = generateSalt(32);
+      hashedPassword = sha512(userInfo.password, salt);
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: userInfo.id,
+      },
+      data: {
+        fullName: fullName,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        phone: userInfo.phone,
+        email: userInfo.email,
+        username: userInfo.username,
+        password: hashedPassword,
+        passwordSalt: salt,
+      },
+    });
+
+    return excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken");
   } catch (error) {
     throw error;
   }
@@ -260,6 +296,7 @@ export {
   findUserByName,
   findUserByToken,
   isUserAuthorized,
+  updateUser,
   updateUserTokens,
   updateUserAccessState,
   updateTemporaryAdminsByStartDate,

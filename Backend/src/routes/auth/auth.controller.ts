@@ -47,7 +47,7 @@ async function httpLogin(req: Request, res: Response) {
       refreshToken: user?.refreshToken,
       email: userResponse.email,
       role: userResponse.role,
-      isApproved: userResponse.accessState,
+      accessState: userResponse.accessState,
       companyId: user?.companyId,
     });
   } catch (error) {
@@ -93,7 +93,7 @@ async function httpSignUp(req: Request, res: Response) {
       lastName: user.lastName,
       phone: user.phone,
       role: user.role,
-      isApproved: user.accessState,
+      accessState: user.accessState,
       accessToken: accessToken,
       refreshToken: refreshToken,
       companyId: user.companyId,

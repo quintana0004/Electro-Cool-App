@@ -1,12 +1,28 @@
 import express from "express";
-import { httpDeleteUser, httpGetAllUsers, httpUpdateUserAccess } from "./users.controller";
+import {
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+} from "../../services/auth.service";
+import {
+  httpDeleteUser,
+  httpGetAllUsers,
+  httpUpdateUserAccess,
+  httpUpdateUserProfile,
+} from "./users.controller";
 
 const router = express.Router();
 
-router.get("/", httpGetAllUsers);
+router.get("/", authenticateJWTMiddleWare, verifyAdminPrivilagesMiddleware, httpGetAllUsers);
 
-router.post("/access", httpUpdateUserAccess);
+router.post("/profile", authenticateJWTMiddleWare, httpUpdateUserProfile);
 
-router.delete("/:id", httpDeleteUser);
+router.post(
+  "/access",
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+  httpUpdateUserAccess
+);
+
+router.delete("/:id", authenticateJWTMiddleWare, verifyAdminPrivilagesMiddleware, httpDeleteUser);
 
 export default router;

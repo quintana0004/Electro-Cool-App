@@ -1,5 +1,12 @@
 import { Request, Response } from "express";
-import { deleteUser, findUserByName, updateUserAccessState } from "../../models/users.model";
+import {
+  deleteUser,
+  findUserByEmailOrUserName,
+  findUserByName,
+  updateUser,
+  updateUserAccessState,
+} from "../../models/users.model";
+import { IUser } from "../../types";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { isIsoDate, isValidUserId } from "../../utils/validators.utils";
 
@@ -11,6 +18,44 @@ async function httpGetAllUsers(req: Request, res: Response) {
     return res.json(users);
   } catch (error) {
     return handleExceptionErrorResponse("get all users", error, res);
+  }
+}
+
+async function httpUpdateUserProfile(req: Request, res: Response) {
+  try {
+    const userInfo: IUser = {
+      id: req.userId,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phone: req.body.phone,
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
+    };
+
+    const isUserIdValid = await isValidUserId(req.userId);
+    if (!isUserIdValid) {
+      return handleBadResponse(
+        400,
+        "The user Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const doesEmailAlreadyExist = await findUserByEmailOrUserName(userInfo.email);
+    if (doesEmailAlreadyExist && doesEmailAlreadyExist.id != userInfo.id) {
+      return handleBadResponse(400, "Another user with this email already exist.", res);
+    }
+
+    const doesUserNameAlreadyExist = await findUserByEmailOrUserName(undefined, userInfo.username);
+    if (doesUserNameAlreadyExist && doesUserNameAlreadyExist.id != userInfo.id) {
+      return handleBadResponse(400, "Another user with this username already exist.", res);
+    }
+
+    const user = await updateUser(userInfo);
+    return res.status(200).json(user);
+  } catch (error) {
+    return handleExceptionErrorResponse("update user profile", error, res);
   }
 }
 
@@ -93,4 +138,4 @@ async function httpDeleteUser(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllUsers, httpUpdateUserAccess, httpDeleteUser };
+export { httpGetAllUsers, httpUpdateUserProfile, httpUpdateUserAccess, httpDeleteUser };
