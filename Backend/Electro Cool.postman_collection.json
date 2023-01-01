@@ -1,0 +1,706 @@
+{
+	"info": {
+		"_postman_id": "4c93f32a-adad-413d-bc12-cccaf88483f3",
+		"name": "Electro Cool",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9671978"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/auth/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\",\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"username\": \"mikenight124\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/auth/signup",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Get Company",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/company/5d08bf40-e945-4204-bf5e-9a44f26e5def",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"company",
+								"5d08bf40-e945-4204-bf5e-9a44f26e5def"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Company",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Electro Cool\",\r\n    \"businessType\": \"Mercedes Benz\",\r\n    \"addressLine1\": \"Casa de Pepe\",\r\n    \"addressLine2\": \"Casa de Juan\",\r\n    \"country\": \"Carolina\",\r\n    \"state\": \"PR\",\r\n    \"city\": \"Metropolis\",\r\n    \"zipcode\": \"00987\",\r\n    \"email\": \"jmontalvo@cobaltopr.com\",\r\n    \"phone\": \"7877101074\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/company",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/customers?take=5&skip=1&isActiveJobs=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "5"
+								},
+								{
+									"key": "skip",
+									"value": "1"
+								},
+								{
+									"key": "searchTerm",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "isActiveJobs",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Michael\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo2@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/customers",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "Get All Cars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "take",
+								"value": "3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}/cars?take=3",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cars"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Car",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/cars",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job Orders",
+			"item": [
+				{
+					"name": "Get All Job Orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwidW5pcXVlX25hbWUiOiJjb3BlbGFuZCIsIm5iZiI6MTU4NjIzNDIyMSwiZXhwIjoxNTg2MzIwNjIxLCJpYXQiOjE1ODYyMzQyMjF9.jDx2aG0b7PIOPYB1xYV61lmz-ZqLr-2UvlyO11WJnZEERK0aSuUCx9HXKCMoc5wdbau066YOKHs62SorkBgsTA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/job-orders?take=5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"job-orders"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "5"
+								},
+								{
+									"key": "searchTerm",
+									"value": "Medina",
+									"disabled": true
+								},
+								{
+									"key": "skip",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Job Orders",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "requestedService",
+									"value": "Test Service 11",
+									"type": "text"
+								},
+								{
+									"key": "serviceDetails",
+									"value": "Car needs new air filter",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "Complete",
+									"type": "text"
+								},
+								{
+									"key": "jobLoadType",
+									"value": "Heavy",
+									"type": "text"
+								},
+								{
+									"key": "carId",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "customerId",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "companyId",
+									"value": "0b22c1e3-0449-45e5-9762-c2db75f80ea7",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Camera Roll/afa-ah-loo-y9hlJqdD0vQ-unsplash.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/job-orders",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"job-orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoices",
+			"item": [
+				{
+					"name": "Get All Invoices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/invoices?take=20",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Invoices",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"Paid\",\r\n    \"totalPrice\": \"$34.56\",\r\n    \"amountPaid\": \"$50.24\",\r\n    \"amountDue\": \"$21.34\",\r\n    \"customerId\": 1,\r\n    \"carId\": 3,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"id\": 13,\r\n            \"description\": \"Alternador\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$99.24\",\r\n            \"totalPrice\": \"$198.48\",\r\n            \"warranty\": \"N/W\"\r\n        },\r\n        {\r\n            \"id\": 14,\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"id\": 15,\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"id\": 16,\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/invoices",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"invoices"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Get All Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/payments",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/appointments",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Appointments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"service\": \"Oil Pump\",\r\n    \"description\": \"Male sure to revise breaks and add to final fee\",\r\n    \"arrivalDateTime\": \"09/24/2022 07:30:14\",\r\n    \"model\": \"Rav4\",\r\n    \"licensePlate\": \"JTM093\",\r\n    \"customerName\": \"Jan Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@gmail.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/appointments",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/appointments/9",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"appointments",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get All Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/tasks",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"This is a test task 2\",\r\n    \"dueDate\": \"09/24/2022 07:30:14\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/tasks",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/tasks/3",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"tasks",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deposits",
+			"item": [
+				{
+					"name": "Get All Deposits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/deposits",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"deposits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Deposit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": \"$1405.67\",\r\n    \"description\": \"Second Down Payment for Windshield\",\r\n    \"isAvailable\": true,\r\n    \"customerId\": 3,\r\n    \"carId\": 3,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/deposits",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"deposits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Deposit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/deposits/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"deposits",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File-Upload",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Uplay/Smiley Face Java.png"
+								},
+								{
+									"key": "test",
+									"value": "I am information",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/file-upload",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"file-upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

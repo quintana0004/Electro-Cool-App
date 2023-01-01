@@ -118,5 +118,23 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     throw error;
   }
 }
-
-export { upsertInvoice };
+async function findAllInvoices(skip: number, take: number, searchTerm: string | undefined) {
+  try {
+    const term = searchTerm ? searchTerm : undefined;
+    const Invoice = await prisma.invoice.findMany({
+      skip,
+      take,
+      where: {
+        customer: {
+          fullName: {
+            contains: term,
+          },
+        },
+      },
+    });
+    return Invoice;
+  } catch (error) {
+    throw error;
+  }
+}
+export { upsertInvoice, findAllInvoices };
