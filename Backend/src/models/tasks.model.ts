@@ -1,5 +1,4 @@
 import prisma from "../database/prisma";
-import { formatStringToISOFormat } from "../utils/formatters.utils";
 import { ITask } from "./../types/index.d";
 
 async function findTaskById(id: number) {
@@ -18,11 +17,10 @@ async function findTaskById(id: number) {
 
 async function createTask(taskInfo: ITask) {
   try {
-    const formattedDueDate = formatStringToISOFormat(taskInfo.dueDate);
     const task = await prisma.task.create({
       data: {
         text: taskInfo.text,
-        dueDate: formattedDueDate,
+        dueDate: taskInfo.dueDate,
         companyId: taskInfo.companyId,
       },
     });

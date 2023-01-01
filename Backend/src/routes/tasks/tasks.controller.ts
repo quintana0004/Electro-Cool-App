@@ -4,7 +4,7 @@ import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/err
 import {
   hasRequiredTaskFields,
   isValidCompanyId,
-  isValidDateFormat,
+  isIsoDate,
   isValidTaskId,
 } from "../../utils/validators.utils";
 import { createTask, deleteTask } from "../../models/tasks.model";
@@ -43,11 +43,11 @@ async function httpCreateTask(req: Request, res: Response) {
       );
     }
 
-    const isDateFormatValid = isValidDateFormat(taskInfo.dueDate);
+    const isDateFormatValid = isIsoDate(taskInfo.dueDate);
     if (!isDateFormatValid) {
       return handleBadResponse(
         400,
-        `The date provided for the Due Date is not valid. The correct format is the following: "MM/DD/YYYY HOUR:MINUTE:SECONDS" .`,
+        `The date provided for the Due Date is not valid. The correct format must be in ISO as the following: "YYYY-MM-DDTHH:MN:SS.MSSZ".`,
         res
       );
     }

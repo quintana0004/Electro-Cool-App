@@ -5,7 +5,7 @@ import {
   hasRequiredAppointmentFields,
   isValidAppointmentId,
   isValidCompanyId,
-  isValidDateFormat,
+  isIsoDate,
 } from "../../utils/validators.utils";
 import { deleteAppointment, upsertAppointment } from "../../models/appointments.model";
 
@@ -50,11 +50,11 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       );
     }
 
-    const isDateFormatValid = isValidDateFormat(appointmentInfo.arrivalDateTime);
+    const isDateFormatValid = isIsoDate(appointmentInfo.arrivalDateTime);
     if (!isDateFormatValid) {
       return handleBadResponse(
         400,
-        `The date provided for the Arrival Date Time is not valid. The correct format is the following: "MM/DD/YYYY HOUR:MINUTE:SECONDS" .`,
+        `The date provided for the Arrival Date Time is not valid. The correct format must be in ISO as the following: "YYYY-MM-DDTHH:MN:SS.MSSZ".`,
         res
       );
     }

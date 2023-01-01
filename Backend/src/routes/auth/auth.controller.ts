@@ -19,39 +19,37 @@ async function httpLogin(req: Request, res: Response) {
       username: req.body.username,
     };
 
-    throw new Error("Just a test");
+    if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
+      return handleBadResponse(
+        400,
+        "User requires username or email and a password to login into the system.",
+        res
+      );
+    }
 
-    // if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
-    //   return handleBadResponse(
-    //     400,
-    //     "User requires username or email and a password to login into the system.",
-    //     res
-    //   );
-    // }
+    const userResponse = await isUserAuthorized(
+      userInfo.email,
+      userInfo.username,
+      userInfo.password
+    );
+    if ("errorCode" in userResponse) {
+      return res.status(userResponse.errorCode).json({
+        error: userResponse,
+      });
+    }
 
-    // const userResponse = await isUserAuthorized(
-    //   userInfo.email,
-    //   userInfo.username,
-    //   userInfo.password
-    // );
-    // if ("errorCode" in userResponse) {
-    //   return res.status(userResponse.errorCode).json({
-    //     error: userResponse,
-    //   });
-    // }
+    const accessToken = generateAccessToken(userResponse.id, userResponse.companyId);
+    await updateUserTokens(userResponse.id, accessToken);
 
-    // const accessToken = generateAccessToken(userResponse.id);
-    // await updateUserTokens(userResponse.id, accessToken);
-
-    // const user = await findUserByToken(accessToken);
-    // return res.status(200).json({
-    //   accessToken: user?.accessToken,
-    //   refreshToken: user?.refreshToken,
-    //   email: userResponse.email,
-    //   role: userResponse.role,
-    //   isApproved: userResponse.isApproved,
-    //   companyId: user?.companyId,
-    // });
+    const user = await findUserByToken(accessToken);
+    return res.status(200).json({
+      accessToken: user?.accessToken,
+      refreshToken: user?.refreshToken,
+      email: userResponse.email,
+      role: userResponse.role,
+      isApproved: userResponse.accessState,
+      companyId: user?.companyId,
+    });
   } catch (error) {
     return handleExceptionErrorResponse("login", error, res);
   }
@@ -84,8 +82,8 @@ async function httpSignUp(req: Request, res: Response) {
 
     const user = await createUser(userInfo);
 
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const accessToken = generateAccessToken(user.id, user.companyId);
+    const refreshToken = generateRefreshToken(user.id, user.companyId);
     await updateUserTokens(user.id, accessToken, refreshToken);
 
     return res.status(200).json({
@@ -95,7 +93,7 @@ async function httpSignUp(req: Request, res: Response) {
       lastName: user.lastName,
       phone: user.phone,
       role: user.role,
-      isApproved: user.isApproved,
+      isApproved: user.accessState,
       accessToken: accessToken,
       refreshToken: refreshToken,
       companyId: user.companyId,

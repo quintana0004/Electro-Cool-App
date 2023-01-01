@@ -1,5 +1,4 @@
 import prisma from "../database/prisma";
-import { formatStringToISOFormat } from "../utils/formatters.utils";
 import { IAppointment } from "./../types/index.d";
 
 async function findAppointmentById(id: number) {
@@ -18,7 +17,6 @@ async function findAppointmentById(id: number) {
 
 async function upsertAppointment(appointmentInfo: IAppointment) {
   try {
-    const formattedArrivalDateTime = formatStringToISOFormat(appointmentInfo.arrivalDateTime);
     const appointment = await prisma.appointment.upsert({
       where: {
         id: appointmentInfo?.id ?? -1,
@@ -26,7 +24,7 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
       create: {
         service: appointmentInfo.service,
         description: appointmentInfo.description,
-        arrivalDateTime: formattedArrivalDateTime,
+        arrivalDateTime: appointmentInfo.arrivalDateTime,
         model: appointmentInfo.model,
         licensePlate: appointmentInfo.licensePlate,
         customerName: appointmentInfo.customerName,
@@ -37,7 +35,7 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
       update: {
         service: appointmentInfo.service,
         description: appointmentInfo.description,
-        arrivalDateTime: formattedArrivalDateTime,
+        arrivalDateTime: appointmentInfo.arrivalDateTime,
         model: appointmentInfo.model,
         licensePlate: appointmentInfo.licensePlate,
         customerName: appointmentInfo.customerName,

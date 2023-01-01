@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "isApproved" SET DEFAULT 'Pending',
+ALTER COLUMN "isApproved" SET DATA TYPE VARCHAR(25);
