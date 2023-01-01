@@ -41,7 +41,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       city: req.body.city,
       phone: req.body.phone,
       email: req.body.email,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
     };
 
     const hasRequiredFields = hasRequiredCustomerFields(customerInfo);

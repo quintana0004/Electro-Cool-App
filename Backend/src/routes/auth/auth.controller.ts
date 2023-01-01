@@ -38,7 +38,7 @@ async function httpLogin(req: Request, res: Response) {
       });
     }
 
-    const accessToken = generateAccessToken(userResponse.id);
+    const accessToken = generateAccessToken(userResponse.id, userResponse.companyId);
     await updateUserTokens(userResponse.id, accessToken);
 
     const user = await findUserByToken(accessToken);
@@ -47,7 +47,7 @@ async function httpLogin(req: Request, res: Response) {
       refreshToken: user?.refreshToken,
       email: userResponse.email,
       role: userResponse.role,
-      isApproved: userResponse.isApproved,
+      accessState: userResponse.accessState,
       companyId: user?.companyId,
     });
   } catch (error) {
@@ -82,8 +82,8 @@ async function httpSignUp(req: Request, res: Response) {
 
     const user = await createUser(userInfo);
 
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const accessToken = generateAccessToken(user.id, user.companyId);
+    const refreshToken = generateRefreshToken(user.id, user.companyId);
     await updateUserTokens(user.id, accessToken, refreshToken);
 
     return res.status(200).json({
@@ -93,7 +93,7 @@ async function httpSignUp(req: Request, res: Response) {
       lastName: user.lastName,
       phone: user.phone,
       role: user.role,
-      isApproved: user.isApproved,
+      accessState: user.accessState,
       accessToken: accessToken,
       refreshToken: refreshToken,
       companyId: user.companyId,

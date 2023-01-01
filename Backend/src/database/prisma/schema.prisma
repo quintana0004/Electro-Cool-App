@@ -36,22 +36,25 @@ model Company {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  firstName    String   @db.VarChar(255)
-  lastName     String   @db.VarChar(255)
-  phone        String   @db.VarChar(15)
-  email        String   @unique @db.VarChar(255)
-  username     String   @unique @db.VarChar(255)
-  password     String   @unique @db.VarChar(65)
-  passwordSalt String   @db.VarChar(65)
-  accessToken  String?
-  refreshToken String?
-  isApproved   Boolean  @default(false)
-  role         String?  @db.VarChar(150)
-  createdDate  DateTime @default(now()) @db.Timestamptz(6)
-  lastModified DateTime @default(now()) @db.Timestamptz(6)
-  companyId    String   @db.Uuid
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id              String    @id @default(uuid()) @db.Uuid
+  fullName        String
+  firstName       String    @db.VarChar(255)
+  lastName        String    @db.VarChar(255)
+  phone           String    @db.VarChar(15)
+  email           String    @unique @db.VarChar(255)
+  username        String    @unique @db.VarChar(255)
+  password        String    @unique @db.VarChar(65)
+  passwordSalt    String    @db.VarChar(65)
+  accessToken     String?
+  refreshToken    String?
+  accessState     String    @default("Pending") @db.VarChar(25)
+  role            String?   @db.VarChar(150)
+  accessStartDate DateTime? @db.Timestamptz(6)
+  accessEndDate   DateTime? @db.Timestamptz(6)
+  createdDate     DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified    DateTime  @default(now()) @db.Timestamptz(6)
+  companyId       String    @db.Uuid
+  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model Customer {

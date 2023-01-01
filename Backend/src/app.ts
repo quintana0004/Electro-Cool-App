@@ -11,6 +11,7 @@ import depositsRouter from "./routes/deposits/deposits.router";
 import paymentsRouter from "./routes/payments/payments.router";
 import appointmentsRouter from "./routes/appointments/appointments.router";
 import tasksRouter from "./routes/tasks/tasks.router";
+import userRouter from "./routes/users/users.router";
 
 dotenv.config();
 
@@ -29,5 +30,6 @@ app.use("/deposits", depositsRouter);
 app.use("/payments", paymentsRouter);
 app.use("/appointments", appointmentsRouter);
 app.use("/tasks", tasksRouter);
+app.use("/users", userRouter);
 
 export default app;
