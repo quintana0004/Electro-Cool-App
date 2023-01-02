@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 
 function NavBtn({ choice, nav }) {
