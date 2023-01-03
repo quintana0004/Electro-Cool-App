@@ -1,12 +1,12 @@
-import { IJobOrder } from "./../types/index.d";
+import { IJobOrder, IUser } from "./../types/index.d";
 import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
 import { findDespositById } from "../models/deposits.model";
-import { formatStringToISOFormat } from "./formatters.utils";
 import { findAppointmentById } from "../models/appointments.model";
 import { findTaskById } from "../models/tasks.model";
+import { findUserById } from "../models/users.model";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -20,10 +20,12 @@ function isNumeric(value: number | string) {
   return !isNaN(num) && isFinite(num);
 }
 
-function isValidDateFormat(dateText: string) {
+function isIsoDate(str: string) {
   try {
-    formatStringToISOFormat(dateText);
-    return true;
+    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+
+    const d = new Date(str);
+    return d instanceof Date && d.toISOString() === str; // valid date
   } catch (error) {
     return false;
   }
@@ -38,6 +40,20 @@ async function isValidCompanyId(id: string) {
 
   const doesCompanyExist = await findCompanyById(id);
   if (!doesCompanyExist) {
+    return false;
+  }
+
+  return true;
+}
+
+async function isValidUserId(id: string) {
+  const isValidId = isValidUUID(id);
+  if (!isValidId) {
+    return false;
+  }
+
+  const doesUserExist = await findUserById(id);
+  if (!doesUserExist) {
     return false;
   }
 
@@ -115,6 +131,21 @@ async function isValidTaskId(id: number | string) {
 }
 
 // --- Required Fields Validators ---
+function hasRequiredUserFields(userInfo: IUser) {
+  if (
+    !userInfo.email ||
+    !userInfo.password ||
+    !userInfo.firstName ||
+    !userInfo.lastName ||
+    !userInfo.phone ||
+    !userInfo.username
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function hasRequiredCustomerFields(customerInfo: ICustomer) {
   if (
     !customerInfo.firstName ||
@@ -240,13 +271,15 @@ function hasRequiredTaskFields(taskInfo: ITask) {
 export {
   isValidUUID,
   isNumeric,
-  isValidDateFormat,
+  isIsoDate,
   isValidCompanyId,
+  isValidUserId,
   isValidCustomerId,
   isValidCarId,
   isValidDespositId,
   isValidAppointmentId,
   isValidTaskId,
+  hasRequiredUserFields,
   hasRequiredCustomerFields,
   hasRequiredCarFields,
   hasRequiredJobOrderFields,

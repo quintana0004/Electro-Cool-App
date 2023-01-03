@@ -14,6 +14,25 @@ export interface ICompany {
   lastModified?: Date;
 }
 
+export interface IUser {
+  id?: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  username: string;
+  password: string;
+  newPassword?: string;
+  salt?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  isApproved?: boolean;
+  role?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId?: string;
+}
+
 export interface ICustomer {
   id?: number;
   firstName: string;
@@ -40,8 +59,8 @@ export interface ICar {
   vinNumber: string;
   carHasItems: boolean;
   carItemsDescription?: string;
-  createdDate?: DateTime;
-  lastModified?: DateTime;
+  createdDate?: Date;
+  lastModified?: Date;
   companyId: string;
   customerId: number;
 }
@@ -125,4 +144,13 @@ export interface IJobOrder {
 export interface IErrorResponse {
   errorCode: number;
   errorMessage: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId: string;
+      companyId: string;
+    }
+  }
 }

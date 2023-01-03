@@ -1,6 +1,65 @@
 import prisma from "../database/prisma";
 import { ICustomer } from "./../types/index.d";
 
+async function findAllCustomers(
+  skip: number | undefined,
+  take: number | undefined,
+  searchTerm: string
+) {
+  try {
+    const term = searchTerm ? searchTerm : undefined;
+    const customers = await prisma.customer.findMany({
+      skip,
+      take,
+      where: {
+        phone: {
+          contains: term,
+        },
+        fullName: {
+          contains: term,
+        },
+      },
+    });
+
+    return customers;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCustomersWithActiveJobOrders(
+  skip: number | undefined,
+  take: number | undefined,
+  searchTerm: string
+) {
+  try {
+    const term = searchTerm ? searchTerm : undefined;
+    const customers = await prisma.customer.findMany({
+      skip,
+      take,
+      where: {
+        phone: {
+          contains: term,
+        },
+        fullName: {
+          contains: term,
+        },
+        jobOrders: {
+          some: {
+            status: {
+              in: ["Complete", "New", "Working"],
+            },
+          },
+        },
+      },
+    });
+
+    return customers;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findCustomerById(id: number) {
   try {
     const customer = await prisma.customer.findUnique({
@@ -53,30 +112,5 @@ async function upsertCustomer(customerInfo: ICustomer) {
     throw error;
   }
 }
-async function findAllCustomers(
-  skip: number,
-  take: number,
-  searchTerm: string
-) {
-  try {
-    const term = searchTerm ? searchTerm : undefined;
-    const customers = await prisma.customer.findMany({
-      skip,
-      take,
-      where: {
-        phone: {
-          contains: term,
-        },
-        fullName: {
-          contains: term,
-        },
-      },
-    });
-    //
-    return customers;
-  } catch (error) {
-    throw error;
-  }
-}
 
-export { findCustomerById, upsertCustomer, findAllCustomers };
+export { findCustomerById, findAllCustomers, findAllCustomersWithActiveJobOrders, upsertCustomer };

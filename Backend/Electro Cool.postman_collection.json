@@ -14,6 +14,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{HOST}}/auth/login",
 							"host": [
@@ -22,6 +31,33 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\",\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"username\": \"mikenight124\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/auth/signup",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"auth",
+								"signup"
 							]
 						}
 					},
@@ -87,7 +123,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/customers?take=5&skip=1",
+							"raw": "{{HOST}}/customers?take=5&skip=1&isActiveJobs=true",
 							"host": [
 								"{{HOST}}"
 							],
@@ -107,6 +143,10 @@
 									"key": "searchTerm",
 									"value": "",
 									"disabled": true
+								},
+								{
+									"key": "isActiveJobs",
+									"value": "true"
 								}
 							]
 						}
@@ -120,7 +160,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Jessica\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Michael\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo2@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -180,7 +220,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"1\"\r\n}",
+							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"12\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -224,15 +264,10 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/job-orders?take=5&searchTerm=Medina&skip=2",
+							"raw": "{{HOST}}/job-orders?take=5",
 							"host": [
 								"{{HOST}}"
 							],
@@ -246,11 +281,13 @@
 								},
 								{
 									"key": "searchTerm",
-									"value": "Medina"
+									"value": "Medina",
+									"disabled": true
 								},
 								{
 									"key": "skip",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								}
 							]
 						}
@@ -263,13 +300,55 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"requestedService\": \"Test Service 11\",\r\n    \"serviceDetails\": \"Car needs new air filter\",\r\n    \"status\": \"New\",\r\n    \"jobLoadType\": \"Heavy\",\r\n    \"policySignature\": \"Jan Montalvo Medina\",\r\n    \"carId\": \"3\",\r\n    \"customerId\": \"5\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "requestedService",
+									"value": "Test Service 11",
+									"type": "text"
+								},
+								{
+									"key": "serviceDetails",
+									"value": "Car needs new air filter",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "Complete",
+									"type": "text"
+								},
+								{
+									"key": "jobLoadType",
+									"value": "Heavy",
+									"type": "text"
+								},
+								{
+									"key": "carId",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "customerId",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "companyId",
+									"value": "0b22c1e3-0449-45e5-9762-c2db75f80ea7",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Camera Roll/afa-ah-loo-y9hlJqdD0vQ-unsplash.jpg"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{HOST}}/job-orders",
@@ -294,7 +373,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/invoices?skip=10&take=20",
+							"raw": "{{HOST}}/invoices?take=20",
 							"host": [
 								"{{HOST}}"
 							],
@@ -302,10 +381,6 @@
 								"invoices"
 							],
 							"query": [
-								{
-									"key": "skip",
-									"value": "10"
-								},
 								{
 									"key": "take",
 									"value": "20"
@@ -556,6 +631,43 @@
 							"path": [
 								"deposits",
 								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File-Upload",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Uplay/Smiley Face Java.png"
+								},
+								{
+									"key": "test",
+									"value": "I am information",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/file-upload",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"file-upload"
 							]
 						}
 					},

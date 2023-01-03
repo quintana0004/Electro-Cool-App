@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticateJWTMiddleWare } from "../../services/auth.service";
 import {
   httpDeleteAppointment,
   httpGetAllAppointments,
@@ -7,10 +8,10 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllAppointments);
+router.get("/", authenticateJWTMiddleWare, httpGetAllAppointments);
 
-router.post("/", httpUpsertAppointment);
+router.post("/", authenticateJWTMiddleWare, httpUpsertAppointment);
 
-router.delete("/:id", httpDeleteAppointment);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteAppointment);
 
 export default router;

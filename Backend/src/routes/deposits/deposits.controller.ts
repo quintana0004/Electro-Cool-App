@@ -1,9 +1,6 @@
 import { IDeposit } from "./../../types/index.d";
 import { Request, Response } from "express";
-import {
-  handleBadResponse,
-  handleExceptionErrorResponse,
-} from "../../utils/errors.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import {
   isValidCarId,
   isValidCompanyId,
@@ -11,19 +8,13 @@ import {
   hasRequiredDepositFields,
   isValidDespositId,
 } from "../../utils/validators.utils";
-import {
-  deleteDeposit,
-  findAllDeposits,
-  upsertDeposit,
-} from "../../models/deposits.model";
+import { deleteDeposit, findAllDeposits, upsertDeposit } from "../../models/deposits.model";
 
 async function httpGetAllDeposits(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm
-      ? req.query.searchTerm.toString()
-      : "";
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
     const deposits = await findAllDeposits(skip, take, searchTerm);
     return res.status(200).json(deposits);
   } catch (error) {
@@ -40,7 +31,7 @@ async function httpUpsertDeposit(req: Request, res: Response) {
       isAvailable: req.body.isAvailable,
       customerId: req.body.customerId,
       carId: req.body.carId,
-      companyId: req.body.companyId,
+      companyId: req.companyId,
     };
 
     const hasRequiredFields = hasRequiredDepositFields(depositInfo);
