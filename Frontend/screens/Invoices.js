@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { Text, View, StyleSheet } from "react-native";
+
 import TableList from "../components/Invoices/TableList";
+import ToggleButtons from "../components/Invoices/ToggleButtons";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import ActionBtn from "../components/UI/ActionBtn";
 import FilterBtn from "../components/UI/FilterBtn";
@@ -10,36 +11,16 @@ import Colors from "../constants/Colors/Colors";
 import Figures from "../constants/figures/Figures";
 
 function Invoices({ navigation }) {
-  const [isInvoiceActive, setIsInvoiceActive] = useState(false);
+  const [isInvoiceActive, setIsInvoiceActive] = useState(true);
   const [isDepositActive, setIsDepositActive] = useState(false);
 
-  function toggleInvoiceButtonStyles() {
-    if (isInvoiceActive) {
-      return [styles.toggleButton, styles.activeButton];
-    } else {
-      return [styles.toggleButton];
-    }
-  }
-
-  function toggleDepositButtonStyles() {
-    if (isDepositActive) {
-      return [styles.toggleButton, styles.activeButton];
-    } else {
-      return [styles.toggleButton];
-    }
-  }
-
   function toggleButtonState(id) {
-    if (id === "Invoice") {
+    if (id === "Invoice" && isInvoiceActive === false) {
       setIsInvoiceActive((prev) => !prev);
-      if (isDepositActive) {
-        setIsDepositActive((prev) => !prev);
-      }
-    } else if (id === "Deposit") {
       setIsDepositActive((prev) => !prev);
-      if (isInvoiceActive) {
-        setIsInvoiceActive((prev) => !prev);
-      }
+    } else if (id === "Deposit" && isDepositActive === false) {
+      setIsDepositActive((prev) => !prev);
+      setIsInvoiceActive((prev) => !prev);
     }
   }
 
@@ -49,7 +30,6 @@ function Invoices({ navigation }) {
         <MenuDropDown />
       </Header>
       <View style={styles.body}>
-        {/* Action Buttons */}
         <View style={styles.actionButtonGroup}>
           <ActionBtn>Create Deposit</ActionBtn>
 
@@ -59,35 +39,23 @@ function Invoices({ navigation }) {
           </View>
         </View>
 
-        {/* Create Invoice & Deposit Toggler */}
-        <View style={styles.toggleButtonsContainer}>
-          <View style={styles.toggleButtonGroup}>
-            <Pressable
-              style={toggleInvoiceButtonStyles()}
-              onPress={toggleButtonState.bind(this, "Invoice")}
-            >
-              <Image source={Figures.InvoiceDollarIcon} />
-              <Text style={styles.toggleButtonText}>Invoices</Text>
-            </Pressable>
-
-            <Pressable
-              style={toggleDepositButtonStyles()}
-              onPress={toggleButtonState.bind(this, "Deposit")}
-            >
-              <Image source={Figures.DepositDollarIcon} />
-              <Text style={styles.toggleButtonText}>Deposit</Text>
-            </Pressable>
-          </View>
+        <View>
+          <ToggleButtons
+            isInvoiceActive={isInvoiceActive}
+            isDepositActive={isDepositActive}
+            toggleButtonState={toggleButtonState}
+          />
         </View>
 
-        {/* Create Header For Invoice & Deposit List */}
-        <TableList />
-        {/* Create Invoice & Deposit List */}
-        {/* Create Invoice & Desposit Rows */}
+        <View>
+          <TableList tableData={DUMMY_DATA} />
+        </View>
       </View>
     </View>
   );
 }
+
+export default Invoices;
 
 const styles = StyleSheet.create({
   body: {
@@ -103,37 +71,80 @@ const styles = StyleSheet.create({
   actionRightButtonGroup: {
     flexDirection: "row",
   },
-  toggleButtonsContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 25,
-  },
-  toggleButtonGroup: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: 380,
-    borderWidth: 2,
-    borderColor: "rgba(0, 0, 0, 0.25)",
-    borderRadius: 10,
-  },
-  toggleButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 14,
-    width: 190,
-    height: "100%",
-  },
-  toggleButtonText: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-  activeButton: {
-    backgroundColor: "rgba(248, 217, 134, 0.65)",
-    borderRadius: 10,
-  },
 });
 
-export default Invoices;
+// --- Dummy Data ---
+const DUMMY_DATA = [
+  {
+    id: 10000,
+    firstName: "Jan",
+    lastName: "Montalvo",
+    date: "2023-12-22T21:46:33.206Z",
+    totalPrice: 56.7,
+    status: "In Draft",
+  },
+  {
+    id: 10001,
+    firstName: "Jessica",
+    lastName: "Quintana",
+    date: "2022-12-26T21:46:33.206Z",
+    totalPrice: 156.7,
+    status: "Paid",
+  },
+  {
+    id: 100002,
+    firstName: "Luis",
+    lastName: "Telemaco",
+    date: "2022-12-24T21:46:33.206Z",
+    totalPrice: 541.7,
+    status: "Pending",
+  },
+  {
+    id: 10003,
+    firstName: "Hector",
+    lastName: "Montalvo Medina",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 14048.7,
+    status: "Canceled",
+  },
+  {
+    id: 10004,
+    firstName: "Test",
+    lastName: "Montalvo",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 14048.7,
+    status: "In Draft",
+  },
+  {
+    id: 10005,
+    firstName: "Leslie",
+    lastName: "Figueroa",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 1448.7,
+    status: "Canceled",
+  },
+  {
+    id: 10006,
+    firstName: "Ramon",
+    lastName: "Figueroa",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 1448.7,
+    status: "Pending",
+  },
+  {
+    id: 10007,
+    firstName: "Natalia",
+    lastName: "Rivera",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 1448.7,
+    status: "In Draft",
+  },
+  {
+    id: 10008,
+    firstName: "Valeria",
+    lastName: "Medina",
+    date: "2022-12-30T21:46:33.206Z",
+    totalPrice: 1448.7,
+    status: "In Draft",
+  },
+];

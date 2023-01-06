@@ -1,54 +1,51 @@
-import { FlashList } from "@shopify/flash-list";
 import { Text, View, StyleSheet } from "react-native";
+import { format } from "date-fns";
+import Status from "./Status";
 
 function TableItem({ itemData }) {
   const { id, firstName, lastName, date, totalPrice, status } = itemData;
 
-  function formattedDate() {
-    return new Date(date).toDateString();
-  }
-
-  function formattedName() {
-    return `${lastName}, ${firstName}`;
-  }
-
-  function formattedAmount() {
-    return `$${totalPrice}`;
-  }
-
-  function renderRowData({ item }) {
-    return (
-      <View style={{ width: "100%" }}>
-        <Text style={{ flexWrap: "nowrap " }}>{item}</Text>
-      </View>
-    );
+  function DateText() {
+    return format(new Date(date), "MM/dd/yyyy");
   }
 
   return (
     <View style={styles.container}>
-      <FlashList
-        data={[id, formattedName(), formattedDate(), formattedAmount(), status]}
-        renderItem={renderRowData}
-        numColumns={6}
-        estimatedItemSize={6}
-      />
+      <View style={{ width: 80 }}>
+        <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
+      </View>
+      <View style={{ width: 150 }}>
+        <Text style={styles.boldText}>
+          {lastName}, {firstName}
+        </Text>
+      </View>
+      <View style={{ width: 80 }}>
+        <Text style={styles.boldText}>{DateText()}</Text>
+      </View>
+      <View style={{ width: 80, marginLeft: 55 }}>
+        <Text style={styles.boldText}>${totalPrice}</Text>
+      </View>
+      <View style={{ width: 80, marginLeft: 30 }}>
+        <Status parentTextStyles={styles.boldText} status={status} />
+      </View>
     </View>
   );
 }
+
+export default TableItem;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
     height: 50,
     borderWidth: 1.8,
     borderColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: 10,
-    marginRight: 5,
-    marginLeft: 10,
+    marginHorizontal: 10,
     marginBottom: 5,
   },
+  boldText: {
+    fontWeight: "bold",
+  },
 });
-
-export default TableItem;
