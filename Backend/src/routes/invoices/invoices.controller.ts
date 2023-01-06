@@ -30,7 +30,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
     const invoiceInfo: IInvoice = {
       id: req.body.id,
       status: req.body.status,
-      totalPrice: req.body.totalPrice,
+      amountTotal: req.body.amountTotal,
       amountPaid: req.body.amountPaid,
       amountDue: req.body.amountDue,
       createdDate: req.body.createdDate,
@@ -46,7 +46,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create/update invoice. Please provide the following fields: status, totalPrice, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
+        "Missing required fields to create/update invoice. Please provide the following fields: status, amountTotal, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
         res
       );
     }

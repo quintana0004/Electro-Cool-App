@@ -7,7 +7,7 @@ const InvoiceStack = createStackNavigator();
 
 function InvoiceStackOption() {
   return (
-    <InvoiceStack.Navigator>
+    <InvoiceStack.Navigator screenOptions={{ cardStyle: { backgroundColor: "white" } }}>
       <InvoiceStack.Screen
         name="InvoiceMain"
         component={Invoices}

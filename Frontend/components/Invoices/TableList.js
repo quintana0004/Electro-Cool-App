@@ -11,7 +11,7 @@ function TableList({ tableData }) {
       firstName: item.customer.firstName,
       lastName: item.customer.lastName,
       date: item.createdDate,
-      totalPrice: item.totalPrice,
+      amountTotal: item.amountTotal,
       status: item.status,
     };
 

@@ -199,7 +199,7 @@ function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
-    !invoiceInfo.totalPrice ||
+    !invoiceInfo.amountTotal ||
     !invoiceInfo.amountPaid ||
     !invoiceInfo.amountDue ||
     !invoiceInfo.companyId ||
@@ -229,7 +229,8 @@ function hasRequiredInvoiceItemFields(invoiceItemInfo: IInvoiceItem) {
 
 function hasRequiredDepositFields(depositInfo: IDeposit) {
   if (
-    !depositInfo.amount ||
+    !depositInfo.amountTotal ||
+    !depositInfo.status ||
     !depositInfo.description ||
     !depositInfo.isAvailable ||
     !depositInfo.customerId ||

@@ -50,7 +50,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         id: depositInfo?.id ?? -1,
       },
       create: {
-        amount: depositInfo.amount,
+        amountTotal: depositInfo.amountTotal,
+        status: depositInfo.status,
         description: depositInfo.description,
         isAvailable: depositInfo.isAvailable,
         customerId: depositInfo.customerId,
@@ -58,7 +59,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         companyId: depositInfo.companyId,
       },
       update: {
-        amount: depositInfo.amount,
+        amountTotal: depositInfo.amountTotal,
+        status: depositInfo.status,
         description: depositInfo.description,
         isAvailable: depositInfo.isAvailable,
         customerId: depositInfo.customerId,

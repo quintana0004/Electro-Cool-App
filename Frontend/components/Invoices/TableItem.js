@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import Status from "./Status";
 
 function TableItem({ itemData }) {
-  const { id, firstName, lastName, date, totalPrice, status } = itemData;
+  const { id, firstName, lastName, date, amountTotal, status } = itemData;
 
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
@@ -23,7 +23,7 @@ function TableItem({ itemData }) {
         <Text style={styles.boldText}>{DateText()}</Text>
       </View>
       <View style={{ width: 80, marginLeft: 55 }}>
-        <Text style={styles.boldText}>${totalPrice}</Text>
+        <Text style={styles.boldText}>${amountTotal}</Text>
       </View>
       <View style={{ width: 80, marginLeft: 30 }}>
         <Status parentTextStyles={styles.boldText} status={status} />

@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/", httpGetAllInvoices);
 
-router.post("/", httpUpsertInvoice);
+router.post("/", authenticateJWTMiddleWare, httpUpsertInvoice);
 
 export default router;

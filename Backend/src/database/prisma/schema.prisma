@@ -120,7 +120,7 @@ model JobOrder {
 model Invoice {
   id           Int            @id @default(autoincrement())
   status       String         @db.VarChar(100)
-  totalPrice   String         @db.VarChar(50)
+  amountTotal  String         @db.VarChar(50)
   amountPaid   String         @db.VarChar(50)
   amountDue    String         @db.VarChar(50)
   createdDate  DateTime       @default(now()) @db.Timestamptz(6)
@@ -151,7 +151,8 @@ model Invoice_Item {
 
 model Deposit {
   id           Int      @id @default(autoincrement())
-  amount       String   @db.VarChar(20)
+  status       String   @db.VarChar(100)
+  amountTotal  String   @db.VarChar(20)
   description  String
   isAvailable  Boolean
   createdDate  DateTime @default(now()) @db.Timestamptz(6)

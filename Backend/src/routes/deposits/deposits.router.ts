@@ -4,7 +4,7 @@ import { httpDeleteDeposit, httpGetAllDeposits, httpUpsertDeposit } from "./depo
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllDeposits);
+router.get("/", httpGetAllDeposits);
 
 router.post("/", authenticateJWTMiddleWare, httpUpsertDeposit);
 

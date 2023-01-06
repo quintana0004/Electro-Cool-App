@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -18,6 +18,12 @@ function Invoices({ navigation }) {
   const TAKE = 15;
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("Invoices");
+  const [filters, setFilters] = useState({
+    Paid: false,
+    Pending: false,
+    Canceled: false,
+    "In Draft": false,
+  });
 
   async function navigateToFindExistingClientScreen() {
     navigation.navigate("ExistingClients");
@@ -67,8 +73,10 @@ function Invoices({ navigation }) {
           <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Deposit</ActionBtn>
 
           <View style={styles.actionRightButtonGroup}>
-            <FilterBtn image={Figures.FilterIcon} />
-            <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Invoice</ActionBtn>
+            <FilterBtn filters={filters} updateFilters={setFilters} image={Figures.FilterIcon} />
+            <ActionBtn style={{ marginLeft: 10 }} onPress={navigateToFindExistingClientScreen}>
+              Create Invoice
+            </ActionBtn>
           </View>
         </View>
 

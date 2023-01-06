@@ -26,7 +26,8 @@ async function httpUpsertDeposit(req: Request, res: Response) {
   try {
     const depositInfo: IDeposit = {
       id: req.body.id,
-      amount: req.body.amount,
+      status: req.body.status,
+      amountTotal: req.body.amountTotal,
       description: req.body.description,
       isAvailable: req.body.isAvailable,
       customerId: req.body.customerId,
@@ -38,7 +39,7 @@ async function httpUpsertDeposit(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create/update deposit. Please provide the following fields: , amount, description, isAvailable, customerId, carId, invoiceId and companyId.",
+        "Missing required fields to create/update deposit. Please provide the following fields: status, amountTotal, description, isAvailable, customerId, carId, invoiceId and companyId.",
         res
       );
     }

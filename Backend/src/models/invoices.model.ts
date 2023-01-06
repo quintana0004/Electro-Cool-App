@@ -11,7 +11,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       create: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
@@ -20,7 +20,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       update: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
