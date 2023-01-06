@@ -1,9 +1,25 @@
+import { useState } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 import Figures from "../../constants/figures/Figures";
 
-function ToggleButtons({ toggleButtonState, isInvoiceActive, isDepositActive }) {
+function ToggleButtons({ toggleActiveCategory }) {
+  const [isInvoiceActive, setIsInvoiceActive] = useState(true);
+  const [isDepositActive, setIsDepositActive] = useState(false);
+
+  function toggleButtonState(id) {
+    if (id === "Invoice" && isInvoiceActive === false) {
+      setIsInvoiceActive((prev) => !prev);
+      setIsDepositActive((prev) => !prev);
+      toggleActiveCategory("Invoices");
+    } else if (id === "Deposit" && isDepositActive === false) {
+      setIsDepositActive((prev) => !prev);
+      setIsInvoiceActive((prev) => !prev);
+      toggleActiveCategory("Deposits");
+    }
+  }
+
   function toggleInvoiceButtonStyles() {
     if (isInvoiceActive) {
       return [styles.toggleButton, styles.activeButton];

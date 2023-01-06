@@ -1,6 +1,33 @@
-import { IDeposit } from "./../types/index.d";
 import prisma from "../database/prisma";
-import { Deposit } from "@prisma/client";
+import { IDeposit } from "./../types/index.d";
+
+async function findAllDeposits(skip: number, take: number, searchTerm: string | undefined) {
+  try {
+    const name = searchTerm ? searchTerm : undefined;
+    const AllDeposit = await prisma.deposit.findMany({
+      skip,
+      take,
+      where: {
+        customer: {
+          fullName: {
+            contains: name,
+          },
+        },
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+    return AllDeposit;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function findDespositById(id: number) {
   try {
@@ -46,10 +73,7 @@ async function upsertDeposit(depositInfo: IDeposit) {
   }
 }
 
-async function updateDepositsParentInvoice(
-  depositIds: number[],
-  invoiceId: number
-) {
+async function updateDepositsParentInvoice(depositIds: number[], invoiceId: number) {
   try {
     let deposits = await prisma.deposit.updateMany({
       where: {
@@ -81,34 +105,11 @@ async function deleteDeposit(id: number) {
     throw error;
   }
 }
-async function findAllDeposits(
-  skip: number,
-  take: number,
-  searchTerm: string | undefined
-) {
-  try {
-    const name = searchTerm ? searchTerm : undefined;
-    const AllDeposit = await prisma.deposit.findMany({
-      skip,
-      take,
-      where: {
-        customer: {
-          fullName: {
-            contains: name,
-          },
-        },
-      },
-    });
-    return AllDeposit;
-  } catch (error) {
-    throw error;
-  }
-}
 
 export {
+  findAllDeposits,
   findDespositById,
   upsertDeposit,
   updateDepositsParentInvoice,
   deleteDeposit,
-  findAllDeposits,
 };

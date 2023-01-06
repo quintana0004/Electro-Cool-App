@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import TableList from "../components/Invoices/TableList";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
@@ -10,18 +11,50 @@ import Header from "../components/UI/Header";
 import Colors from "../constants/Colors/Colors";
 import Figures from "../constants/figures/Figures";
 
-function Invoices({ navigation }) {
-  const [isInvoiceActive, setIsInvoiceActive] = useState(true);
-  const [isDepositActive, setIsDepositActive] = useState(false);
+import { httpGetAllInvoices } from "../api/invoices.api";
+import { httpGetAllDeposits } from "../api/deposits.api";
 
-  function toggleButtonState(id) {
-    if (id === "Invoice" && isInvoiceActive === false) {
-      setIsInvoiceActive((prev) => !prev);
-      setIsDepositActive((prev) => !prev);
-    } else if (id === "Deposit" && isDepositActive === false) {
-      setIsDepositActive((prev) => !prev);
-      setIsInvoiceActive((prev) => !prev);
+function Invoices({ navigation }) {
+  const TAKE = 15;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("Invoices");
+
+  async function navigateToFindExistingClientScreen() {
+    navigation.navigate("ExistingClients");
+  }
+
+  async function getInvoicesHomeScreenData({ pageParam = 0 }) {
+    let skip = pageParam * TAKE;
+    let data = null;
+    if (activeCategory === "Invoices") {
+      data = await httpGetAllInvoices(TAKE, skip, searchTerm);
+    } else {
+      data = await httpGetAllDeposits(TAKE, skip, searchTerm);
     }
+
+    return data;
+  }
+
+  const { isLoading, data, error, isError, hasNextPage, fetchNextPage } = useInfiniteQuery(
+    ["InvoicesHomeData"],
+    getInvoicesHomeScreenData,
+    {
+      getNextPageParam: (lastPage) => {
+        if (lastPage !== null) {
+          return lastPage.next;
+        }
+
+        return lastPage;
+      },
+    }
+  );
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text style={{ fontSize: 40, fontWeight: "bold" }}>I AM LOADING</Text>
+      </View>
+    );
   }
 
   return (
@@ -31,25 +64,19 @@ function Invoices({ navigation }) {
       </Header>
       <View style={styles.body}>
         <View style={styles.actionButtonGroup}>
-          <ActionBtn>Create Deposit</ActionBtn>
+          <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Deposit</ActionBtn>
 
           <View style={styles.actionRightButtonGroup}>
             <FilterBtn image={Figures.FilterIcon} />
-            <ActionBtn>Create Invoice</ActionBtn>
+            <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Invoice</ActionBtn>
           </View>
         </View>
 
         <View>
-          <ToggleButtons
-            isInvoiceActive={isInvoiceActive}
-            isDepositActive={isDepositActive}
-            toggleButtonState={toggleButtonState}
-          />
+          <ToggleButtons toggleActiveCategory={setActiveCategory} />
         </View>
 
-        <View>
-          <TableList tableData={DUMMY_DATA} />
-        </View>
+        <TableList tableData={data.pages.map((p) => p.data).flat()} />
       </View>
     </View>
   );
@@ -72,79 +99,3 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
-
-// --- Dummy Data ---
-const DUMMY_DATA = [
-  {
-    id: 10000,
-    firstName: "Jan",
-    lastName: "Montalvo",
-    date: "2023-12-22T21:46:33.206Z",
-    totalPrice: 56.7,
-    status: "In Draft",
-  },
-  {
-    id: 10001,
-    firstName: "Jessica",
-    lastName: "Quintana",
-    date: "2022-12-26T21:46:33.206Z",
-    totalPrice: 156.7,
-    status: "Paid",
-  },
-  {
-    id: 100002,
-    firstName: "Luis",
-    lastName: "Telemaco",
-    date: "2022-12-24T21:46:33.206Z",
-    totalPrice: 541.7,
-    status: "Pending",
-  },
-  {
-    id: 10003,
-    firstName: "Hector",
-    lastName: "Montalvo Medina",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 14048.7,
-    status: "Canceled",
-  },
-  {
-    id: 10004,
-    firstName: "Test",
-    lastName: "Montalvo",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 14048.7,
-    status: "In Draft",
-  },
-  {
-    id: 10005,
-    firstName: "Leslie",
-    lastName: "Figueroa",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 1448.7,
-    status: "Canceled",
-  },
-  {
-    id: 10006,
-    firstName: "Ramon",
-    lastName: "Figueroa",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 1448.7,
-    status: "Pending",
-  },
-  {
-    id: 10007,
-    firstName: "Natalia",
-    lastName: "Rivera",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 1448.7,
-    status: "In Draft",
-  },
-  {
-    id: 10008,
-    firstName: "Valeria",
-    lastName: "Medina",
-    date: "2022-12-30T21:46:33.206Z",
-    totalPrice: 1448.7,
-    status: "In Draft",
-  },
-];

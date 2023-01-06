@@ -11,6 +11,7 @@ import {
 } from "../../utils/validators.utils";
 import { upsertInvoice } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
+
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
     let skip = req.query.skip ? +req.query.skip : 0;

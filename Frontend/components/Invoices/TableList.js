@@ -1,20 +1,27 @@
 import { FlashList } from "@shopify/flash-list";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 
 import TableHeader from "./TableHeader";
 import TableItem from "./TableItem";
 
 function TableList({ tableData }) {
   function renderTableItem({ item }) {
-    return <TableItem itemData={item} />;
+    const itemInfo = {
+      id: item.id,
+      firstName: item.customer.firstName,
+      lastName: item.customer.lastName,
+      date: item.createdDate,
+      totalPrice: item.totalPrice,
+      status: item.status,
+    };
+
+    return <TableItem itemData={itemInfo} />;
   }
 
   return (
-    <View>
-      <View style={styles.listContainer}>
-        <TableHeader />
-        <FlashList data={tableData} renderItem={renderTableItem} estimatedItemSize={20} />
-      </View>
+    <View style={styles.listContainer}>
+      <TableHeader />
+      <FlatList data={tableData} renderItem={renderTableItem} estimatedItemSize={10} />
     </View>
   );
 }
@@ -22,6 +29,7 @@ function TableList({ tableData }) {
 const styles = StyleSheet.create({
   listContainer: {
     height: 500,
+    width: Dimensions.get("screen").width,
   },
 });
 

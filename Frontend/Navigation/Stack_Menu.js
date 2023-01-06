@@ -3,20 +3,18 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 //Screens to connect
 import Dashboard from "../screens/Dashboard";
-import Invoices from "../screens/Invoices";
 import Calendar from "../screens/Calendar";
 import ClientBook from "../screens/ClientBook";
 import Setting from "../screens/Settings";
 import JobOrderStackOption from "./JobOrder_Stack";
+import InvoiceStackOption from "./Invoice_Stack";
 
 //Connection navigator stack
 const Stack = createStackNavigator();
 
 function MenuStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{ cardStyle: { backgroundColor: "white" } }}
-    >
+    <Stack.Navigator screenOptions={{ cardStyle: { backgroundColor: "white" } }}>
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
@@ -29,7 +27,7 @@ function MenuStack() {
       />
       <Stack.Screen
         name="Invoices"
-        component={Invoices}
+        component={InvoiceStackOption}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <Stack.Screen

@@ -4,8 +4,8 @@ import { httpGetAllInvoices, httpUpsertInvoice } from "./invoices.controller";
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllInvoices);
+router.get("/", httpGetAllInvoices);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertInvoice);
+router.post("/", httpUpsertInvoice);
 
 export default router;

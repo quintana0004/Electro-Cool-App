@@ -118,6 +118,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     throw error;
   }
 }
+
 async function findAllInvoices(skip: number, take: number, searchTerm: string | undefined) {
   try {
     const term = searchTerm ? searchTerm : undefined;
@@ -128,6 +129,14 @@ async function findAllInvoices(skip: number, take: number, searchTerm: string | 
         customer: {
           fullName: {
             contains: term,
+          },
+        },
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
           },
         },
       },
