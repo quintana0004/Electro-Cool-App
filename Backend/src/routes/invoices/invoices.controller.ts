@@ -14,12 +14,12 @@ import { findAllInvoices } from "../../models/invoices.model";
 
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : 0;
+    let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     //this variable will work with both full name and phone number to convert it to string.
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
-    const Invoices = await findAllInvoices(skip, take, searchTerm);
-    return res.status(200).json(Invoices);
+    const invoicesData = await findAllInvoices(page, take, searchTerm);
+    return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
   }

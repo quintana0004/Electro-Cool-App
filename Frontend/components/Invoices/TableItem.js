@@ -1,8 +1,9 @@
 import { Text, View, StyleSheet } from "react-native";
 import { format } from "date-fns";
 import Status from "./Status";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
-function TableItem({ itemData }) {
+function TableItem({ itemData, onPress }) {
   const { id, firstName, lastName, date, amountTotal, status } = itemData;
 
   function DateText() {
@@ -10,24 +11,28 @@ function TableItem({ itemData }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={{ width: 80 }}>
-        <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
-      </View>
-      <View style={{ width: 150 }}>
-        <Text style={styles.boldText}>
-          {lastName}, {firstName}
-        </Text>
-      </View>
-      <View style={{ width: 80 }}>
-        <Text style={styles.boldText}>{DateText()}</Text>
-      </View>
-      <View style={{ width: 80, marginLeft: 55 }}>
-        <Text style={styles.boldText}>${amountTotal}</Text>
-      </View>
-      <View style={{ width: 80, marginLeft: 30 }}>
-        <Status parentTextStyles={styles.boldText} status={status} />
-      </View>
+    <View>
+      <Pressable onPress={onPress.bind(this, id)}>
+        <View style={styles.container}>
+          <View style={{ width: 80 }}>
+            <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
+          </View>
+          <View style={{ width: 150 }}>
+            <Text style={styles.boldText}>
+              {lastName}, {firstName}
+            </Text>
+          </View>
+          <View style={{ width: 80 }}>
+            <Text style={styles.boldText}>{DateText()}</Text>
+          </View>
+          <View style={{ width: 80, marginLeft: 55 }}>
+            <Text style={styles.boldText}>${amountTotal}</Text>
+          </View>
+          <View style={{ width: 80, marginLeft: 30 }}>
+            <Status parentTextStyles={styles.boldText} status={status} />
+          </View>
+        </View>
+      </Pressable>
     </View>
   );
 }

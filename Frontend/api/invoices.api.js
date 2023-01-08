@@ -1,7 +1,7 @@
 import axios from "./axios";
 
-export async function httpGetAllInvoices(take, skip, searchTerm) {
-  const queryParams = `?take=${take}&skip=${skip}&${searchTerm}`;
-  const invoices = await axios("/invoices" + queryParams);
-  return invoices;
+export async function httpGetAllInvoices(take, page, searchTerm) {
+  const queryParams = `?take=${take}&page=${page}&${searchTerm}`;
+  const response = await axios("/invoices" + queryParams);
+  return response;
 }

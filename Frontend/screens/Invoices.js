@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { View, StyleSheet } from "react-native";
 
 import TableList from "../components/Invoices/TableList";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import ActionBtn from "../components/UI/ActionBtn";
-import FilterBtn from "../components/UI/FilterBtn";
+import Filter from "../components/UI/Filter";
 import Header from "../components/UI/Header";
 import Colors from "../constants/Colors/Colors";
 import Figures from "../constants/figures/Figures";
 
-import { httpGetAllInvoices } from "../api/invoices.api";
-import { httpGetAllDeposits } from "../api/deposits.api";
-
 function Invoices({ navigation }) {
-  const TAKE = 15;
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("Invoices");
   const [filters, setFilters] = useState({
@@ -29,38 +24,8 @@ function Invoices({ navigation }) {
     navigation.navigate("ExistingClients");
   }
 
-  async function getInvoicesHomeScreenData({ pageParam = 0 }) {
-    let skip = pageParam * TAKE;
-    let data = null;
-    if (activeCategory === "Invoices") {
-      data = await httpGetAllInvoices(TAKE, skip, searchTerm);
-    } else {
-      data = await httpGetAllDeposits(TAKE, skip, searchTerm);
-    }
-
-    return data;
-  }
-
-  const { isLoading, data, error, isError, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ["InvoicesHomeData"],
-    getInvoicesHomeScreenData,
-    {
-      getNextPageParam: (lastPage) => {
-        if (lastPage !== null) {
-          return lastPage.next;
-        }
-
-        return lastPage;
-      },
-    }
-  );
-
-  if (isLoading) {
-    return (
-      <View>
-        <Text style={{ fontSize: 40, fontWeight: "bold" }}>I AM LOADING</Text>
-      </View>
-    );
+  async function updateActiveCategory(category) {
+    setActiveCategory(category);
   }
 
   return (
@@ -73,7 +38,7 @@ function Invoices({ navigation }) {
           <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Deposit</ActionBtn>
 
           <View style={styles.actionRightButtonGroup}>
-            <FilterBtn filters={filters} updateFilters={setFilters} image={Figures.FilterIcon} />
+            <Filter filters={filters} updateFilters={setFilters} image={Figures.FilterIcon} />
             <ActionBtn style={{ marginLeft: 10 }} onPress={navigateToFindExistingClientScreen}>
               Create Invoice
             </ActionBtn>
@@ -81,10 +46,13 @@ function Invoices({ navigation }) {
         </View>
 
         <View>
-          <ToggleButtons toggleActiveCategory={setActiveCategory} />
+          <ToggleButtons
+            toggleActiveCategory={updateActiveCategory}
+            activeCategory={activeCategory}
+          />
         </View>
 
-        <TableList tableData={data.pages.map((p) => p.data).flat()} />
+        <TableList activeCategory={activeCategory} searchTerm={searchTerm} />
       </View>
     </View>
   );

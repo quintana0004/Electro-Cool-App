@@ -1,12 +1,14 @@
 import prisma from "../database/prisma";
 import { IDeposit } from "./../types/index.d";
 
-async function findAllDeposits(skip: number, take: number, searchTerm: string | undefined) {
+async function findAllDeposits(page: number, take: number, searchTerm: string | undefined) {
   try {
     const name = searchTerm ? searchTerm : undefined;
-    const AllDeposit = await prisma.deposit.findMany({
-      skip,
-      take,
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+    const deposits = await prisma.deposit.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
         customer: {
           fullName: {
@@ -23,7 +25,13 @@ async function findAllDeposits(skip: number, take: number, searchTerm: string | 
         },
       },
     });
-    return AllDeposit;
+
+    const depositsData = {
+      data: deposits.slice(0, take),
+      isLastPage: deposits.length <= take,
+      currentPage: page,
+    };
+    return depositsData;
   } catch (error) {
     throw error;
   }

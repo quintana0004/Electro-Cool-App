@@ -4,9 +4,9 @@ import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 import Figures from "../../constants/figures/Figures";
 
-function ToggleButtons({ toggleActiveCategory }) {
-  const [isInvoiceActive, setIsInvoiceActive] = useState(true);
-  const [isDepositActive, setIsDepositActive] = useState(false);
+function ToggleButtons({ toggleActiveCategory, activeCategory }) {
+  const [isInvoiceActive, setIsInvoiceActive] = useState(activeCategory === "Invoices");
+  const [isDepositActive, setIsDepositActive] = useState(activeCategory === "Deposits");
 
   function toggleButtonState(id) {
     if (id === "Invoice" && isInvoiceActive === false) {

@@ -1,7 +1,7 @@
 import axios from "./axios";
 
-export async function httpGetAllDeposits(take, skip, searchTerm) {
-  const queryParams = `?take=${take}&skip=${skip}&${searchTerm}`;
+export async function httpGetAllDeposits(take, page, searchTerm) {
+  const queryParams = `?take=${take}&page=${page}&${searchTerm}`;
   const deposits = await axios("/deposits" + queryParams);
   return deposits;
 }
