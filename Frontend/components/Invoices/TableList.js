@@ -8,12 +8,12 @@ import { httpGetAllInvoices } from "../../api/invoices.api";
 import TableHeader from "./TableHeader";
 import TableItem from "./TableItem";
 
-function TableList({ activeCategory, searchTerm }) {
+function TableList({ activeCategory, searchTerm, filters }) {
   const TAKE = 15;
   const navigation = useNavigation();
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ["InvoicesHomeData", activeCategory],
+    ["InvoicesHomeData", activeCategory, searchTerm],
     getInvoicesHomeScreenData,
     {
       getNextPageParam: (lastPage) => {
@@ -44,7 +44,28 @@ function TableList({ activeCategory, searchTerm }) {
       tableData.push(...items.data);
     }
 
-    return tableData;
+    const filteredData = filterTableData(tableData);
+    return filteredData;
+  }
+
+  function filterTableData(tableData) {
+    let activeFilters = [];
+    for (const [filterKey, filterValue] of Object.entries(filters)) {
+      if (filterValue) {
+        activeFilters.push(filterKey);
+      }
+    }
+
+    let filteredData = tableData;
+    if (activeFilters.length > 0) {
+      const activeFilterChecker = (data) => {
+        return activeFilters.some((element) => data.status.includes(element));
+      };
+
+      filteredData = tableData.filter(activeFilterChecker);
+    }
+
+    return filteredData;
   }
 
   function loadMoreData() {
@@ -54,7 +75,6 @@ function TableList({ activeCategory, searchTerm }) {
   }
 
   function navigateToDetailScreen(itemId) {
-    console.log("Item Id: ", itemId);
     if (activeCategory === "Invoices") {
       navigation.navigate("InvoiceDetail", { itemId });
     } else {

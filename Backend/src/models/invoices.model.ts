@@ -8,6 +8,7 @@ async function findAllInvoices(page: number, take: number, searchTerm: string | 
     const term = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
+
     const invoices = await prisma.invoice.findMany({
       skip: skipAmount,
       take: overFetchAmount,

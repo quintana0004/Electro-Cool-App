@@ -7,6 +7,7 @@ import MenuDropDown from "../components/Navigation/MenuDropDown";
 import ActionBtn from "../components/UI/ActionBtn";
 import Filter from "../components/UI/Filter";
 import Header from "../components/UI/Header";
+import SearchBar from "../components/UI/SearchBar";
 import Colors from "../constants/Colors/Colors";
 import Figures from "../constants/figures/Figures";
 
@@ -20,18 +21,30 @@ function Invoices({ navigation }) {
     "In Draft": false,
   });
 
-  async function navigateToFindExistingClientScreen() {
+  function navigateToFindExistingClientScreen() {
     navigation.navigate("ExistingClients");
   }
 
-  async function updateActiveCategory(category) {
+  function updateActiveCategory(category) {
     setActiveCategory(category);
+  }
+
+  function updateSearchTerm(term) {
+    setSearchTerm(term);
   }
 
   return (
     <View>
       <Header divideH={6} divideW={1} colorHeader={Colors.darkBlack}>
         <MenuDropDown />
+        <View style={{ flex: 1, justifyContent: "center", marginLeft: 35, marginTop: 20 }}>
+          <SearchBar
+            widthBar={350}
+            heightBar={60}
+            placeholderText="Search by ID or Name"
+            onSearch={updateSearchTerm}
+          />
+        </View>
       </Header>
       <View style={styles.body}>
         <View style={styles.actionButtonGroup}>
@@ -52,7 +65,7 @@ function Invoices({ navigation }) {
           />
         </View>
 
-        <TableList activeCategory={activeCategory} searchTerm={searchTerm} />
+        <TableList activeCategory={activeCategory} searchTerm={searchTerm} filters={filters} />
       </View>
     </View>
   );
@@ -73,5 +86,8 @@ const styles = StyleSheet.create({
   },
   actionRightButtonGroup: {
     flexDirection: "row",
+  },
+  search: {
+    marginTop: 50,
   },
 });

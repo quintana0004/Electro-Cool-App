@@ -8,6 +8,7 @@ import {
   isIsoDate,
 } from "../../utils/validators.utils";
 import { deleteAppointment, upsertAppointment } from "../../models/appointments.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
   try {
@@ -19,6 +20,9 @@ async function httpGetAllAppointments(req: Request, res: Response) {
 
 async function httpUpsertAppointment(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const appointmentInfo: IAppointment = {
       id: req.body.id,
       service: req.body.service,
@@ -29,7 +33,7 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       customerName: req.body.customerName,
       phone: req.body.phone,
       email: req.body.email,
-      companyId: req.companyId,
+      companyId: companyId,
     };
 
     const hasRequiredFields = hasRequiredAppointmentFields(appointmentInfo);

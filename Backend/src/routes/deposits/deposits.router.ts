@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/", httpGetAllDeposits);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertDeposit);
+router.post("/", httpUpsertDeposit);
 
-router.delete("/:id", authenticateJWTMiddleWare, httpDeleteDeposit);
+router.delete("/:id", httpDeleteDeposit);
 
 export default router;

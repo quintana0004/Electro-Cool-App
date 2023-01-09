@@ -9,12 +9,14 @@ import {
   isValidDespositId,
 } from "../../utils/validators.utils";
 import { deleteDeposit, findAllDeposits, upsertDeposit } from "../../models/deposits.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllDeposits(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+
     const depositsData = await findAllDeposits(page, take, searchTerm);
     return res.status(200).json(depositsData);
   } catch (error) {
@@ -24,6 +26,9 @@ async function httpGetAllDeposits(req: Request, res: Response) {
 
 async function httpUpsertDeposit(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const depositInfo: IDeposit = {
       id: req.body.id,
       status: req.body.status,
@@ -32,7 +37,7 @@ async function httpUpsertDeposit(req: Request, res: Response) {
       isAvailable: req.body.isAvailable,
       customerId: req.body.customerId,
       carId: req.body.carId,
-      companyId: req.companyId,
+      companyId: companyId,
     };
 
     const hasRequiredFields = hasRequiredDepositFields(depositInfo);

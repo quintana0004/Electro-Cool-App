@@ -4,6 +4,6 @@ import { httpGetAllPayments } from "./payments.controller";
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllPayments);
+router.get("/", httpGetAllPayments);
 
 export default router;

@@ -5,13 +5,8 @@ import { httpGetAllJobOrders, httpUpsertJobOrder } from "./job-orders.controller
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllJobOrders);
+router.get("/", httpGetAllJobOrders);
 
-router.post(
-  "/",
-  authenticateJWTMiddleWare,
-  multerUploadMiddleware.single("image"),
-  httpUpsertJobOrder
-);
+router.post("/", multerUploadMiddleware.single("image"), httpUpsertJobOrder);
 
 export default router;

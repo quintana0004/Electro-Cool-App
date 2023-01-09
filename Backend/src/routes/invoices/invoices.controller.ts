@@ -11,6 +11,7 @@ import {
 } from "../../utils/validators.utils";
 import { upsertInvoice } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
@@ -27,6 +28,9 @@ async function httpGetAllInvoices(req: Request, res: Response) {
 
 async function httpUpsertInvoice(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const invoiceInfo: IInvoice = {
       id: req.body.id,
       status: req.body.status,
@@ -35,7 +39,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
       amountDue: req.body.amountDue,
       createdDate: req.body.createdDate,
       lastModified: req.body.lastModified,
-      companyId: req.companyId,
+      companyId: companyId,
       customerId: req.body.customerId,
       carId: req.body.carId,
       invoiceItems: req.body.invoiceItems,

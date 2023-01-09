@@ -6,6 +6,7 @@ async function findAllDeposits(page: number, take: number, searchTerm: string | 
     const name = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
+
     const deposits = await prisma.deposit.findMany({
       skip: skipAmount,
       take: overFetchAmount,
