@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\"\r\n}",
+							"raw": "{\r\n    \"email\": \"jmontalvo1@cobaltopr.com\",\r\n    \"password\": \"P@ssw0rd!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"jmontalvo4@cobaltopr.com\",\r\n    \"password\": \"test123\",\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"username\": \"mikenight124\"\r\n}",
+							"raw": "{\r\n    \"email\": \"jmontalvo23@cobaltopr.com\",\r\n    \"password\": \"test123\",\r\n    \"firstName\": \"Joseph\",\r\n    \"lastName\": \"Rivera\",\r\n    \"phone\": \"7877101074\",\r\n    \"username\": \"mikenight201\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -123,7 +123,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/customers?take=5&skip=1&isActiveJobs=true",
+							"raw": "{{HOST}}/customers?take=5",
 							"host": [
 								"{{HOST}}"
 							],
@@ -137,7 +137,8 @@
 								},
 								{
 									"key": "skip",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								},
 								{
 									"key": "searchTerm",
@@ -146,7 +147,8 @@
 								},
 								{
 									"key": "isActiveJobs",
-									"value": "true"
+									"value": "true",
+									"disabled": true
 								}
 							]
 						}
@@ -160,7 +162,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Michael\",\r\n    \"lastName\": \"Medina\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo2@cobaltopr.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Pepe\",\r\n    \"lastName\": \"Pomales\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo13@cobaltopr.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -174,6 +176,42 @@
 							],
 							"path": [
 								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/customers/25",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"customers",
+								"25"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/customers/25",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"customers",
+								"25"
 							]
 						}
 					},
@@ -220,7 +258,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTMZ01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME3845XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"12\"\r\n}",
+							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTM3Z01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME38453XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"26\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -234,6 +272,42 @@
 							],
 							"path": [
 								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Car",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/cars/8",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cars",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Car",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/cars/8",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cars",
+								"8"
 							]
 						}
 					},
@@ -330,12 +404,12 @@
 								},
 								{
 									"key": "carId",
-									"value": "6",
+									"value": "8",
 									"type": "text"
 								},
 								{
 									"key": "customerId",
-									"value": "12",
+									"value": "25",
 									"type": "text"
 								},
 								{
@@ -346,7 +420,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/janmm/Pictures/Camera Roll/afa-ah-loo-y9hlJqdD0vQ-unsplash.jpg"
+									"src": "/C:/Users/janmm/Pictures/Camera Roll/4.PNG"
 								}
 							]
 						},
@@ -357,6 +431,42 @@
 							],
 							"path": [
 								"job-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/job-orders/22",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"job-orders",
+								"22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Job Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/job-orders/22",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"job-orders",
+								"22"
 							]
 						}
 					},
@@ -373,7 +483,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/invoices?take=20",
+							"raw": "{{HOST}}/invoices?take=15&page=0&searchTerm=Abneris",
 							"host": [
 								"{{HOST}}"
 							],
@@ -383,7 +493,15 @@
 							"query": [
 								{
 									"key": "take",
-									"value": "20"
+									"value": "15"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "searchTerm",
+									"value": "Abneris"
 								}
 							]
 						}
@@ -397,7 +515,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"Paid\",\r\n    \"totalPrice\": \"$34.56\",\r\n    \"amountPaid\": \"$50.24\",\r\n    \"amountDue\": \"$21.34\",\r\n    \"customerId\": 1,\r\n    \"carId\": 3,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"id\": 13,\r\n            \"description\": \"Alternador\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$99.24\",\r\n            \"totalPrice\": \"$198.48\",\r\n            \"warranty\": \"N/W\"\r\n        },\r\n        {\r\n            \"id\": 14,\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"id\": 15,\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"id\": 16,\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"status\": \"Pending\",\r\n    \"amountTotal\": \"14256.56\",\r\n    \"amountPaid\": \"450.58\",\r\n    \"amountDue\": \"1574.58\",\r\n    \"customerId\": 26,\r\n    \"carId\": 9,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -411,6 +529,42 @@
 							],
 							"path": [
 								"invoices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/invoices/46",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"invoices",
+								"46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Invoice",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/invoices/46",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"invoices",
+								"46"
 							]
 						}
 					},
@@ -433,6 +587,174 @@
 							],
 							"path": [
 								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Check Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "Check",
+									"type": "text"
+								},
+								{
+									"key": "bankStatus",
+									"value": "Pending Transaction",
+									"type": "text"
+								},
+								{
+									"key": "invoiceId",
+									"value": "47",
+									"type": "text"
+								},
+								{
+									"key": "checkFrontImage",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Snip-and-Sketch.png"
+								},
+								{
+									"key": "checkBackImage",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/react.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/payments/check-payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments",
+								"check-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Card Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "VISA/ATH",
+									"type": "text"
+								},
+								{
+									"key": "invoiceId",
+									"value": "47",
+									"type": "text"
+								},
+								{
+									"key": "athEvidence",
+									"type": "file",
+									"src": "/C:/Users/janmm/Pictures/Computer Architecture/Question 6.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/payments/card-payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments",
+								"card-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert Cash Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 5,\r\n    \"type\": \"Cash\",\r\n    \"amountPaid\": \"12.25\",\r\n    \"invoiceId\": 47\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/payments/cash-payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments",
+								"cash-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert ATH Movil Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"ATH Mobil\",\r\n    \"referenceNumber\": \"111957\",\r\n    \"invoiceId\": 47\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/payments/ath-movil-payment",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments",
+								"ath-movil-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/payments/4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"payments",
+								"4"
 							]
 						}
 					},
@@ -467,7 +789,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"service\": \"Oil Pump\",\r\n    \"description\": \"Male sure to revise breaks and add to final fee\",\r\n    \"arrivalDateTime\": \"09/24/2022 07:30:14\",\r\n    \"model\": \"Rav4\",\r\n    \"licensePlate\": \"JTM093\",\r\n    \"customerName\": \"Jan Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@gmail.com\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n    \"service\": \"Oil Pump\",\r\n    \"description\": \"Male sure to revise breaks and add to final fee\",\r\n    \"arrivalDateTime\": \"2021-08-10T00:00:00.000Z\",\r\n    \"model\": \"Rav4\",\r\n    \"licensePlate\": \"JTM093\",\r\n    \"customerName\": \"Jan Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@gmail.com\",\r\n    \"customerId\": 25,\r\n    \"carId\": 8\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -499,6 +821,24 @@
 							"path": [
 								"appointments",
 								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/appointments/13",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"appointments",
+								"13"
 							]
 						}
 					},
@@ -581,12 +921,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/deposits",
+							"raw": "{{HOST}}/deposits?take=20",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"deposits"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "20"
+								}
 							]
 						}
 					},
@@ -599,7 +945,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"amount\": \"$1405.67\",\r\n    \"description\": \"Second Down Payment for Windshield\",\r\n    \"isAvailable\": true,\r\n    \"customerId\": 3,\r\n    \"carId\": 3,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n    \"status\": \"In Draft\",\r\n    \"amountTotal\": \"588.67\",\r\n    \"description\": \"Second Down Payment for Windshield\",\r\n    \"isAvailable\": true,\r\n    \"customerId\": 25,\r\n    \"carId\": 8\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -631,6 +977,24 @@
 							"path": [
 								"deposits",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Deposit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/deposits/93",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"deposits",
+								"93"
 							]
 						}
 					},
@@ -674,8 +1038,119 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "Jessica",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Approval",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"41398a4c-2dc9-4c21-8c41-4bcd59f619e0\",\r\n    \"role\": \"Admin\",\r\n    \"accessState\": \"Active\",\r\n    \"startDate\": \"2022-12-31T01:00:00.000Z\",\r\n    \"endDate\": \"2023-01-01T01:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/users/access",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								"access"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users/2352b526-6714-4330-b4ee-4a3f300b15e5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								"2352b526-6714-4330-b4ee-4a3f300b15e5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jmontalvo1@cobaltopr.com\",\r\n    \"firstName\": \"Luis Telemaco\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"phone\": \"7879467213\",\r\n    \"username\": \"mikenight200\",\r\n    \"password\": \"P@ssw0rd!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/users/profile",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJkNjcwMWFkLTE1NDAtNDU5MS1iMzZhLWU2MmMzMTFiMWY3ZiIsImNvbXBhbnlJZCI6IjBiMjJjMWUzLTA0NDktNDVlNS05NzYyLWMyZGI3NWY4MGVhNyIsImlhdCI6MTY3MzIyMzUxOSwiZXhwIjoxNjczMjI0NzE5fQ.1QzougPx1rgnqwEv_8JDxFVTadA1qTpjOyZbSllA15c",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
