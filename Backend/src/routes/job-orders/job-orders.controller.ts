@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
-import { findAllJobOrders, upsertJobOrder } from "../../models/job-orders.model";
+import {
+  deleteJobOrder,
+  findAllJobOrders,
+  findJobOrderWithChildsById,
+  upsertJobOrder,
+} from "../../models/job-orders.model";
 import { IJobOrder } from "../../types";
 import {
   hasRequiredJobOrderFields,
   isValidCarId,
   isValidCompanyId,
   isValidCustomerId,
+  isValidJobOrderId,
 } from "../../utils/validators.utils";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { deleteFileFromLocalServer, uploadFileToBucket } from "../../services/file-upload.service";
@@ -24,11 +30,33 @@ async function httpGetAllJobOrders(req: Request, res: Response) {
   }
 }
 
+async function httpGetJobOrder(req: Request, res: Response) {
+  try {
+    const jobOrderId = req.params.id;
+
+    const isJobOrderIdValid = await isValidJobOrderId(jobOrderId);
+    if (!isJobOrderIdValid) {
+      return handleBadResponse(
+        400,
+        "The job order Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const jobOrder = await findJobOrderWithChildsById(+jobOrderId);
+
+    return res.status(200).json(jobOrder);
+  } catch (error) {
+    return handleExceptionErrorResponse("get job order by id", error, res);
+  }
+}
+
 async function httpUpsertJobOrder(req: Request, res: Response) {
   try {
     // Temporary Dummy Id
     const companyId = await getDummyCompanyId();
-
+    const policySignatureFile = req.file;
+    const policySignatureFilePath = req.file?.path;
     const jobOrderInfo: IJobOrder = {
       id: req.body.id,
       requestedService: req.body.requestedService,
@@ -49,7 +77,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         res
       );
 
-      return await deleteFileFromLocalServer(req.file?.path);
+      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCompanyIdValid = await isValidCompanyId(jobOrderInfo.companyId);
@@ -60,7 +88,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         res
       );
 
-      return await deleteFileFromLocalServer(req.file?.path);
+      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCustomerIdValid = await isValidCustomerId(jobOrderInfo.customerId);
@@ -71,7 +99,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         res
       );
 
-      return await deleteFileFromLocalServer(req.file?.path);
+      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCarIdValid = await isValidCarId(jobOrderInfo.carId);
@@ -82,10 +110,10 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         res
       );
 
-      return await deleteFileFromLocalServer(req.file?.path);
+      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
-    const isCompanySignatureValid = req.file;
+    const isCompanySignatureValid = policySignatureFile;
     if (!isCompanySignatureValid) {
       return handleBadResponse(
         400,
@@ -94,7 +122,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
       );
     }
 
-    const { fileName } = await uploadFileToBucket(req.file);
+    const { fileName } = await uploadFileToBucket(policySignatureFile);
     jobOrderInfo.policySignature = fileName;
 
     const upsertedJob = await upsertJobOrder(jobOrderInfo);
@@ -104,4 +132,25 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllJobOrders, httpUpsertJobOrder };
+async function httpDeleteJobOrder(req: Request, res: Response) {
+  try {
+    const jobOrderId = req.params.id;
+
+    const isJobOrderIdValid = await isValidJobOrderId(jobOrderId);
+    if (!isJobOrderIdValid) {
+      return handleBadResponse(
+        400,
+        "The job order Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const jobOrder = await deleteJobOrder(+jobOrderId);
+
+    return res.status(200).json(jobOrder);
+  } catch (error) {
+    return handleExceptionErrorResponse("delete job order by id", error, res);
+  }
+}
+
+export { httpGetAllJobOrders, httpGetJobOrder, httpUpsertJobOrder, httpDeleteJobOrder };

@@ -113,4 +113,24 @@ async function upsertCustomer(customerInfo: ICustomer) {
   }
 }
 
-export { findCustomerById, findAllCustomers, findAllCustomersWithActiveJobOrders, upsertCustomer };
+async function deleteCustomer(id: number) {
+  try {
+    const customer = await prisma.customer.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return customer;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  findCustomerById,
+  findAllCustomers,
+  findAllCustomersWithActiveJobOrders,
+  upsertCustomer,
+  deleteCustomer,
+};

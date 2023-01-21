@@ -105,6 +105,21 @@ export interface IDeposit {
   companyId: string;
 }
 
+export interface IPayment {
+  id?: number;
+  type: string;
+  amountPaid?: string;
+  bankStatus?: string;
+  bankFrontEvidence?: string;
+  bankBackEvidence?: string;
+  athEvidence?: string;
+  referenceNumber?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+  invoiceId: number;
+}
+
 export interface IAppointment {
   id?: number;
   service: string;
@@ -118,6 +133,8 @@ export interface IAppointment {
   createdDate?: Date;
   lastModified?: Date;
   companyId: string;
+  customerId?: number;
+  carId?: number;
 }
 
 export interface ITask {

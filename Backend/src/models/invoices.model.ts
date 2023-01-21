@@ -1,5 +1,6 @@
 import { Invoice_Item } from "@prisma/client";
 import prisma from "../database/prisma";
+import { excludeFields } from "../utils/db.utils";
 import { IInvoice, IInvoiceItem } from "./../types/index.d";
 import { updateDepositsParentInvoice } from "./deposits.model";
 
@@ -35,6 +36,42 @@ async function findAllInvoices(page: number, take: number, searchTerm: string | 
       currentPage: page,
     };
     return invoicesData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findInvoiceById(id: number) {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return invoice;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findInvoiceWithChildsById(id: number) {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        customer: true,
+        car: true,
+      },
+    });
+
+    if (!invoice) {
+      return null;
+    }
+
+    return excludeFields(invoice, "customerId", "carId");
   } catch (error) {
     throw error;
   }
@@ -156,4 +193,24 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
   }
 }
 
-export { findAllInvoices, upsertInvoice };
+async function deleteInvoice(id: number) {
+  try {
+    const invoice = await prisma.invoice.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return invoice;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  findAllInvoices,
+  findInvoiceById,
+  findInvoiceWithChildsById,
+  upsertInvoice,
+  deleteInvoice,
+};

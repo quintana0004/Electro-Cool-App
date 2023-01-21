@@ -7,7 +7,11 @@ import {
   isValidCompanyId,
   isIsoDate,
 } from "../../utils/validators.utils";
-import { deleteAppointment, upsertAppointment } from "../../models/appointments.model";
+import {
+  deleteAppointment,
+  findAppointmentWithChildsById,
+  upsertAppointment,
+} from "../../models/appointments.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
@@ -17,6 +21,29 @@ async function httpGetAllAppointments(req: Request, res: Response) {
     return handleExceptionErrorResponse("get all appointments", error, res);
   }
 }
+
+async function httpGetAppointmentById(req: Request, res: Response) {
+  try {
+    const appointmentId = req.params.id;
+
+    const isAppointmentIdValid = await isValidAppointmentId(appointmentId);
+    if (!isAppointmentIdValid) {
+      return handleBadResponse(
+        400,
+        "The appointment Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const appointment = await findAppointmentWithChildsById(+appointmentId);
+
+    return res.status(200).json(appointment);
+  } catch (error) {
+    return handleExceptionErrorResponse("get appointment by id", error, res);
+  }
+}
+
+// example of todays date in ISO format: "2021-08-10T00:00:00.000Z"
 
 async function httpUpsertAppointment(req: Request, res: Response) {
   try {
@@ -33,6 +60,8 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       customerName: req.body.customerName,
       phone: req.body.phone,
       email: req.body.email,
+      customerId: req.body.customerId,
+      carId: req.body.carId,
       companyId: companyId,
     };
 
@@ -90,4 +119,9 @@ async function httpDeleteAppointment(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllAppointments, httpUpsertAppointment, httpDeleteAppointment };
+export {
+  httpGetAllAppointments,
+  httpGetAppointmentById,
+  httpUpsertAppointment,
+  httpDeleteAppointment,
+};

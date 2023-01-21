@@ -6,8 +6,14 @@ import {
   upsertCustomer,
   findAllCustomers,
   findAllCustomersWithActiveJobOrders,
+  findCustomerById,
+  deleteCustomer,
 } from "../../models/customers.model";
-import { hasRequiredCustomerFields, isValidCompanyId } from "../../utils/validators.utils";
+import {
+  hasRequiredCustomerFields,
+  isValidCompanyId,
+  isValidCustomerId,
+} from "../../utils/validators.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
@@ -27,6 +33,26 @@ async function httpGetAllCustomers(req: Request, res: Response) {
     return res.status(200).json(customers);
   } catch (error) {
     return handleExceptionErrorResponse("get all customers", error, res);
+  }
+}
+
+async function httpGetCustomerById(req: Request, res: Response) {
+  try {
+    const customerId = req.params.id;
+
+    let isCustomerIdValid = await isValidCustomerId(customerId);
+    if (!isCustomerIdValid) {
+      return handleBadResponse(
+        400,
+        "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const customer = await findCustomerById(+customerId);
+    return res.status(200).json(customer);
+  } catch (error) {
+    return handleExceptionErrorResponse("get customer by id", error, res);
   }
 }
 
@@ -73,4 +99,24 @@ async function httpUpsertCustomer(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllCustomers, httpUpsertCustomer };
+async function httpDeleteCustomer(req: Request, res: Response) {
+  try {
+    const customerId = req.params.id;
+
+    let isCustomerIdValid = await isValidCustomerId(customerId);
+    if (!isCustomerIdValid) {
+      return handleBadResponse(
+        400,
+        "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const customer = await deleteCustomer(+customerId);
+    return res.status(200).json(customer);
+  } catch (error) {
+    return handleExceptionErrorResponse("delete customer by id", error, res);
+  }
+}
+
+export { httpGetAllCustomers, httpGetCustomerById, httpUpsertCustomer, httpDeleteCustomer };

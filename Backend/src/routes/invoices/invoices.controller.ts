@@ -8,8 +8,13 @@ import {
   isValidDespositId,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
+  isValidInvoiceId,
 } from "../../utils/validators.utils";
-import { upsertInvoice } from "../../models/invoices.model";
+import {
+  deleteInvoice,
+  findInvoiceWithChildsById,
+  upsertInvoice,
+} from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
@@ -23,6 +28,27 @@ async function httpGetAllInvoices(req: Request, res: Response) {
     return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
+  }
+}
+
+async function httpGetInvoice(req: Request, res: Response) {
+  try {
+    const invoiceId = req.params.id;
+
+    const isInvoiceIdValid = await isValidInvoiceId(invoiceId);
+    if (!isInvoiceIdValid) {
+      return handleBadResponse(
+        400,
+        "The invoice Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const invoice = await findInvoiceWithChildsById(+invoiceId);
+
+    return res.status(200).json(invoice);
+  } catch (error) {
+    return handleExceptionErrorResponse("get invoice by id", error, res);
   }
 }
 
@@ -113,4 +139,25 @@ async function httpUpsertInvoice(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllInvoices, httpUpsertInvoice };
+async function httpDeleteInvoice(req: Request, res: Response) {
+  try {
+    const invoiceId = req.params.id;
+
+    const isInvoiceIdValid = await isValidInvoiceId(invoiceId);
+    if (!isInvoiceIdValid) {
+      return handleBadResponse(
+        400,
+        "The invoice Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const invoice = await deleteInvoice(+invoiceId);
+
+    return res.status(200).json(invoice);
+  } catch (error) {
+    return handleExceptionErrorResponse("delete invoice by id", error, res);
+  }
+}
+
+export { httpGetAllInvoices, httpGetInvoice, httpUpsertInvoice, httpDeleteInvoice };

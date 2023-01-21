@@ -58,63 +58,65 @@ model User {
 }
 
 model Customer {
-  id           Int        @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   fullName     String
-  firstName    String     @db.VarChar(255)
-  lastName     String     @db.VarChar(255)
-  addressLine1 String     @db.VarChar(255)
-  addressLine2 String?    @db.VarChar(255)
-  state        String?    @db.VarChar(50)
-  city         String     @db.VarChar(100)
-  phone        String     @db.VarChar(15)
-  email        String?    @db.VarChar(255)
-  createdDate  DateTime   @default(now()) @db.Timestamptz(6)
-  lastModified DateTime   @default(now()) @db.Timestamptz(6)
-  companyId    String     @db.Uuid
-  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  firstName    String        @db.VarChar(255)
+  lastName     String        @db.VarChar(255)
+  addressLine1 String        @db.VarChar(255)
+  addressLine2 String?       @db.VarChar(255)
+  state        String?       @db.VarChar(50)
+  city         String        @db.VarChar(100)
+  phone        String        @db.VarChar(15)
+  email        String?       @db.VarChar(255)
+  createdDate  DateTime      @default(now()) @db.Timestamptz(6)
+  lastModified DateTime      @default(now()) @db.Timestamptz(6)
+  companyId    String        @db.Uuid
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   cars         Car[]
   invoices     Invoice[]
   jobOrders    JobOrder[]
   deposits     Deposit[]
+  appointments Appointment[]
 }
 
 model Car {
-  id                  Int        @id @default(autoincrement())
-  brand               String     @db.VarChar(100)
-  licensePlate        String     @unique @db.VarChar(20)
-  model               String     @db.VarChar(100)
-  year                String     @db.VarChar(4)
-  mileage             String     @db.VarChar(10)
-  color               String     @db.VarChar(50)
-  vinNumber           String     @unique @db.VarChar(20)
-  carHasItems         Boolean?   @default(false)
+  id                  Int           @id @default(autoincrement())
+  brand               String        @db.VarChar(100)
+  licensePlate        String        @unique @db.VarChar(20)
+  model               String        @db.VarChar(100)
+  year                String        @db.VarChar(4)
+  mileage             String        @db.VarChar(10)
+  color               String        @db.VarChar(50)
+  vinNumber           String        @unique @db.VarChar(20)
+  carHasItems         Boolean?      @default(false)
   carItemsDescription String?
-  createdDate         DateTime   @default(now()) @db.Timestamptz(6)
-  lastModified        DateTime   @default(now()) @db.Timestamptz(6)
-  companyId           String     @db.Uuid
-  company             Company    @relation(fields: [companyId], references: [id], onDelete: NoAction)
+  createdDate         DateTime      @default(now()) @db.Timestamptz(6)
+  lastModified        DateTime      @default(now()) @db.Timestamptz(6)
+  companyId           String        @db.Uuid
+  company             Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   customerId          Int
-  customer            Customer   @relation(fields: [customerId], references: [id], onDelete: NoAction)
+  customer            Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   jobOrders           JobOrder[]
   deposits            Deposit[]
   invoices            Invoice[]
+  appointments        Appointment[]
 }
 
 model JobOrder {
-  id               Int      @id @default(autoincrement())
-  requestedService String   @db.VarChar(255)
+  id               Int       @id @default(autoincrement())
+  requestedService String    @db.VarChar(255)
   serviceDetails   String
-  status           String   @db.VarChar(100)
-  jobLoadType      String   @db.VarChar(100)
-  policySignature  String   @db.VarChar(255)
-  createdDate      DateTime @default(now()) @db.Timestamptz(6)
-  lastModified     DateTime @default(now()) @db.Timestamptz(6)
-  carId            Int
-  car              Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-  companyId        String   @db.Uuid
-  company          Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customerId       Int
-  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status           String    @db.VarChar(100)
+  jobLoadType      String    @db.VarChar(100)
+  policySignature  String    @db.VarChar(255)
+  createdDate      DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified     DateTime  @default(now()) @db.Timestamptz(6)
+  carId            Int?
+  car              Car?      @relation(fields: [carId], references: [id], onDelete: SetNull)
+  companyId        String    @db.Uuid
+  company          Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerId       Int?
+  customer         Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 }
 
 model Invoice {
@@ -127,10 +129,10 @@ model Invoice {
   lastModified DateTime       @default(now()) @db.Timestamptz(6)
   companyId    String         @db.Uuid
   company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customerId   Int
-  customer     Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  carId        Int
-  car          Car            @relation(fields: [carId], references: [id], onDelete: Cascade)
+  customerId   Int?
+  customer     Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  carId        Int?
+  car          Car?           @relation(fields: [carId], references: [id], onDelete: SetNull)
   invoiceItems Invoice_Item[]
   deposits     Deposit[]
   payments     Payment[]
@@ -146,7 +148,7 @@ model Invoice_Item {
   createdDate  DateTime @default(now()) @db.Timestamptz(6)
   lastModified DateTime @default(now()) @db.Timestamptz(6)
   invoiceId    Int
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 model Deposit {
@@ -162,7 +164,7 @@ model Deposit {
   carId        Int
   car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
   invoiceId    Int?
-  invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
   companyId    String   @db.Uuid
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
@@ -170,34 +172,38 @@ model Deposit {
 model Payment {
   id                Int      @id @default(autoincrement())
   type              String   @db.VarChar(100)
-  amountPaid        String   @db.VarChar(20)
-  bankStatus        String   @db.VarChar(20)
-  bankFrontEvidence String   @db.VarChar(255)
-  bankBackEvidence  String   @db.VarChar(255)
-  athEvidence       String   @db.VarChar(255)
-  referenceNumber   String   @db.VarChar(255)
+  amountPaid        String?  @db.VarChar(20)
+  bankStatus        String?  @db.VarChar(20)
+  bankFrontEvidence String?  @db.VarChar(255)
+  bankBackEvidence  String?  @db.VarChar(255)
+  athEvidence       String?  @db.VarChar(255)
+  referenceNumber   String?  @db.VarChar(255)
   createdDate       DateTime @default(now()) @db.Timestamptz(6)
   lastModified      DateTime @default(now()) @db.Timestamptz(6)
   companyId         String   @db.Uuid
   company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  invoiceId         Int
-  invoice           Invoice  @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
+  invoiceId         Int?
+  invoice           Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }
 
 model Appointment {
-  id              Int      @id @default(autoincrement())
-  service         String   @db.VarChar(255)
+  id              Int       @id @default(autoincrement())
+  service         String    @db.VarChar(255)
   description     String
-  arrivalDateTime DateTime @db.Timestamptz(6)
-  model           String   @db.VarChar(255)
-  licensePlate    String   @db.VarChar(255)
-  customerName    String   @db.VarChar(255)
-  phone           String   @db.VarChar(10)
-  email           String   @db.VarChar(255)
-  createdDate     DateTime @default(now()) @db.Timestamptz(6)
-  lastModified    DateTime @default(now()) @db.Timestamptz(6)
-  companyId       String   @db.Uuid
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: NoAction)
+  arrivalDateTime DateTime  @db.Timestamptz(6)
+  model           String    @db.VarChar(255)
+  licensePlate    String    @db.VarChar(255)
+  customerName    String    @db.VarChar(255)
+  phone           String    @db.VarChar(10)
+  email           String    @db.VarChar(255)
+  createdDate     DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified    DateTime  @default(now()) @db.Timestamptz(6)
+  customerId      Int?
+  customer        Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  carId           Int?
+  car             Car?      @relation(fields: [carId], references: [id], onDelete: SetNull)
+  companyId       String    @db.Uuid
+  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model Task {
@@ -207,5 +213,5 @@ model Task {
   createdDate  DateTime @default(now()) @db.Timestamptz(6)
   lastModified DateTime @default(now()) @db.Timestamptz(6)
   companyId    String   @db.Uuid
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: NoAction)
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }

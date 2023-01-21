@@ -1,5 +1,7 @@
 import prisma from "../database/prisma";
+import { deleteFileFromBucket } from "../services/file-upload.service";
 import { IJobOrder } from "../types";
+import { excludeFields } from "../utils/db.utils";
 
 async function findAllJobOrders(page: number, take: number, searchTerm: string | undefined) {
   try {
@@ -44,6 +46,49 @@ async function findAllJobOrders(page: number, take: number, searchTerm: string |
   }
 }
 
+async function findJobOrderById(id: number) {
+  try {
+    const jobOrder = await prisma.jobOrder.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!jobOrder) {
+      return null;
+    }
+
+    // Append Asset Url for Frontend
+    jobOrder.policySignature = process.env.DO_SPACES_ASSET_URL + jobOrder.policySignature;
+
+    return jobOrder;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findJobOrderWithChildsById(id: number) {
+  try {
+    const jobOrder = await prisma.jobOrder.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        customer: true,
+        car: true,
+      },
+    });
+
+    if (!jobOrder) {
+      return null;
+    }
+
+    return excludeFields(jobOrder, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertJobOrder(jobInfo: IJobOrder) {
   try {
     const job = await prisma.jobOrder.upsert({
@@ -79,4 +124,26 @@ async function upsertJobOrder(jobInfo: IJobOrder) {
   }
 }
 
-export { findAllJobOrders, upsertJobOrder };
+async function deleteJobOrder(id: number) {
+  try {
+    const jobOrder = await prisma.jobOrder.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    await deleteFileFromBucket(jobOrder.policySignature);
+
+    return jobOrder;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  findAllJobOrders,
+  findJobOrderById,
+  findJobOrderWithChildsById,
+  upsertJobOrder,
+  deleteJobOrder,
+};

@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Payment" ALTER COLUMN "amountPaid" DROP NOT NULL,
+ALTER COLUMN "bankStatus" DROP NOT NULL,
+ALTER COLUMN "bankFrontEvidence" DROP NOT NULL,
+ALTER COLUMN "bankBackEvidence" DROP NOT NULL,
+ALTER COLUMN "athEvidence" DROP NOT NULL,
+ALTER COLUMN "referenceNumber" DROP NOT NULL;
