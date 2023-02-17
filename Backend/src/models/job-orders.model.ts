@@ -1,20 +1,17 @@
-import { JobOrder } from "@prisma/client";
 import prisma from "../database/prisma";
 import { IJobOrder } from "../types";
 
-async function findAllJobOrders(
-  skip: number,
-  take: number,
-  searchTerm: string | undefined
-): Promise<JobOrder[]> {
+async function findAllJobOrders(page: number, take: number, searchTerm: string | undefined) {
   try {
     const idSearch =
       searchTerm != undefined && typeof searchTerm != "string" ? Number(searchTerm) : undefined;
     const nameSearch = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
 
     const jobOrders = await prisma.jobOrder.findMany({
-      skip,
-      take,
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
         OR: [
           {
@@ -36,7 +33,12 @@ async function findAllJobOrders(
       job.policySignature = process.env.DO_SPACES_ASSET_URL + job.policySignature;
     }
 
-    return jobOrders;
+    const jobOrdersData = {
+      data: jobOrders.slice(0, take),
+      isLastPage: jobOrders.length <= take,
+      currentPage: page,
+    };
+    return jobOrdersData;
   } catch (error) {
     throw error;
   }

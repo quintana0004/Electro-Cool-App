@@ -4,8 +4,8 @@ import { httpGetAllCustomers, httpUpsertCustomer } from "./customers.controller"
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllCustomers);
+router.get("/", httpGetAllCustomers);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertCustomer);
+router.post("/", httpUpsertCustomer);
 
 export default router;

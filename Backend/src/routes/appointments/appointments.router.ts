@@ -8,10 +8,10 @@ import {
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllAppointments);
+router.get("/", httpGetAllAppointments);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertAppointment);
+router.post("/", httpUpsertAppointment);
 
-router.delete("/:id", authenticateJWTMiddleWare, httpDeleteAppointment);
+router.delete("/:id", httpDeleteAppointment);
 
 export default router;

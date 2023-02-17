@@ -9,15 +9,16 @@ import {
 } from "../../utils/validators.utils";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
 import { deleteFileFromLocalServer, uploadFileToBucket } from "../../services/file-upload.service";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllJobOrders(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : 0;
+    let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
 
-    const jobOrders = await findAllJobOrders(skip, take, searchTerm);
-    return res.status(200).json(jobOrders);
+    const jobOrdersData = await findAllJobOrders(page, take, searchTerm);
+    return res.status(200).json(jobOrdersData);
   } catch (error) {
     res.status(500).json("Error in Get All Job Orders");
   }
@@ -25,6 +26,9 @@ async function httpGetAllJobOrders(req: Request, res: Response) {
 
 async function httpUpsertJobOrder(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const jobOrderInfo: IJobOrder = {
       id: req.body.id,
       requestedService: req.body.requestedService,
@@ -33,7 +37,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
       jobLoadType: req.body.jobLoadType,
       policySignature: "N/A",
       carId: req.body.carId,
-      companyId: req.companyId,
+      companyId: companyId,
       customerId: req.body.customerId,
     };
 

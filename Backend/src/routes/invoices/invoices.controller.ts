@@ -11,14 +11,16 @@ import {
 } from "../../utils/validators.utils";
 import { upsertInvoice } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
+
 async function httpGetAllInvoices(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : 0;
+    let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     //this variable will work with both full name and phone number to convert it to string.
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
-    const Invoices = await findAllInvoices(skip, take, searchTerm);
-    return res.status(200).json(Invoices);
+    const invoicesData = await findAllInvoices(page, take, searchTerm);
+    return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
   }
@@ -26,15 +28,18 @@ async function httpGetAllInvoices(req: Request, res: Response) {
 
 async function httpUpsertInvoice(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const invoiceInfo: IInvoice = {
       id: req.body.id,
       status: req.body.status,
-      totalPrice: req.body.totalPrice,
+      amountTotal: req.body.amountTotal,
       amountPaid: req.body.amountPaid,
       amountDue: req.body.amountDue,
       createdDate: req.body.createdDate,
       lastModified: req.body.lastModified,
-      companyId: req.companyId,
+      companyId: companyId,
       customerId: req.body.customerId,
       carId: req.body.carId,
       invoiceItems: req.body.invoiceItems,
@@ -45,7 +50,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create/update invoice. Please provide the following fields: status, totalPrice, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
+        "Missing required fields to create/update invoice. Please provide the following fields: status, amountTotal, amountPaid, amountDue companyId, customerId, carId and invoiceItems.",
         res
       );
     }

@@ -7,6 +7,7 @@ import {
   isValidCustomerId,
 } from "../../utils/validators.utils";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
@@ -34,6 +35,9 @@ async function httpGetCarsByCustomer(req: Request, res: Response) {
 
 async function httpUpsertCar(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const carInfo: ICar = {
       id: req.body.id,
       brand: req.body.brand,
@@ -45,7 +49,7 @@ async function httpUpsertCar(req: Request, res: Response) {
       vinNumber: req.body.vinNumber,
       carHasItems: req.body.carHasItems,
       carItemsDescription: req.body.carItemsDescription,
-      companyId: req.companyId,
+      companyId: companyId,
       customerId: req.body.customerId,
     };
 

@@ -1,5 +1,6 @@
 import http from "http";
 import app from "./app";
+import { findCompanyByName } from "./models/company.model";
 import scheduleJobs from "./services/scheduler.service";
 
 import { createDummyCompany } from "./utils/db.utils";

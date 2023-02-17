@@ -4,10 +4,10 @@ import { httpGetAllCars, httpGetCarsByCustomer, httpUpsertCar } from "./cars.con
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllCars);
+router.get("/", httpGetAllCars);
 
-router.get("/customer", authenticateJWTMiddleWare, httpGetCarsByCustomer);
+router.get("/customer", httpGetCarsByCustomer);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertCar);
+router.post("/", httpUpsertCar);
 
 export default router;

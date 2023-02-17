@@ -3,6 +3,43 @@ import prisma from "../database/prisma";
 import { IInvoice, IInvoiceItem } from "./../types/index.d";
 import { updateDepositsParentInvoice } from "./deposits.model";
 
+async function findAllInvoices(page: number, take: number, searchTerm: string | undefined) {
+  try {
+    const term = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
+    const invoices = await prisma.invoice.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        customer: {
+          fullName: {
+            contains: term,
+          },
+        },
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const invoicesData = {
+      data: invoices.slice(0, take),
+      isLastPage: invoices.length <= take,
+      currentPage: page,
+    };
+    return invoicesData;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertInvoice(invoiceInfo: IInvoice) {
   try {
     const invoice = await prisma.invoice.upsert({
@@ -11,7 +48,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       create: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
@@ -20,7 +57,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       update: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
@@ -118,23 +155,5 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     throw error;
   }
 }
-async function findAllInvoices(skip: number, take: number, searchTerm: string | undefined) {
-  try {
-    const term = searchTerm ? searchTerm : undefined;
-    const Invoice = await prisma.invoice.findMany({
-      skip,
-      take,
-      where: {
-        customer: {
-          fullName: {
-            contains: term,
-          },
-        },
-      },
-    });
-    return Invoice;
-  } catch (error) {
-    throw error;
-  }
-}
-export { upsertInvoice, findAllInvoices };
+
+export { findAllInvoices, upsertInvoice };

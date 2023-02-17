@@ -1,6 +1,42 @@
-import { IDeposit } from "./../types/index.d";
 import prisma from "../database/prisma";
-import { Deposit } from "@prisma/client";
+import { IDeposit } from "./../types/index.d";
+
+async function findAllDeposits(page: number, take: number, searchTerm: string | undefined) {
+  try {
+    const name = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
+    const deposits = await prisma.deposit.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        customer: {
+          fullName: {
+            contains: name,
+          },
+        },
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const depositsData = {
+      data: deposits.slice(0, take),
+      isLastPage: deposits.length <= take,
+      currentPage: page,
+    };
+    return depositsData;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function findDespositById(id: number) {
   try {
@@ -23,7 +59,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         id: depositInfo?.id ?? -1,
       },
       create: {
-        amount: depositInfo.amount,
+        amountTotal: depositInfo.amountTotal,
+        status: depositInfo.status,
         description: depositInfo.description,
         isAvailable: depositInfo.isAvailable,
         customerId: depositInfo.customerId,
@@ -31,7 +68,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         companyId: depositInfo.companyId,
       },
       update: {
-        amount: depositInfo.amount,
+        amountTotal: depositInfo.amountTotal,
+        status: depositInfo.status,
         description: depositInfo.description,
         isAvailable: depositInfo.isAvailable,
         customerId: depositInfo.customerId,
@@ -46,10 +84,7 @@ async function upsertDeposit(depositInfo: IDeposit) {
   }
 }
 
-async function updateDepositsParentInvoice(
-  depositIds: number[],
-  invoiceId: number
-) {
+async function updateDepositsParentInvoice(depositIds: number[], invoiceId: number) {
   try {
     let deposits = await prisma.deposit.updateMany({
       where: {
@@ -81,34 +116,11 @@ async function deleteDeposit(id: number) {
     throw error;
   }
 }
-async function findAllDeposits(
-  skip: number,
-  take: number,
-  searchTerm: string | undefined
-) {
-  try {
-    const name = searchTerm ? searchTerm : undefined;
-    const AllDeposit = await prisma.deposit.findMany({
-      skip,
-      take,
-      where: {
-        customer: {
-          fullName: {
-            contains: name,
-          },
-        },
-      },
-    });
-    return AllDeposit;
-  } catch (error) {
-    throw error;
-  }
-}
 
 export {
+  findAllDeposits,
   findDespositById,
   upsertDeposit,
   updateDepositsParentInvoice,
   deleteDeposit,
-  findAllDeposits,
 };

@@ -68,7 +68,7 @@ export interface ICar {
 export interface IInvoice {
   id?: number;
   status: string;
-  totalPrice: string;
+  amountTotal: string;
   amountPaid: string;
   amountDue: string;
   createdDate?: Date;
@@ -93,7 +93,8 @@ export interface IInvoiceItem {
 
 export interface IDeposit {
   id?: number;
-  amount: string;
+  status: string;
+  amountTotal: string;
   description: string;
   isAvailable: boolean;
   createdDate?: Date;

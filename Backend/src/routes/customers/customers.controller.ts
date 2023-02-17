@@ -8,6 +8,7 @@ import {
   findAllCustomersWithActiveJobOrders,
 } from "../../models/customers.model";
 import { hasRequiredCustomerFields, isValidCompanyId } from "../../utils/validators.utils";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
@@ -31,6 +32,9 @@ async function httpGetAllCustomers(req: Request, res: Response) {
 
 async function httpUpsertCustomer(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const customerInfo: ICustomer = {
       id: req.body.id,
       firstName: req.body.firstName,
@@ -41,7 +45,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       city: req.body.city,
       phone: req.body.phone,
       email: req.body.email,
-      companyId: req.companyId,
+      companyId: companyId,
     };
 
     const hasRequiredFields = hasRequiredCustomerFields(customerInfo);
