@@ -162,7 +162,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Pepe\",\r\n    \"lastName\": \"Pomales\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo13@cobaltopr.com\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo16@cobaltopr.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -515,7 +515,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"Pending\",\r\n    \"amountTotal\": \"14256.56\",\r\n    \"amountPaid\": \"450.58\",\r\n    \"amountDue\": \"1574.58\",\r\n    \"customerId\": 26,\r\n    \"carId\": 9,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"status\": \"Pending\",\r\n    \"amountTotal\": \"1250.58\",\r\n    \"amountPaid\": \"1250.58\",\r\n    \"amountDue\": \"0.00\",\r\n    \"customerId\": 29,\r\n    \"carId\": 9,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -832,13 +832,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/appointments/13",
+							"raw": "{{HOST}}/appointments/12",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"appointments",
-								"13"
+								"12"
 							]
 						}
 					},
@@ -945,7 +945,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"In Draft\",\r\n    \"amountTotal\": \"588.67\",\r\n    \"description\": \"Second Down Payment for Windshield\",\r\n    \"isAvailable\": true,\r\n    \"customerId\": 25,\r\n    \"carId\": 8\r\n}",
+							"raw": "{\r\n    \"status\": \"In Draft\",\r\n    \"amountTotal\": \"188.67\",\r\n    \"description\": \"Second Down Payment for Windshield\",\r\n    \"isAvailable\": true,\r\n    \"customerId\": 29,\r\n    \"carId\": 9\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
