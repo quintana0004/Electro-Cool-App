@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import { httpGetAllDeposits } from "../../api/deposits.api";
@@ -96,10 +95,10 @@ function TableList({ activeCategory, searchTerm, filters }) {
   }
 
   return (
-    <View style={styles.listContainer}>
+    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
       <TableHeader />
       {isLoading || (
-        <FlashList
+        <FlatList
           data={getTableData()}
           renderItem={renderTableItem}
           estimatedItemSize={10}

@@ -1,9 +1,12 @@
 import prisma from "../database/prisma";
+import { excludeFields } from "../utils/db.utils";
+import { isNumeric } from "../utils/validators.utils";
 import { IDeposit } from "./../types/index.d";
 
 async function findAllDeposits(page: number, take: number, searchTerm: string | undefined) {
   try {
-    const name = searchTerm ? searchTerm : undefined;
+    const term = searchTerm ?? "";
+    const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
@@ -11,11 +14,20 @@ async function findAllDeposits(page: number, take: number, searchTerm: string | 
       skip: skipAmount,
       take: overFetchAmount,
       where: {
-        customer: {
-          fullName: {
-            contains: name,
+        OR: [
+          {
+            customer: {
+              fullName: {
+                contains: term,
+              },
+            },
           },
-        },
+          {
+            id: {
+              in: idSearchTerm,
+            },
+          },
+        ],
       },
       include: {
         customer: {
@@ -47,6 +59,28 @@ async function findDespositById(id: number) {
     });
 
     return desposit;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findDespositWithChildsById(id: number) {
+  try {
+    const desposit = await prisma.deposit.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        customer: true,
+        car: true,
+      },
+    });
+
+    if (!desposit) {
+      return null;
+    }
+
+    return excludeFields(desposit, "customerId", "carId");
   } catch (error) {
     throw error;
   }
@@ -120,6 +154,7 @@ async function deleteDeposit(id: number) {
 export {
   findAllDeposits,
   findDespositById,
+  findDespositWithChildsById,
   upsertDeposit,
   updateDepositsParentInvoice,
   deleteDeposit,

@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
-import { isUniqueCar, upsertCar, findAllCars, findCarsByCustomer } from "../../models/cars.model";
+import {
+  isUniqueCar,
+  upsertCar,
+  findAllCars,
+  findCarsByCustomer,
+  findCarById,
+  deleteCar,
+} from "../../models/cars.model";
 import { ICar } from "../../types";
 import {
   hasRequiredCarFields,
+  isValidCarId,
   isValidCompanyId,
   isValidCustomerId,
 } from "../../utils/validators.utils";
@@ -30,6 +38,26 @@ async function httpGetCarsByCustomer(req: Request, res: Response) {
     return res.status(200).json(cars);
   } catch (error) {
     return handleExceptionErrorResponse("get all cars by customer", error, res);
+  }
+}
+
+async function httpGetCarById(req: Request, res: Response) {
+  try {
+    const carId = req.params.id;
+
+    let isCarIdValid = await isValidCarId(carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const car = await findCarById(+carId);
+    return res.status(200).json(car);
+  } catch (error) {
+    return handleExceptionErrorResponse("get car by id", error, res);
   }
 }
 
@@ -96,4 +124,24 @@ async function httpUpsertCar(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllCars, httpGetCarsByCustomer, httpUpsertCar };
+async function httpDeleteCar(req: Request, res: Response) {
+  try {
+    const carId = req.params.id;
+
+    let isCarIdValid = await isValidCarId(carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const car = await deleteCar(+carId);
+    return res.status(200).json(car);
+  } catch (error) {
+    return handleExceptionErrorResponse("delete car by id", error, res);
+  }
+}
+
+export { httpGetAllCars, httpGetCarById, httpGetCarsByCustomer, httpUpsertCar, httpDeleteCar };

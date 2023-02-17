@@ -8,7 +8,12 @@ import {
   hasRequiredDepositFields,
   isValidDespositId,
 } from "../../utils/validators.utils";
-import { deleteDeposit, findAllDeposits, upsertDeposit } from "../../models/deposits.model";
+import {
+  deleteDeposit,
+  findAllDeposits,
+  findDespositWithChildsById,
+  upsertDeposit,
+} from "../../models/deposits.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllDeposits(req: Request, res: Response) {
@@ -21,6 +26,27 @@ async function httpGetAllDeposits(req: Request, res: Response) {
     return res.status(200).json(depositsData);
   } catch (error) {
     return handleExceptionErrorResponse("get all deposits", error, res);
+  }
+}
+
+async function httpGetDepoist(req: Request, res: Response) {
+  try {
+    const depositId = req.params.id;
+
+    const isDepositIdValid = await isValidDespositId(depositId);
+    if (!isDepositIdValid) {
+      return handleBadResponse(
+        400,
+        "The deposit Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const deposit = await findDespositWithChildsById(+depositId);
+
+    return res.status(200).json(deposit);
+  } catch (error) {
+    return handleExceptionErrorResponse("get deposit by id", error, res);
   }
 }
 
@@ -103,4 +129,4 @@ async function httpDeleteDeposit(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllDeposits, httpUpsertDeposit, httpDeleteDeposit };
+export { httpGetAllDeposits, httpGetDepoist, httpUpsertDeposit, httpDeleteDeposit };
