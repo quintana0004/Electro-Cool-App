@@ -28,10 +28,8 @@ function TableList({ activeCategory, searchTerm, filters }) {
     let data = null;
 
     if (activeCategory === "Invoices") {
-      console.log("Invoices Search Term: ", searchTerm);
       data = await httpGetAllInvoices(TAKE, pageParam, searchTerm);
     } else {
-      console.log("Deposits Search Term: ", searchTerm);
       data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
     }
 
