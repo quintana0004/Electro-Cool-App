@@ -18,16 +18,16 @@ import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : undefined;
-    let take = req.query.take ? +req.query.take : undefined;
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
     let isActiveJobs = req.query.isActiveJobs;
 
     let customers = null;
     if (!!isActiveJobs) {
-      customers = await findAllCustomersWithActiveJobOrders(skip, take, searchTerm);
+      customers = await findAllCustomersWithActiveJobOrders(page, take, searchTerm);
     } else {
-      customers = await findAllCustomers(skip, take, searchTerm);
+      customers = await findAllCustomers(page, take, searchTerm);
     }
 
     return res.status(200).json(customers);

@@ -22,7 +22,10 @@ function Invoices({ navigation }) {
   });
 
   function navigateToFindExistingClientScreen() {
-    navigation.navigate("ExistingClients");
+    navigation.navigate("ExistingClients", {
+      nextScreen: "ExistingCars",
+      previousScreen: "InvoiceMain",
+    });
   }
 
   function updateActiveCategory(category) {
@@ -37,7 +40,7 @@ function Invoices({ navigation }) {
     <View>
       <Header divideH={6} divideW={1} colorHeader={Colors.darkBlack}>
         <MenuDropDown />
-        <View style={{ flex: 1, justifyContent: "center", marginLeft: 35, marginTop: 20 }}>
+        <View style={styles.searchContainer}>
           <SearchBar
             widthBar={350}
             heightBar={60}
@@ -87,7 +90,10 @@ const styles = StyleSheet.create({
   actionRightButtonGroup: {
     flexDirection: "row",
   },
-  search: {
-    marginTop: 50,
+  searchContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 35,
+    marginTop: 20,
   },
 });

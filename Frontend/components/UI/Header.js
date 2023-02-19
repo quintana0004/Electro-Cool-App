@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 
-function Header({ children, divideH, divideW, colorHeader }) {
+function Header({ children, divideH, divideW, colorHeader, headerStyles }) {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
   const [sizing, setSizing] = useState({ windowWidth, windowHeight });
 
   useEffect(() => {
-    const changes = Dimensions.addEventListener(
-      "change",
-      ({ windowWidth, windowHeight }) => {
-        setSizing({ windowWidth, windowHeight });
-      }
-    );
+    const changes = Dimensions.addEventListener("change", ({ windowWidth, windowHeight }) => {
+      setSizing({ windowWidth, windowHeight });
+    });
 
     return () => changes?.remove();
   }, []);
@@ -28,6 +25,7 @@ function Header({ children, divideH, divideW, colorHeader }) {
           right: divideW > 1 ? 40 : 0,
         },
         styles.header,
+        headerStyles,
       ]}
     >
       {children}

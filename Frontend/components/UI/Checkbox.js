@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 
-function CheckBox({ id, value, onCheck }) {
-  const [check, setCheck] = useState(value);
-
+function CheckBox({ id, checkValue, onCheck }) {
   return (
     <Pressable
       onPress={() => {
-        setCheck(!check);
-        onCheck(id, !check);
+        onCheck(id, !checkValue);
       }}
     >
       <View
         style={[
           styles.checkContainer,
-          { backgroundColor: check ? Colors.darkGreen : Colors.white },
+          { backgroundColor: checkValue ? Colors.darkGreen : Colors.white },
         ]}
       >
         <FontAwesome name="check" size={16} color={Colors.white} />

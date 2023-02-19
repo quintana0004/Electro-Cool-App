@@ -23,7 +23,7 @@ function Filter({ filters, updateFilters }) {
         <View style={styles.filterContainer}>
           {Object.entries(filters).map(([key, value]) => (
             <View key={key} style={styles.itemFilter}>
-              <CheckBox id={key} onCheck={updateFilterValues} value={value} />
+              <CheckBox id={key} onCheck={updateFilterValues} checkValue={value} />
               <Text style={styles.itemStatus}>{key}</Text>
             </View>
           ))}
