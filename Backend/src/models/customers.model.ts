@@ -1,60 +1,84 @@
 import prisma from "../database/prisma";
 import { ICustomer } from "./../types/index.d";
 
-async function findAllCustomers(
-  skip: number | undefined,
-  take: number | undefined,
-  searchTerm: string
-) {
+async function findAllCustomers(page: number, take: number, searchTerm: string | undefined) {
   try {
-    const term = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
     const customers = await prisma.customer.findMany({
-      skip,
-      take,
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
-        phone: {
-          contains: term,
-        },
-        fullName: {
-          contains: term,
-        },
+        OR: [
+          {
+            phone: {
+              contains: searchTerm,
+            },
+          },
+          {
+            fullName: {
+              contains: searchTerm,
+            },
+          },
+        ],
       },
     });
 
-    return customers;
+    const customersData = {
+      data: customers.slice(0, take),
+      isLastPage: customers.length <= take,
+      currentPage: page,
+    };
+    return customersData;
   } catch (error) {
     throw error;
   }
 }
 
 async function findAllCustomersWithActiveJobOrders(
-  skip: number | undefined,
-  take: number | undefined,
-  searchTerm: string
+  page: number,
+  take: number,
+  searchTerm: string | undefined
 ) {
   try {
-    const term = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
     const customers = await prisma.customer.findMany({
-      skip,
-      take,
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
-        phone: {
-          contains: term,
-        },
-        fullName: {
-          contains: term,
-        },
-        jobOrders: {
-          some: {
-            status: {
-              in: ["Complete", "New", "Working"],
+        OR: [
+          {
+            phone: {
+              contains: searchTerm,
             },
           },
-        },
+          {
+            fullName: {
+              contains: searchTerm,
+            },
+          },
+          {
+            jobOrders: {
+              some: {
+                status: {
+                  in: ["Complete", "New", "Working"],
+                },
+              },
+            },
+          },
+        ],
       },
     });
 
-    return customers;
+    const customersData = {
+      data: customers.slice(0, take),
+      isLastPage: customers.length <= take,
+      currentPage: page,
+    };
+    return customersData;
   } catch (error) {
     throw error;
   }
