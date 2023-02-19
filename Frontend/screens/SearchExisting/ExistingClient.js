@@ -37,7 +37,11 @@ function ExistingClient({ route, navigation }) {
         </View>
       </Header>
       <View style={styles.body}>
-        <ExistingClientTableList searchTerm={searchTerm} setClient={setSelectedClient} />
+        <ExistingClientTableList
+          searchTerm={searchTerm}
+          selectedClient={selectedClient}
+          setClient={setSelectedClient}
+        />
       </View>
       <View style={styles.footer}>
         <View style={styles.navBtnGroup}>

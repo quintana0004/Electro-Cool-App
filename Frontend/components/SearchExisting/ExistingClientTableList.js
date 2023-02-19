@@ -1,42 +1,45 @@
-import { Dimensions, FlatList, StyleSheet, View, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { httpGetAllClients } from "../../api/clients.api";
+import { Dimensions, FlatList, View } from "react-native";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
+import { httpGetAllClients } from "../../api/clients.api";
 import ExistingClientTableHeader from "./ExistingClientTableHeader";
 import ExistingClientTableItem from "./ExistingClientTableItem";
-import { useState } from "react";
 
-function ExistingClientTableList({ searchTerm, setClient }) {
-  // TODO:
-  // 1. Develop Search Functionality - DONE
-  // 2. Add button Footers with Navigation - DONE
-  // 3. Add validation before navigating to the next screen (if no item is selected)
-  // 4. Pass state on navigation to next screen - DONE
-  // 5. Test the infinite scroll functionality
-
+function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
   const TAKE = 15;
-  const [tableData, setTableData] = useState([]);
+  const queryClient = useQueryClient();
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ["ExistingClientData", searchTerm],
-    getExistingClientData,
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
-      },
+  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ["ExistingClientData", searchTerm],
+    queryFn: getExistingClientData,
+    getNextPageParam: (lastPage) => {
+      return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
     },
-    {
-      enabled: true,
-    }
-  );
+    select: (data) => {
+      return {
+        ...data,
+        pages: data.pages.map((page) => {
+          return {
+            ...page,
+            data: {
+              ...page.data,
+              data: page.data.data.map((client) => {
+                return {
+                  ...client,
+                  selected: client.id === selectedClient?.id,
+                };
+              }),
+            },
+          };
+        }),
+      };
+    },
+    enabled: true,
+    staleTime: 1000 * 60 * 60 * 1, // 1 hour
+  });
 
   async function getExistingClientData({ pageParam = 0 }) {
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
-
-    let initialTableData = getTableData(tableData, data);
-    setTableData(initialTableData);
-
     return data;
   }
 
@@ -46,43 +49,40 @@ function ExistingClientTableList({ searchTerm, setClient }) {
     }
   }
 
-  function getTableData(clientTableData, serverTableData) {
-    let currentTableDataMap = {};
-    for (const item of clientTableData) {
-      currentTableDataMap[item.id] = item;
-    }
-
-    let updatedClientTableData = [];
-    const serverData = serverTableData.data.data;
-    for (const item of serverData) {
-      const tableItem = currentTableDataMap[item.id];
-      if (tableItem) {
-        item.selected = tableItem.selected;
-        updatedClientTableData.push(item);
-      } else {
-        item.selected = false;
-        updatedClientTableData.push(item);
-      }
-    }
-
-    return updatedClientTableData;
+  function updateSelectedItem(id, value) {
+    queryClient.setQueryData(["ExistingClientData", searchTerm], (oldData) => {
+      const newPages = {
+        ...oldData,
+        pages: oldData.pages.map((page) => {
+          return {
+            ...page,
+            data: {
+              ...page.data,
+              data: page.data.data.map((client) => {
+                if (id === client.id) {
+                  setClient(client);
+                }
+                return {
+                  ...client,
+                  selected: client.id === id ? value : false,
+                };
+              }),
+            },
+          };
+        }),
+      };
+      return newPages;
+    });
   }
 
-  function updateSelectedItem(id, value) {
-    const updatedTableData = tableData.map((item) => {
-      if (item.id === id) {
-        item.selected = value;
-      } else {
-        item.selected = false;
-      }
+  function getTableDataFlattened() {
+    let tableData = [];
 
-      return item;
-    });
+    for (const items of data.pages.map((p) => p.data).flat()) {
+      tableData.push(...items.data);
+    }
 
-    const selectedClient = updatedTableData.find((item) => item.selected === true);
-    setClient(selectedClient);
-
-    setTableData(updatedTableData);
+    return tableData;
   }
 
   function renderTableItem({ item }) {
@@ -102,7 +102,7 @@ function ExistingClientTableList({ searchTerm, setClient }) {
       <ExistingClientTableHeader />
       {isLoading || (
         <FlatList
-          data={tableData}
+          data={getTableDataFlattened()}
           renderItem={renderTableItem}
           estimatedItemSize={10}
           onEndReached={loadMoreData}
