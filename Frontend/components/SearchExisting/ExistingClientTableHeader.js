@@ -9,7 +9,7 @@ function ExistingClientTableHeader() {
       </View>
 
       <View style={styles.headerGroupRight}>
-        <Text style={styles.headerText}>Entry Date</Text>
+        <Text style={styles.headerText}>Phone Number</Text>
         <Text style={styles.headerText}>Select</Text>
       </View>
     </View>

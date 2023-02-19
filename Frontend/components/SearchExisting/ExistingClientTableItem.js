@@ -1,23 +1,31 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { format } from "date-fns";
 import CheckBox from "../UI/Checkbox";
 
 function ExistingClientItemTableItem({ itemData, onSelected }) {
-  const { id, firstName, lastName, date } = itemData;
-  const formattedDate = format(new Date(date), "MM/dd/yyyy");
+  const { id, firstName, lastName, phone } = itemData;
   const fullName = `${lastName}, ${firstName}`;
+  const phoneFormatted = formatPhoneNumber(phone);
+
+  function formatPhoneNumber(phoneNumberString) {
+    const cleaned = ("" + phoneNumberString).replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return "(" + match[1] + ") " + match[2] + "-" + match[3];
+    }
+    return null;
+  }
 
   return (
     <View>
       <Pressable>
         <View style={styles.container}>
-          <View style={{ width: 250, marginLeft: 20 }}>
+          <View style={{ width: 245, marginLeft: 20 }}>
             <Text style={styles.boldText}>{fullName}</Text>
           </View>
           <View style={{ width: 140 }}>
-            <Text style={styles.boldText}>{formattedDate}</Text>
+            <Text style={styles.boldText}>{phoneFormatted}</Text>
           </View>
-          <View style={{ width: 80, marginLeft: 65 }}>
+          <View style={{ width: 80, marginLeft: 80 }}>
             <CheckBox id={id} checkValue={itemData.selected} onCheck={onSelected} />
           </View>
         </View>

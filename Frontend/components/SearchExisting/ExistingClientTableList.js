@@ -65,19 +65,7 @@ function ExistingClientTableList({ searchTerm, setClient }) {
       }
     }
 
-    let updatedTableDataMap = {};
-    for (const item of updatedClientTableData) {
-      updatedTableDataMap[item.id] = item;
-    }
-
-    for (const item of clientTableData) {
-      const tableItem = updatedTableDataMap[item.id];
-      if (tableItem === undefined) {
-        updatedClientTableData.push(item);
-      }
-    }
-
-    return updatedClientTableData.sort((item) => item.firstName);
+    return updatedClientTableData;
   }
 
   function updateSelectedItem(id, value) {
@@ -102,7 +90,7 @@ function ExistingClientTableList({ searchTerm, setClient }) {
       id: item.id,
       firstName: item.firstName,
       lastName: item.lastName,
-      date: item.createdDate,
+      phone: item.phone,
       selected: item.selected,
     };
 
