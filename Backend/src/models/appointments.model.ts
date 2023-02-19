@@ -1,4 +1,5 @@
 import prisma from "../database/prisma";
+import { excludeFields } from "../utils/db.utils";
 import { IAppointment } from "./../types/index.d";
 
 async function findAppointmentById(id: number) {
@@ -10,6 +11,28 @@ async function findAppointmentById(id: number) {
     });
 
     return appointment;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAppointmentWithChildsById(id: number) {
+  try {
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        customer: true,
+        car: true,
+      },
+    });
+
+    if (!appointment) {
+      return null;
+    }
+
+    return excludeFields(appointment, "customerId", "carId");
   } catch (error) {
     throw error;
   }
@@ -30,6 +53,8 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
         customerName: appointmentInfo.customerName,
         phone: appointmentInfo.phone,
         email: appointmentInfo.email,
+        customerId: appointmentInfo.customerId,
+        carId: appointmentInfo.carId,
         companyId: appointmentInfo.companyId,
       },
       update: {
@@ -41,6 +66,8 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
         customerName: appointmentInfo.customerName,
         phone: appointmentInfo.phone,
         email: appointmentInfo.email,
+        customerId: appointmentInfo.customerId,
+        carId: appointmentInfo.carId,
         lastModified: new Date(),
       },
     });
@@ -65,4 +92,4 @@ async function deleteAppointment(id: number) {
   }
 }
 
-export { findAppointmentById, upsertAppointment, deleteAppointment };
+export { findAppointmentById, findAppointmentWithChildsById, upsertAppointment, deleteAppointment };

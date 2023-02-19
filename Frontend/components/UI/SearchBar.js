@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import react, { useState } from "react";
 import {
   View,
@@ -10,6 +11,14 @@ import Colors from "../../constants/Colors/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 
 function SearchBar({ widthBar, heightBar, placeholderText, onData }) {
+=======
+import { useState } from "react";
+import { View, StyleSheet, TextInput, ActivityIndicator } from "react-native";
+import Colors from "../../constants/Colors/Colors";
+import { FontAwesome } from "@expo/vector-icons";
+
+function SearchBar({ widthBar, heightBar, placeholderText, onSearch }) {
+>>>>>>> 72a38d3ec87fd6bbc1244f3aff1df8d174453883
   // Info states needed for each search
   const [searchValue, setSearchValue] = useState();
   const [searching, setSearching] = useState(true);
@@ -27,6 +36,7 @@ function SearchBar({ widthBar, heightBar, placeholderText, onData }) {
         <FontAwesome
           name="search"
           size={30}
+<<<<<<< HEAD
           color="#898A8B"
           style={styles.icon}
           onPress={() => onData(searchValue)}
@@ -37,6 +47,14 @@ function SearchBar({ widthBar, heightBar, placeholderText, onData }) {
           color={Colors.yellowDark}
           style={styles.loading}
         />
+=======
+          color={Colors.darkGrey}
+          style={styles.icon}
+          onPress={() => onSearch(searchValue)}
+        />
+      ) : (
+        <ActivityIndicator size="large" color={Colors.yellowDark} style={styles.loading} />
+>>>>>>> 72a38d3ec87fd6bbc1244f3aff1df8d174453883
       )}
     </View>
   );

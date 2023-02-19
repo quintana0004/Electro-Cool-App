@@ -127,4 +127,18 @@ async function findCarsByCustomer(searchTerm: string | undefined, customerId: nu
   }
 }
 
-export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer };
+async function deleteCar(id: number) {
+  try {
+    const car = await prisma.car.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer, deleteCar };

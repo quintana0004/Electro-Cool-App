@@ -1,4 +1,4 @@
-import { IJobOrder, IUser } from "./../types/index.d";
+import { IJobOrder, IPayment, IUser } from "./../types/index.d";
 import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
@@ -7,6 +7,9 @@ import { findDespositById } from "../models/deposits.model";
 import { findAppointmentById } from "../models/appointments.model";
 import { findTaskById } from "../models/tasks.model";
 import { findUserById } from "../models/users.model";
+import { findInvoiceById } from "../models/invoices.model";
+import { findJobOrderById } from "../models/job-orders.model";
+import { findPaymentById } from "../models/payments.model";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -88,6 +91,34 @@ async function isValidCarId(id: number | string) {
   return true;
 }
 
+async function isValidJobOrderId(id: number | string) {
+  id = Number(id);
+  if (isNaN(id)) {
+    return false;
+  }
+
+  const doesJobOrderExist = await findJobOrderById(id);
+  if (!doesJobOrderExist) {
+    return false;
+  }
+
+  return true;
+}
+
+async function isValidInvoiceId(id: number | string) {
+  id = Number(id);
+  if (isNaN(id)) {
+    return false;
+  }
+
+  const doesInvoiceExist = await findInvoiceById(id);
+  if (!doesInvoiceExist) {
+    return false;
+  }
+
+  return true;
+}
+
 async function isValidDespositId(id: number | string) {
   id = Number(id);
   if (isNaN(id)) {
@@ -96,6 +127,20 @@ async function isValidDespositId(id: number | string) {
 
   const doesDespositExist = await findDespositById(id);
   if (!doesDespositExist) {
+    return false;
+  }
+
+  return true;
+}
+
+async function isValidPaymentId(id: number | string) {
+  id = Number(id);
+  if (isNaN(id)) {
+    return false;
+  }
+
+  const doesPaymentExist = await findPaymentById(id);
+  if (!doesPaymentExist) {
     return false;
   }
 
@@ -199,7 +244,7 @@ function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
-    !invoiceInfo.totalPrice ||
+    !invoiceInfo.amountTotal ||
     !invoiceInfo.amountPaid ||
     !invoiceInfo.amountDue ||
     !invoiceInfo.companyId ||
@@ -229,12 +274,66 @@ function hasRequiredInvoiceItemFields(invoiceItemInfo: IInvoiceItem) {
 
 function hasRequiredDepositFields(depositInfo: IDeposit) {
   if (
-    !depositInfo.amount ||
+    !depositInfo.amountTotal ||
+    !depositInfo.status ||
     !depositInfo.description ||
     !depositInfo.isAvailable ||
     !depositInfo.customerId ||
     !depositInfo.carId ||
     !depositInfo.companyId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredCardPaymentFields(paymentInfo: IPayment, athEvidenceFile: any) {
+  if (!paymentInfo.type || !athEvidenceFile || !paymentInfo.companyId || !paymentInfo.invoiceId) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredCheckPaymentFields(
+  paymentInfo: IPayment,
+  bankFrontEvidenceFile: any,
+  bankBackEvidenceFile: any
+) {
+  if (
+    !paymentInfo.type ||
+    !paymentInfo.bankStatus ||
+    !bankFrontEvidenceFile ||
+    !bankBackEvidenceFile ||
+    !paymentInfo.companyId ||
+    !paymentInfo.invoiceId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredCashPaymentFields(paymentInfo: IPayment) {
+  if (
+    !paymentInfo.type ||
+    !paymentInfo.amountPaid ||
+    !paymentInfo.companyId ||
+    !paymentInfo.invoiceId
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function hasRequiredATHMovilPaymentFields(paymentInfo: IPayment) {
+  if (
+    !paymentInfo.type ||
+    !paymentInfo.referenceNumber ||
+    !paymentInfo.companyId ||
+    !paymentInfo.invoiceId
   ) {
     return false;
   }
@@ -276,7 +375,10 @@ export {
   isValidUserId,
   isValidCustomerId,
   isValidCarId,
+  isValidJobOrderId,
+  isValidInvoiceId,
   isValidDespositId,
+  isValidPaymentId,
   isValidAppointmentId,
   isValidTaskId,
   hasRequiredUserFields,
@@ -286,6 +388,10 @@ export {
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   hasRequiredDepositFields,
+  hasRequiredCardPaymentFields,
+  hasRequiredCheckPaymentFields,
+  hasRequiredCashPaymentFields,
+  hasRequiredATHMovilPaymentFields,
   hasRequiredAppointmentFields,
   hasRequiredTaskFields,
 };

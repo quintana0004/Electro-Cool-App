@@ -45,4 +45,9 @@ async function createDummyCompany() {
   }
 }
 
-export { excludeFields, generateSalt, sha512, createDummyCompany };
+async function getDummyCompanyId(): Promise<string> {
+  let company = await findCompanyByName("Electro Cool");
+  return company?.id ?? "";
+}
+
+export { excludeFields, generateSalt, sha512, createDummyCompany, getDummyCompanyId };

@@ -8,37 +8,69 @@ import {
   hasRequiredDepositFields,
   isValidDespositId,
 } from "../../utils/validators.utils";
-import { deleteDeposit, findAllDeposits, upsertDeposit } from "../../models/deposits.model";
+import {
+  deleteDeposit,
+  findAllDeposits,
+  findDespositWithChildsById,
+  upsertDeposit,
+} from "../../models/deposits.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllDeposits(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : 0;
+    let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
-    const deposits = await findAllDeposits(skip, take, searchTerm);
-    return res.status(200).json(deposits);
+
+    const depositsData = await findAllDeposits(page, take, searchTerm);
+    return res.status(200).json(depositsData);
   } catch (error) {
     return handleExceptionErrorResponse("get all deposits", error, res);
   }
 }
 
+async function httpGetDepoist(req: Request, res: Response) {
+  try {
+    const depositId = req.params.id;
+
+    const isDepositIdValid = await isValidDespositId(depositId);
+    if (!isDepositIdValid) {
+      return handleBadResponse(
+        400,
+        "The deposit Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const deposit = await findDespositWithChildsById(+depositId);
+
+    return res.status(200).json(deposit);
+  } catch (error) {
+    return handleExceptionErrorResponse("get deposit by id", error, res);
+  }
+}
+
 async function httpUpsertDeposit(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const depositInfo: IDeposit = {
       id: req.body.id,
-      amount: req.body.amount,
+      status: req.body.status,
+      amountTotal: req.body.amountTotal,
       description: req.body.description,
       isAvailable: req.body.isAvailable,
       customerId: req.body.customerId,
       carId: req.body.carId,
-      companyId: req.companyId,
+      companyId: companyId,
     };
 
     const hasRequiredFields = hasRequiredDepositFields(depositInfo);
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create/update deposit. Please provide the following fields: , amount, description, isAvailable, customerId, carId, invoiceId and companyId.",
+        "Missing required fields to create/update deposit. Please provide the following fields: status, amountTotal, description, isAvailable, customerId, carId, invoiceId and companyId.",
         res
       );
     }
@@ -97,4 +129,4 @@ async function httpDeleteDeposit(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllDeposits, httpUpsertDeposit, httpDeleteDeposit };
+export { httpGetAllDeposits, httpGetDepoist, httpUpsertDeposit, httpDeleteDeposit };

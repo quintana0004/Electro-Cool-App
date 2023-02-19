@@ -1,11 +1,20 @@
 import express from "express";
 import { authenticateJWTMiddleWare } from "../../services/auth.service";
-import { httpGetAllInvoices, httpUpsertInvoice } from "./invoices.controller";
+import {
+  httpDeleteInvoice,
+  httpGetAllInvoices,
+  httpGetInvoice,
+  httpUpsertInvoice,
+} from "./invoices.controller";
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, httpGetAllInvoices);
+router.get("/", httpGetAllInvoices);
 
-router.post("/", authenticateJWTMiddleWare, httpUpsertInvoice);
+router.get("/:id", httpGetInvoice);
+
+router.post("/", httpUpsertInvoice);
+
+router.delete("/:id", httpDeleteInvoice);
 
 export default router;

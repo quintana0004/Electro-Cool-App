@@ -1,7 +1,92 @@
 import { Invoice_Item } from "@prisma/client";
 import prisma from "../database/prisma";
+import { excludeFields } from "../utils/db.utils";
+import { isNumeric } from "../utils/validators.utils";
 import { IInvoice, IInvoiceItem } from "./../types/index.d";
 import { updateDepositsParentInvoice } from "./deposits.model";
+
+async function findAllInvoices(page: number, take: number, searchTerm: string | undefined) {
+  try {
+    const term = searchTerm ?? "";
+    const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
+    const invoices = await prisma.invoice.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        OR: [
+          {
+            customer: {
+              fullName: {
+                contains: term,
+              },
+            },
+          },
+          {
+            id: {
+              in: idSearchTerm,
+            },
+          },
+        ],
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const invoicesData = {
+      data: invoices.slice(0, take),
+      isLastPage: invoices.length <= take,
+      currentPage: page,
+    };
+    return invoicesData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findInvoiceById(id: number) {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return invoice;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findInvoiceWithChildsById(id: number) {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        customer: true,
+        car: true,
+      },
+    });
+
+    if (!invoice) {
+      return null;
+    }
+
+    return excludeFields(invoice, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function upsertInvoice(invoiceInfo: IInvoice) {
   try {
@@ -11,7 +96,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       create: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
@@ -20,7 +105,7 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
       },
       update: {
         status: invoiceInfo.status,
-        totalPrice: invoiceInfo.totalPrice,
+        amountTotal: invoiceInfo.amountTotal,
         amountPaid: invoiceInfo.amountPaid,
         amountDue: invoiceInfo.amountDue,
         companyId: invoiceInfo.companyId,
@@ -118,23 +203,25 @@ async function upsertInvoice(invoiceInfo: IInvoice) {
     throw error;
   }
 }
-async function findAllInvoices(skip: number, take: number, searchTerm: string | undefined) {
+
+async function deleteInvoice(id: number) {
   try {
-    const term = searchTerm ? searchTerm : undefined;
-    const Invoice = await prisma.invoice.findMany({
-      skip,
-      take,
+    const invoice = await prisma.invoice.delete({
       where: {
-        customer: {
-          fullName: {
-            contains: term,
-          },
-        },
+        id: id,
       },
     });
-    return Invoice;
+
+    return invoice;
   } catch (error) {
     throw error;
   }
 }
-export { upsertInvoice, findAllInvoices };
+
+export {
+  findAllInvoices,
+  findInvoiceById,
+  findInvoiceWithChildsById,
+  upsertInvoice,
+  deleteInvoice,
+};

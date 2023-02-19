@@ -8,6 +8,7 @@ import {
   isValidTaskId,
 } from "../../utils/validators.utils";
 import { createTask, deleteTask } from "../../models/tasks.model";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllTasks(req: Request, res: Response) {
   try {
@@ -19,10 +20,13 @@ async function httpGetAllTasks(req: Request, res: Response) {
 
 async function httpCreateTask(req: Request, res: Response) {
   try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
     const taskInfo: ITask = {
       text: req.body.text,
       dueDate: req.body.dueDate,
-      companyId: req.companyId,
+      companyId: companyId,
     };
 
     const hasRequiredFields = hasRequiredTaskFields(taskInfo);

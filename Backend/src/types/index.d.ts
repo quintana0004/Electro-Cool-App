@@ -68,7 +68,7 @@ export interface ICar {
 export interface IInvoice {
   id?: number;
   status: string;
-  totalPrice: string;
+  amountTotal: string;
   amountPaid: string;
   amountDue: string;
   createdDate?: Date;
@@ -93,7 +93,8 @@ export interface IInvoiceItem {
 
 export interface IDeposit {
   id?: number;
-  amount: string;
+  status: string;
+  amountTotal: string;
   description: string;
   isAvailable: boolean;
   createdDate?: Date;
@@ -102,6 +103,21 @@ export interface IDeposit {
   carId: number;
   invoiceId?: number;
   companyId: string;
+}
+
+export interface IPayment {
+  id?: number;
+  type: string;
+  amountPaid?: string;
+  bankStatus?: string;
+  bankFrontEvidence?: string;
+  bankBackEvidence?: string;
+  athEvidence?: string;
+  referenceNumber?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+  invoiceId: number;
 }
 
 export interface IAppointment {
@@ -117,6 +133,8 @@ export interface IAppointment {
   createdDate?: Date;
   lastModified?: Date;
   companyId: string;
+  customerId?: number;
+  carId?: number;
 }
 
 export interface ITask {
