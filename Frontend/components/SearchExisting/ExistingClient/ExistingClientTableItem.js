@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import CheckBox from "../UI/Checkbox";
+import CheckBox from "../../UI/Checkbox";
 
 function ExistingClientItemTableItem({ itemData, onSelected }) {
   const { id, firstName, lastName, phone } = itemData;

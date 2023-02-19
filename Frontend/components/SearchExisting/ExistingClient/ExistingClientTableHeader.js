@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import Colors from "../../../constants/Colors/Colors";
 
 function ExistingClientTableHeader() {
   return (

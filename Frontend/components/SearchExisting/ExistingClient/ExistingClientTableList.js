@@ -1,7 +1,7 @@
 import { Dimensions, FlatList, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { httpGetAllClients } from "../../api/clients.api";
+import { httpGetAllClients } from "../../../api/clients.api";
 import ExistingClientTableHeader from "./ExistingClientTableHeader";
 import ExistingClientTableItem from "./ExistingClientTableItem";
 

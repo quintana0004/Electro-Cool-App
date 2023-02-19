@@ -4,8 +4,8 @@ import Colors from "../../constants/Colors/Colors";
 
 import Header from "../../components/UI/Header";
 import SearchBar from "../../components/UI/SearchBar";
-import ExistingClientTableList from "../../components/SearchExisting/ExistingClientTableList";
 import NavBtn from "../../components/UI/NavBtns";
+import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
 
 function ExistingClient({ route, navigation }) {
   const { nextScreen, previousScreen } = route.params;
