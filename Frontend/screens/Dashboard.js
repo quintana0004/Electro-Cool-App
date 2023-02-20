@@ -28,13 +28,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   greeting: {
-    fontSize: 60,
+    fontSize: 40,
     color: Colors.white,
     fontWeight: "600",
     textAlign: "right",
   },
   user: {
-    fontSize: 60,
+    fontSize: 40,
     color: Colors.brightYellow,
     fontWeight: "600",
     textAlign: "right",
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   content: {
     position: "absolute",
     top: 90,
-    left: 400,
+    left: 255,
   },
   body: {
     zIndex: -1,
