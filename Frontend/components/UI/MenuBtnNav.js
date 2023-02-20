@@ -68,7 +68,7 @@ function MenuBtnNav({ choice, nav }) {
 const styles = StyleSheet.create({
   txtChoice: {
     color: Colors.black,
-    fontSize: 27,
+    fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
     position: "absolute",
@@ -79,12 +79,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: Colors.yellowDark,
     borderRadius: 50,
-    width: 255,
+    width: 210,
     height: 72,
     alignItems: "center",
-    marginVertical: 15,
+    marginVertical: 10,
     zIndex: 1,
-    marginLeft: 40,
+    marginLeft: 20,
   },
 });
 

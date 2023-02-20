@@ -8,9 +8,12 @@ function Header({ children, divideH, divideW, colorHeader, headerStyles }) {
   const [sizing, setSizing] = useState({ windowWidth, windowHeight });
 
   useEffect(() => {
-    const changes = Dimensions.addEventListener("change", ({ windowWidth, windowHeight }) => {
-      setSizing({ windowWidth, windowHeight });
-    });
+    const changes = Dimensions.addEventListener(
+      "change",
+      ({ windowWidth, windowHeight }) => {
+        setSizing({ windowWidth, windowHeight });
+      }
+    );
 
     return () => changes?.remove();
   }, []);
@@ -37,8 +40,8 @@ const styles = StyleSheet.create({
   header: {
     position: "absolute",
     top: 0,
-    borderBottomLeftRadius: 35,
-    borderBottomRightRadius: 35,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
     flexDirection: "row",
   },
 });
