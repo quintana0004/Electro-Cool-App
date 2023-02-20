@@ -1,6 +1,9 @@
 import { IAppointment } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   hasRequiredAppointmentFields,
   isValidAppointmentId,
@@ -8,6 +11,7 @@ import {
   isIsoDate,
 } from "../../utils/validators.utils";
 import {
+  findAllAppointments,
   deleteAppointment,
   findAppointmentWithChildsById,
   upsertAppointment,
@@ -16,7 +20,24 @@ import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
   try {
-    return res.status(200).json("Get All Appointments");
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+
+    const isDateFormatValid = isIsoDate(searchTerm);
+    if (!isDateFormatValid) {
+      return handleBadResponse(
+        400,
+        `The date provided for the Arrival Date Time is not valid. The correct format must be in ISO as the following: "YYYY-MM-DDTHH:MN:SS.MSSZ".`,
+        res
+      );
+    }
+
+    const appointmentsData = await findAllAppointments(page, take, searchTerm);
+
+    return res.status(200).json(appointmentsData);
   } catch (error) {
     return handleExceptionErrorResponse("get all appointments", error, res);
   }
@@ -56,6 +77,9 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       description: req.body.description,
       arrivalDateTime: req.body.arrivalDateTime,
       model: req.body.model,
+      brand: req.body.brand,
+      year: req.body.year,
+      color: req.body.color,
       licensePlate: req.body.licensePlate,
       customerName: req.body.customerName,
       phone: req.body.phone,
@@ -69,7 +93,7 @@ async function httpUpsertAppointment(req: Request, res: Response) {
     if (!hasRequiredFields) {
       return handleBadResponse(
         400,
-        "Missing required fields to create/update appointment. Please provide the following fields: service, description, arrivalDateTime, model, licensePlate, customerName, phone, email and companyId.",
+        "Missing required fields to create/update appointment. Please provide the following fields: service, description, arrivalDateTime, model, brand, year, color, licensePlate, customerName, phone, email and companyId.",
         res
       );
     }

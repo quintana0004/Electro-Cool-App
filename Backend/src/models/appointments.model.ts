@@ -2,6 +2,37 @@ import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
 import { IAppointment } from "./../types/index.d";
 
+async function findAllAppointments(
+  page: number,
+  take: number,
+  searchTerm: string
+) {
+  try {
+    const EODtime = new Date(searchTerm.substring(0, 10) + "T23:59:59.999Z");
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+    const appointments = await prisma.appointment.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        arrivalDateTime: {
+          gte: new Date(searchTerm),
+          lt: new Date(EODtime),
+        },
+      },
+    });
+
+    const appointmentsData = {
+      data: appointments.slice(0, take),
+      isLastPage: appointments.length <= take,
+      currentPage: page,
+    };
+    return appointmentsData;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findAppointmentById(id: number) {
   try {
     const appointment = await prisma.appointment.findUnique({
@@ -49,6 +80,9 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
         description: appointmentInfo.description,
         arrivalDateTime: appointmentInfo.arrivalDateTime,
         model: appointmentInfo.model,
+        brand: appointmentInfo.brand,
+        year: appointmentInfo.year,
+        color: appointmentInfo.color,
         licensePlate: appointmentInfo.licensePlate,
         customerName: appointmentInfo.customerName,
         phone: appointmentInfo.phone,
@@ -62,6 +96,9 @@ async function upsertAppointment(appointmentInfo: IAppointment) {
         description: appointmentInfo.description,
         arrivalDateTime: appointmentInfo.arrivalDateTime,
         model: appointmentInfo.model,
+        brand: appointmentInfo.brand,
+        year: appointmentInfo.year,
+        color: appointmentInfo.color,
         licensePlate: appointmentInfo.licensePlate,
         customerName: appointmentInfo.customerName,
         phone: appointmentInfo.phone,
@@ -92,4 +129,10 @@ async function deleteAppointment(id: number) {
   }
 }
 
-export { findAppointmentById, findAppointmentWithChildsById, upsertAppointment, deleteAppointment };
+export {
+  findAllAppointments,
+  findAppointmentById,
+  findAppointmentWithChildsById,
+  upsertAppointment,
+  deleteAppointment,
+};
