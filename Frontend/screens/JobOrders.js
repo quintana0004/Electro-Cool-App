@@ -1,69 +1,33 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
-import Header from "../components/UI/Header";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
-import SearchBar from "../components/UI/SearchBar";
+import { Appbar } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
+import MenuDropDown from "../components/Navigation/MenuDropDown";
 
 function JobOrders({ navigation }) {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("JobOrders");
-  const [filters, setFilters] = useState({
-    New: false,
-    Working: false,
-    Complete: false,
-    Canceled: false,
-    Heavy: false,
-    Light: false,
-  });
-
-  //Function of the btns
-  function navSelectClient() {
-    navigation.navigate("CustomerSelection");
-  }
-
-  function navSelectCar() {
-    navigation.navigate("CarSelection");
-  }
-
-  function navClientInformation() {
-    navigation.navigate("ClientInformation");
-  }
-
-  function navCompanyPolicy() {
-    navigation.navigate("CompanyPolicy");
-  }
-
-  function updateSearchTerm(term) {
-    setSearch(term);
-  }
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
-    <View style={styles.container}>
-      <Header divideH={7} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-        <View style={styles.searchContainer}>
-          <SearchBar
-            onSearch={updateSearchTerm}
-            widthBar={300}
-            heightBar={50}
-            placeholderText="Search by ID or Name"
-          />
-        </View>
-        <View style={styles.btnCreateContainer}>
-          <Button
-            onPress={navSelectClient}
-            title="Create"
-            color={Colors.yellowDark}
-            style={styles.btnCreate}
-          />
-        </View>
-      </Header>
-      <View style={styles.body}>
-        <Text>Job Orders</Text>
-      </View>
+        <Appbar.Content></Appbar.Content>
+        <Appbar.Action icon="filter" />
+        <Appbar.Action icon="magnify" />
+        <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
+      </Appbar.Header>
     </View>
   );
+}
+
+{
+  /* <Searchbar
+placeholder="Search by ID or Name"
+onChangeText={onChangeSearch}
+value={searchQuery}
+/> */
 }
 
 const styles = StyleSheet.create({
@@ -84,6 +48,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   btnCreate: {},
+  header: {
+    backgroundColor: Colors.darkBlack,
+  },
 });
 
 export default JobOrders;

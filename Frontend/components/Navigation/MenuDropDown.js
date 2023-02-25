@@ -16,7 +16,7 @@ function MenuDropDown() {
   let iconChoice = (
     <MaterialCommunityIcons
       name="window-close"
-      size={50}
+      size={20}
       color={Colors.yellowDark}
     />
   );
@@ -26,13 +26,13 @@ function MenuDropDown() {
     iconChoice = (
       <MaterialCommunityIcons
         name="window-close"
-        size={50}
+        size={20}
         color={Colors.yellowDark}
       />
     );
   } else if (toggle === false) {
     iconChoice = (
-      <SimpleLineIcons name="menu" size={40} color={Colors.yellowDark} />
+      <SimpleLineIcons name="menu" size={20} color={Colors.yellowDark} />
     );
   }
 
@@ -89,18 +89,20 @@ function MenuDropDown() {
 
 const styles = StyleSheet.create({
   circle: {
-    width: 80,
-    height: 80,
+    width: 40,
+    height: 40,
     backgroundColor: Colors.white,
     borderColor: Colors.lightGrey,
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 50,
-    marginTop: 25,
-    marginLeft: 15,
+    marginLeft: 10,
   },
-  boxOption: {},
+  boxOption: {
+    position: "absolute",
+    top: 50,
+  },
 });
 
 export default MenuDropDown;
