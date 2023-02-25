@@ -1,41 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
-import Header from "../components/UI/Header";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
+import { Appbar } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
+import MenuDropDown from "../components/Navigation/MenuDropDown";
+import SearchBanner from "../components/UI/SearchBanner";
 
 function JobOrders({ navigation }) {
-  //Function of the btns
-  function navSelectClient() {
-    navigation.navigate("CustomerSelection");
-  }
-
-  function navSelectCar() {
-    navigation.navigate("CarSelection");
-  }
-
-  function navClientInformation() {
-    navigation.navigate("ClientInformation");
-  }
-
-  function navCompanyPolicy() {
-    navigation.navigate("CompanyPolicy");
-  }
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
-    <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-      </Header>
-      <View style={styles.body}>
-        <Text>JobOrder Screen!</Text>
-        <Button title="Gabbox01" onPress={() => navSelectClient()} />
-        <Button title="Gabbox02" onPress={() => navSelectCar()} />
-        <Button title="Shelly01" onPress={() => navClientInformation()} />
-        <Button title="Shelly02" onPress={() => navCompanyPolicy()} />
-      </View>
+        <Appbar.Content></Appbar.Content>
+        <Appbar.Action icon="filter" />
+        <Appbar.Action icon="magnify" />
+        <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
+      </Appbar.Header>
+      <SearchBanner />
     </View>
   );
+}
+
+{
+  /* <Searchbar
+placeholder="Search by ID or Name"
+onChangeText={onChangeSearch}
+value={searchQuery}
+/> */
 }
 
 const styles = StyleSheet.create({
@@ -48,6 +42,16 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginVertical: 20,
+  },
+  searchContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 35,
+    marginTop: 10,
+  },
+  btnCreate: {},
+  header: {
+    backgroundColor: Colors.darkBlack,
   },
 });
 

@@ -26,7 +26,11 @@ function ExistingClientItemTableItem({ itemData, onSelected }) {
             <Text style={styles.boldText}>{phoneFormatted}</Text>
           </View>
           <View style={{ width: 80, marginLeft: 80 }}>
-            <CheckBox id={id} checkValue={itemData.selected} onCheck={onSelected} />
+            <CheckBox
+              id={id}
+              checkValue={itemData.selected}
+              onCheck={onSelected}
+            />
           </View>
         </View>
       </Pressable>
