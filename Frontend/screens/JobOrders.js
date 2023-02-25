@@ -4,6 +4,7 @@ import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import { Searchbar } from "react-native-paper";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
+import SearchBanner from "../components/UI/SearchBanner";
 
 function JobOrders({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,6 +19,7 @@ function JobOrders({ navigation }) {
         <Appbar.Action icon="magnify" />
         <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
       </Appbar.Header>
+      <SearchBanner />
     </View>
   );
 }
