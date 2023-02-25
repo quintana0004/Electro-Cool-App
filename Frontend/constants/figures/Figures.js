@@ -7,6 +7,8 @@ import SettingIcon from "../../assets/images/Setting.png";
 import FilterIcon from "../../assets/images/FilterIcon.png";
 import InvoiceDollarIcon from "../../assets/images/InvoiceDollarIcon.png";
 import DepositDollarIcon from "../../assets/images/DepositDollarIcon.png";
+import ClientCardIcon from "../../assets/images/ClientCardIcon.png";
+import CarCardIcon from "../../assets/images/CarCardIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -18,6 +20,8 @@ const Figures = {
   FilterIcon,
   InvoiceDollarIcon,
   DepositDollarIcon,
+  ClientCardIcon,
+  CarCardIcon,
 };
 
 export default Figures;

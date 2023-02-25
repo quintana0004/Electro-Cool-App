@@ -21,12 +21,22 @@ function Invoices({ navigation }) {
     "In Draft": false,
   });
 
-  function navigateToFindExistingClientScreen() {
+  function navigateToCreateInvoiceFlow() {
     navigation.navigate("ExistingClients", {
       nextScreen: "ExistingCars",
       previousScreen: "InvoiceMain",
       cancelScreen: "InvoiceMain",
       otherNextScreen: "InvoiceDetail",
+      otherPreviousScreen: "ExistingClients",
+    });
+  }
+
+  function navigateToCreateDepositFlow() {
+    navigation.navigate("ExistingClients", {
+      nextScreen: "ExistingCars",
+      previousScreen: "InvoiceMain",
+      cancelScreen: "InvoiceMain",
+      otherNextScreen: "DepositDetail",
       otherPreviousScreen: "ExistingClients",
     });
   }
@@ -54,11 +64,11 @@ function Invoices({ navigation }) {
       </Header>
       <View style={styles.body}>
         <View style={styles.actionButtonGroup}>
-          <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Deposit</ActionBtn>
+          <ActionBtn onPress={navigateToCreateDepositFlow}>Create Deposit</ActionBtn>
 
           <View style={styles.actionRightButtonGroup}>
             <Filter filters={filters} updateFilters={setFilters} image={Figures.FilterIcon} />
-            <ActionBtn style={{ marginLeft: 10 }} onPress={navigateToFindExistingClientScreen}>
+            <ActionBtn style={{ marginLeft: 10 }} onPress={navigateToCreateInvoiceFlow}>
               Create Invoice
             </ActionBtn>
           </View>
