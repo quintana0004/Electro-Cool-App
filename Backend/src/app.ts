@@ -1,6 +1,8 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 import dotenv from "dotenv";
 
+import swaggerSpecs from "./services/swagger.service";
 import authRouter from "./routes/auth/auth.router";
 import companyRouter from "./routes/company/company.router";
 import jobOrdersRouter from "./routes/job-orders/job-orders.router";
@@ -18,6 +20,7 @@ dotenv.config();
 // --- Express Config ---
 const app = express();
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
 
 // --- Routes ---
 app.use("/auth", authRouter);

@@ -2,29 +2,24 @@ import swaggerJsdoc from "swagger-jsdoc";
 
 const options = {
   definition: {
-    openapi: "3.1.0",
+    openapi: "3.0.1",
     info: {
-      title: "LogRocket Express API with Swagger",
+      title: "Electro Cool Express API with Swagger",
       version: "0.1.0",
       description:
-        "This is a simple CRUD API application made with Express and documented with Swagger",
+        "API to manage the job orders, customers, invoices, and other data for a Electro Cool.",
       license: {
         name: "MIT",
         url: "https://spdx.org/licenses/MIT.html",
       },
-      contact: {
-        name: "LogRocket",
-        url: "https://logrocket.com",
-        email: "info@email.com",
-      },
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:8000",
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["../routes/*.ts"],
 };
 
-const specs = swaggerJsdoc(options);
+export default swaggerJsdoc(options);
