@@ -1,24 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import MenuBtnNav from "../components/UI/MenuBtnNav";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Header from "../components/UI/Header";
 import Colors from "../constants/Colors/Colors";
 
+import { Provider, Menu, Divider, Button } from "react-native-paper";
+
 function Dashboard({ navigation }) {
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
   return (
-    <View style={styles.container}>
-      <Header divideH={3.5} divideW={1} colorHeader={Colors.darkBlack}>
-        <MenuDropDown />
-        <View style={styles.content}>
-          <Text style={styles.greeting}>Welcome back,</Text>
-          <Text style={styles.user}>Code-eX</Text>
+    <Provider>
+      <View style={styles.container}>
+        <Header divideH={3.5} divideW={1} colorHeader={Colors.darkBlack}>
+          <MenuDropDown />
+          <View style={styles.content}>
+            <Text style={styles.greeting}>Welcome back,</Text>
+            <Text style={styles.user}>Code-eX</Text>
+          </View>
+        </Header>
+        <View style={styles.body}>
+          <Menu
+            visible={visible}
+            onDismiss={closeMenu}
+            anchor={<Button onPress={openMenu}>Show menu</Button>}
+          >
+            <Menu.Item onPress={() => {}} title="Item 1" />
+            <Menu.Item onPress={() => {}} title="Item 2" />
+            <Divider />
+            <Menu.Item onPress={() => {}} title="Item 3" />
+          </Menu>
         </View>
-      </Header>
-      <View style={styles.body}>
-        <Text>Dashboard Screen!</Text>
       </View>
-    </View>
+    </Provider>
   );
 }
 

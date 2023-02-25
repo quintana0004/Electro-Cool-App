@@ -1,7 +1,6 @@
 import { Dimensions, FlatList, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { httpGetAllClients } from "../../../api/clients.api";
 import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils";
 import ExistingCarItemTableItem from "./ExistingCarTableItem";
 import ExistingCarTableHeader from "./ExistingCarTableHeader";
