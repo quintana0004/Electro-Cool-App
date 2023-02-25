@@ -3,16 +3,17 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { httpGetAllClients } from "../../../api/clients.api";
 import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils";
-import ExistingClientTableHeader from "./ExistingClientTableHeader";
-import ExistingClientTableItem from "./ExistingClientTableItem";
+import ExistingCarItemTableItem from "./ExistingCarTableItem";
+import ExistingCarTableHeader from "./ExistingCarTableHeader";
+import { httpGetAllCars } from "../../../api/cars.api";
 
-function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
+function ExistingCarTableList({ searchTerm, selectedCar, setCar }) {
   const TAKE = 15;
   const queryClient = useQueryClient();
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["ExistingClientData", searchTerm],
-    queryFn: getExistingClientData,
+    queryKey: ["ExistingCarData", searchTerm],
+    queryFn: getExistingCarData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
     },
@@ -20,18 +21,18 @@ function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
       return transformData(data, setDefaultSelectedField);
     },
     enabled: true,
-    staleTime: 1000 * 60 * 30, // 30 minutes
+    staleTime: 1000 * 60 * 60 * 1, // 1 hour
   });
 
-  function setDefaultSelectedField(client) {
+  function setDefaultSelectedField(car) {
     return {
-      ...client,
-      selected: client.id === selectedClient?.id,
+      ...car,
+      selected: car.id === selectedCar?.id,
     };
   }
 
-  async function getExistingClientData({ pageParam = 0 }) {
-    let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
+  async function getExistingCarData({ pageParam = 0 }) {
+    let data = await httpGetAllCars(TAKE, pageParam, searchTerm);
     return data;
   }
 
@@ -42,42 +43,43 @@ function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
   }
 
   function updateSelectedItem(id, value) {
-    queryClient.setQueryData(["ExistingClientData", searchTerm], (oldData) => {
+    queryClient.setQueryData(["ExistingCarData", searchTerm], (oldData) => {
       const newPages = {
-        ...transformData(oldData, setSelectedClient, id, value),
+        ...transformData(oldData, setSelectedCar, id, value),
       };
       return newPages;
     });
   }
 
-  function setSelectedClient(client, args) {
+  function setSelectedCar(car, args) {
     const [id, value] = args;
 
-    if (id === client.id) {
-      setClient(client);
+    if (id === car.id) {
+      setCar(car);
     }
 
     return {
-      ...client,
-      selected: client.id === id ? value : false,
+      ...car,
+      selected: car.id === id ? value : false,
     };
   }
 
   function renderTableItem({ item }) {
     const itemInfo = {
       id: item.id,
-      firstName: item.firstName,
-      lastName: item.lastName,
-      phone: item.phone,
+      brand: item.brand,
+      model: item.model,
+      year: item.year,
+      licensePlate: item.licensePlate,
       selected: item.selected,
     };
 
-    return <ExistingClientTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
+    return <ExistingCarItemTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
   }
 
   return (
     <View style={{ height: 615, width: Dimensions.get("screen").width }}>
-      <ExistingClientTableHeader />
+      <ExistingCarTableHeader />
       {isLoading || (
         <FlatList
           data={getFlattenedData(data)}
@@ -90,4 +92,4 @@ function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
   );
 }
 
-export default ExistingClientTableList;
+export default ExistingCarTableList;

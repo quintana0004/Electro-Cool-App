@@ -11,18 +11,14 @@ function TableList({ activeCategory, searchTerm, filters }) {
   const TAKE = 15;
   const navigation = useNavigation();
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    ["InvoicesHomeData", activeCategory, searchTerm],
-    getInvoicesHomeScreenData,
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
-      },
+  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ["InvoicesHomeData", activeCategory, searchTerm],
+    queryFn: getInvoicesHomeScreenData,
+    getNextPageParam: (lastPage) => {
+      return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
     },
-    {
-      enabled: true,
-    }
-  );
+    enabled: true,
+  });
 
   async function getInvoicesHomeScreenData({ pageParam = 0 }) {
     let data = null;

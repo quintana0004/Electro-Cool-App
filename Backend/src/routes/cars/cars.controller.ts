@@ -19,11 +19,11 @@ import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
-    let skip = req.query.skip ? +req.query.skip : 0;
+    let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
 
-    const cars = await findAllCars(skip, take, searchTerm);
+    const cars = await findAllCars(page, take, searchTerm);
     return res.status(200).json(cars);
   } catch (error) {
     return handleExceptionErrorResponse("get all cars", error, res);

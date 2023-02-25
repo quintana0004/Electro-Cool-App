@@ -1,6 +1,37 @@
 import { ICar } from "./../types/index.d";
 import prisma from "../database/prisma";
 
+async function isUniqueCar(
+  licensePlate: string,
+  vinNumber: string,
+  id: number | undefined
+): Promise<boolean> {
+  try {
+    const car = await prisma.car.findFirst({
+      where: {
+        OR: [
+          {
+            licensePlate: licensePlate,
+          },
+          {
+            vinNumber: vinNumber,
+          },
+        ],
+      },
+    });
+
+    if (!car) {
+      return true;
+    } else if (car.id === id) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findCarById(id: number) {
   try {
     const car = await prisma.car.findUnique({
@@ -10,6 +41,54 @@ async function findCarById(id: number) {
     });
 
     return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCars(page: number, take: number, searchTerm: string | undefined) {
+  try {
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
+    const cars = await prisma.car.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        licensePlate: {
+          contains: searchTerm,
+        },
+      },
+    });
+
+    const carsData = {
+      data: cars.slice(0, take),
+      isLastPage: cars.length <= take,
+      currentPage: page,
+    };
+    return carsData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCarsByCustomer(searchTerm: string | undefined, customerId: number) {
+  try {
+    const licensePlate = searchTerm ? searchTerm : undefined;
+    const clientCars = await prisma.car.findMany({
+      where: {
+        AND: [
+          {
+            licensePlate: {
+              contains: licensePlate,
+            },
+          },
+          { customerId: customerId },
+        ],
+      },
+    });
+
+    return clientCars;
   } catch (error) {
     throw error;
   }
@@ -50,78 +129,6 @@ async function upsertCar(carInfo: ICar) {
     });
 
     return car;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function isUniqueCar(
-  licensePlate: string,
-  vinNumber: string,
-  id: number | undefined
-): Promise<boolean> {
-  try {
-    const car = await prisma.car.findFirst({
-      where: {
-        OR: [
-          {
-            licensePlate: licensePlate,
-          },
-          {
-            vinNumber: vinNumber,
-          },
-        ],
-      },
-    });
-
-    if (!car) {
-      return true;
-    } else if (car.id === id) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function findAllCars(skip: number, take: number, searchTerm: string | undefined) {
-  try {
-    const licensePlate = searchTerm ? searchTerm : undefined;
-    const cars = await prisma.car.findMany({
-      skip,
-      take,
-      where: {
-        licensePlate: {
-          contains: licensePlate,
-        },
-      },
-    });
-
-    return cars;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function findCarsByCustomer(searchTerm: string | undefined, customerId: number) {
-  try {
-    const licensePlate = searchTerm ? searchTerm : undefined;
-    const clientCars = await prisma.car.findMany({
-      where: {
-        AND: [
-          {
-            licensePlate: {
-              contains: licensePlate,
-            },
-          },
-          { customerId: customerId },
-        ],
-      },
-    });
-
-    return clientCars;
   } catch (error) {
     throw error;
   }

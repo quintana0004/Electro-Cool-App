@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
 import Header from "../../components/UI/Header";
@@ -8,7 +8,8 @@ import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
 
 function ExistingClient({ route, navigation }) {
-  const { nextScreen, previousScreen } = route.params;
+  const { nextScreen, previousScreen, cancelScreen, otherNextScreen, otherPreviousScreen } =
+    route.params;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -17,11 +18,20 @@ function ExistingClient({ route, navigation }) {
   }
 
   function navigateNext() {
-    navigation.navigate(nextScreen, { client: selectedClient });
+    navigation.navigate(nextScreen, {
+      client: selectedClient,
+      nextScreen: otherNextScreen,
+      previousScreen: otherPreviousScreen,
+      cancelScreen: cancelScreen,
+    });
   }
 
   function navigateBack() {
     navigation.navigate(previousScreen);
+  }
+
+  function navigateCancel() {
+    navigation.navigate(cancelScreen);
   }
 
   return (
@@ -49,7 +59,7 @@ function ExistingClient({ route, navigation }) {
             <NavBtn choice={"Back"} nav={navigateBack} />
           </View>
           <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navigateBack} />
+            <NavBtn choice={"Cancel"} nav={navigateCancel} />
           </View>
           <View style={styles.navNextBtn}>
             <NavBtn choice={"Next"} nav={navigateNext} />
