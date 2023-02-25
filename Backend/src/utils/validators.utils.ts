@@ -1,5 +1,13 @@
 import { IJobOrder, IPayment, IUser } from "./../types/index.d";
-import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
+import {
+  IInvoice,
+  IInvoiceItem,
+  ICar,
+  IDeposit,
+  IAppointment,
+  ICustomer,
+  ITask,
+} from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
@@ -288,8 +296,16 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
   return true;
 }
 
-function hasRequiredCardPaymentFields(paymentInfo: IPayment, athEvidenceFile: any) {
-  if (!paymentInfo.type || !athEvidenceFile || !paymentInfo.companyId || !paymentInfo.invoiceId) {
+function hasRequiredCardPaymentFields(
+  paymentInfo: IPayment,
+  athEvidenceFile: any
+) {
+  if (
+    !paymentInfo.type ||
+    !athEvidenceFile ||
+    !paymentInfo.companyId ||
+    !paymentInfo.invoiceId
+  ) {
     return false;
   }
 
@@ -347,6 +363,9 @@ function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
     !appointmentInfo.description ||
     !appointmentInfo.arrivalDateTime ||
     !appointmentInfo.model ||
+    !appointmentInfo.brand ||
+    !appointmentInfo.year ||
+    !appointmentInfo.color ||
     !appointmentInfo.licensePlate ||
     !appointmentInfo.customerName ||
     !appointmentInfo.phone ||

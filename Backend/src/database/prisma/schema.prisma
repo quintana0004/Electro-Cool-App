@@ -192,6 +192,9 @@ model Appointment {
   description     String
   arrivalDateTime DateTime  @db.Timestamptz(6)
   model           String    @db.VarChar(255)
+  brand           String    @db.VarChar(100)
+  year            String    @db.VarChar(4)
+  color           String    @db.VarChar(50)
   licensePlate    String    @db.VarChar(255)
   customerName    String    @db.VarChar(255)
   phone           String    @db.VarChar(10)

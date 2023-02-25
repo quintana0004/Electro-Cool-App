@@ -25,6 +25,9 @@ function Invoices({ navigation }) {
     navigation.navigate("ExistingClients", {
       nextScreen: "ExistingCars",
       previousScreen: "InvoiceMain",
+      cancelScreen: "InvoiceMain",
+      otherNextScreen: "InvoiceDetail",
+      otherPreviousScreen: "ExistingClients",
     });
   }
 
