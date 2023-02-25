@@ -126,6 +126,9 @@ export interface IAppointment {
   description: string;
   arrivalDateTime: string;
   model: string;
+  brand: string;
+  year: string;
+  color: string;
   licensePlate: string;
   customerName: string;
   phone: string;
