@@ -5,6 +5,8 @@ import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
+import TableListOrder from "../components/Job Order/TableListOrder";
+import JobOrderData from "../../Frontend/constants/Dummy_Data/JobOrderData";
 
 function JobOrders({ navigation }) {
   //Function that will toggle the state of searchBanner and filterBanner
@@ -48,6 +50,7 @@ function JobOrders({ navigation }) {
         filters={filters}
         updateFilters={setFilters}
       />
+      <TableListOrder data={JobOrderData} />
     </View>
   );
 }
