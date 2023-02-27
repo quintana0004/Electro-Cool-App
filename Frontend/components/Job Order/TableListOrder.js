@@ -16,12 +16,18 @@ function jobOrderItem(itemData) {
 
 function TableListOrder({ data }) {
   return (
-    <View style={{ height: 1000, width: Dimensions.get("screen").width }}>
+    <View
+      style={{
+        height: 850,
+        width: Dimensions.get("screen").width,
+      }}
+    >
       <TableHeaderOrder />
       <FlatList
         data={data}
         renderItem={jobOrderItem}
         keyExtractor={(item) => item.ID}
+        refreshing={true}
       />
     </View>
   );

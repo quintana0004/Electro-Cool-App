@@ -4,6 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
 
 function TableItemOrder({ ID, firstName, lastName, date, status }) {
+  //Change colors of the picker
   let colorPicked;
   let colorBorder;
   const [pickedValue, setPickedValue] = useState(status.toString());
@@ -43,7 +44,7 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
         </View>
         <View
           style={{
-            borderWidth: 0.2,
+            borderWidth: 0.7,
             borderRadius: 50,
             width: 150,
             backgroundColor: colorPicked,
@@ -53,11 +54,28 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
           <Picker
             selectedValue={pickedValue}
             onValueChange={(itemValue, itemIndex) => setPickedValue(itemValue)}
+            dropdownIconColor={colorBorder}
           >
-            <Picker.Item label="New" value="New" />
-            <Picker.Item label="Working" value="Working" />
-            <Picker.Item label="Complete" value="Complete" />
-            <Picker.Item label="Canceled" value="Canceled" />
+            <Picker.Item
+              label="New"
+              value="New"
+              style={{ color: Colors.lightBlueDark }}
+            />
+            <Picker.Item
+              label="Working"
+              value="Working"
+              style={{ color: Colors.lightOrangeDark }}
+            />
+            <Picker.Item
+              label="Complete"
+              value="Complete"
+              style={{ color: Colors.lightGreenDark }}
+            />
+            <Picker.Item
+              label="Canceled"
+              value="Canceled"
+              style={{ color: Colors.lightRedDark }}
+            />
           </Picker>
         </View>
       </View>
@@ -77,7 +95,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     shadowColor: Colors.black,
     borderColor: "rgba(0, 0, 0, 0.3)",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   boldText: {
     fontWeight: "bold",

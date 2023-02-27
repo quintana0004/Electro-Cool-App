@@ -9,10 +9,10 @@ const Colors = {
   lightGrey: "#ECECEC",
   darkGrey: "#898A8B",
   lightGreen: "#AEF6B9",
-  lightOrange: "#F2CBC2",
+  lightOrange: "#F6D9AE",
   lightGreenMoney: "#BFE3D2",
   lightBlue: "#B4D3EB",
-  lightRed: "#F2BAC8",
+  lightRed: "#F7BFBF",
   darkGreenMoney: "#28A067",
   darkRed: "#D21947",
   darkBlue: "#046ABC",
@@ -21,10 +21,10 @@ const Colors = {
   black: "#000000",
   white: "#FFFFFF",
   brightYellow: "#FBD46D",
-  lightBlueDark: "#63A2C6",
-  lightOrangeDark: "#DBA759",
-  lightGreenDark: "#5CC96D",
-  lightRedDark: "#CA6A6A",
+  lightBlueDark: "#5084A1",
+  lightOrangeDark: "#C29248",
+  lightGreenDark: "#4FAD5D",
+  lightRedDark: "#B55E5E",
 };
 
 export default Colors;

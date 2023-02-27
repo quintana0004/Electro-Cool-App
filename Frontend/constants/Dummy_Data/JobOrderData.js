@@ -69,6 +69,20 @@ const JobOrderData = [
     date: "02/01/2023",
     status: "Working",
   },
+  {
+    ID: "0011",
+    firstName: "Jessica",
+    lastName: "Quintana Rivera",
+    date: "01/01/2023",
+    status: "New",
+  },
+  {
+    ID: "0012",
+    firstName: "Radahn",
+    lastName: "Montreal Rivera",
+    date: "02/01/2023",
+    status: "Working",
+  },
 ];
 
 export default JobOrderData;
