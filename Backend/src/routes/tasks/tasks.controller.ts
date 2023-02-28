@@ -1,18 +1,38 @@
 import { ITask } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   hasRequiredTaskFields,
   isValidCompanyId,
   isIsoDate,
   isValidTaskId,
 } from "../../utils/validators.utils";
-import { createTask, deleteTask } from "../../models/tasks.model";
+import { createTask, deleteTask, findAllTasks } from "../../models/tasks.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllTasks(req: Request, res: Response) {
   try {
-    return res.status(200).json("Get All Tasks");
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+
+    const isDateFormatValid = isIsoDate(searchTerm);
+    if (!isDateFormatValid) {
+      return handleBadResponse(
+        400,
+        `The date provided for the Due Date is not valid. The correct format must be in ISO as the following: "YYYY-MM-DDTHH:MN:SS.MSSZ".`,
+        res
+      );
+    }
+
+    const tasksData = await findAllTasks(page, take, searchTerm);
+
+    return res.status(200).json(tasksData);
   } catch (error) {
     return handleExceptionErrorResponse("get all tasks", error, res);
   }
