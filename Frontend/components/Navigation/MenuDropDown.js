@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   boxOption: {
     position: "absolute",
     top: 50,
+    zIndex: 1,
   },
 });
 

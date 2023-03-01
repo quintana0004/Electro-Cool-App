@@ -1,38 +1,47 @@
 import React, { useState } from "react";
-import { Image } from "react-native";
 import { Banner } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
+import { Text, View, StyleSheet, Button } from "react-native";
+import Colors from "../../constants/Colors/Colors";
 
-const SearchBanner = ({}) => {
-  const [visible, setVisible] = useState(true);
+function SearchBanner({ visible }) {
+  //Search Query of the information
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+  };
+  const [loading, setLoading] = useState(false);
 
   return (
-    <Banner
-      visible={visible}
-      actions={[
-        {
-          label: "Fix it",
-          onPress: () => setVisible(false),
-        },
-        {
-          label: "Learn more",
-          onPress: () => setVisible(false),
-        },
-      ]}
-      icon={({ size }) => (
-        <Image
-          source={{
-            uri: "https://avatars3.githubusercontent.com/u/17571969?s=400&v=4",
-          }}
-          style={{
-            width: size,
-            height: size,
-          }}
+    <Banner visible={visible} style={styles.bannerSearch}>
+      <View style={styles.container}>
+        <Searchbar
+          loading={loading}
+          style={styles.searchbar}
+          elevation={5}
+          placeholder="Search by ID or Name"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          onIconPress={() => setLoading(true)}
+          selectionColor={Colors.lightGrey}
         />
-      )}
-    >
-      There was a problem processing a transaction on your credit card.
+      </View>
     </Banner>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  searchbar: {
+    backgroundColor: Colors.white,
+    borderRadius: 50,
+    color: Colors.black,
+  },
+  container: {
+    width: 568,
+  },
+  bannerSearch: {
+    backgroundColor: Colors.lightYellow,
+  },
+});
 
 export default SearchBanner;

@@ -2,34 +2,57 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
-import { Searchbar } from "react-native-paper";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
+import FilterBanner from "../components/UI/FilterBanner";
+import TableListOrder from "../components/Job Order/TableListOrder";
+import JobOrderData from "../../Frontend/constants/Dummy_Data/JobOrderData";
 
 function JobOrders({ navigation }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const onChangeSearch = (query) => setSearchQuery(query);
+  //Function that will toggle the state of searchBanner and filterBanner
+  const [openBannerSearch, setOpenBannerSearch] = useState(false);
+  const [openBannerFilter, setOpenBannerFilter] = useState(false);
+
+  //Filter Content
+  const [filters, setFilters] = useState({
+    Complete: false,
+    Canceled: false,
+    Working: false,
+    New: false,
+    Heavy: false,
+    Light: false,
+  });
 
   return (
     <View>
       <Appbar.Header style={styles.header}>
         <MenuDropDown />
         <Appbar.Content></Appbar.Content>
-        <Appbar.Action icon="filter" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.Action
+          icon="filter"
+          onPress={() => {
+            setOpenBannerFilter(!openBannerFilter);
+            setOpenBannerSearch(false);
+          }}
+        />
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setOpenBannerSearch(!openBannerSearch);
+            setOpenBannerFilter(false);
+          }}
+        />
         <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
       </Appbar.Header>
-      <SearchBanner />
+      <SearchBanner visible={openBannerSearch} />
+      <FilterBanner
+        visible={openBannerFilter}
+        filters={filters}
+        updateFilters={setFilters}
+      />
+      <TableListOrder data={JobOrderData} />
     </View>
   );
-}
-
-{
-  /* <Searchbar
-placeholder="Search by ID or Name"
-onChangeText={onChangeSearch}
-value={searchQuery}
-/> */
 }
 
 const styles = StyleSheet.create({
