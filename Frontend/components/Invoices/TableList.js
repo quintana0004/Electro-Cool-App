@@ -7,7 +7,7 @@ import { httpGetAllInvoices } from "../../api/invoices.api";
 import TableHeader from "./TableHeader";
 import TableItem from "./TableItem";
 
-function TableList({ activeCategory, searchTerm, filters }) {
+function TableList({ activeCategory, searchTerm, searchLoading, setSearchLoading, filters }) {
   const TAKE = 15;
   const navigation = useNavigation();
 
@@ -24,10 +24,16 @@ function TableList({ activeCategory, searchTerm, filters }) {
     let data = null;
 
     if (activeCategory === "Invoices") {
+      console.log("Data Before Request", data);
       data = await httpGetAllInvoices(TAKE, pageParam, searchTerm);
+      console.log("Data After Request: ", data);
     } else {
       data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
     }
+
+    console.log("Is loading state before change: ", searchLoading);
+    // After data is returned, stop search loading if it was active
+    if (searchLoading) setSearchLoading(false);
 
     return data;
   }
@@ -91,7 +97,7 @@ function TableList({ activeCategory, searchTerm, filters }) {
   }
 
   return (
-    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
+    <View style={{ height: 670, width: Dimensions.get("screen").width }}>
       <TableHeader />
       {isLoading || (
         <FlatList
