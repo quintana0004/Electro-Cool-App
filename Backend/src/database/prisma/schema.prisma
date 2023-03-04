@@ -30,7 +30,6 @@ model Company {
   deposits     Deposit[]
   jobOrders    JobOrder[]
   users        User[]
-  payments     Payment[]
   appointments Appointment[]
   tasks        Task[]
 }
@@ -108,7 +107,7 @@ model JobOrder {
   serviceDetails   String
   status           String    @db.VarChar(100)
   jobLoadType      String    @db.VarChar(100)
-  policySignature  String    @db.VarChar(255)
+  policySignature  Boolean
   createdDate      DateTime  @default(now()) @db.Timestamptz(6)
   lastModified     DateTime  @default(now()) @db.Timestamptz(6)
   carId            Int?
@@ -135,7 +134,6 @@ model Invoice {
   car          Car?           @relation(fields: [carId], references: [id], onDelete: SetNull)
   invoiceItems Invoice_Item[]
   deposits     Deposit[]
-  payments     Payment[]
 }
 
 model Invoice_Item {
@@ -167,23 +165,6 @@ model Deposit {
   invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
   companyId    String   @db.Uuid
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-}
-
-model Payment {
-  id                Int      @id @default(autoincrement())
-  type              String   @db.VarChar(100)
-  amountPaid        String?  @db.VarChar(20)
-  bankStatus        String?  @db.VarChar(20)
-  bankFrontEvidence String?  @db.VarChar(255)
-  bankBackEvidence  String?  @db.VarChar(255)
-  athEvidence       String?  @db.VarChar(255)
-  referenceNumber   String?  @db.VarChar(255)
-  createdDate       DateTime @default(now()) @db.Timestamptz(6)
-  lastModified      DateTime @default(now()) @db.Timestamptz(6)
-  companyId         String   @db.Uuid
-  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  invoiceId         Int?
-  invoice           Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }
 
 model Appointment {

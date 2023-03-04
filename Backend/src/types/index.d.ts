@@ -105,21 +105,6 @@ export interface IDeposit {
   companyId: string;
 }
 
-export interface IPayment {
-  id?: number;
-  type: string;
-  amountPaid?: string;
-  bankStatus?: string;
-  bankFrontEvidence?: string;
-  bankBackEvidence?: string;
-  athEvidence?: string;
-  referenceNumber?: string;
-  createdDate?: Date;
-  lastModified?: Date;
-  companyId: string;
-  invoiceId: number;
-}
-
 export interface IAppointment {
   id?: number;
   service: string;
@@ -154,7 +139,7 @@ export interface IJobOrder {
   serviceDetails: string;
   status: string;
   jobLoadType: string;
-  policySignature: string;
+  policySignature: boolean;
   createdDate?: Date;
   lastModified?: Date;
   carId: number;
