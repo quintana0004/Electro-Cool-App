@@ -3,6 +3,7 @@ import {
   deleteJobOrder,
   findAllJobOrders,
   findJobOrderWithChildsById,
+  updateJobOrderStatus,
   upsertJobOrder,
 } from "../../models/job-orders.model";
 import { IJobOrder } from "../../types";
@@ -109,6 +110,27 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
   }
 }
 
+async function httpUpdateJobOrderStatus(req: Request, res: Response) {
+  try {
+    const jobOrderId = req.body.id;
+    const status = req.body.status;
+
+    const isJobOrderIdValid = await isValidJobOrderId(jobOrderId);
+    if (!isJobOrderIdValid) {
+      return handleBadResponse(
+        400,
+        "The job order Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const jobOrder = await updateJobOrderStatus(+jobOrderId, status);
+    return res.status(200).json(jobOrder);
+  } catch (error) {
+    return handleExceptionErrorResponse("update job order status", error, res);
+  }
+}
+
 async function httpDeleteJobOrder(req: Request, res: Response) {
   try {
     const jobOrderId = req.params.id;
@@ -129,4 +151,10 @@ async function httpDeleteJobOrder(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllJobOrders, httpGetJobOrder, httpUpsertJobOrder, httpDeleteJobOrder };
+export {
+  httpGetAllJobOrders,
+  httpGetJobOrder,
+  httpUpsertJobOrder,
+  httpUpdateJobOrderStatus,
+  httpDeleteJobOrder,
+};
