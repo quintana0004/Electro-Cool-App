@@ -10,6 +10,7 @@ import {
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
+import { Appbar } from "react-native-paper";
 
 function ClientSelection({ navigation }) {
   function navNext() {
@@ -79,11 +80,14 @@ function ClientSelection({ navigation }) {
 
   return (
     <View>
-      <Header divideH={8} divideW={1.1} colorHeader={Colors.yellowDark}>
-        <View style={styles.HeaderContent}>
-          <Text style={styles.title}>Select customer for Job Order</Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Appbar.Content title="Select customer for Job Order"></Appbar.Content>
+      </Appbar.Header>
 
       <View style={styles.Container}>
         <View>
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
   },
   Container: {
     alignItems: "center",
-    margin: 130,
+    margin: 60,
   },
   Button: {
     borderColor: "#cccccc",
@@ -175,6 +179,9 @@ const styles = StyleSheet.create({
   },
   navCancelBtn: { marginRight: 10 },
   navNextBtn: { marginLeft: 10 },
+  header: {
+    backgroundColor: Colors.yellowDark,
+  },
 });
 
 export default ClientSelection;

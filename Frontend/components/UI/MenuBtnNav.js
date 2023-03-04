@@ -81,7 +81,7 @@ function MenuBtnNav({ choice, nav }) {
 
 const styles = StyleSheet.create({
   txtChoice: {
-    color: Colors.white,
+    color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "600",
     textAlign: "center",
