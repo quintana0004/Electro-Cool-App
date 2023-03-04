@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Banner } from "react-native-paper";
-import { Searchbar } from "react-native-paper";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import CheckBox from "./Checkbox";
 
@@ -13,25 +12,19 @@ function FilterBanner({ visible, filters, updateFilters }) {
 
   return (
     <Banner visible={visible} style={styles.bannerSearch}>
-      <View style={styles.container}>
-        {Object.entries(filters).map(([key, value]) => (
-          <View key={key} style={styles.itemFilter}>
-            <CheckBox
-              id={key}
-              onCheck={updateFilterValues}
-              checkValue={value}
-            />
-            <Text style={styles.itemStatus}>{key}</Text>
-          </View>
-        ))}
-      </View>
+      {Object.entries(filters).map(([key, value]) => (
+        <View key={key} style={[styles.itemFilter, { paddingBottom: 10 }]}>
+          <CheckBox id={key} onCheck={updateFilterValues} checkValue={value} />
+          <Text style={styles.itemStatus}>{key}</Text>
+        </View>
+      ))}
     </Banner>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: 568,
+    // width: 568,
     flexDirection: "column",
   },
   bannerSearch: {
@@ -39,14 +32,13 @@ const styles = StyleSheet.create({
   },
   itemFilter: {
     flexDirection: "row",
-    marginVertical: 5,
   },
   itemStatus: {
     fontWeight: "400",
     fontSize: 20,
-    color: Colors.darkGreyAsh,
-    marginLeft: 10,
+    marginLeft: 3,
     color: Colors.black,
+    marginRight: 5,
   },
 });
 
