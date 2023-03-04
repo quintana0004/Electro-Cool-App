@@ -1,5 +1,4 @@
 import prisma from "../database/prisma";
-import { deleteFileFromBucket } from "../services/file-upload.service";
 import { IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
 
@@ -30,11 +29,6 @@ async function findAllJobOrders(page: number, take: number, searchTerm: string |
       },
     });
 
-    // Append Asset Url for Frontend
-    for (const job of jobOrders) {
-      job.policySignature = process.env.DO_SPACES_ASSET_URL + job.policySignature;
-    }
-
     const jobOrdersData = {
       data: jobOrders.slice(0, take),
       isLastPage: jobOrders.length <= take,
@@ -57,9 +51,6 @@ async function findJobOrderById(id: number) {
     if (!jobOrder) {
       return null;
     }
-
-    // Append Asset Url for Frontend
-    jobOrder.policySignature = process.env.DO_SPACES_ASSET_URL + jobOrder.policySignature;
 
     return jobOrder;
   } catch (error) {
@@ -131,8 +122,6 @@ async function deleteJobOrder(id: number) {
         id: id,
       },
     });
-
-    await deleteFileFromBucket(jobOrder.policySignature);
 
     return jobOrder;
   } catch (error) {

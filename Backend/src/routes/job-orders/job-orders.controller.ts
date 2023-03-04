@@ -14,7 +14,6 @@ import {
   isValidJobOrderId,
 } from "../../utils/validators.utils";
 import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
-import { deleteFileFromLocalServer, uploadFileToBucket } from "../../services/file-upload.service";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllJobOrders(req: Request, res: Response) {
@@ -55,15 +54,13 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
   try {
     // Temporary Dummy Id
     const companyId = await getDummyCompanyId();
-    const policySignatureFile = req.file;
-    const policySignatureFilePath = req.file?.path;
     const jobOrderInfo: IJobOrder = {
       id: req.body.id,
       requestedService: req.body.requestedService,
       serviceDetails: req.body.serviceDetails,
       status: req.body.status,
       jobLoadType: req.body.jobLoadType,
-      policySignature: "N/A",
+      policySignature: req.body.policySignature,
       carId: req.body.carId,
       companyId: companyId,
       customerId: req.body.customerId,
@@ -76,8 +73,6 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         "Missing required fields to create job order. Please provide the following fields: requestedService, serviceDetails, status, jobLoadType, carId, companyId and customerId.",
         res
       );
-
-      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCompanyIdValid = await isValidCompanyId(jobOrderInfo.companyId);
@@ -87,8 +82,6 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
       );
-
-      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCustomerIdValid = await isValidCustomerId(jobOrderInfo.customerId);
@@ -98,8 +91,6 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
       );
-
-      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
 
     const isCarIdValid = await isValidCarId(jobOrderInfo.carId);
@@ -109,21 +100,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
         "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
       );
-
-      return await deleteFileFromLocalServer(policySignatureFilePath);
     }
-
-    const isCompanySignatureValid = policySignatureFile;
-    if (!isCompanySignatureValid) {
-      return handleBadResponse(
-        400,
-        "The job order must include an image holding the clients signature agreeing to company policies. Please include this in a field named 'image' with the binary stream of the image.",
-        res
-      );
-    }
-
-    const { fileName } = await uploadFileToBucket(policySignatureFile);
-    jobOrderInfo.policySignature = fileName;
 
     const upsertedJob = await upsertJobOrder(jobOrderInfo);
     return res.status(200).json(upsertedJob);
@@ -146,7 +123,6 @@ async function httpDeleteJobOrder(req: Request, res: Response) {
     }
 
     const jobOrder = await deleteJobOrder(+jobOrderId);
-
     return res.status(200).json(jobOrder);
   } catch (error) {
     return handleExceptionErrorResponse("delete job order by id", error, res);
