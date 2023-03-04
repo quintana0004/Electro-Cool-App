@@ -1,13 +1,5 @@
-import { IJobOrder, IPayment, IUser } from "./../types/index.d";
-import {
-  IInvoice,
-  IInvoiceItem,
-  ICar,
-  IDeposit,
-  IAppointment,
-  ICustomer,
-  ITask,
-} from "../types";
+import { IJobOrder, IUser } from "./../types/index.d";
+import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
@@ -17,7 +9,6 @@ import { findTaskById } from "../models/tasks.model";
 import { findUserById } from "../models/users.model";
 import { findInvoiceById } from "../models/invoices.model";
 import { findJobOrderById } from "../models/job-orders.model";
-import { findPaymentById } from "../models/payments.model";
 
 // --- Type Validators ---
 function isValidUUID(str: string): boolean {
@@ -141,20 +132,6 @@ async function isValidDespositId(id: number | string) {
   return true;
 }
 
-async function isValidPaymentId(id: number | string) {
-  id = Number(id);
-  if (isNaN(id)) {
-    return false;
-  }
-
-  const doesPaymentExist = await findPaymentById(id);
-  if (!doesPaymentExist) {
-    return false;
-  }
-
-  return true;
-}
-
 async function isValidAppointmentId(id: number | string) {
   id = Number(id);
   if (isNaN(id)) {
@@ -236,9 +213,9 @@ function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
   if (
     !jobOrderInfo.requestedService ||
     !jobOrderInfo.serviceDetails ||
+    !jobOrderInfo.policySignature ||
     !jobOrderInfo.status ||
     !jobOrderInfo.jobLoadType ||
-    !jobOrderInfo.policySignature ||
     !jobOrderInfo.carId ||
     !jobOrderInfo.companyId ||
     !jobOrderInfo.customerId
@@ -296,67 +273,6 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
   return true;
 }
 
-function hasRequiredCardPaymentFields(
-  paymentInfo: IPayment,
-  athEvidenceFile: any
-) {
-  if (
-    !paymentInfo.type ||
-    !athEvidenceFile ||
-    !paymentInfo.companyId ||
-    !paymentInfo.invoiceId
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-function hasRequiredCheckPaymentFields(
-  paymentInfo: IPayment,
-  bankFrontEvidenceFile: any,
-  bankBackEvidenceFile: any
-) {
-  if (
-    !paymentInfo.type ||
-    !paymentInfo.bankStatus ||
-    !bankFrontEvidenceFile ||
-    !bankBackEvidenceFile ||
-    !paymentInfo.companyId ||
-    !paymentInfo.invoiceId
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-function hasRequiredCashPaymentFields(paymentInfo: IPayment) {
-  if (
-    !paymentInfo.type ||
-    !paymentInfo.amountPaid ||
-    !paymentInfo.companyId ||
-    !paymentInfo.invoiceId
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-function hasRequiredATHMovilPaymentFields(paymentInfo: IPayment) {
-  if (
-    !paymentInfo.type ||
-    !paymentInfo.referenceNumber ||
-    !paymentInfo.companyId ||
-    !paymentInfo.invoiceId
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
 function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
   if (
     !appointmentInfo.service ||
@@ -397,7 +313,6 @@ export {
   isValidJobOrderId,
   isValidInvoiceId,
   isValidDespositId,
-  isValidPaymentId,
   isValidAppointmentId,
   isValidTaskId,
   hasRequiredUserFields,
@@ -407,10 +322,6 @@ export {
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   hasRequiredDepositFields,
-  hasRequiredCardPaymentFields,
-  hasRequiredCheckPaymentFields,
-  hasRequiredCashPaymentFields,
-  hasRequiredATHMovilPaymentFields,
   hasRequiredAppointmentFields,
   hasRequiredTaskFields,
 };

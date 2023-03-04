@@ -60,3 +60,4 @@ uploads
 
 # Enviorment Variables
 Electro-Cool-App\Backend\.env
+.vscode
