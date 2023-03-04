@@ -115,6 +115,23 @@ async function upsertJobOrder(jobInfo: IJobOrder) {
   }
 }
 
+async function updateJobOrderStatus(id: string | number, status: string) {
+  try {
+    const jobOrder = await prisma.jobOrder.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: status,
+      },
+    });
+
+    return jobOrder;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function deleteJobOrder(id: number) {
   try {
     const jobOrder = await prisma.jobOrder.delete({
@@ -134,5 +151,6 @@ export {
   findJobOrderById,
   findJobOrderWithChildsById,
   upsertJobOrder,
+  updateJobOrderStatus,
   deleteJobOrder,
 };
