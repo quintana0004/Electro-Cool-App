@@ -111,11 +111,4 @@ function TableList({ activeCategory, searchTerm, searchLoading, setSearchLoading
   );
 }
 
-const styles = StyleSheet.create({
-  listContainer: {
-    height: 500,
-    width: Dimensions.get("screen").width,
-  },
-});
-
 export default TableList;
