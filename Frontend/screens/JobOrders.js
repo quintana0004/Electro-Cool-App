@@ -42,7 +42,12 @@ function JobOrders({ navigation }) {
             setOpenBannerFilter(false);
           }}
         />
-        <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("CustomerSelection");
+          }}
+        />
       </Appbar.Header>
       <SearchBanner visible={openBannerSearch} />
       <FilterBanner
