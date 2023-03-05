@@ -24,14 +24,11 @@ function TableList({ activeCategory, searchTerm, searchLoading, setSearchLoading
     let data = null;
 
     if (activeCategory === "Invoices") {
-      console.log("Data Before Request", data);
       data = await httpGetAllInvoices(TAKE, pageParam, searchTerm);
-      console.log("Data After Request: ", data);
     } else {
       data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
     }
 
-    console.log("Is loading state before change: ", searchLoading);
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);
 
