@@ -1,15 +1,13 @@
-import { useNavigation } from "@react-navigation/native";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import { httpGetAllDeposits } from "../../api/deposits.api";
 import { httpGetAllInvoices } from "../../api/invoices.api";
 
-import TableHeader from "./TableHeader";
-import TableItem from "./TableItem";
+import TableHeaderInvoice from "./TableHeaderInvoice";
+import TableItemInvoice from "./TableItemInvoice";
 
-function TableList({ activeCategory, searchTerm, filters }) {
+function TableListInvoice({ activeCategory, searchTerm, filters }) {
   const TAKE = 15;
-  const navigation = useNavigation();
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["InvoicesHomeData", activeCategory, searchTerm],
@@ -69,14 +67,6 @@ function TableList({ activeCategory, searchTerm, filters }) {
     }
   }
 
-  function navigateToDetailScreen(itemId) {
-    if (activeCategory === "Invoices") {
-      navigation.navigate("InvoiceDetail", { itemId });
-    } else {
-      navigation.navigate("DepositDetail", { itemId });
-    }
-  }
-
   function renderTableItem({ item }) {
     const itemInfo = {
       id: item.id,
@@ -87,12 +77,12 @@ function TableList({ activeCategory, searchTerm, filters }) {
       status: item.status,
     };
 
-    return <TableItem itemData={itemInfo} onPress={navigateToDetailScreen} />;
+    return <TableItemInvoice itemData={itemInfo} category={activeCategory} />;
   }
 
   return (
     <View style={{ height: 500, width: Dimensions.get("screen").width }}>
-      <TableHeader />
+      <TableHeaderInvoice />
       {isLoading || (
         <FlatList
           data={getTableData()}
@@ -112,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableList;
+export default TableListInvoice;

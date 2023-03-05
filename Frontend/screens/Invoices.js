@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import TableList from "../components/Invoices/TableList";
+import TableListInvoice from "../components/Invoices/TableListInvoice";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import ActionBtn from "../components/UI/ActionBtn";
@@ -71,7 +71,11 @@ function Invoices({ navigation }) {
           />
         </View>
 
-        <TableList activeCategory={activeCategory} searchTerm={searchTerm} filters={filters} />
+        <TableListInvoice
+          activeCategory={activeCategory}
+          searchTerm={searchTerm}
+          filters={filters}
+        />
       </View>
     </View>
   );
