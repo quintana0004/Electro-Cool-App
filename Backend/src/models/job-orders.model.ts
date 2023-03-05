@@ -27,6 +27,14 @@ async function findAllJobOrders(page: number, take: number, searchTerm: string |
           },
         ],
       },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     const jobOrdersData = {
