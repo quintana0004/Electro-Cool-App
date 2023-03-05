@@ -1,10 +1,10 @@
 import express from "express";
 import { authenticateJWTMiddleWare } from "../../services/auth.service";
-import { multerUploadMiddleware } from "../../services/file-upload.service";
 import {
   httpDeleteJobOrder,
   httpGetAllJobOrders,
   httpGetJobOrder,
+  httpUpdateJobOrderStatus,
   httpUpsertJobOrder,
 } from "./job-orders.controller";
 
@@ -14,7 +14,9 @@ router.get("/", httpGetAllJobOrders);
 
 router.get("/:id", httpGetJobOrder);
 
-router.post("/", multerUploadMiddleware.single("image"), httpUpsertJobOrder);
+router.post("/", httpUpsertJobOrder);
+
+router.post("/status", httpUpdateJobOrderStatus);
 
 router.delete("/:id", httpDeleteJobOrder);
 
