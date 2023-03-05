@@ -5,7 +5,7 @@ import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
-import TableList from "../components/Invoices/TableList";
+import TableListInvoice from "../components/Invoices/TableListInvoice";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
 import ActionBtn from "../components/UI/ActionBtn";
 import Colors from "../constants/Colors/Colors";
@@ -90,12 +90,11 @@ function Invoices({ navigation }) {
           />
         </View>
 
-        <TableList
+        <TableListInvoice
           activeCategory={activeCategory}
           searchTerm={searchTerm}
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
-          filters={filters}
         />
       </View>
     </View>

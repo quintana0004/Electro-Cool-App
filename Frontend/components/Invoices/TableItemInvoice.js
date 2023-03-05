@@ -2,17 +2,27 @@ import { Text, View, StyleSheet } from "react-native";
 import { format } from "date-fns";
 import Status from "./Status";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { useNavigation } from "@react-navigation/core";
 
-function TableItem({ itemData, onPress }) {
+function TableItemInvoice({ itemData, category }) {
   const { id, firstName, lastName, date, amountTotal, status } = itemData;
+  const navigation = useNavigation();
 
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
+  function navigateToDetailScreen(itemId) {
+    if (category === "Invoices") {
+      navigation.navigate("InvoiceDetail", { itemId });
+    } else {
+      navigation.navigate("DepositDetail", { itemId });
+    }
+  }
+
   return (
     <View>
-      <Pressable onPress={onPress.bind(this, id)}>
+      <Pressable onPress={navigateToDetailScreen.bind(this, id)}>
         <View style={styles.container}>
           <View style={{ width: 80 }}>
             <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
@@ -37,7 +47,7 @@ function TableItem({ itemData, onPress }) {
   );
 }
 
-export default TableItem;
+export default TableItemInvoice;
 
 const styles = StyleSheet.create({
   container: {
