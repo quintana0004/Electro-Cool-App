@@ -4,13 +4,24 @@ import { Searchbar } from "react-native-paper";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
-function SearchBanner({ visible }) {
+function SearchBanner({
+  visible,
+  placeholder,
+  loading,
+  setLoading,
+  setSearchTerm,
+}) {
   //Search Query of the information
   const [searchQuery, setSearchQuery] = useState("");
+
   const onChangeSearch = (query) => {
     setSearchQuery(query);
   };
-  const [loading, setLoading] = useState(false);
+
+  const onSearchIconPress = () => {
+    setSearchTerm(searchQuery);
+    setLoading(true);
+  };
 
   return (
     <Banner visible={visible} style={styles.bannerSearch}>
@@ -19,10 +30,10 @@ function SearchBanner({ visible }) {
           loading={loading}
           style={styles.searchbar}
           elevation={5}
-          placeholder="Search by ID or Name"
+          placeholder={placeholder}
           onChangeText={onChangeSearch}
           value={searchQuery}
-          onIconPress={() => setLoading(true)}
+          onIconPress={onSearchIconPress}
           selectionColor={Colors.lightGrey}
         />
       </View>

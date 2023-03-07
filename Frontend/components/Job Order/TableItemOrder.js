@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
+import { format } from "date-fns";
 
 function TableItemOrder({ ID, firstName, lastName, date, status }) {
   //Change colors of the picker
@@ -28,11 +29,15 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
       break;
   }
 
+  function DateText() {
+    return format(new Date(date), "MM/dd/yyyy");
+  }
+
   return (
     <Pressable>
       <View style={styles.content}>
         <View style={{ width: 50, marginLeft: 15 }}>
-          <Text style={styles.boldText}>{ID}</Text>
+          <Text style={styles.boldText}>{`000` + ID}</Text>
         </View>
         <View style={{ width: 250 }}>
           <Text style={styles.boldText}>
@@ -40,7 +45,7 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
           </Text>
         </View>
         <View style={{ width: 100 }}>
-          <Text style={styles.boldText}>{date}</Text>
+          <Text style={styles.boldText}>{DateText()}</Text>
         </View>
         <View
           style={{

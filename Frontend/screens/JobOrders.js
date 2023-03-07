@@ -24,6 +24,10 @@ function JobOrders({ navigation }) {
     Light: false,
   });
 
+  //Search Variables
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -50,14 +54,25 @@ function JobOrders({ navigation }) {
           }}
         />
       </Appbar.Header>
-      <SearchBanner visible={openBannerSearch} />
+      <SearchBanner
+        visible={openBannerSearch}
+        loading={searchLoading}
+        placeholder={"Search by ID or Name"}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
       <FilterBanner
         visible={openBannerFilter}
         filters={filters}
         updateFilters={setFilters}
       />
       <View style={styles.body}>
-        <TableListOrder data={JobOrderData} />
+        <TableListOrder
+          filters={filters}
+          searchLoading={searchLoading}
+          searchTerm={searchTerm}
+          setSearchLoading={setSearchLoading}
+        />
       </View>
     </View>
   );
