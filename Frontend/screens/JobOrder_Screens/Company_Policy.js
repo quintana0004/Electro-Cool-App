@@ -1,25 +1,9 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
-import { ErrorMessage, Formik } from "formik";
-import {
-  TextInput,
-  HelperText,
-  RadioButton,
-  Checkbox,
-} from "react-native-paper";
-import * as Yup from "yup";
-import NavBtn from "../../components/UI/NavBtns";
+
+import { Checkbox } from "react-native-paper";
 
 function CompanyPolicy({ navigation }) {
   const [checked, setChecked] = useState("No");
