@@ -1,19 +1,33 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Pressable, KeyboardAvoidingView } from "react-native";
 import { MaskedTextInput } from "react-native-mask-text";
 import Colors from "../../constants/Colors/Colors";
 
-function AmountInput({ onChange }) {
+function AmountInput({ onChange, value }) {
   const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    setAmount(value);
+  }, [value]);
 
   function handleTextChange(formattedValue, extractedValue) {
     setAmount(extractedValue);
-    onChange(formattedValue);
+  }
+
+  function handleEndEditing() {
+    let formattedAmount = convertToDecimal(amount);
+    onChange(formattedAmount);
   }
 
   function handleClearAmount() {
     setAmount(0);
-    onChange("");
+    onChange(0);
+  }
+
+  function convertToDecimal(num) {
+    let str = num.toString();
+    let result = str.slice(0, -2) + "." + str.slice(-2);
+    return result;
   }
 
   return (
@@ -29,7 +43,8 @@ function AmountInput({ onChange }) {
             groupSeparator: ",",
             precision: 2,
           }}
-          onChangeText={(formatted, extracted) => handleTextChange(formatted, extracted)}
+          onChangeText={handleTextChange}
+          onEndEditing={handleEndEditing}
           keyboardType="decimal-pad"
         />
 

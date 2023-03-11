@@ -95,6 +95,7 @@ function Invoices({ navigation }) {
           searchTerm={searchTerm}
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
+          filters={filters}
         />
       </View>
     </View>

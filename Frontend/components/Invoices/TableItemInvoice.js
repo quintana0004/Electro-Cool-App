@@ -12,11 +12,11 @@ function TableItemInvoice({ itemData, category }) {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
-  function navigateToDetailScreen(itemId) {
+  function navigateToDetailScreen() {
     if (category === "Invoices") {
-      navigation.navigate("InvoiceDetail", { itemId });
+      navigation.navigate("InvoiceDetail", { invoiceId: id });
     } else {
-      navigation.navigate("DepositDetail", { itemId });
+      navigation.navigate("DepositDetail", { depositId: id });
     }
   }
 

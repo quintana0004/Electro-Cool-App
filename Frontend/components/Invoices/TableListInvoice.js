@@ -6,7 +6,13 @@ import { httpGetAllInvoices } from "../../api/invoices.api";
 import TableHeaderInvoice from "./TableHeaderInvoice";
 import TableItemInvoice from "./TableItemInvoice";
 
-function TableListInvoice({ activeCategory, searchTerm, filters }) {
+function TableListInvoice({
+  activeCategory,
+  searchTerm,
+  filters,
+  searchLoading,
+  setSearchLoading,
+}) {
   const TAKE = 15;
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({

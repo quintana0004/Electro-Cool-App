@@ -9,6 +9,9 @@ import InvoiceDollarIcon from "../../assets/images/InvoiceDollarIcon.png";
 import DepositDollarIcon from "../../assets/images/DepositDollarIcon.png";
 import ClientCardIcon from "../../assets/images/ClientCardIcon.png";
 import CarCardIcon from "../../assets/images/CarCardIcon.png";
+import DoneIcon from "../../assets/images/DoneIcon.png";
+import DraftIcon from "../../assets/images/DraftIcon.png";
+import PayIcon from "../../assets/images/PayIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -22,6 +25,9 @@ const Figures = {
   DepositDollarIcon,
   ClientCardIcon,
   CarCardIcon,
+  DoneIcon,
+  DraftIcon,
+  PayIcon,
 };
 
 export default Figures;

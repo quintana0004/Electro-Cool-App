@@ -14,26 +14,14 @@ function MenuDropDown() {
 
   //Create the variable to hold the icon
   let iconChoice = (
-    <MaterialCommunityIcons
-      name="window-close"
-      size={20}
-      color={Colors.yellowDark}
-    />
+    <MaterialCommunityIcons name="window-close" size={20} color={Colors.yellowDark} />
   );
 
   //Verify the toggle to change the icon
   if (toggle === true) {
-    iconChoice = (
-      <MaterialCommunityIcons
-        name="window-close"
-        size={20}
-        color={Colors.yellowDark}
-      />
-    );
+    iconChoice = <MaterialCommunityIcons name="window-close" size={20} color={Colors.yellowDark} />;
   } else if (toggle === false) {
-    iconChoice = (
-      <SimpleLineIcons name="menu" size={20} color={Colors.yellowDark} />
-    );
+    iconChoice = <SimpleLineIcons name="menu" size={20} color={Colors.yellowDark} />;
   }
 
   function navDashboard() {

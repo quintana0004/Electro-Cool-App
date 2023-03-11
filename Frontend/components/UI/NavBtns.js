@@ -13,13 +13,7 @@ function NavBtn({ choice, nav }) {
 
   switch (choice) {
     case "Back":
-      icon = (
-        <Ionicons
-          name="arrow-back-circle"
-          size={40}
-          color={Colors.yellowDark}
-        />
-      );
+      icon = <Ionicons name="arrow-back-circle" size={40} color={Colors.yellowDark} />;
       BackgroundColor = Colors.white;
       BtnBorderColor = Colors.yellowDark;
       Direction = "row-reverse";
@@ -37,6 +31,11 @@ function NavBtn({ choice, nav }) {
       break;
     case "Next":
       icon = <Ionicons name="arrow-forward-circle" size={40} color="black" />;
+      break;
+
+    case "Save":
+      BtnContent = "center";
+      PaddingLeft = 0;
       break;
   }
 
