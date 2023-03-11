@@ -14,25 +14,37 @@ import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
+import NavBtn from "../../components/UI/NavBtns";
 
 const ValidationCustomer = Yup.object().shape({
-  firstName: Yup.string("No digits, only letters are valid.").required(
-    "First Name is required."
-  ),
-  lastName: Yup.string("No digits, only letters are valid.").required(
-    "Last Name is required."
-  ),
+  firstName: Yup.string()
+    .required("First Name is required.")
+    .matches("^[A-Za-z]{2,50}$", "First name can't have digits."),
+  lastName: Yup.string("No digits, only letters are valid.")
+    .required("Last Name is required.")
+    .matches("^[A-Za-z ]{2,50}$", "Last name can't have digits."),
   addressLine1: Yup.string().required("Address Line 1 is required."),
   addressLine2: Yup.string(),
-  state: Yup.string().required("State is required"),
-  city: Yup.string().required("City is required."),
+  state: Yup.string()
+    .required("State is required.")
+    .matches("^[A-Z]{2}$", "State must be abbreviated and no digits."),
+  city: Yup.string()
+    .required("City is required.")
+    .matches("^[a-zA-Z]+(?:[s-][a-zA-Z]+)*$", "City can't contain digits."),
   phoneNumber: Yup.string().required("Phone Number  is required."),
   email: Yup.string()
     .required("Email is required.")
-    .email("Invalid Email Address"),
+    .email("Invalid Email Address."),
 });
 
 function ClientInformation({ navigation }) {
+  function navNext() {
+    navigation.navigate("VehicleInformation");
+  }
+  function navJobOrder() {
+    navigation.navigate("JobOrderMain");
+  }
+
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
@@ -266,6 +278,14 @@ function ClientInformation({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
+      <View style={styles.navBtnsPosition}>
+        <View style={styles.navCancelBtn}>
+          <NavBtn choice={"Cancel"} nav={navJobOrder} />
+        </View>
+        <View style={styles.navNextBtn}>
+          <NavBtn choice={"Next"} nav={navNext} />
+        </View>
+      </View>
     </View>
   );
 }
@@ -288,6 +308,18 @@ const styles = StyleSheet.create({
   },
   containerKey: {
     flex: 1,
+  },
+  navBtnsPosition: {
+    width: 540,
+    height: 10,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
+  navCancelBtn: { marginRight: 10 },
+  navNextBtn: { marginLeft: 10 },
+  header: {
+    backgroundColor: Colors.yellowDark,
   },
 });
 
