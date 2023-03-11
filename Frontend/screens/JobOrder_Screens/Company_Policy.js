@@ -63,7 +63,7 @@ function CompanyPolicy({ navigation }) {
           possession of the vehicle as payment, this text being the only notice.
         </Text>
         <Text>
-          In engine repairs, the client must pay half of the total work when it
+          In engine repairs, the client must pay half of the total workwhen it
           is indicated.
         </Text>
       </View>
