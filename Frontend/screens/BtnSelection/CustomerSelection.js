@@ -9,25 +9,36 @@ import {
 } from "react-native";
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
+import Figures from "../../constants/figures/Figures";
 import NavBtn from "../../components/UI/NavBtns";
 import { Appbar } from "react-native-paper";
 
-function ClientSelection({ navigation }) {
+function ClientSelection({ navigation, route }) {
+  const { previousScreen, cancelScreen } = route.params;
+
   function navNext() {
-    if (toggleNewCustomer) navigation.navigate("ClientInformation");
-    else if (toggleExistingCustomer) navigation.navigate("ExistingClient");
+    if (toggleNewCustomer)
+      navigation.navigate("ClientInformation", {
+        nextScreen: "CarSelection",
+        previousScreen: "CustomerSelection",
+        cancelScreen: cancelScreen,
+      });
+    else if (toggleExistingCustomer)
+      navigation.navigate("ExistingClient", {
+        nextScreen: "CarSelection",
+        previousScreen: previousScreen,
+        cancelScreen: cancelScreen,
+        otherNextScreen: "",
+        otherPreviousScreen: "",
+      });
   }
+
   function navJobOrder() {
-    navigation.navigate("JobOrderMain");
+    navigation.navigate(cancelScreen);
   }
 
   const [toggleNewCustomer, setToggleNewCustomer] = useState(false);
   const [toggleExistingCustomer, setToggleExistingCustomer] = useState(false);
-
-  let NewCustomerIcon = require("../../assets/images/NewCustomerIcon.png");
-  let NewCustomerSelectedIcon = require("../../assets/images/NewCustomerSelectedIcon.png");
-  let ExistingCustomerIcon = require("../../assets/images/ExistingCustomerIcon.png");
-  let ExistingCustomerSelectedIcon = require("../../assets/images/ExistingCustomerSelectedIcon.png");
 
   function NewCustomer() {
     if (toggleNewCustomer === true) {
@@ -35,7 +46,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.ButtonPressed}>
           <Image
             style={styles.NewCustomerIconStyle}
-            source={NewCustomerSelectedIcon}
+            source={Figures.NewCustomerSelectedIcon}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             New Customer
@@ -45,7 +56,10 @@ function ClientSelection({ navigation }) {
     } else {
       return (
         <View style={styles.Button}>
-          <Image style={styles.NewCustomerIconStyle} source={NewCustomerIcon} />
+          <Image
+            style={styles.NewCustomerIconStyle}
+            source={Figures.NewCustomerIcon}
+          />
           <Text style={styles.ButtonText}>New Customer</Text>
         </View>
       );
@@ -58,7 +72,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.ButtonPressed}>
           <Image
             style={styles.ExistingCustomerIconStyle}
-            source={ExistingCustomerSelectedIcon}
+            source={Figures.ExistingCustomerSelectedIcon}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             Existing Customer
@@ -70,7 +84,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.Button}>
           <Image
             style={styles.ExistingCustomerIconStyle}
-            source={ExistingCustomerIcon}
+            source={Figures.ExistingCustomerIcon}
           />
           <Text style={styles.ButtonText}>Existing Customer</Text>
         </View>

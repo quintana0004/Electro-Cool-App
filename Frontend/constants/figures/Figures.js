@@ -7,6 +7,10 @@ import SettingIcon from "../../assets/images/Setting.png";
 import FilterIcon from "../../assets/images/FilterIcon.png";
 import InvoiceDollarIcon from "../../assets/images/InvoiceDollarIcon.png";
 import DepositDollarIcon from "../../assets/images/DepositDollarIcon.png";
+import NewCustomerIcon from "../../assets/images/NewCustomerIcon.png";
+import NewCustomerSelectedIcon from "../../assets/images/NewCustomerSelectedIcon.png";
+import ExistingCustomerIcon from "../../assets/images/ExistingCustomerIcon.png";
+import ExistingCustomerSelectedIcon from "../../assets/images/ExistingCustomerSelectedIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -18,6 +22,10 @@ const Figures = {
   FilterIcon,
   InvoiceDollarIcon,
   DepositDollarIcon,
+  NewCustomerIcon,
+  NewCustomerSelectedIcon,
+  ExistingCustomerIcon,
+  ExistingCustomerSelectedIcon,
 };
 
 export default Figures;

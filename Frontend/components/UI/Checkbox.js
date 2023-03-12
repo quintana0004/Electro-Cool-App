@@ -8,7 +8,7 @@ function CheckBox({ id, checkValue, onCheck }) {
       onPress={() => {
         onCheck(id, !checkValue);
       }}
-      style={{ marginBottom: 10, marginLeft: 2 }}
+      style={{ marginLeft: 2 }}
     >
       <View
         style={[

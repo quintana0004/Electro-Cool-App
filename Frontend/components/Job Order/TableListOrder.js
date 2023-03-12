@@ -10,8 +10,8 @@ function jobOrderItem(itemData) {
     <TableItemOrder
       ID={itemData.item.id}
       date={itemData.item.createdDate}
-      firstName={"Jessica"}
-      lastName={"Quintana Rivera"}
+      firstName={itemData.item.customer.firstName}
+      lastName={itemData.item.customer.lastName}
       status={itemData.item.status}
     />
   );

@@ -26,16 +26,18 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function RequestedService({ navigation }) {
-  const [checked, setChecked] = useState("No");
+  const [checkedOilChange, setCheckedOilChange] = useState(false);
+  const [checkedTuneUp, setCheckedTuneUp] = useState(false);
+  const [checkedBreaks, setCheckedBreaks] = useState(false);
+  const [checkedMotor, setCheckedMotor] = useState(false);
+  const [checkedElectricSystem, setCheckedElectricSystem] = useState(false);
+  const [checkedCoolingSystem, setCheckedCoolingSystem] = useState(false);
+  const [checkedSuspencion, setCheckedSuspencion] = useState(false);
+  const [checkedScan, setCheckedScan] = useState(false);
+  const [checkedAirConditioning, setCheckedAirConditioning] = useState(false);
+  const [checked, setChecked] = useState(false);
+
   const [height, setHeight] = useState(undefined);
-
-  function navNext() {
-    navigation.navigate("CompanyPolicy");
-  }
-
-  function navJobOrder() {
-    navigation.navigate("JobOrderMain");
-  }
 
   return (
     <View>
@@ -46,6 +48,16 @@ function RequestedService({ navigation }) {
           }}
         />
         <Appbar.Content title="Requested Service"></Appbar.Content>
+        <Appbar.Action
+          icon="home"
+          onPress={() => navigation.navigate("JobOrderMain")}
+          iconColor={Colors.black}
+        />
+        <Appbar.Action
+          icon="arrow-right"
+          onPress={() => navigation.navigate("CompanyPolicy")}
+          iconColor={Colors.black}
+        />
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>
@@ -81,7 +93,7 @@ function RequestedService({ navigation }) {
                   }}
                 >
                   <View style={styles.containerText}>
-                    <View>
+                    <View style={{ marginLeft: 30 }}>
                       <View
                         style={{
                           flexDirection: "row",
@@ -89,9 +101,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedOilChange ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedOilChange(!checkedOilChange);
                           }}
                         />
                         <Text
@@ -111,9 +123,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedTuneUp ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedTuneUp(!checkedTuneUp);
                           }}
                         />
                         <Text
@@ -133,9 +145,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedBreaks ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedBreaks(!checkedBreaks);
                           }}
                         />
                         <Text
@@ -155,9 +167,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedMotor ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedMotor(!checkedMotor);
                           }}
                         />
                         <Text
@@ -177,9 +189,11 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={
+                            checkedElectricSystem ? "checked" : "unchecked"
+                          }
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedElectricSystem(!checkedElectricSystem);
                           }}
                         />
                         <Text
@@ -193,7 +207,7 @@ function RequestedService({ navigation }) {
                         </Text>
                       </View>
                     </View>
-                    <View>
+                    <View style={{ marginRight: 30 }}>
                       <View
                         style={{
                           flexDirection: "row",
@@ -201,9 +215,11 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={
+                            checkedCoolingSystem ? "checked" : "unchecked"
+                          }
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedCoolingSystem(!checkedCoolingSystem);
                           }}
                         />
                         <Text
@@ -223,9 +239,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedSuspencion ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedSuspencion(!checkedSuspencion);
                           }}
                         />
                         <Text
@@ -245,9 +261,9 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={checkedScan ? "checked" : "unchecked"}
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedScan(!checkedScan);
                           }}
                         />
                         <Text
@@ -267,9 +283,11 @@ function RequestedService({ navigation }) {
                         }}
                       >
                         <Checkbox
-                          status={checked ? "checked" : "unchecked"}
+                          status={
+                            checkedAirConditioning ? "checked" : "unchecked"
+                          }
                           onPress={() => {
-                            setChecked(!checked);
+                            setCheckedAirConditioning(!checkedAirConditioning);
                           }}
                         />
                         <Text
@@ -398,14 +416,6 @@ function RequestedService({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
-      <View style={styles.navBtnsPosition}>
-        <View style={styles.navCancelBtn}>
-          <NavBtn choice={"Cancel"} nav={navJobOrder} />
-        </View>
-        <View style={styles.navNextBtn}>
-          <NavBtn choice={"Next"} nav={navNext} />
-        </View>
-      </View>
     </View>
   );
 }

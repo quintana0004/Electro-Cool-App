@@ -37,13 +37,8 @@ const ValidationCustomer = Yup.object().shape({
     .email("Invalid Email Address."),
 });
 
-function ClientInformation({ navigation }) {
-  function navNext() {
-    navigation.navigate("VehicleInformation");
-  }
-  function navJobOrder() {
-    navigation.navigate("JobOrderMain");
-  }
+function ClientInformation({ route, navigation }) {
+  const { previousScreen, cancelScreen } = route.params;
 
   return (
     <View>
@@ -54,6 +49,21 @@ function ClientInformation({ navigation }) {
           }}
         />
         <Appbar.Content title="Customer Information"></Appbar.Content>
+        <Appbar.Action
+          icon="home"
+          onPress={() => navigation.navigate("JobOrderMain")}
+          iconColor={Colors.black}
+        />
+        <Appbar.Action
+          icon="arrow-right"
+          onPress={() =>
+            navigation.navigate("CarSelection", {
+              previousScreen: "ClientInformation",
+              cancelScreen: cancelScreen,
+            })
+          }
+          iconColor={Colors.black}
+        />
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>Enter new customer information</Text>
@@ -278,14 +288,6 @@ function ClientInformation({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
-      <View style={styles.navBtnsPosition}>
-        <View style={styles.navCancelBtn}>
-          <NavBtn choice={"Cancel"} nav={navJobOrder} />
-        </View>
-        <View style={styles.navNextBtn}>
-          <NavBtn choice={"Next"} nav={navNext} />
-        </View>
-      </View>
     </View>
   );
 }
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
   containerText: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 30,
+    marginVertical: 15,
   },
   containerKey: {
     flex: 1,

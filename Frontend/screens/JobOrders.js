@@ -50,7 +50,10 @@ function JobOrders({ navigation }) {
         <Appbar.Action
           icon="plus"
           onPress={() => {
-            navigation.navigate("CustomerSelection");
+            navigation.navigate("CustomerSelection", {
+              previousScreen: "JobOrderMain",
+              cancelScreen: "JobOrderMain",
+            });
           }}
         />
       </Appbar.Header>

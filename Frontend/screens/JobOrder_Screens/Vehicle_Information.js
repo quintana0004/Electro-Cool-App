@@ -43,14 +43,6 @@ function VehicleInformation({ navigation }) {
   const [checked, setChecked] = useState("No");
   const [height, setHeight] = useState(undefined);
 
-  function navNext() {
-    navigation.navigate("RequestedService");
-  }
-
-  function navJobOrder() {
-    navigation.navigate("JobOrderMain");
-  }
-
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
@@ -60,6 +52,16 @@ function VehicleInformation({ navigation }) {
           }}
         />
         <Appbar.Content title="Vehicle Information"></Appbar.Content>
+        <Appbar.Action
+          icon="home"
+          onPress={() => navigation.navigate("JobOrderMain")}
+          iconColor={Colors.black}
+        />
+        <Appbar.Action
+          icon="arrow-right"
+          onPress={() => navigation.navigate("RequestedService")}
+          iconColor={Colors.black}
+        />
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>Enter new vehicle information</Text>
@@ -361,14 +363,6 @@ function VehicleInformation({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
-      <View style={styles.navBtnsPosition}>
-        <View style={styles.navCancelBtn}>
-          <NavBtn choice={"Cancel"} nav={navJobOrder} />
-        </View>
-        <View style={styles.navNextBtn}>
-          <NavBtn choice={"Next"} nav={navNext} />
-        </View>
-      </View>
     </View>
   );
 }
