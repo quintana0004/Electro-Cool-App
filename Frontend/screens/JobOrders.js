@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
+import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
 import TableListOrder from "../components/Job Order/TableListOrder";
@@ -45,11 +45,7 @@ function JobOrders({ navigation }) {
         <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
       </Appbar.Header>
       <SearchBanner visible={openBannerSearch} />
-      <FilterBanner
-        visible={openBannerFilter}
-        filters={filters}
-        updateFilters={setFilters}
-      />
+      <FilterBanner visible={openBannerFilter} filters={filters} updateFilters={setFilters} />
       <TableListOrder data={JobOrderData} />
     </View>
   );

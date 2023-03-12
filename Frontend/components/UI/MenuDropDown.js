@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { SimpleLineIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../../constants/Colors/Colors";
-import MenuBtnNav from "../UI/MenuBtnNav";
+import MenuBtnNav from "./MenuBtnNav";
 
 function MenuDropDown() {
   //Navigate to the corresponding pages
