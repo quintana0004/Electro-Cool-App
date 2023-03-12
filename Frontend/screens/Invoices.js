@@ -66,7 +66,6 @@ function Invoices({ navigation }) {
             setFilterBannerVisibility(false);
           }}
         />
-        <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
       </Appbar.Header>
       <SearchBanner
         placeholder={"Search client name"}
