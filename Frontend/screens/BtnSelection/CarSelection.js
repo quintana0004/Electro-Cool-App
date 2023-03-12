@@ -4,17 +4,22 @@ import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 
-function CarSelection({ navigation }) {
+function CarSelection({ navigation, route }) {
+  const { previousScreen, cancelScreen } = route.params;
+
   function navNext() {
     if (toggleNewCar) navigation.navigate("VehicleInformation");
     else if (toggleExistingCar) navigation.navigate("ExistingCar");
   }
 
-  function navClientInformation() {
-    navigation.navigate("ClientInformation");
+  // const { nextScreen, previousScreen, cancelScreen, client } = route.params;
+
+  function navPrevious() {
+    navigation.navigate(previousScreen);
   }
-  function navJobOrder() {
-    navigation.navigate("JobOrderMain");
+
+  function navCancel() {
+    navigation.navigate(cancelScreen);
   }
 
   const [toggleNewCar, setToggleBtn1] = useState(false);
@@ -100,10 +105,10 @@ function CarSelection({ navigation }) {
         </View>
         <View style={styles.naviBtnsPosition}>
           <View style={styles.navBackBtn}>
-            <NavBtn choice={"Back"} nav={navClientInformation} />
+            <NavBtn choice={"Back"} nav={navPrevious} />
           </View>
           <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navJobOrder} />
+            <NavBtn choice={"Cancel"} nav={navCancel} />
           </View>
           <View style={styles.navNextBtn}>
             <NavBtn choice={"Next"} nav={navNext} />
