@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
@@ -45,8 +46,6 @@ function ClientInformation({ route, navigation }) {
 
   const ref = useRef(null);
 
-  function SubmitNext(values) {}
-
   const {
     nextScreen,
     previousScreen,
@@ -73,15 +72,16 @@ function ClientInformation({ route, navigation }) {
           icon="arrow-right"
           onPress={() => {
             if (
-              ref.current.errors.firstName &&
-              ref.current.errors.lastName &&
-              ref.current.errors.addressLine1 &&
-              ref.current.errors.state &&
-              ref.current.errors.city &&
-              ref.current.errors.phoneNumber &&
-              ref.current.errors.email
+              !!ref.current.errors.firstName &&
+              !!ref.current.errors.lastName &&
+              !!ref.current.errors.addressLine1 &&
+              !!ref.current.errors.state &&
+              !!ref.current.errors.city &&
+              !!ref.current.errors.phoneNumber &&
+              !!ref.current.errors.email
             ) {
-              //check
+              //place a alert
+              Alert.alert("Invalid Input");
             } else {
               navigation.navigate("CarSelection", {
                 previousScreen: "ClientInformation",
@@ -89,6 +89,17 @@ function ClientInformation({ route, navigation }) {
                 nextScreen: otherNextScreen, // RequestedService
               });
               console.log(ref.current.values["firstName"]);
+              setCustomerInfo(
+                "",
+                ref.current.values["firstName"],
+                ref.current.values["lastName"],
+                ref.current.values["addressLine1"],
+                ref.current.values["addressLine2"],
+                ref.current.values["state"],
+                ref.current.values["city"],
+                ref.current.values["phone"],
+                ref.current.values["email"]
+              );
             }
           }}
           iconColor={Colors.black}
