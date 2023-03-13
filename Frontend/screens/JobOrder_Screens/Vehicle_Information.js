@@ -14,7 +14,7 @@ import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText, RadioButton } from "react-native-paper";
 import * as Yup from "yup";
-import NavBtn from "../../components/UI/NavBtns";
+import { useVehicleInfoStore } from "../../Store/store";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
