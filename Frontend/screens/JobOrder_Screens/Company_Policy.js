@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
-
+import {
+  useCustomerInfoStore,
+  useRequestedServiceStore,
+  useVehicleInfoStore,
+  useJobOrderStore,
+} from "../../Store/store";
 import { Checkbox } from "react-native-paper";
 
 function CompanyPolicy({ navigation }) {

@@ -84,9 +84,11 @@ function ClientInformation({ route, navigation }) {
               Alert.alert("Invalid Input");
             } else {
               navigation.navigate("CarSelection", {
+                nextScreen: otherNextScreen,
                 previousScreen: "ClientInformation",
                 cancelScreen: cancelScreen,
-                nextScreen: otherNextScreen, // RequestedService
+                otherNextScreen: nextScreen,
+                otherPreviousScreen: otherPreviousScreen,
               });
               console.log(ref.current.values["firstName"]);
               setCustomerInfo(

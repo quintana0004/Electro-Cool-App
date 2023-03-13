@@ -29,8 +29,8 @@ function ExistingClient({ route, navigation }) {
       nextScreen: otherNextScreen, // RequestedService.js
       previousScreen: otherPreviousScreen,
       cancelScreen: cancelScreen,
-      otherNextScreen: "",
-      otherPreviousScreen: "",
+      otherNextScreen: nextScreen,
+      otherPreviousScreen: otherPreviousScreen,
     });
   }
 

@@ -19,7 +19,7 @@ import {
   Checkbox,
 } from "react-native-paper";
 import * as Yup from "yup";
-import NavBtn from "../../components/UI/NavBtns";
+import { useRequestedServiceStore } from "../../Store/store";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
