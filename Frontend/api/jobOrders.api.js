@@ -7,7 +7,7 @@ async function httpGetAllJobOrders(take, page, searchTerm) {
 }
 
 //?Must include an id in the jobOrderInfo for it to be update it
-async function httpUpdateJobOrder() {
+async function httpUpsertJobOrder(jobOrderInfo) {
   const response = await axios.post("/job-orders", jobOrderInfo);
   return response;
 }
@@ -25,16 +25,9 @@ async function httpGetJobOrder(id) {
   return response;
 }
 
-//?Always send a object for requested service
-async function httpCreateJobOrder(jobOrderInfo) {
-  const response = await axios.post("/job-orders", jobOrderInfo);
-  return response;
-}
-
 export {
   httpGetAllJobOrders,
-  httpUpdateJobOrder,
+  httpUpsertJobOrder,
   httpUpdateStatusJobOrder,
   httpGetJobOrder,
-  httpCreateJobOrder,
 };

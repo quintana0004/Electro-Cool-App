@@ -7,9 +7,9 @@ async function httpGetAllClients(take, page, searchTerm = "") {
 }
 
 //?Client Information must be an object
-async function httpCreateClient(clientInfo) {
+async function httpUpsertClient(clientInfo) {
   const response = await axios.post("/customers", clientInfo);
   return response;
 }
 
-export { httpGetAllClients, httpCreateClient };
+export { httpGetAllClients, httpUpsertClient };

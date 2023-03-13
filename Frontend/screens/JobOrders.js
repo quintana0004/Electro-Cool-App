@@ -6,10 +6,12 @@ import MenuDropDown from "../components/Navigation/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
 import TableListOrder from "../components/Job Order/TableListOrder";
-import JobOrderData from "../../Frontend/constants/Dummy_Data/JobOrderData";
-import { Menu } from "react-native-paper";
+import { useJobOrderStore } from "../Store/store";
 
 function JobOrders({ navigation }) {
+  // call the store function
+  const setJobOrder = useJobOrderStore((state) => state.setJobOrder);
+
   //Function that will toggle the state of searchBanner and filterBanner
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [openBannerFilter, setOpenBannerFilter] = useState(false);
@@ -51,9 +53,13 @@ function JobOrders({ navigation }) {
           icon="plus"
           onPress={() => {
             navigation.navigate("CustomerSelection", {
+              otherNextScreen: "",
+              nextScreen: "",
               previousScreen: "JobOrderMain",
+              otherPreviousScreen: "",
               cancelScreen: "JobOrderMain",
             });
+            setJobOrder("Create", false, false, false);
           }}
         />
       </Appbar.Header>

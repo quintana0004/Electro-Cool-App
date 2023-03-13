@@ -39,7 +39,7 @@ const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
 });
 
-function VehicleInformation({ navigation }) {
+function VehicleInformation({ route, navigation }) {
   const [checked, setChecked] = useState("No");
   const [height, setHeight] = useState(undefined);
 

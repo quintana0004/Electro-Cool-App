@@ -2,17 +2,27 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
+import Figures from "../../constants/figures/Figures";
 import NavBtn from "../../components/UI/NavBtns";
 
 function CarSelection({ navigation, route }) {
-  const { previousScreen, cancelScreen } = route.params;
+  const { previousScreen, cancelScreen, nextScreen } = route.params;
 
   function navNext() {
-    if (toggleNewCar) navigation.navigate("VehicleInformation");
-    else if (toggleExistingCar) navigation.navigate("ExistingCar");
+    if (toggleNewCar)
+      navigation.navigate("VehicleInformation", {
+        nextScreen: nextScreen,
+        previousScreen: "CarSelection",
+        cancelScreen: cancelScreen,
+      });
+    else if (toggleExistingCar)
+      navigation.navigate("ExistingCar", {
+        client: "",
+        nextScreen: nextScreen,
+        previousScreen: "CarSelection",
+        cancelScreen: cancelScreen,
+      });
   }
-
-  // const { nextScreen, previousScreen, cancelScreen, client } = route.params;
 
   function navPrevious() {
     navigation.navigate(previousScreen);
@@ -25,16 +35,14 @@ function CarSelection({ navigation, route }) {
   const [toggleNewCar, setToggleBtn1] = useState(false);
   const [toggleExistingCar, setToggleBtn2] = useState(false);
 
-  let NewCarIcon = require("../../assets/images/NewCarIcon.png");
-  let NewCarSelectedICon = require("../../assets/images/NewCarSelectedIcon.png");
-  let ExistingCarIcon = require("../../assets/images/ExistingCarIcon.png");
-  let ExistingCarSelectedIcon = require("../../assets/images/ExistingCarSelectedIcon.png");
-
   function NewcarView() {
     if (toggleNewCar === true) {
       return (
         <View style={styles.ButtonPressed}>
-          <Image style={styles.NewCarIconStyle} source={NewCarSelectedICon} />
+          <Image
+            style={styles.NewCarIconStyle}
+            source={Figures.NewCarSelectedIcon}
+          />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             New Car
           </Text>
@@ -43,7 +51,7 @@ function CarSelection({ navigation, route }) {
     } else {
       return (
         <View style={styles.Button}>
-          <Image style={styles.NewCarIconStyle} source={NewCarIcon} />
+          <Image style={styles.NewCarIconStyle} source={Figures.NewCarIcon} />
           <Text style={styles.ButtonText}>New Car</Text>
         </View>
       );
@@ -56,7 +64,7 @@ function CarSelection({ navigation, route }) {
         <View style={styles.ButtonPressed}>
           <Image
             style={styles.ExistingCarIconStyle}
-            source={ExistingCarSelectedIcon}
+            source={Figures.ExistingCarSelectedIcon}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             Existing Car
@@ -66,7 +74,10 @@ function CarSelection({ navigation, route }) {
     } else {
       return (
         <View style={styles.Button}>
-          <Image style={styles.ExistingCarIconStyle} source={ExistingCarIcon} />
+          <Image
+            style={styles.ExistingCarIconStyle}
+            source={Figures.ExistingCarIcon}
+          />
           <Text style={styles.ButtonText}>Existing Car</Text>
         </View>
       );

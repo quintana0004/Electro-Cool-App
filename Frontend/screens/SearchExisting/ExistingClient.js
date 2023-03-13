@@ -15,6 +15,7 @@ function ExistingClient({ route, navigation }) {
     otherNextScreen,
     otherPreviousScreen,
   } = route.params;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -25,9 +26,11 @@ function ExistingClient({ route, navigation }) {
   function navigateNext() {
     navigation.navigate(nextScreen, {
       client: selectedClient,
-      nextScreen: otherNextScreen,
+      nextScreen: otherNextScreen, // RequestedService.js
       previousScreen: otherPreviousScreen,
       cancelScreen: cancelScreen,
+      otherNextScreen: "",
+      otherPreviousScreen: "",
     });
   }
 

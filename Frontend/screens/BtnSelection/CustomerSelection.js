@@ -14,7 +14,13 @@ import NavBtn from "../../components/UI/NavBtns";
 import { Appbar } from "react-native-paper";
 
 function ClientSelection({ navigation, route }) {
-  const { previousScreen, cancelScreen } = route.params;
+  const {
+    otherNextScreen,
+    nextScreen,
+    previousScreen,
+    otherPreviousScreen,
+    cancelScreen,
+  } = route.params;
 
   function navNext() {
     if (toggleNewCustomer)
@@ -22,14 +28,16 @@ function ClientSelection({ navigation, route }) {
         nextScreen: "CarSelection",
         previousScreen: "CustomerSelection",
         cancelScreen: cancelScreen,
+        otherNextScreen: "RequestedService",
+        otherPreviousScreen: otherPreviousScreen,
       });
     else if (toggleExistingCustomer)
       navigation.navigate("ExistingClient", {
         nextScreen: "CarSelection",
-        previousScreen: previousScreen,
+        previousScreen: "CustomerSelection",
         cancelScreen: cancelScreen,
-        otherNextScreen: "",
-        otherPreviousScreen: "",
+        otherNextScreen: "RequestedService",
+        otherPreviousScreen: otherPreviousScreen,
       });
   }
 

@@ -11,6 +11,10 @@ import NewCustomerIcon from "../../assets/images/NewCustomerIcon.png";
 import NewCustomerSelectedIcon from "../../assets/images/NewCustomerSelectedIcon.png";
 import ExistingCustomerIcon from "../../assets/images/ExistingCustomerIcon.png";
 import ExistingCustomerSelectedIcon from "../../assets/images/ExistingCustomerSelectedIcon.png";
+import NewCarIcon from "../../assets/images/NewCarIcon.png";
+import NewCarSelectedIcon from "../../assets/images/NewCarSelectedIcon.png";
+import ExistingCarIcon from "../../assets/images/ExistingCarIcon.png";
+import ExistingCarSelectedIcon from "../../assets/images/ExistingCarSelectedIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -26,6 +30,10 @@ const Figures = {
   NewCustomerSelectedIcon,
   ExistingCustomerIcon,
   ExistingCustomerSelectedIcon,
+  NewCarIcon,
+  NewCarSelectedIcon,
+  ExistingCarIcon,
+  ExistingCarSelectedIcon,
 };
 
 export default Figures;
