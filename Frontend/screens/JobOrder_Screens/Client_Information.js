@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
-import NavBtn from "../../components/UI/NavBtns";
+import { useCustomerInfoStore } from "../../Store/store";
 
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
@@ -38,7 +38,22 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function ClientInformation({ route, navigation }) {
-  const { previousScreen, cancelScreen } = route.params;
+  //Get the store information
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
+
+  const ref = useRef(null);
+
+  function SubmitNext(values) {}
+
+  const {
+    nextScreen,
+    previousScreen,
+    cancelScreen,
+    otherNextScreen,
+    otherPreviousScreen,
+  } = route.params;
 
   return (
     <View>
@@ -56,12 +71,26 @@ function ClientInformation({ route, navigation }) {
         />
         <Appbar.Action
           icon="arrow-right"
-          onPress={() =>
-            navigation.navigate("CarSelection", {
-              previousScreen: "ClientInformation",
-              cancelScreen: cancelScreen,
-            })
-          }
+          onPress={() => {
+            if (
+              ref.current.errors.firstName &&
+              ref.current.errors.lastName &&
+              ref.current.errors.addressLine1 &&
+              ref.current.errors.state &&
+              ref.current.errors.city &&
+              ref.current.errors.phoneNumber &&
+              ref.current.errors.email
+            ) {
+              //check
+            } else {
+              navigation.navigate("CarSelection", {
+                previousScreen: "ClientInformation",
+                cancelScreen: cancelScreen,
+                nextScreen: otherNextScreen, // RequestedService
+              });
+              console.log(ref.current.values["firstName"]);
+            }
+          }}
           iconColor={Colors.black}
         />
       </Appbar.Header>
@@ -81,6 +110,7 @@ function ClientInformation({ route, navigation }) {
         }}
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
+        innerRef={ref}
       >
         {({
           handleChange,
