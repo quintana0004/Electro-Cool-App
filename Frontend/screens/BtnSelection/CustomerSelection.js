@@ -9,24 +9,44 @@ import {
 } from "react-native";
 import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
+import Figures from "../../constants/figures/Figures";
 import NavBtn from "../../components/UI/NavBtns";
+import { Appbar } from "react-native-paper";
 
-function ClientSelection({ navigation }) {
+function ClientSelection({ navigation, route }) {
+  const {
+    otherNextScreen,
+    nextScreen,
+    previousScreen,
+    otherPreviousScreen,
+    cancelScreen,
+  } = route.params;
+
   function navNext() {
-    if (toggleNewCustomer) navigation.navigate("ClientInformation");
-    else if (toggleExistingCustomer) navigation.navigate("ExistingClient");
+    if (toggleNewCustomer)
+      navigation.navigate("ClientInformation", {
+        nextScreen: "CarSelection",
+        previousScreen: "CustomerSelection",
+        cancelScreen: cancelScreen,
+        otherNextScreen: "RequestedService",
+        otherPreviousScreen: otherPreviousScreen,
+      });
+    else if (toggleExistingCustomer)
+      navigation.navigate("ExistingClient", {
+        nextScreen: "CarSelection",
+        previousScreen: "CustomerSelection",
+        cancelScreen: cancelScreen,
+        otherNextScreen: "RequestedService",
+        otherPreviousScreen: otherPreviousScreen,
+      });
   }
+
   function navJobOrder() {
-    navigation.navigate("JobOrderMain");
+    navigation.navigate(cancelScreen);
   }
 
   const [toggleNewCustomer, setToggleNewCustomer] = useState(false);
   const [toggleExistingCustomer, setToggleExistingCustomer] = useState(false);
-
-  let NewCustomerIcon = require("../../assets/images/NewCustomerIcon.png");
-  let NewCustomerSelectedIcon = require("../../assets/images/NewCustomerSelectedIcon.png");
-  let ExistingCustomerIcon = require("../../assets/images/ExistingCustomerIcon.png");
-  let ExistingCustomerSelectedIcon = require("../../assets/images/ExistingCustomerSelectedIcon.png");
 
   function NewCustomer() {
     if (toggleNewCustomer === true) {
@@ -34,7 +54,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.ButtonPressed}>
           <Image
             style={styles.NewCustomerIconStyle}
-            source={NewCustomerSelectedIcon}
+            source={Figures.NewCustomerSelectedIcon}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             New Customer
@@ -44,7 +64,10 @@ function ClientSelection({ navigation }) {
     } else {
       return (
         <View style={styles.Button}>
-          <Image style={styles.NewCustomerIconStyle} source={NewCustomerIcon} />
+          <Image
+            style={styles.NewCustomerIconStyle}
+            source={Figures.NewCustomerIcon}
+          />
           <Text style={styles.ButtonText}>New Customer</Text>
         </View>
       );
@@ -57,7 +80,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.ButtonPressed}>
           <Image
             style={styles.ExistingCustomerIconStyle}
-            source={ExistingCustomerSelectedIcon}
+            source={Figures.ExistingCustomerSelectedIcon}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             Existing Customer
@@ -69,7 +92,7 @@ function ClientSelection({ navigation }) {
         <View style={styles.Button}>
           <Image
             style={styles.ExistingCustomerIconStyle}
-            source={ExistingCustomerIcon}
+            source={Figures.ExistingCustomerIcon}
           />
           <Text style={styles.ButtonText}>Existing Customer</Text>
         </View>
@@ -79,11 +102,14 @@ function ClientSelection({ navigation }) {
 
   return (
     <View>
-      <Header divideH={8} divideW={1.1} colorHeader={Colors.yellowDark}>
-        <View style={styles.HeaderContent}>
-          <Text style={styles.title}>Select customer for Job Order</Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Appbar.Content title="Select customer for Job Order"></Appbar.Content>
+      </Appbar.Header>
 
       <View style={styles.Container}>
         <View>
@@ -132,7 +158,7 @@ const styles = StyleSheet.create({
   },
   Container: {
     alignItems: "center",
-    margin: 130,
+    margin: 60,
   },
   Button: {
     borderColor: "#cccccc",
@@ -175,6 +201,9 @@ const styles = StyleSheet.create({
   },
   navCancelBtn: { marginRight: 10 },
   navNextBtn: { marginLeft: 10 },
+  header: {
+    backgroundColor: Colors.yellowDark,
+  },
 });
 
 export default ClientSelection;

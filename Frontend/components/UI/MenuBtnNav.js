@@ -1,48 +1,70 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors/Colors";
+import {
+  MaterialCommunityIcons,
+  FontAwesome5,
+  Ionicons,
+} from "@expo/vector-icons";
 
 function MenuBtnNav({ choice, nav }) {
   let icon;
-  let imageSizeW = 15;
-  let imageSizeH = 15;
   let paddingBox = 30;
 
   switch (choice) {
     case "Dashboard":
-      icon = require("../../assets/images/dashboard.png");
-      imageSizeW = 36;
-      imageSizeH = 35;
-      paddingBox = 50;
+      // icon = require("../../assets/images/dashboard.png");
+      // imageSizeW = 30;
+      // imageSizeH = 29;
+      paddingBox = 20;
+      icon = (
+        <MaterialCommunityIcons
+          name="view-dashboard"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
       break;
     case "Job Orders":
-      icon = require("../../assets/images/JobOrder.png");
-      imageSizeW = 30;
-      imageSizeH = 36;
+      icon = (
+        <FontAwesome5
+          name="clipboard-list"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
       paddingBox = 50;
       break;
     case "Invoices":
-      icon = require("../../assets/images/Invoice.png");
-      imageSizeW = 30;
-      imageSizeH = 36;
-      paddingBox = 60;
+      icon = (
+        <FontAwesome5
+          name="file-invoice-dollar"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
+      paddingBox = 50;
       break;
     case "Client Book":
-      icon = require("../../assets/images/ClientBook.png");
-      imageSizeW = 32;
-      imageSizeH = 35;
-      paddingBox = 40;
+      icon = (
+        <FontAwesome5 name="address-book" size={24} color={Colors.yellowDark} />
+      );
+      paddingBox = 50;
       break;
     case "Calendar":
-      icon = require("../../assets/images/Calendar.png");
-      imageSizeW = 35;
-      imageSizeH = 32;
+      icon = (
+        <MaterialCommunityIcons
+          name="calendar"
+          size={28}
+          color={Colors.yellowDark}
+        />
+      );
       paddingBox = 50;
       break;
     case "Settings":
-      icon = require("../../assets/images/Setting.png");
-      imageSizeW = 35;
-      imageSizeH = 34;
+      icon = (
+        <Ionicons name="settings-sharp" size={24} color={Colors.yellowDark} />
+      );
       paddingBox = 50;
       break;
   }
@@ -50,15 +72,7 @@ function MenuBtnNav({ choice, nav }) {
   return (
     <TouchableOpacity onPress={() => nav()}>
       <View style={[{ paddingHorizontal: paddingBox }, styles.box]}>
-        <Image
-          style={{
-            width: imageSizeW,
-            height: imageSizeH,
-            position: "absolute",
-            left: 25,
-          }}
-          source={icon}
-        />
+        <View style={{ position: "absolute", left: 15 }}>{icon}</View>
         <Text style={styles.txtChoice}>{choice}</Text>
       </View>
     </TouchableOpacity>
@@ -67,24 +81,26 @@ function MenuBtnNav({ choice, nav }) {
 
 const styles = StyleSheet.create({
   txtChoice: {
-    color: Colors.black,
-    fontSize: 27,
+    color: "#FFFFFF",
+    fontSize: 15,
     fontWeight: "600",
     textAlign: "center",
     position: "absolute",
-    left: 70,
+    left: 50,
   },
   box: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: Colors.yellowDark,
+    backgroundColor: Colors.darkBlack,
     borderRadius: 50,
-    width: 255,
-    height: 72,
+    width: 155,
+    height: 40,
     alignItems: "center",
-    marginVertical: 15,
+    marginVertical: 10,
     zIndex: 1,
-    marginLeft: 40,
+    marginLeft: 10,
+    borderColor: Colors.white,
+    borderWidth: 0.2,
   },
 });
 

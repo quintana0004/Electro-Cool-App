@@ -1,38 +1,87 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
-import Header from "../components/UI/Header";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
+import { Appbar } from "react-native-paper";
+import MenuDropDown from "../components/Navigation/MenuDropDown";
+import SearchBanner from "../components/UI/SearchBanner";
+import FilterBanner from "../components/UI/FilterBanner";
+import TableListOrder from "../components/Job Order/TableListOrder";
+import { useJobOrderStore } from "../Store/store";
 
 function JobOrders({ navigation }) {
-  //Function of the btns
-  function navSelectClient() {
-    navigation.navigate("CustomerSelection");
-  }
+  // call the store function
+  const setJobOrder = useJobOrderStore((state) => state.setJobOrder);
 
-  function navSelectCar() {
-    navigation.navigate("CarSelection");
-  }
+  //Function that will toggle the state of searchBanner and filterBanner
+  const [openBannerSearch, setOpenBannerSearch] = useState(false);
+  const [openBannerFilter, setOpenBannerFilter] = useState(false);
 
-  function navClientInformation() {
-    navigation.navigate("ClientInformation");
-  }
+  //Filter Content
+  const [filters, setFilters] = useState({
+    Complete: false,
+    Canceled: false,
+    Working: false,
+    New: false,
+    Heavy: false,
+    Light: false,
+  });
 
-  function navCompanyPolicy() {
-    navigation.navigate("CompanyPolicy");
-  }
+  //Search Variables
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-      </Header>
+        <Appbar.Content></Appbar.Content>
+        <Appbar.Action
+          icon="filter"
+          onPress={() => {
+            setOpenBannerFilter(!openBannerFilter);
+            setOpenBannerSearch(false);
+          }}
+        />
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setOpenBannerSearch(!openBannerSearch);
+            setOpenBannerFilter(false);
+          }}
+        />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("CustomerSelection", {
+              otherNextScreen: "",
+              nextScreen: "",
+              previousScreen: "JobOrderMain",
+              otherPreviousScreen: "",
+              cancelScreen: "JobOrderMain",
+            });
+            setJobOrder("Create", false, false, false);
+          }}
+        />
+      </Appbar.Header>
+      <SearchBanner
+        visible={openBannerSearch}
+        loading={searchLoading}
+        placeholder={"Search by ID or Name"}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
+      <FilterBanner
+        visible={openBannerFilter}
+        filters={filters}
+        updateFilters={setFilters}
+      />
       <View style={styles.body}>
-        <Text>JobOrder Screen!</Text>
-        <Button title="Gabbox01" onPress={() => navSelectClient()} />
-        <Button title="Gabbox02" onPress={() => navSelectCar()} />
-        <Button title="Shelly01" onPress={() => navClientInformation()} />
-        <Button title="Shelly02" onPress={() => navCompanyPolicy()} />
+        <TableListOrder
+          filters={filters}
+          searchLoading={searchLoading}
+          searchTerm={searchTerm}
+          setSearchLoading={setSearchLoading}
+        />
       </View>
     </View>
   );
@@ -48,6 +97,16 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginVertical: 20,
+  },
+  searchContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 35,
+    marginTop: 10,
+  },
+  btnCreate: {},
+  header: {
+    backgroundColor: Colors.darkBlack,
   },
 });
 

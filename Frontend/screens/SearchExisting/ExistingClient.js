@@ -8,8 +8,14 @@ import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
 
 function ExistingClient({ route, navigation }) {
-  const { nextScreen, previousScreen, cancelScreen, otherNextScreen, otherPreviousScreen } =
-    route.params;
+  const {
+    nextScreen,
+    previousScreen,
+    cancelScreen,
+    otherNextScreen,
+    otherPreviousScreen,
+  } = route.params;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -20,9 +26,11 @@ function ExistingClient({ route, navigation }) {
   function navigateNext() {
     navigation.navigate(nextScreen, {
       client: selectedClient,
-      nextScreen: otherNextScreen,
+      nextScreen: otherNextScreen, // RequestedService.js
       previousScreen: otherPreviousScreen,
       cancelScreen: cancelScreen,
+      otherNextScreen: nextScreen,
+      otherPreviousScreen: otherPreviousScreen,
     });
   }
 
@@ -36,7 +44,12 @@ function ExistingClient({ route, navigation }) {
 
   return (
     <View>
-      <Header divideH={6} divideW={1} colorHeader={Colors.lightGreen} headerStyles={styles.header}>
+      <Header
+        divideH={6}
+        divideW={1}
+        colorHeader={Colors.lightGreen}
+        headerStyles={styles.header}
+      >
         <View style={styles.searchContainer}>
           <SearchBar
             widthBar={350}

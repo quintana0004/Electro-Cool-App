@@ -23,10 +23,17 @@ function SearchBar({ widthBar, heightBar, placeholderText, onSearch }) {
           size={30}
           color={Colors.darkGrey}
           style={styles.icon}
-          onPress={() => onSearch(searchValue)}
+          onPress={() => {
+            onSearch(searchValue);
+            // setSearching(true);
+          }}
         />
       ) : (
-        <ActivityIndicator size="large" color={Colors.yellowDark} style={styles.loading} />
+        <ActivityIndicator
+          size="large"
+          color={Colors.yellowDark}
+          style={styles.loading}
+        />
       )}
     </View>
   );

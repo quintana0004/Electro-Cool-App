@@ -36,7 +36,12 @@ function ExistingCar({ route, navigation }) {
 
   return (
     <View>
-      <Header divideH={6} divideW={1} colorHeader={Colors.lightGreen} headerStyles={styles.header}>
+      <Header
+        divideH={6}
+        divideW={1}
+        colorHeader={Colors.lightGreen}
+        headerStyles={styles.header}
+      >
         <View style={styles.searchContainer}>
           <SearchBar
             widthBar={350}
