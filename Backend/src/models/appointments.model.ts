@@ -18,7 +18,9 @@ async function findAppointmentById(id: number) {
 
 async function upsertAppointment(appointmentInfo: IAppointment) {
   try {
-    const formattedArrivalDateTime = formatStringToISOFormat(appointmentInfo.arrivalDateTime);
+    const formattedArrivalDateTime = formatStringToISOFormat(
+      appointmentInfo.arrivalDateTime
+    );
     const appointment = await prisma.appointment.upsert({
       where: {
         id: appointmentInfo?.id ?? -1,
@@ -67,4 +69,30 @@ async function deleteAppointment(id: number) {
   }
 }
 
-export { findAppointmentById, upsertAppointment, deleteAppointment };
+async function findAllAppointments(
+  skip: number,
+  take: number,
+  dateTime: string | undefined
+) {
+  try {
+    const dates = dateTime ? dateTime : undefined;
+    const companyAppointments = await prisma.appointment.findMany({
+      skip,
+      take,
+      where: {
+        arrivalDateTime: dates,
+      },
+    });
+
+    return companyAppointments;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export {
+  findAppointmentById,
+  upsertAppointment,
+  deleteAppointment,
+  findAllAppointments,
+};

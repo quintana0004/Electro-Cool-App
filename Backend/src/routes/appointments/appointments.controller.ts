@@ -1,17 +1,31 @@
 import { IAppointment } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   hasRequiredAppointmentFields,
   isValidAppointmentId,
   isValidCompanyId,
   isValidDateFormat,
 } from "../../utils/validators.utils";
-import { deleteAppointment, upsertAppointment } from "../../models/appointments.model";
+import { formatStringToISOFormat } from "../../utils/formatters.utils";
+import {
+  deleteAppointment,
+  findAllAppointments,
+  upsertAppointment,
+} from "../../models/appointments.model";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
   try {
-    return res.status(200).json("Get All Appointments");
+    let skip = req.query.skip ? +req.query.skip : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+    const appointments = await findAllAppointments(skip, take, searchTerm);
+    return res.status(200).json(appointments);
   } catch (error) {
     return handleExceptionErrorResponse("get all appointments", error, res);
   }
@@ -50,7 +64,9 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       );
     }
 
-    const isDateFormatValid = isValidDateFormat(appointmentInfo.arrivalDateTime);
+    const isDateFormatValid = isValidDateFormat(
+      appointmentInfo.arrivalDateTime
+    );
     if (!isDateFormatValid) {
       return handleBadResponse(
         400,
