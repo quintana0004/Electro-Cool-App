@@ -10,6 +10,7 @@ import SearchBanner from "../../components/UI/SearchBanner";
 function ExistingClient({ route, navigation }) {
   const { nextScreen, previousScreen, cancelScreen, otherNextScreen, otherPreviousScreen } =
     route.params;
+
   const [selectedClient, setSelectedClient] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
@@ -18,9 +19,11 @@ function ExistingClient({ route, navigation }) {
   function navigateNext() {
     navigation.navigate(nextScreen, {
       client: selectedClient,
-      nextScreen: otherNextScreen,
+      nextScreen: otherNextScreen, // RequestedService.js
       previousScreen: otherPreviousScreen,
       cancelScreen: cancelScreen,
+      otherNextScreen: nextScreen,
+      otherPreviousScreen: otherPreviousScreen,
     });
   }
 

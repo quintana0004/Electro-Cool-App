@@ -9,6 +9,14 @@ import InvoiceDollarIcon from "../../assets/images/InvoiceDollarIcon.png";
 import DepositDollarIcon from "../../assets/images/DepositDollarIcon.png";
 import ClientCardIcon from "../../assets/images/ClientCardIcon.png";
 import CarCardIcon from "../../assets/images/CarCardIcon.png";
+import NewCustomerIcon from "../../assets/images/NewCustomerIcon.png";
+import NewCustomerSelectedIcon from "../../assets/images/NewCustomerSelectedIcon.png";
+import ExistingCustomerIcon from "../../assets/images/ExistingCustomerIcon.png";
+import ExistingCustomerSelectedIcon from "../../assets/images/ExistingCustomerSelectedIcon.png";
+import NewCarIcon from "../../assets/images/NewCarIcon.png";
+import NewCarSelectedIcon from "../../assets/images/NewCarSelectedIcon.png";
+import ExistingCarIcon from "../../assets/images/ExistingCarIcon.png";
+import ExistingCarSelectedIcon from "../../assets/images/ExistingCarSelectedIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -22,6 +30,14 @@ const Figures = {
   DepositDollarIcon,
   ClientCardIcon,
   CarCardIcon,
+  NewCustomerIcon,
+  NewCustomerSelectedIcon,
+  ExistingCustomerIcon,
+  ExistingCustomerSelectedIcon,
+  NewCarIcon,
+  NewCarSelectedIcon,
+  ExistingCarIcon,
+  ExistingCarSelectedIcon,
 };
 
 export default Figures;

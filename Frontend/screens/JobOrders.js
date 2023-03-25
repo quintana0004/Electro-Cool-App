@@ -6,9 +6,12 @@ import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
 import TableListOrder from "../components/Job Order/TableListOrder";
-import JobOrderData from "../../Frontend/constants/Dummy_Data/JobOrderData";
+import { useJobOrderStore } from "../Store/store";
 
 function JobOrders({ navigation }) {
+  // call the store function
+  const setJobOrder = useJobOrderStore((state) => state.setJobOrder);
+
   //Function that will toggle the state of searchBanner and filterBanner
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [openBannerFilter, setOpenBannerFilter] = useState(false);
@@ -22,6 +25,10 @@ function JobOrders({ navigation }) {
     Heavy: false,
     Light: false,
   });
+
+  //Search Variables
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
   return (
     <View>
@@ -42,11 +49,36 @@ function JobOrders({ navigation }) {
             setOpenBannerFilter(false);
           }}
         />
-        <Appbar.Action icon="plus" onPress={console.log("ADDD")} />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("CustomerSelection", {
+              otherNextScreen: "",
+              nextScreen: "",
+              previousScreen: "JobOrderMain",
+              otherPreviousScreen: "",
+              cancelScreen: "JobOrderMain",
+            });
+            setJobOrder("Create", false, false, false);
+          }}
+        />
       </Appbar.Header>
-      <SearchBanner visible={openBannerSearch} />
+      <SearchBanner
+        visible={openBannerSearch}
+        loading={searchLoading}
+        placeholder={"Search by ID or Name"}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
       <FilterBanner visible={openBannerFilter} filters={filters} updateFilters={setFilters} />
-      <TableListOrder data={JobOrderData} />
+      <View style={styles.body}>
+        <TableListOrder
+          filters={filters}
+          searchLoading={searchLoading}
+          searchTerm={searchTerm}
+          setSearchLoading={setSearchLoading}
+        />
+      </View>
     </View>
   );
 }
