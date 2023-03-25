@@ -9,7 +9,6 @@ import SearchBanner from "../../components/UI/SearchBanner";
 import { StackActions } from "@react-navigation/native";
 
 function ExistingClient({ route, navigation }) {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
