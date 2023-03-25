@@ -1,11 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import { MaskedText, MaskedTextInput } from "react-native-mask-text";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 import { useState } from "react";
 
 function InvoiceDetailTableItem({ description, price, quantity }) {
-  console.log("Props: ", description, price, quantity);
   const [invoiceItem, setInvoiceItem] = useState({
     description: description,
     price: price,
@@ -13,7 +12,12 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
   });
 
   function handlePriceChange(formattedValue) {
-    console.log("formattedValue: ", formattedValue);
+    const extractedValue = formattedValue.replace('$', '');
+    setInvoiceItem({...invoiceItem, price: extractedValue});
+  }
+
+  function handleQuantityChange(value) {
+    setInvoiceItem({...invoiceItem, quantity: Number(value)});
   }
 
   function getTotalAmount() {
@@ -22,8 +26,7 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
   }
 
   function getPrice() {
-    let price = invoiceItem.price * 100;
-    console.log("price: ", price);
+    let price = (invoiceItem.price * 100).toFixed(2).toString();
     return price;
   }
 
@@ -38,12 +41,17 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
         </View>
       </View>
       <View style={styles.quantityContainer}>
-        <Text style={styles.quantityText}>{invoiceItem.quantity}</Text>
+        <TextInput 
+          style={styles.quantityText}
+          value={invoiceItem.quantity.toString()}
+          keyboardType="decimal-pad"
+          onChangeText={handleQuantityChange}
+        />
       </View>
       <View style={styles.priceContainer}>
         <MaskedTextInput
           type="currency"
-          value={23997}
+          value={getPrice()}
           style={styles.priceText}
           options={{
             prefix: "$",
@@ -107,6 +115,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 35,
     borderRadius: 15,
+  },
+  quantityText: {
+    textAlign: "center"
   },
   priceContainer: {
     flexDirection: "row",
