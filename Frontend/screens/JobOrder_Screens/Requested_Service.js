@@ -20,12 +20,32 @@ import {
 } from "react-native-paper";
 import * as Yup from "yup";
 import { useRequestedServiceStore } from "../../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
 });
 
 function RequestedService({ navigation }) {
+  //funtion for the page navigation
+  //? home
+  function goHomeAction() {
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
+  }
+
+  //? go back
+  function goBackAction() {
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
+  }
+
+  //? next
+  function goNextAction() {
+    const pageAction = StackActions.push("CompanyPolicy");
+    navigation.dispatch(pageAction);
+  }
+
   const [checkedOilChange, setCheckedOilChange] = useState(false);
   const [checkedTuneUp, setCheckedTuneUp] = useState(false);
   const [checkedBreaks, setCheckedBreaks] = useState(false);
@@ -44,18 +64,18 @@ function RequestedService({ navigation }) {
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
-            navigation.goBack();
+            goBackAction();
           }}
         />
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => navigation.navigate("JobOrderMain")}
+          onPress={() => goHomeAction()}
           iconColor={Colors.black}
         />
         <Appbar.Action
           icon="arrow-right"
-          onPress={() => navigation.navigate("CompanyPolicy")}
+          onPress={() => goNextAction()}
           iconColor={Colors.black}
         />
       </Appbar.Header>
