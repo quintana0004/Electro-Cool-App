@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-function TaskScreen() {
+function TaskDetail() {
   return (
     <View>
-      <Text>Task Screen</Text>
+      <Text>Tasks Screen</Text>
     </View>
   );
 }
 
-export default TaskScreen;
+export default TaskDetail;
