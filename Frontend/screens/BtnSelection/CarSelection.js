@@ -4,32 +4,28 @@ import Header from "../../components/UI/Header";
 import Colors from "../../constants/Colors/Colors";
 import Figures from "../../constants/figures/Figures";
 import NavBtn from "../../components/UI/NavBtns";
+import { StackActions } from "@react-navigation/native";
+import { Appbar } from "react-native-paper";
 
 function CarSelection({ navigation, route }) {
-  const { previousScreen, cancelScreen, nextScreen } = route.params;
-
   function navNext() {
-    if (toggleNewCar)
-      navigation.navigate("VehicleInformation", {
-        nextScreen: nextScreen,
-        previousScreen: "CarSelection",
-        cancelScreen: cancelScreen,
-      });
-    else if (toggleExistingCar)
-      navigation.navigate("ExistingCar", {
-        client: "",
-        nextScreen: nextScreen,
-        previousScreen: "CarSelection",
-        cancelScreen: cancelScreen,
-      });
+    if (toggleNewCar) {
+      const pageAction = StackActions.push("VehicleInformation");
+      navigation.dispatch(pageAction);
+    } else if (toggleExistingCar) {
+      const pageAction = StackActions.push("ExistingCar");
+      navigation.dispatch(pageAction);
+    }
   }
 
   function navPrevious() {
-    navigation.navigate(previousScreen);
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
   }
 
   function navCancel() {
-    navigation.navigate(cancelScreen);
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
   }
 
   const [toggleNewCar, setToggleBtn1] = useState(false);
@@ -86,13 +82,29 @@ function CarSelection({ navigation, route }) {
 
   return (
     <View>
-      <Header divideH={8} divideW={1.1} colorHeader={Colors.yellowDark}>
-        <View style={styles.HeaderContent}>
-          <Text style={styles.title}>
-            Select car from customer for Job Order
-          </Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction
+          onPress={() => {
+            navPrevious();
+          }}
+        />
+        <Appbar.Action
+          icon="home"
+          iconColor={Colors.black}
+          onPress={() => {
+            navCancel();
+          }}
+        />
+        <Appbar.Content title="Select vehicle for Job Order"></Appbar.Content>
+        <Appbar.Action
+          icon="arrow-right"
+          iconColor={Colors.black}
+          onPress={() => {
+            navNext();
+          }}
+        />
+      </Appbar.Header>
+
       <View style={styles.Container}>
         <View>
           <Pressable
@@ -113,17 +125,6 @@ function CarSelection({ navigation, route }) {
           >
             <View>{ExistingCarView(toggleExistingCar)}</View>
           </Pressable>
-        </View>
-        <View style={styles.naviBtnsPosition}>
-          <View style={styles.navBackBtn}>
-            <NavBtn choice={"Back"} nav={navPrevious} />
-          </View>
-          <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navCancel} />
-          </View>
-          <View style={styles.navNextBtn}>
-            <NavBtn choice={"Next"} nav={navNext} />
-          </View>
         </View>
       </View>
     </View>
@@ -191,6 +192,9 @@ const styles = StyleSheet.create({
   },
   navNextBtn: {
     marginLeft: 10,
+  },
+  header: {
+    backgroundColor: Colors.yellowDark,
   },
 });
 

@@ -66,6 +66,7 @@ export const useVehicleInfoStore = create((set) => ({
     color,
     vinNumber,
     carHasItems,
+
     carItemsDescription,
     customerId
   ) =>

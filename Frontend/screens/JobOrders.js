@@ -7,6 +7,7 @@ import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
 import TableListOrder from "../components/Job Order/TableListOrder";
 import { useJobOrderStore } from "../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 function JobOrders({ navigation }) {
   // call the store function
@@ -30,6 +31,8 @@ function JobOrders({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const pageAction = StackActions.push("CustomerSelection");
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -52,13 +55,7 @@ function JobOrders({ navigation }) {
         <Appbar.Action
           icon="plus"
           onPress={() => {
-            navigation.navigate("CustomerSelection", {
-              otherNextScreen: "",
-              nextScreen: "",
-              previousScreen: "JobOrderMain",
-              otherPreviousScreen: "",
-              cancelScreen: "JobOrderMain",
-            });
+            navigation.dispatch(pageAction);
             setJobOrder("Create", false, false, false);
           }}
         />

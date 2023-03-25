@@ -15,6 +15,7 @@ import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText, RadioButton } from "react-native-paper";
 import * as Yup from "yup";
 import { useVehicleInfoStore } from "../../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
@@ -40,6 +41,25 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function VehicleInformation({ route, navigation }) {
+  //funtions that will navigate the stack
+  //?Home
+  function goBackHome() {
+    const pageGoHome = StackActions.popToTop("JobOrderMain");
+    navigation.dispatch(pageGoHome);
+  }
+
+  //?Go Back
+  function goBackPageAction() {
+    const pageGoBackAction = StackActions.pop(1);
+    navigation.dispatch(pageGoBackAction);
+  }
+
+  //?Next
+  function goNextPageAction() {
+    const pageGoNext = StackActions.push("RequestedService");
+    navigation.dispatch(pageGoNext);
+  }
+
   const [checked, setChecked] = useState("No");
   const [height, setHeight] = useState(undefined);
 
@@ -48,18 +68,18 @@ function VehicleInformation({ route, navigation }) {
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
-            navigation.goBack();
+            goBackPageAction();
           }}
         />
         <Appbar.Content title="Vehicle Information"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => navigation.navigate("JobOrderMain")}
+          onPress={() => goBackHome()}
           iconColor={Colors.black}
         />
         <Appbar.Action
           icon="arrow-right"
-          onPress={() => navigation.navigate("RequestedService")}
+          onPress={() => goNextPageAction()}
           iconColor={Colors.black}
         />
       </Appbar.Header>
