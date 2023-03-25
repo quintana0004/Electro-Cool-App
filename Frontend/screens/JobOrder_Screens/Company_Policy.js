@@ -9,8 +9,22 @@ import {
   useJobOrderStore,
 } from "../../Store/store";
 import { Checkbox } from "react-native-paper";
+import { StackActions } from "@react-navigation/native";
 
 function CompanyPolicy({ navigation }) {
+  //funtion for the page navigation
+  //? home
+  function goHomeAction() {
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
+  }
+
+  //? go back
+  function goBackAction() {
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
+  }
+
   const [checked, setChecked] = useState("");
 
   const policy = [
@@ -30,14 +44,6 @@ function CompanyPolicy({ navigation }) {
         "In engine repairs, the client must pay half of the total workwhen it is indicated.",
     },
   ];
-
-  function navNext() {
-    navigation.navigate("CompanyPolicy");
-  }
-
-  function navJobOrder() {
-    navigation.navigate("JobOrderMain");
-  }
 
   async function handleSaveClient(clientInfo) {
     try {
@@ -140,7 +146,7 @@ function CompanyPolicy({ navigation }) {
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
-            navigation.goBack();
+            goBackAction();
           }}
           color="#FFFFFF"
         />

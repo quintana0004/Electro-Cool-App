@@ -16,6 +16,7 @@ import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
 import { useCustomerInfoStore } from "../../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
@@ -39,6 +40,24 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function ClientInformation({ route, navigation }) {
+  //Navigation of the page
+  //?Home
+  function goHome() {
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
+  }
+  //?Next
+  function goNext() {
+    const pageAction = StackActions.push("CarSelection");
+    navigation.dispatch(pageAction);
+  }
+
+  //?Go Back
+  function goBackPage() {
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
+  }
+
   //Get the store information
   const setCustomerInfo = useCustomerInfoStore(
     (state) => state.setCustomerInfo
@@ -46,26 +65,18 @@ function ClientInformation({ route, navigation }) {
 
   const ref = useRef(null);
 
-  const {
-    nextScreen,
-    previousScreen,
-    cancelScreen,
-    otherNextScreen,
-    otherPreviousScreen,
-  } = route.params;
-
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
-            navigation.goBack();
+            goBackPage();
           }}
         />
         <Appbar.Content title="Customer Information"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => navigation.navigate("JobOrderMain")}
+          onPress={() => goHome()}
           iconColor={Colors.black}
         />
         <Appbar.Action
@@ -83,13 +94,7 @@ function ClientInformation({ route, navigation }) {
               //place a alert
               Alert.alert("Invalid Input");
             } else {
-              navigation.navigate("CarSelection", {
-                nextScreen: otherNextScreen,
-                previousScreen: "ClientInformation",
-                cancelScreen: cancelScreen,
-                otherNextScreen: nextScreen,
-                otherPreviousScreen: otherPreviousScreen,
-              });
+              goNext();
               console.log(ref.current.values["firstName"]);
               setCustomerInfo(
                 "",
