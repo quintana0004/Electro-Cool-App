@@ -6,33 +6,28 @@ import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
 import SearchBanner from "../../components/UI/SearchBanner";
+import { StackActions } from "@react-navigation/native";
 
 function ExistingClient({ route, navigation }) {
-  const { nextScreen, previousScreen, cancelScreen, otherNextScreen, otherPreviousScreen } =
-    route.params;
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
 
   function navigateNext() {
-    navigation.navigate(nextScreen, {
-      client: selectedClient,
-      nextScreen: otherNextScreen, // RequestedService.js
-      previousScreen: otherPreviousScreen,
-      cancelScreen: cancelScreen,
-      otherNextScreen: nextScreen,
-      otherPreviousScreen: otherPreviousScreen,
-    });
+    const pageAction = StackActions.push("CarSelection");
+    navigation.dispatch(pageAction);
   }
 
   function navigateBack() {
-    navigation.navigate(previousScreen);
+    const pageGoBack = StackActions.pop(1);
+    navigation.dispatch(pageGoBack);
   }
 
   function navigateCancel() {
-    navigation.navigate(cancelScreen);
+    const pageGoHomeAction = StackActions.popToTop();
+    navigation.dispatch(pageGoHomeAction);
   }
 
   return (
