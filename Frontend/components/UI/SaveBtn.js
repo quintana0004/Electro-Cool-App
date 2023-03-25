@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
-function SaveMenuBtn({ label, icon, onPress }) {
+function SaveMenuBtn({ label, children, onPress }) {
   return (
     <Pressable onPress={onPress}>
       <View style={styles.button}>
-        <Image style={styles.buttonIcon} source={icon} />
+        {children}
         <Text style={styles.text}>{label}</Text>
       </View>
     </Pressable>
@@ -28,13 +28,9 @@ const styles = StyleSheet.create({
     height: 55,
     marginBottom: 10,
   },
-  buttonIcon: {
-    width: 25,
-    height: 25,
-    marginRight: 8,
-  },
   text: {
     fontWeight: "bold",
     fontSize: 18,
+    marginLeft: 5,
   },
 });

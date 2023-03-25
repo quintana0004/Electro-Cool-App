@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { useQuery } from "@tanstack/react-query";
+import { Appbar } from "react-native-paper";
+
+import { httpGetDeposit, httpUpsertDeposit } from "../../api/deposits.api";
 
 import Colors from "../../constants/Colors/Colors";
-
 import CarCard from "../../components/UI/CarCard";
 import ClientCard from "../../components/UI/ClientCard";
-import Header from "../../components/UI/Header";
 import NavBtn from "../../components/UI/NavBtns";
 import SectionDivider from "../../components/UI/SectionDivider";
 import AmountInput from "../../components/UI/AmountInput";
 import SaveMenu from "../../components/UI/SaveMenu";
-import { httpGetDeposit, httpUpsertDeposit } from "../../api/deposits.api";
-import { useQuery } from "@tanstack/react-query";
 
 function DepositDetail({ route, navigation }) {
   const { client, car, depositId } = route.params;
+  const isDepositRevocable = !!depositId;
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [depositDescription, setDepositDescription] = useState("");
@@ -62,7 +63,7 @@ function DepositDetail({ route, navigation }) {
         carId: carInfo.id,
         description: depositDescription,
         amountTotal: depositAmount,
-        status: getDepositOption(option),
+        status: option,
       };
 
       // Only assign the depositId if it exists. If it doesn't exist, then we are creating a new deposit.
@@ -88,22 +89,12 @@ function DepositDetail({ route, navigation }) {
     }
   }
 
-  // This is temporary until we figure out how to handle the status of the deposit.
-  function getDepositOption(option) {
-    if (option === "Done") {
-      return "Pending";
-    } else {
-      return option;
-    }
-  }
-
   return (
     <View>
-      <Header divideH={7} divideW={1} colorHeader={Colors.darkGreen} headerStyles={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Deposit</Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Content title="Deposit"></Appbar.Content>
+      </Appbar.Header>
       <View style={styles.body}>
         {(isLoading && !!depositId) || (
           <View style={{ height: 600 }}>
@@ -142,7 +133,7 @@ function DepositDetail({ route, navigation }) {
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navigateCancel} />
           </View>
-          <SaveMenu onSelection={onSaveUpdateDeposit} />
+          <SaveMenu onSelection={onSaveUpdateDeposit} isRevokeActive={isDepositRevocable} />
         </View>
       </View>
     </View>
@@ -153,17 +144,12 @@ export default DepositDetail;
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 180,
-    height: 600,
+    marginTop: 40,
+    height: 670,
     zIndex: -1,
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 40,
-    fontWeight: "bold",
+    backgroundColor: Colors.lightGreenHeader,
   },
   textInput: {
     textAlignVertical: "top",

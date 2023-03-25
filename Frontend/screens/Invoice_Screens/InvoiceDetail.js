@@ -5,6 +5,7 @@ import { httpGetInvoice } from "../../api/invoices.api";
 import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAddItem";
 import InvoiceDetailSelectDeposit from "../../components/InvoiceDetail/InvoiceDetailSelectDeposit";
 import InvoiceDetailTableHeader from "../../components/InvoiceDetail/InvoiceDetailTableHeader";
+import InvoiceDetailTableItem from "../../components/InvoiceDetail/InvoiceDetailTableItem";
 import CarCard from "../../components/UI/CarCard";
 import ClientCard from "../../components/UI/ClientCard";
 import Header from "../../components/UI/Header";
@@ -94,6 +95,7 @@ function InvoiceDetail({ route, navigation }) {
               <InvoiceDetailSelectDeposit amount={2} />
             </View>
             <InvoiceDetailTableHeader />
+            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
           </View>
         )}
       </View>

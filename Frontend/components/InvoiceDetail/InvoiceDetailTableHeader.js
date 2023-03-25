@@ -9,9 +9,9 @@ function InvoiceDetailTableHeader() {
         <Text style={styles.headerText}>Description</Text>
       </View>
       <View style={styles.headerGroupRight}>
-        <Text style={styles.headerText}>Quantity</Text>
-        <Text style={styles.headerText}>Price</Text>
-        <Text style={styles.headerText}>Amount</Text>
+        <Text style={[{ marginLeft: 30 }, styles.headerText]}>Quantity</Text>
+        <Text style={[{ marginRight: 15 }, styles.headerText]}>Price</Text>
+        <Text style={[{ marginRight: 60 }, styles.headerText]}>Amount</Text>
       </View>
     </View>
   );
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
   },
   headerGroupRight: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     flex: 2,
+    marginRight: 20,
   },
 });

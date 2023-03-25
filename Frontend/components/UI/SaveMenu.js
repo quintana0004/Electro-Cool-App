@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+
 import SaveBtn from "./SaveBtn";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "./NavBtns";
-import Figures from "../../constants/figures/Figures";
 
-function SaveMenu({ onSelection }) {
+function SaveMenu({ onSelection, isRevokeActive }) {
   const [isMenuVisibile, setIsMenuVisibile] = useState(false);
 
   function onMenuPress() {
@@ -21,21 +24,20 @@ function SaveMenu({ onSelection }) {
       <View style={styles.menu}>
         {isMenuVisibile && (
           <View style={styles.boxOption}>
-            <SaveBtn
-              label={"Done"}
-              icon={Figures.DoneIcon}
-              onPress={onButtonPress.bind(this, "Done")}
-            />
-            <SaveBtn
-              label={"Draft"}
-              icon={Figures.DraftIcon}
-              onPress={onButtonPress.bind(this, "In Draft")}
-            />
-            <SaveBtn
-              label={"Pay"}
-              icon={Figures.PayIcon}
-              onPress={onButtonPress.bind(this, "Paid")}
-            />
+            <SaveBtn label={"Done"} onPress={onButtonPress.bind(this, "Pending")}>
+              <Ionicons name="checkmark-done-sharp" size={24} color="black" />
+            </SaveBtn>
+            <SaveBtn label={"Draft"} onPress={onButtonPress.bind(this, "In Draft")}>
+              <MaterialCommunityIcons name="pencil-circle" size={24} color="black" />
+            </SaveBtn>
+            <SaveBtn label={"Pay"} onPress={onButtonPress.bind(this, "Paid")}>
+              <AntDesign name="wallet" size={24} color="black" />
+            </SaveBtn>
+            {isRevokeActive && (
+              <SaveBtn label={"Revoke"} onPress={onButtonPress.bind(this, "Canceled")}>
+                <MaterialCommunityIcons name="file-cancel-outline" size={24} color="black" />
+              </SaveBtn>
+            )}
           </View>
         )}
       </View>
