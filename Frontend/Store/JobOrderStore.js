@@ -4,31 +4,13 @@ export const useCustomerInfoStore = create((set) => ({
   id: "",
   firstName: "",
   lastName: "",
-  addressLine1: "",
-  addressLine2: "",
-  state: "",
-  city: "",
   phone: "",
   email: "",
-  setCustomerInfo: (
-    id,
-    firstName,
-    lastName,
-    addressLine1,
-    addressLine2,
-    State,
-    city,
-    phone,
-    email
-  ) =>
+  setCustomerInfo: (id, firstName, lastName, phone, email) =>
     set((state) => ({
       id: id,
       firstName: firstName,
       lastName: lastName,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
-      state: State,
-      city: city,
       phone: phone,
       email: email,
     })),
@@ -37,10 +19,6 @@ export const useCustomerInfoStore = create((set) => ({
       id: "",
       firstName: "",
       lastName: "",
-      addressLine1: "",
-      addressLine2: "",
-      state: "",
-      city: "",
       phone: "",
       email: "",
     })),
@@ -66,7 +44,6 @@ export const useVehicleInfoStore = create((set) => ({
     color,
     vinNumber,
     carHasItems,
-
     carItemsDescription,
     customerId
   ) =>

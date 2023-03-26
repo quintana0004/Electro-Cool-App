@@ -7,7 +7,7 @@ import {
   useRequestedServiceStore,
   useVehicleInfoStore,
   useJobOrderStore,
-} from "../../Store/store";
+} from "../../Store/JobOrderStore";
 import { Checkbox } from "react-native-paper";
 import { StackActions } from "@react-navigation/native";
 
@@ -151,6 +151,11 @@ function CompanyPolicy({ navigation }) {
           color="#FFFFFF"
         />
         <Appbar.Content title="Company Policy" color="#FFFFFF"></Appbar.Content>
+        <Appbar.Action
+          icon="check-decagram"
+          onPress={() => {}}
+          color="#FFFFFF"
+        />
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>

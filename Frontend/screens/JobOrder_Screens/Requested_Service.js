@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -19,8 +19,9 @@ import {
   Checkbox,
 } from "react-native-paper";
 import * as Yup from "yup";
-import { useRequestedServiceStore } from "../../Store/store";
+import { useRequestedServiceStore } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
+import { Button, Dialog, Portal, Provider } from "react-native-paper";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
@@ -46,6 +47,57 @@ function RequestedService({ navigation }) {
     navigation.dispatch(pageAction);
   }
 
+  const ref = useRef(null);
+
+  const setRequestedService = useRequestedServiceStore(
+    (state) => state.setRequestedService
+  );
+
+  function CheckedServiceRequested() {
+    let valueChecked = [];
+
+    if (checkedOilChange) {
+      valueChecked.push("OilChange");
+    }
+
+    if (checkedTuneUp) {
+      valueChecked.push("TuneUp");
+    }
+
+    if (checkedBreaks) {
+      valueChecked.push("Breaks");
+    }
+
+    if (checkedMotor) {
+      valueChecked.push("Motor");
+    }
+
+    if (checkedElectricSystem) {
+      valueChecked.push("ElectricSystem");
+    }
+
+    if (checkedCoolingSystem) {
+      valueChecked.push("CoolingSystem");
+    }
+
+    if (checkedSuspencion) {
+      valueChecked.push("Suspencion");
+    }
+
+    if (checkedScan) {
+      valueChecked.push("Scan");
+    }
+
+    if (checkedAirConditioning) {
+      valueChecked.push("AirConditioning");
+    }
+
+    console.log("Value State: ", valueChecked.join(";"));
+
+    return valueChecked.join(";");
+  }
+
+  const [dialogVisible, setDialogVisible] = useState(false);
   const [checkedOilChange, setCheckedOilChange] = useState(false);
   const [checkedTuneUp, setCheckedTuneUp] = useState(false);
   const [checkedBreaks, setCheckedBreaks] = useState(false);
@@ -56,8 +108,6 @@ function RequestedService({ navigation }) {
   const [checkedScan, setCheckedScan] = useState(false);
   const [checkedAirConditioning, setCheckedAirConditioning] = useState(false);
   const [checked, setChecked] = useState(false);
-
-  const [height, setHeight] = useState(undefined);
 
   return (
     <View>
@@ -75,7 +125,35 @@ function RequestedService({ navigation }) {
         />
         <Appbar.Action
           icon="arrow-right"
-          onPress={() => goNextAction()}
+          onPress={() => {
+            const validationSelection =
+              checkedOilChange ||
+              checkedTuneUp ||
+              checkedBreaks ||
+              checkedMotor ||
+              checkedElectricSystem ||
+              checkedCoolingSystem ||
+              checkedSuspencion ||
+              checkedScan ||
+              checkedAirConditioning;
+
+            if (validationSelection && checked) {
+              let valueCheck = CheckedServiceRequested();
+              setRequestedService(
+                "",
+                valueCheck,
+                ref.current.values.Description,
+                "New",
+                checked,
+                false,
+                "",
+                ""
+              );
+              goNextAction();
+            } else {
+              setDialogVisible(true);
+            }
+          }}
           iconColor={Colors.black}
         />
       </Appbar.Header>
@@ -90,6 +168,7 @@ function RequestedService({ navigation }) {
         }}
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
+        innerRef={ref}
       >
         {({
           handleChange,
@@ -227,7 +306,7 @@ function RequestedService({ navigation }) {
                         </Text>
                       </View>
                     </View>
-                    <View style={{ marginRight: 30 }}>
+                    <View style={{ marginRight: 40 }}>
                       <View
                         style={{
                           flexDirection: "row",
@@ -361,6 +440,7 @@ function RequestedService({ navigation }) {
                               checked === "Heavy" ? "checked" : "unchecked"
                             }
                             onPress={() => setChecked("Heavy")}
+                            color={Colors.brightGreen}
                           />
                         </View>
                         <View
@@ -383,6 +463,7 @@ function RequestedService({ navigation }) {
                             onPress={() => {
                               setChecked("Light");
                             }}
+                            color={Colors.brightGreen}
                           />
                         </View>
                       </View>
@@ -413,11 +494,8 @@ function RequestedService({ navigation }) {
                           onBlur={handleBlur("Description")}
                           value={values.Description}
                           error={touched.Description && errors.Description}
-                          multiline
-                          onContentSizeChange={(event) => {
-                            setHeight(event.nativeEvent.contentSize.height);
-                          }}
-                          style={{ height: height }}
+                          multiline={true}
+                          style={styles.textInputStyle}
                         />
                         <HelperText
                           type="error"
@@ -436,6 +514,35 @@ function RequestedService({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
+      {dialogVisible && (
+        <Portal>
+          <Dialog
+            visible={dialogVisible}
+            onDismiss={() => setDialogVisible(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="alert-circle-outline"
+              size={80}
+              color={Colors.darkRed}
+            />
+            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                There are missing required or need to correct information.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                textColor={Colors.yellowDark}
+                onPress={() => setDialogVisible(false)}
+              >
+                Okay
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
     </View>
   );
 }
@@ -470,6 +577,13 @@ const styles = StyleSheet.create({
   navNextBtn: { marginLeft: 10 },
   header: {
     backgroundColor: Colors.yellowDark,
+  },
+  textInputStyle: {
+    backgroundColor: Colors.white,
+    fontSize: 16,
+  },
+  textAlert: {
+    textAlign: "center",
   },
 });
 

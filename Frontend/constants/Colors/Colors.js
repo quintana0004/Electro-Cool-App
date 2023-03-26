@@ -25,6 +25,7 @@ const Colors = {
   lightOrangeDark: "#C29248",
   lightGreenDark: "#4FAD5D",
   lightRedDark: "#B55E5E",
+  lightGreyDark: "#939393",
 };
 
 export default Colors;
