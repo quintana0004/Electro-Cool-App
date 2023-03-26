@@ -1,21 +1,38 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { StackActions } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingCarTableList from "../../components/SearchExisting/ExistingCar/ExistingCarTableList";
 import SearchBanner from "../../components/UI/SearchBanner";
-import { StackActions } from "@react-navigation/native";
+import { useRouterStore } from "../../Store/routerStore";
+import { useVehicleInfoStore } from "../../Store/store";
 
-function ExistingCar({ route, navigation }) {
+function ExistingCar({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCar, setSelectedCar] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
+  const existingCarNextPage = useRouterStore((state) => state.existingCarNextPage);
+  const setVehicleInformation = useVehicleInfoStore((state) => state.setVehicleInformation);
 
   function navigateNext() {
-    const pageAction = StackActions.push("RequestedService");
+    setVehicleInformation(
+      selectedCar.id,
+      selectedCar.brand,
+      selectedCar.licensePlate,
+      selectedCar.model,
+      selectedCar.year,
+      selectedCar.mileage,
+      selectedCar.color,
+      selectedCar.vinNumber,
+      selectedCar.carHasItems,
+      selectedCar.carItemsDescription,
+      selectedCar.customerId,
+    );
+    const pageAction = StackActions.push(existingCarNextPage);
     navigation.dispatch(pageAction);
   }
 

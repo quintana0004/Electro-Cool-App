@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import { MaskedText, MaskedTextInput } from "react-native-mask-text";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function InvoiceDetailTableItem({ description, price, quantity }) {
   const [invoiceItem, setInvoiceItem] = useState({
@@ -20,15 +20,13 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
     setInvoiceItem({...invoiceItem, quantity: Number(value)});
   }
 
-  function getTotalAmount() {
-    let total = invoiceItem.price * invoiceItem.quantity * 100;
-    return total;
-  }
+  const formattedTotalAmount = useMemo(() => {
+    return invoiceItem.price * invoiceItem.quantity * 100;  
+  }, [invoiceItem.price, invoiceItem.quantity]);
 
-  function getPrice() {
-    let price = (invoiceItem.price * 100).toFixed(2).toString();
-    return price;
-  }
+  const formattedPrice = useMemo(() => {
+    return (invoiceItem.price * 100).toFixed(2).toString();
+  }, [invoiceItem.price]);
 
   return (
     <View style={styles.container}>
@@ -51,7 +49,7 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
       <View style={styles.priceContainer}>
         <MaskedTextInput
           type="currency"
-          value={getPrice()}
+          defaultValue={formattedPrice}
           style={styles.priceText}
           options={{
             prefix: "$",
@@ -73,7 +71,7 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
             precision: 2,
           }}
         >
-          {getTotalAmount()}
+          {formattedTotalAmount}
         </MaskedText>
       </View>
       <View style={styles.deleteContainer}>

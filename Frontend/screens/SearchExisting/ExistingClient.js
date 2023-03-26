@@ -1,21 +1,37 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { StackActions } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
+
+import { useRouterStore } from "../../Store/routerStore";
+import { useCustomerInfoStore } from "../../Store/store";
 
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
 import SearchBanner from "../../components/UI/SearchBanner";
-import { StackActions } from "@react-navigation/native";
 
-function ExistingClient({ route, navigation }) {
+function ExistingClient({ navigation }) {
   const [selectedClient, setSelectedClient] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
+  const existingClientNextPage = useRouterStore((state) => state.existingClientNextPage);
+  const setCustomerInfo = useCustomerInfoStore((state) => state.setCustomerInfo);
 
   function navigateNext() {
-    const pageAction = StackActions.push("CarSelection");
+    setCustomerInfo(
+      selectedClient.id,
+      selectedClient.firstName,
+      selectedClient.lastName,
+      selectedClient.addressLine1,
+      selectedClient.addressLine2,
+      selectedClient.state,
+      selectedClient.city,
+      selectedClient.phone,
+      selectedClient.email
+    );
+    const pageAction = StackActions.push(existingClientNextPage);
     navigation.dispatch(pageAction);
   }
 

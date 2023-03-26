@@ -12,6 +12,7 @@ import Header from "../../components/UI/Header";
 import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
+import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
 
 // TODO:
 // 1. Create a Add Item Component
@@ -22,7 +23,35 @@ import Colors from "../../constants/Colors/Colors";
 // 6. Create a Invoice Detail Sumamry Component
 
 function InvoiceDetail({ route, navigation }) {
-  const { client, car, invoiceId } = route.params;
+  const { invoiceId = null } = route.params || {};
+  const client = useCustomerInfoStore((state) => {
+    return {
+      id: state.id,
+      firstName: state.firstName,
+      lastName: state.lastName,
+      addressLine1: state.addressLine1,
+      addressLine2: state.addressLine2,
+      state: state.state,
+      city: state.city,
+      phone: state.phone,
+      email: state.email,
+    };
+  });
+  const car = useVehicleInfoStore((state) => {
+    return {
+      id: state.id,
+      brand: state.brand,
+      licensePlate: state.licensePlate,
+      model: state.model,
+      year: state.year,
+      mileage: state.mileage,
+      color: state.color,
+      vinNumber: state.vinNumber,
+      carHasItems: state.carHasItems,
+      carItemsDescription: state.carItemsDescription,
+      customerId: state.customerId,
+    };
+  });
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
 
@@ -95,6 +124,7 @@ function InvoiceDetail({ route, navigation }) {
               <InvoiceDetailSelectDeposit amount={2} />
             </View>
             <InvoiceDetailTableHeader />
+            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
             <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
           </View>
         )}
