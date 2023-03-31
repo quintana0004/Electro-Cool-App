@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
+import { Button } from "react-native-paper";
 
 function ClientBook({ navigation }) {
   return (
@@ -12,6 +13,17 @@ function ClientBook({ navigation }) {
       </Header>
       <View style={styles.body}>
         <Text>Client Book Screen!</Text>
+      </View>
+
+      <View>
+        <Pressable
+          style={{ backgroundColor: Colors.brightYellow }}
+          onPress={() => {
+            navigation.navigate("ClientBookCustomer");
+          }}
+        >
+          <Text>Cabron</Text>
+        </Pressable>
       </View>
     </View>
   );

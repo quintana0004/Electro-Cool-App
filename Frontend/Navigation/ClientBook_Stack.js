@@ -1,6 +1,9 @@
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+
+//Screens
 import ClientBook from "../screens/ClientBook";
-import CustomerInformation from "../screens/ClientBook_Screens/CustomerInformation";
+import ClientBookCustomer from "../screens/ClientBook_Screens/ClientBookCustomer";
 
 const ClientBookStack = createStackNavigator();
 
@@ -15,8 +18,8 @@ function ClientBookStackOption() {
         options={{ headerShown: false, animationEnabled: false }}
       />
       <ClientBookStack.Screen
-        name="CustomerInformation"
-        component={CustomerInformation}
+        name="ClientBookCustomer"
+        component={ClientBookCustomer}
         options={{ headerShown: false, animationEnabled: false }}
       />
     </ClientBookStack.Navigator>
