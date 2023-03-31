@@ -12,37 +12,20 @@ import Colors from "../../constants/Colors/Colors";
 import Figures from "../../constants/figures/Figures";
 import NavBtn from "../../components/UI/NavBtns";
 import { Appbar } from "react-native-paper";
+import { StackActions } from "@react-navigation/native";
 
 function ClientSelection({ navigation, route }) {
-  const {
-    otherNextScreen,
-    nextScreen,
-    previousScreen,
-    otherPreviousScreen,
-    cancelScreen,
-  } = route.params;
+  const pageGoBackAction = StackActions.pop(1);
+  const pageGoHomeAction = StackActions.popToTop();
 
   function navNext() {
-    if (toggleNewCustomer)
-      navigation.navigate("ClientInformation", {
-        nextScreen: "CarSelection",
-        previousScreen: "CustomerSelection",
-        cancelScreen: cancelScreen,
-        otherNextScreen: "RequestedService",
-        otherPreviousScreen: otherPreviousScreen,
-      });
-    else if (toggleExistingCustomer)
-      navigation.navigate("ExistingClient", {
-        nextScreen: "CarSelection",
-        previousScreen: "CustomerSelection",
-        cancelScreen: cancelScreen,
-        otherNextScreen: "RequestedService",
-        otherPreviousScreen: otherPreviousScreen,
-      });
-  }
-
-  function navJobOrder() {
-    navigation.navigate(cancelScreen);
+    if (toggleNewCustomer) {
+      const pageAction = StackActions.push("ClientInformation");
+      navigation.dispatch(pageAction);
+    } else if (toggleExistingCustomer) {
+      const pageAction = StackActions.push("ExistingClient");
+      navigation.dispatch(pageAction);
+    }
   }
 
   const [toggleNewCustomer, setToggleNewCustomer] = useState(false);
@@ -105,10 +88,25 @@ function ClientSelection({ navigation, route }) {
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
-            navigation.goBack();
+            navigation.dispatch(pageGoBackAction);
+          }}
+        />
+        <Appbar.Action
+          icon="home"
+          iconColor={Colors.black}
+          onPress={() => {
+            navigation.dispatch(pageGoHomeAction);
           }}
         />
         <Appbar.Content title="Select customer for Job Order"></Appbar.Content>
+
+        <Appbar.Action
+          icon="arrow-right"
+          iconColor={Colors.black}
+          onPress={() => {
+            navNext();
+          }}
+        />
       </Appbar.Header>
 
       <View style={styles.Container}>
@@ -131,15 +129,6 @@ function ClientSelection({ navigation, route }) {
           >
             <View>{ExistingCustomer(toggleExistingCustomer)}</View>
           </Pressable>
-        </View>
-
-        <View style={styles.navBtnsPosition}>
-          <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navJobOrder} />
-          </View>
-          <View style={styles.navNextBtn}>
-            <NavBtn choice={"Next"} nav={navNext} />
-          </View>
         </View>
       </View>
     </View>

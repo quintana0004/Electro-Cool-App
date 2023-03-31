@@ -6,16 +6,9 @@ import Header from "../../components/UI/Header";
 import SearchBar from "../../components/UI/SearchBar";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
+import { StackActions } from "@react-navigation/native";
 
 function ExistingClient({ route, navigation }) {
-  const {
-    nextScreen,
-    previousScreen,
-    cancelScreen,
-    otherNextScreen,
-    otherPreviousScreen,
-  } = route.params;
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -24,22 +17,18 @@ function ExistingClient({ route, navigation }) {
   }
 
   function navigateNext() {
-    navigation.navigate(nextScreen, {
-      client: selectedClient,
-      nextScreen: otherNextScreen, // RequestedService.js
-      previousScreen: otherPreviousScreen,
-      cancelScreen: cancelScreen,
-      otherNextScreen: nextScreen,
-      otherPreviousScreen: otherPreviousScreen,
-    });
+    const pageAction = StackActions.push("CarSelection");
+    navigation.dispatch(pageAction);
   }
 
   function navigateBack() {
-    navigation.navigate(previousScreen);
+    const pageGoBack = StackActions.pop(1);
+    navigation.dispatch(pageGoBack);
   }
 
   function navigateCancel() {
-    navigation.navigate(cancelScreen);
+    const pageGoHomeAction = StackActions.popToTop();
+    navigation.dispatch(pageGoHomeAction);
   }
 
   return (
