@@ -139,6 +139,7 @@ function RequestedService({ navigation }) {
 
             if (validationSelection && checked) {
               let valueCheck = CheckedServiceRequested();
+              console.log("VALUE CHECK: ", valueCheck);
               setRequestedService(
                 "",
                 valueCheck,
