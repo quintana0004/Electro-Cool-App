@@ -8,7 +8,7 @@ import SearchBanner from "../../components/UI/SearchBanner";
 import CBToggleButtons from "../../components/ClientBook CBI/ClientBookToggleButtons";
 import TableListCB from "../../components/ClientBook CBI/TableListClientBook";
 
-function ClientBookCustomer({ navigation, id }) {
+function ClientBookCustomer({ navigation }) {
   const id = 4; //in the future bryan will send me the customer id
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -24,6 +24,11 @@ function ClientBookCustomer({ navigation, id }) {
   function updateActiveCategory(category) {
     setActiveCategory(category);
   }
+
+  function updateSearchTerm(term) {
+    setSearchTerm(term);
+  }
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -44,13 +49,18 @@ function ClientBookCustomer({ navigation, id }) {
         </View>
 
         <Appbar.Content
-          title="Client Car Info"
+          title="El KABRON Cliente"
           color={Colors.brightYellow}
           style={{
             justifyContent: "center",
             alignItems: "center",
           }}
-          titleStyle={{ fontWeight: "500", fontSize: 28 }}
+          titleStyle={{
+            fontWeight: "500",
+            fontSize: 28,
+            textAlign: "center",
+            width: 300,
+          }}
         />
 
         <View
@@ -70,27 +80,17 @@ function ClientBookCustomer({ navigation, id }) {
           loading={searchLoading}
           placeholder={"Search by License Plate"}
           setLoading={setSearchLoading}
+          setSearchTerm={updateSearchTerm}
         />
       </View>
-      <View style={{ alignItems: "center", margin: 10 }}>
-        <Avatar.Text
-          size={100}
-          label="GB"
-          color={Colors.brightGreen}
-          style={{ backgroundColor: Colors.lightGreenHeader }}
-        />
-      </View>
-      <View>
+
+      <View style={{ margin: 30 }}>
         <CBToggleButtons
           toggleActiveCategory={updateActiveCategory}
           activeCategory={activeCategory}
         />
       </View>
-      <TableListCB
-        activeCategory={activeCategory}
-        searchTerm={searchTerm}
-        filters={filters}
-      />
+      <TableListCB activeCategory={activeCategory} searchTerm={searchTerm} />
     </View>
   );
 }
@@ -115,8 +115,6 @@ const styles = StyleSheet.create({
   btnCreate: {},
   header: {
     flexDirection: "row",
-    alignContent: "center",
-    justifyContent: "space-between",
     backgroundColor: Colors.darkBlack,
     zIndex: -1,
   },
