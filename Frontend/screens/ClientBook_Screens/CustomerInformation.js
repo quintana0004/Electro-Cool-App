@@ -1,9 +1,12 @@
 import { Text, View } from "react-native";
+import { useCustomerInfoStore } from "../components/Client Book/customerStore";
+
+const setCustomerInfo = useCustomerInfoStore((state) => state.setCustomerInfo);
 
 function CustomerInformation() {
   return (
     <View>
-      <Text>Customer Information</Text>
+      <Text> {firstName} </Text>
     </View>
   );
 }

@@ -3,14 +3,33 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
+import { useCustomerInfoStore } from "./customerStore";
+import { StackActions } from "@react-navigation/native";
 
-function TableItemClient({ firstName, lastName, date, phone, email }) {
+function TableItemClient({
+  firstName,
+  lastName,
+  date,
+  phone,
+  email,
+  navigation,
+}) {
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
+  const pageAction = StackActions.push("CustomerInformation");
+
   return (
-    <Pressable onPress={() => {}}>
+    <Pressable
+      onPress={() => {
+        navigation.dispatch(pageAction);
+        setCustomerInfo(id, firstName, lastName, date, phone, email);
+      }}
+    >
       <View style={styles.content}>
         <View style={styles.groups}>
           <View>

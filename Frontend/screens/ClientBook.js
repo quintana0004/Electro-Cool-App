@@ -7,7 +7,7 @@ import SearchBanner from "../components/UI/SearchBanner";
 import TableListClient from "../components/Client Book/TableListClient";
 //import { useCustomerInfoStore } from "../Store/store";
 
-function ClientBook({ navigation }) {
+function ClientBook() {
   // call the store function
   //const setClientBook = useCustomerInfoStore((state) => state.setClientBook);
 
