@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Appbar } from "react-native-paper";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
+=======
+import React from "react";
+import { Text, View, StyleSheet } from "react-native";
+import Header from "../components/UI/Header";
+import MenuDropDown from "../components/UI/MenuDropDown";
+>>>>>>> af7e9a23e07e629a3cc512e66c62efae1613847f
 import Colors from "../constants/Colors/Colors";
 import Appointments from "../screens/Calendar_Screens/Appointments";
 import TaskDetail from "./Calendar_Screens/TaskDetail";

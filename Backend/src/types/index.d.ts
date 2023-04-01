@@ -96,7 +96,7 @@ export interface IDeposit {
   status: string;
   amountTotal: string;
   description: string;
-  isAvailable: boolean;
+  isAvailable?: boolean;
   createdDate?: Date;
   lastModified?: Date;
   customerId: number;
