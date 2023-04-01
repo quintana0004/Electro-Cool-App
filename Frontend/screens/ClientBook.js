@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
+import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
-import TableListClient from "../components/Client Book/TableListClient";
+import TableListClient from "../components/ClientBookDetail/TableListClient";
 //import { useCustomerInfoStore } from "../Store/store";
 
 function ClientBook() {

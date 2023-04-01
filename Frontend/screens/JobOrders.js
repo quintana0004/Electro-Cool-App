@@ -67,7 +67,11 @@ function JobOrders({ navigation }) {
         setLoading={setSearchLoading}
         setSearchTerm={setSearchTerm}
       />
-      <FilterBanner visible={openBannerFilter} filters={filters} updateFilters={setFilters} />
+      <FilterBanner
+        visible={openBannerFilter}
+        filters={filters}
+        updateFilters={setFilters}
+      />
       <View style={styles.body}>
         <TableListOrder
           filters={filters}
