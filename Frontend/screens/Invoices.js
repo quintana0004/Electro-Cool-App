@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { Appbar } from "react-native-paper";
 
+import MenuDropDown from "../components/UI/MenuDropDown";
+import SearchBanner from "../components/UI/SearchBanner";
+import FilterBanner from "../components/UI/FilterBanner";
 import TableListInvoice from "../components/Invoices/TableListInvoice";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
 import ActionBtn from "../components/UI/ActionBtn";
-import Filter from "../components/UI/Filter";
-import Header from "../components/UI/Header";
-import SearchBar from "../components/UI/SearchBar";
 import Colors from "../constants/Colors/Colors";
-import Figures from "../constants/figures/Figures";
 
 function Invoices({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Invoices");
   const [filters, setFilters] = useState({
     Paid: false,
@@ -20,8 +21,9 @@ function Invoices({ navigation }) {
     Canceled: false,
     "In Draft": false,
   });
+  const [filterBannerVisibility, setFilterBannerVisibility] = useState(false);
 
-  function navigateToFindExistingClientScreen() {
+  function navigateToCreateInvoiceFlow() {
     navigation.navigate("ExistingClients", {
       nextScreen: "ExistingCars",
       previousScreen: "InvoiceMain",
@@ -31,37 +33,53 @@ function Invoices({ navigation }) {
     });
   }
 
+  function navigateToCreateDepositFlow() {
+    navigation.navigate("ExistingClients", {
+      nextScreen: "ExistingCars",
+      previousScreen: "InvoiceMain",
+      cancelScreen: "InvoiceMain",
+      otherNextScreen: "DepositDetail",
+      otherPreviousScreen: "ExistingClients",
+    });
+  }
+
   function updateActiveCategory(category) {
     setActiveCategory(category);
   }
 
-  function updateSearchTerm(term) {
-    setSearchTerm(term);
-  }
-
   return (
     <View>
-      <Header divideH={6} divideW={1} colorHeader={Colors.darkBlack}>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-        <View style={styles.searchContainer}>
-          <SearchBar
-            widthBar={350}
-            heightBar={60}
-            placeholderText="Search by ID or Name"
-            onSearch={updateSearchTerm}
-          />
-        </View>
-      </Header>
+        <Appbar.Content></Appbar.Content>
+        <Appbar.Action
+          icon="filter"
+          onPress={() => {
+            setFilterBannerVisibility(!filterBannerVisibility);
+            setSearchBannerVisibility(false);
+          }}
+        />
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setSearchBannerVisibility(!searchBannerVisibility);
+            setFilterBannerVisibility(false);
+          }}
+        />
+      </Appbar.Header>
+      <SearchBanner
+        placeholder={"Search client name"}
+        visible={searchBannerVisibility}
+        loading={searchLoading}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
+      <FilterBanner visible={filterBannerVisibility} filters={filters} updateFilters={setFilters} />
+
       <View style={styles.body}>
         <View style={styles.actionButtonGroup}>
-          <ActionBtn onPress={navigateToFindExistingClientScreen}>Create Deposit</ActionBtn>
-
-          <View style={styles.actionRightButtonGroup}>
-            <Filter filters={filters} updateFilters={setFilters} image={Figures.FilterIcon} />
-            <ActionBtn style={{ marginLeft: 10 }} onPress={navigateToFindExistingClientScreen}>
-              Create Invoice
-            </ActionBtn>
-          </View>
+          <ActionBtn onPress={navigateToCreateDepositFlow}>Create Deposit</ActionBtn>
+          <ActionBtn onPress={navigateToCreateInvoiceFlow}>Create Invoice</ActionBtn>
         </View>
 
         <View>
@@ -74,6 +92,8 @@ function Invoices({ navigation }) {
         <TableListInvoice
           activeCategory={activeCategory}
           searchTerm={searchTerm}
+          searchLoading={searchLoading}
+          setSearchLoading={setSearchLoading}
           filters={filters}
         />
       </View>
@@ -84,8 +104,11 @@ function Invoices({ navigation }) {
 export default Invoices;
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: Colors.darkBlack,
+  },
   body: {
-    marginTop: 180,
+    marginTop: 10,
     zIndex: -1,
   },
   actionButtonGroup: {
@@ -93,9 +116,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  actionRightButtonGroup: {
-    flexDirection: "row",
   },
   searchContainer: {
     flex: 1,
