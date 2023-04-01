@@ -6,7 +6,13 @@ import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils
 import ExistingClientTableHeader from "./ExistingClientTableHeader";
 import ExistingClientTableItem from "./ExistingClientTableItem";
 
-function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
+function ExistingClientTableList({
+  searchTerm,
+  selectedClient,
+  setClient,
+  searchLoading,
+  setSearchLoading,
+}) {
   const TAKE = 15;
   const queryClient = useQueryClient();
 
@@ -32,6 +38,10 @@ function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
 
   async function getExistingClientData({ pageParam = 0 }) {
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
+
+    // After data is returned, stop search loading if it was active
+    if (searchLoading) setSearchLoading(false);
+
     return data;
   }
 
@@ -76,7 +86,7 @@ function ExistingClientTableList({ searchTerm, selectedClient, setClient }) {
   }
 
   return (
-    <View style={{ height: 615, width: Dimensions.get("screen").width }}>
+    <View style={{ height: 720, width: Dimensions.get("screen").width }}>
       <ExistingClientTableHeader />
       {isLoading || (
         <FlatList
