@@ -5,33 +5,26 @@ import Header from "../../components/UI/Header";
 import Figures from "../../constants/figures/Figures";
 import { Appbar } from "react-native-paper";
 import NavBtn from "../../components/UI/NavBtns";
+import { StackActions } from "@react-navigation/native";
 
 function CalendarSelection({ navigation, route}) {
-  const { previousScreen, cancelScreen, nextScreen } = route.params;
 
-  function navNext() {
-    if (toggleTasks)
-      navigation.navigate("Calendar", {
-        nextScreen: nextScreen,
-        previousScreen: "Calendar",
-        cancelScreen: cancelScreen,
-      });
-    else if (toggleAppointment)
-      navigation.navigate("Calendar", {
-        client: "",
-        nextScreen: nextScreen,
-        previousScreen: "Calendar",
-        cancelScreen: cancelScreen,
-      });
+ //Navigation of the page
+  //?Home
+  function goHome() {
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
   }
-
-  function navPrevious() {
-    navigation.navigate(previousScreen);
-  }
-
-  function navCancel() {
-    navigation.navigate(cancelScreen);
-  }
+ //?Go Back
+ function goBackPage() {
+  const pageAction = StackActions.pop(1);
+  navigation.dispatch(pageAction);
+}
+//?Next
+function goNext() {
+  const pageAction = StackActions.push("CarSelection");
+  navigation.dispatch(pageAction);
+}
 
 
   const [toggleTasks, setToggleBtn1] = useState(false);
@@ -44,6 +37,7 @@ function CalendarSelection({ navigation, route}) {
       return (
         <View style={styles.ButtonPressed}>
           <Image
+          style={styles.NewCarIconStyle}
             source={Figures.VectorWhite}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
@@ -54,7 +48,7 @@ function CalendarSelection({ navigation, route}) {
     } else {
       return (
         <View style={styles.Button}>
-          <Image style={styles.VectorWhite} source={Figures.Vector} />
+          <Image style={styles.NewCarIconStyle} source={Figures.Vector} />
           <Text style={styles.ButtonText}>Tasks</Text>
         </View>
       );
@@ -66,6 +60,7 @@ function CalendarSelection({ navigation, route}) {
       return (
         <View style={styles.ButtonPressed}>
           <Image
+            style={styles.ExistingCarIconStyle}
             source={Figures.AppointmentWhite}
           />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
@@ -77,6 +72,7 @@ function CalendarSelection({ navigation, route}) {
       return (
         <View style={styles.Button}>
           <Image
+          style={styles.ExistingCarIconStyle}
             source={Figures.Appointment}
           />
           <Text style={styles.ButtonText}>Appointment</Text>
@@ -89,7 +85,20 @@ function CalendarSelection({ navigation, route}) {
     
     <View>
         <Appbar.Header style={styles.HeaderContent}mode="center-aligned">
+        
+        <Appbar.BackAction
+          onPress={() => {
+            goBackPage();
+          }}
+        />
+        
+        
         <Appbar.Content title="Select option to create card"></Appbar.Content>
+        <Appbar.Action
+          icon="arrow-right"
+          onPress={() => goNext()}
+          iconColor={Colors.black}
+        />
         </Appbar.Header>
       <View style={styles.Container}>
         <View>
@@ -113,17 +122,6 @@ function CalendarSelection({ navigation, route}) {
             <View>{AppointmentView(toggleAppointment)}</View>
           </Pressable>
         </View>
-        <View style={styles.naviBtnsPosition}>
-          <View style={styles.navBackBtn}>
-            <NavBtn choice={"Back"} nav={navPrevious} />
-          </View>
-          <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navCancel} />
-          </View>
-          <View style={styles.navNextBtn}>
-            <NavBtn choice={"Next"} nav={navNext} />
-          </View>
-        </View>
       </View>
     </View>
   );
@@ -142,7 +140,7 @@ const styles = StyleSheet.create({
   },
   Container: {
     alignItems: "center",
-    margin: 50,
+    margin: 130,
   },
   Button: {
     borderColor: "#cccccc",
@@ -168,13 +166,11 @@ const styles = StyleSheet.create({
   ButtonText: { fontSize: 40 },
   NewCarIconStyle: {
     width: 150,
-    height: 100,
-    marginBottom: 25,
+    height: 180,
   },
   ExistingCarIconStyle: {
-    height: 130,
-    width: 124,
-    marginBottom: 30,
+    height: 150,
+    width: 150,
   },
   naviBtnsPosition: {
     width: 540,
@@ -192,7 +188,9 @@ const styles = StyleSheet.create({
   navNextBtn: {
     marginLeft: 10,
   },
-
+  header: {
+    backgroundColor: Colors.yellowDark,
+  },
 });
 
 
