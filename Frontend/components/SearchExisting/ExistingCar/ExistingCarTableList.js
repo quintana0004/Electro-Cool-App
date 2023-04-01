@@ -7,7 +7,13 @@ import ExistingCarItemTableItem from "./ExistingCarTableItem";
 import ExistingCarTableHeader from "./ExistingCarTableHeader";
 import { httpGetAllCars } from "../../../api/cars.api";
 
-function ExistingCarTableList({ searchTerm, selectedCar, setCar }) {
+function ExistingCarTableList({
+  searchTerm,
+  selectedCar,
+  setCar,
+  searchLoading,
+  setSearchLoading,
+}) {
   const TAKE = 15;
   const queryClient = useQueryClient();
 
@@ -33,6 +39,10 @@ function ExistingCarTableList({ searchTerm, selectedCar, setCar }) {
 
   async function getExistingCarData({ pageParam = 0 }) {
     let data = await httpGetAllCars(TAKE, pageParam, searchTerm);
+
+    // After data is returned, stop search loading if it was active
+    if (searchLoading) setSearchLoading(false);
+
     return data;
   }
 
@@ -78,7 +88,7 @@ function ExistingCarTableList({ searchTerm, selectedCar, setCar }) {
   }
 
   return (
-    <View style={{ height: 615, width: Dimensions.get("screen").width }}>
+    <View style={{ height: 720, width: Dimensions.get("screen").width }}>
       <ExistingCarTableHeader />
       {isLoading || (
         <FlatList
