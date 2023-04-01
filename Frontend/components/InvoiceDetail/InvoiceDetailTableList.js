@@ -4,8 +4,6 @@ import InvoiceDetailTableItem from "./InvoiceDetailTableItem";
 
 function InvoiceDetailTableList({invoiceItems, setInvoiceItems}) {
 
-  invoiceItems.forEach(item => console.log("Initial Invoice Items: ", item.key, item.description));
-
   // Things Needed:
   // 1. FlatList - Done
   // 2. Setup Render Item Function - Done
@@ -14,10 +12,7 @@ function InvoiceDetailTableList({invoiceItems, setInvoiceItems}) {
   // 6. Display items
 
   function removeInvoiceItem(key) {
-    console.log("Remove key: ", key);
-    console.log("Invoice items before Removal: ", invoiceItems);
     let filteredData = invoiceItems.filter((item) => item.key != key);
-    // filteredData = filteredData.map((item, key) => ({...item, key}));
     setInvoiceItems([...filteredData]);
   }
 

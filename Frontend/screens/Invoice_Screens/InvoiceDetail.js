@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { Appbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
+import { MaskedText} from "react-native-mask-text";
 
 import { httpGetInvoice } from "../../api/invoices.api";
 import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
@@ -50,6 +51,17 @@ function InvoiceDetail({ route, navigation }) {
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
+  const [selectedDeposits, setSelectedDeposits] = useState([]);
+
+  const totalAmount = useMemo(() => {
+    let amount = 0;
+
+    for (let item of invoiceItems) {
+      amount += item.unitPrice * item.quantity * 100;
+    }
+
+    return amount;
+  }, [invoiceItems]);
 
   const { isLoading } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
@@ -122,8 +134,11 @@ function InvoiceDetail({ route, navigation }) {
   async function onSaveUpdateInvoice(option) {
     try {
       const invoiceInfo = {
-        customer: clientInfo.id,
-        car: carInfo.id,
+        id: invoiceId,
+        status: option,
+        invoiceItems: invoiceItems,
+        customerId: clientInfo.id,
+        carId: carInfo.id,
       };
     } catch (error) {
       console.log(error);
@@ -148,7 +163,7 @@ function InvoiceDetail({ route, navigation }) {
               </View>
               <View style={styles.buttonGroup}>
                 <InvoiceDetailAddItem onPress={onAddItem}/>
-                <InvoiceDetailSelectDeposit amount={2} />
+                <InvoiceDetailSelectDeposit invoiceId={invoiceId} amount={2} setSelectedDeposits={setSelectedDeposits} />
               </View>
               <InvoiceDetailTableHeader />
               <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />
@@ -156,7 +171,20 @@ function InvoiceDetail({ route, navigation }) {
             <View style={styles.invoiceSummary}>
               <ImageBackground source={Figures.InvoiceSummaryImage} style={styles.imageBackgroundContainer}>
                 <View>
-                  <Text style={[ styles.amountsText, styles.totalAmountText ]}>Total: $405.43</Text>
+                  <Text style={[ styles.amountsText, styles.totalAmountText ]}>
+                    Total:{' '} 
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {totalAmount}
+                    </MaskedText>
+                  </Text>
                   <Text style={styles.amountsText}>Amount Paid: $200.36</Text>
                   <Text style={styles.amountsText}>Amount Due: $304.36</Text>
                 </View>

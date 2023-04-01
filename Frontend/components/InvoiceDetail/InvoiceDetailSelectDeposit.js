@@ -1,7 +1,27 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors/Colors";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetDepositsByInvoiceId } from "../../api/deposits.api";
 
-function InvoiceDetailSelectDeposit({ amount, onPress }) {
+function InvoiceDetailSelectDeposit({ invoiceId, amount, onPress }) {
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["SelectedDeposits"],
+    queryFn: fetchDepositsData,
+    enabled: true,
+  });
+
+  async function fetchDepositsData() {
+    try {
+      const response = await httpGetDepositsByInvoiceId(invoiceId);
+      console.log("Fetching data: ", response.data);
+      return response.data;
+    }
+    catch (error) {
+      console.log("Select Deposit Fetch Error: ", error);
+    }
+  }
+
   return (
     <Pressable onPress={onPress}>
       <View style={styles.container}>
