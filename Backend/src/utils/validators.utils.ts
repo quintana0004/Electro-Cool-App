@@ -229,9 +229,9 @@ function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
-    !invoiceInfo.amountTotal ||
-    !invoiceInfo.amountPaid ||
-    !invoiceInfo.amountDue ||
+    (!invoiceInfo.amountTotal && invoiceInfo.amountTotal != 0) ||
+    (!invoiceInfo.amountPaid && invoiceInfo.amountPaid != 0) ||
+    (!invoiceInfo.amountDue && invoiceInfo.amountDue != 0) ||
     !invoiceInfo.companyId ||
     !invoiceInfo.customerId ||
     !invoiceInfo.carId ||

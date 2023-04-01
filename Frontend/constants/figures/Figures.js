@@ -17,6 +17,7 @@ import NewCarIcon from "../../assets/images/NewCarIcon.png";
 import NewCarSelectedIcon from "../../assets/images/NewCarSelectedIcon.png";
 import ExistingCarIcon from "../../assets/images/ExistingCarIcon.png";
 import ExistingCarSelectedIcon from "../../assets/images/ExistingCarSelectedIcon.png";
+import InvoiceSummaryImage from "../../assets/images/Invoice-Summary.png";
 
 const Figures = {
   CalendarIcon,
@@ -38,6 +39,7 @@ const Figures = {
   NewCarSelectedIcon,
   ExistingCarIcon,
   ExistingCarSelectedIcon,
+  InvoiceSummaryImage,
 };
 
 export default Figures;

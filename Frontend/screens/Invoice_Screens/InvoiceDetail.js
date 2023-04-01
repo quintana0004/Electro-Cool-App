@@ -1,26 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Appbar } from "react-native-paper";
+import { useQuery } from "@tanstack/react-query";
+
 import { httpGetInvoice } from "../../api/invoices.api";
+import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+
 import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAddItem";
 import InvoiceDetailSelectDeposit from "../../components/InvoiceDetail/InvoiceDetailSelectDeposit";
 import InvoiceDetailTableHeader from "../../components/InvoiceDetail/InvoiceDetailTableHeader";
-import InvoiceDetailTableItem from "../../components/InvoiceDetail/InvoiceDetailTableItem";
+import InvoiceDetailTableList from "../../components/InvoiceDetail/InvoiceDetailTableList";
 import CarCard from "../../components/UI/CarCard";
 import ClientCard from "../../components/UI/ClientCard";
-import Header from "../../components/UI/Header";
 import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
-
-// TODO:
-// 1. Create a Add Item Component
-// 2. Creat a Select Deposit Component
-// 3. Create a Invoice Detail Table Header Component
-// 4. Create a Invoice Detail Table List Component
-// 5. Create a Invoice Detail Table Item Component
-// 6. Create a Invoice Detail Sumamry Component
+import Figures from "../../constants/figures/Figures";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
@@ -54,15 +49,21 @@ function InvoiceDetail({ route, navigation }) {
   });
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
+  const [invoiceItems, setInvoiceItems] = useState([]);
 
-  const { isLoading, data, hasError } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
   });
 
+  function getHeaderTitle() {
+   return "Invoice" + (invoiceId && ` #${invoiceId}`);
+  }
+
   function navigateNext() {}
 
+  // TODO: Fix Navigations for new implementation
   function navigateBack() {
     navigation.navigate("ExistingCars", {
       nextScreen: "InvoiceDetail",
@@ -76,9 +77,35 @@ function InvoiceDetail({ route, navigation }) {
     navigation.navigate("InvoiceMain");
   }
 
+  function generateKey() {
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `key-${randomString}`;
+  }
+
+  function onAddItem() {
+    const newItem = {
+      key: generateKey(),
+      invoiceId: invoiceId,
+      description: "",
+      quantity: 0,
+      unitPrice: 0,
+      warranty: "N/A",
+      totalPrice: 0,
+    };
+    invoiceItems.push(newItem);
+    
+    setInvoiceItems([...invoiceItems]);
+    console.log("Add Invoice Items:", invoiceItems);
+  }
+
   function setInvoiceInfo(data) {
+    // Set Client and Car data
     setClientInfo(data.customer);
     setCarInfo(data.car);
+
+    // Set a unique key for every invoice.
+    const items = data.invoiceItems.map((item) => ({key: generateKey(), ...item}));
+    setInvoiceItems(items);
   }
 
   async function fetchInvoiceData() {
@@ -105,27 +132,36 @@ function InvoiceDetail({ route, navigation }) {
 
   return (
     <View>
-      <Header divideH={7} divideW={1} colorHeader={Colors.yellowDark} headerStyles={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Invoice {invoiceId && `#${invoiceId}`}</Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Content title={getHeaderTitle()}></Appbar.Content>
+      </Appbar.Header>
       <View style={styles.body}>
         {(isLoading && !!invoiceId) || (
-          <View style={{ height: 600 }}>
-            <View style={styles.cardsContainer}>
-              <View style={{ marginRight: 10 }}>
-                <ClientCard client={clientInfo} />
+          <View>
+            <View style={{ height: 540 }}>
+              <View style={styles.cardsContainer}>
+                <View style={{ marginRight: 10 }}>
+                  <ClientCard client={clientInfo} />
+                </View>
+                <CarCard car={carInfo} />
               </View>
-              <CarCard car={carInfo} />
+              <View style={styles.buttonGroup}>
+                <InvoiceDetailAddItem onPress={onAddItem}/>
+                <InvoiceDetailSelectDeposit amount={2} />
+              </View>
+              <InvoiceDetailTableHeader />
+              <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />
             </View>
-            <View style={styles.buttonGroup}>
-              <InvoiceDetailAddItem />
-              <InvoiceDetailSelectDeposit amount={2} />
+            <View style={styles.invoiceSummary}>
+              <ImageBackground source={Figures.InvoiceSummaryImage} style={styles.imageBackgroundContainer}>
+                <View>
+                  <Text style={[ styles.amountsText, styles.totalAmountText ]}>Total: $405.43</Text>
+                  <Text style={styles.amountsText}>Amount Paid: $200.36</Text>
+                  <Text style={styles.amountsText}>Amount Due: $304.36</Text>
+                </View>
+              </ImageBackground>
             </View>
-            <InvoiceDetailTableHeader />
-            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
-            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
           </View>
         )}
       </View>
@@ -149,13 +185,14 @@ export default InvoiceDetail;
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 180,
-    height: 600,
+    marginTop: 30,
+    height: 690,
     zIndex: -1,
   },
   header: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.yellowDark
   },
   headerTitle: {
     fontSize: 40,
@@ -172,6 +209,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  invoiceSummary: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 15,
+  },
+  imageBackgroundContainer: {
+    height: 150,
+    width: 500,
+    resizeMode: 'contain',
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+  },
+  totalAmountText: {
+    paddingVertical: 8,
+    paddingHorizontal: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(40, 160, 103, 0.4);',
+  },
+  amountsText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginVertical: 5,
   },
   footer: {
     height: 100,

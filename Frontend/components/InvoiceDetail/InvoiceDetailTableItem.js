@@ -1,24 +1,23 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { useMemo, useState } from "react";
+import { View, StyleSheet, TextInput, Pressable } from "react-native";
 import { MaskedText, MaskedTextInput } from "react-native-mask-text";
 import { Ionicons } from "@expo/vector-icons";
+
 import Colors from "../../constants/Colors/Colors";
-import { useMemo, useState } from "react";
+import InvoiceDetailSelect from "./InvoiceDetailSelect";
 
-function InvoiceDetailTableItem({ description, price, quantity }) {
+// TODO:
+// 1. Create input for description
+// 2. Better update handeling for invoiceItemData
+// 3. Send data to parent on blur
+
+function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   const [invoiceItem, setInvoiceItem] = useState({
-    description: description,
-    price: price,
-    quantity: quantity,
+    description: invoiceItemInfo.description,
+    quantity: invoiceItemInfo.quantity,
+    price: invoiceItemInfo.unitPrice,
+    warranty: invoiceItemInfo.warranty,
   });
-
-  function handlePriceChange(formattedValue) {
-    const extractedValue = formattedValue.replace('$', '');
-    setInvoiceItem({...invoiceItem, price: extractedValue});
-  }
-
-  function handleQuantityChange(value) {
-    setInvoiceItem({...invoiceItem, quantity: Number(value)});
-  }
 
   const formattedTotalAmount = useMemo(() => {
     return invoiceItem.price * invoiceItem.quantity * 100;  
@@ -28,15 +27,46 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
     return (invoiceItem.price * 100).toFixed(2).toString();
   }, [invoiceItem.price]);
 
+  function handleRemoveItem() {
+    removeItem(invoiceItemInfo.key);
+  }
+
+  function handleDescriptionChange(value) {
+    setInvoiceItem({...invoiceItem, description: value});
+  }
+
+  function handleQuantityChange(value) {
+    setInvoiceItem({...invoiceItem, quantity: Number(value)});
+  }
+
+  function handlePriceChange(value) {
+    const extractedValue = value.replace('$', '');
+    setInvoiceItem({...invoiceItem, price: extractedValue});
+  }
+
+  function handleWarrantyChange(value) {
+    setInvoiceItem({...invoiceItem, warranty: value});
+
+    // When warranty is selected send update to parent
+    onBlurUpdateInvoiceItem();
+  }
+
+  function onBlurUpdateInvoiceItem() {
+    updateItem(invoiceItem);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.descContainer}>
-        <View style={styles.descTextContainer}>
-          <Text style={styles.descText}>Botellas Sample</Text>
+        <View>
+          <TextInput
+            style={styles.descText}
+            value={invoiceItem.description}
+            onChangeText={handleDescriptionChange}
+            onBlur={onBlurUpdateInvoiceItem}
+          />
         </View>
-        <View style={styles.selectContainer}>
-          <Text style={styles.selectText}>SELECT</Text>
-        </View>
+        <InvoiceDetailSelect value={invoiceItem.warranty} onSelect={handleWarrantyChange}/>
       </View>
       <View style={styles.quantityContainer}>
         <TextInput 
@@ -44,6 +74,7 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
           value={invoiceItem.quantity.toString()}
           keyboardType="decimal-pad"
           onChangeText={handleQuantityChange}
+          onBlur={onBlurUpdateInvoiceItem}
         />
       </View>
       <View style={styles.priceContainer}>
@@ -58,6 +89,7 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
             precision: 2,
           }}
           onChangeText={handlePriceChange}
+          onBlur={onBlurUpdateInvoiceItem}
           keyboardType="decimal-pad"
         />
       </View>
@@ -74,8 +106,10 @@ function InvoiceDetailTableItem({ description, price, quantity }) {
           {formattedTotalAmount}
         </MaskedText>
       </View>
-      <View style={styles.deleteContainer}>
-        <Ionicons name="remove-circle-sharp" size={30} color="black" />
+      <View>
+        <Pressable onPress={handleRemoveItem}> 
+          <Ionicons name="remove-circle-sharp" size={30} color="black" />
+        </Pressable>
       </View>
     </View>
   );
@@ -94,6 +128,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15,
+    zIndex: 0,
   },
   descContainer: {
     flexDirection: "row",
@@ -103,7 +138,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 35,
     borderRadius: 15,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 5,
   },
   quantityContainer: {
     flexDirection: "row",
