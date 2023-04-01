@@ -5,7 +5,7 @@ import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useNavigation } from "@react-navigation/core";
 
 function TableItemInvoice({ itemData, category }) {
-  const { id, firstName, lastName, date, amountTotal, status } = itemData;
+  const { id, firstName, lastName, date, service, status } = itemData;
   const navigation = useNavigation();
 
   function DateText() {
@@ -36,7 +36,7 @@ function TableItemInvoice({ itemData, category }) {
             <Text style={styles.boldText}>{DateText()}</Text>
           </View>
           <View style={{ width: 80, marginLeft: 55 }}>
-            <Text style={styles.boldText}>${amountTotal}</Text>
+            <Text style={styles.boldText}>{service}</Text>
           </View>
           <View style={{ width: 80, marginLeft: 30 }}>
             <Status parentTextStyles={styles.boldText} status={status} />

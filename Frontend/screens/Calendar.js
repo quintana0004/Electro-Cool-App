@@ -4,7 +4,8 @@ import { Appbar } from "react-native-paper";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import MenuDropDown from "../components/Navigation/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
-import Appointments from "../components/Calendar/Appointments";
+import Appointments from "../screens/Calendar_Screens/Appointments";
+import TaskDetail from "./Calendar_Screens/TaskDetail";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
@@ -13,7 +14,6 @@ function Calendar({ navigation }) {
   function updateActiveCategory(category) {
     setActiveCategory(category);
   }
-
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -36,7 +36,7 @@ function Calendar({ navigation }) {
       </Appbar.Header>
 
       <View style={styles.container}>
-        <Appointments />
+        {activeCategory === "Appointments" ? <Appointments /> : <TaskDetail />}
       </View>
     </View>
   );

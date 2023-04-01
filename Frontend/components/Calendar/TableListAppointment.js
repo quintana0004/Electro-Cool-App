@@ -1,34 +1,18 @@
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import TableItemAppointment from "./TableItemAppointment";
-import TableListAppointment from "./TableListAppointment";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import { httpGetAllAppointments } from "../../api/appointments.api";
+import { httpGetAllTasks } from "../../api/tasks.api";
 
-function appointmentsItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
-  return (
-    <TableItemAppointment
-      ID={itemData.item.id}
-      date={itemData.item.createdDate}
-      firstName={itemData.item.customer.firstName}
-      lastName={itemData.item.customer.lastName}
-      status={itemData.item.status}
-    />
-  );
-}
+import TableItem from "./TableItem";
+import TableHeaderCalendar from "./TableHeaderCalendar";
 
-function TableListAppointment({
-  setSearchLoading,
-  searchTerm,
-  searchLoading,
-  filters,
-}) {
+function TableListAppointment({ activeCategory, searchTerm, filters }) {
   const TAKE = 15;
-  console.log("Testing appointments");
+  console.log("LOAD MOTHERFUCKER");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["CalendarHomePage", searchTerm],
-    queryFn: getAppointmentScreenData,
+    queryKey: ["HomeData", activeCategory, searchTerm],
+    queryFn: getHomeScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage
         ? undefined
@@ -37,12 +21,14 @@ function TableListAppointment({
     enabled: true,
   });
 
-  async function getAppointmentScreenData({ pageParam = 0 }) {
-    let data = await httpGetAllAppointments(TAKE, pageParam, searchTerm);
-    if (searchLoading) {
-      setSearchLoading(false);
+  async function getHomeScreenData({ pageParam = 0 }) {
+    let data = null;
+    if (activeCategory === "Appointments") {
+      data = await httpGetAllAppointments(TAKE, pageParam, searchTerm);
+    } else {
+      data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
     }
-    console.log("DATA : ", data.data);
+
     return data;
   }
 
@@ -64,7 +50,6 @@ function TableListAppointment({
         activeFilters.push(filterKey);
       }
     }
-
     let filteredData = tableData;
     if (activeFilters.length > 0) {
       const activeFilterChecker = (data) => {
@@ -83,19 +68,26 @@ function TableListAppointment({
     }
   }
 
+  function renderTableItem({ item }) {
+    const itemInfo = {
+      id: item.id,
+      title: item.title,
+
+      date: item.date,
+      time: item.time,
+      status: item.status,
+    };
+    return <TableItem itemData={itemInfo} category={activeCategory} />;
+  }
+
   return (
-    <View
-      style={{
-        height: 850,
-        width: Dimensions.get("screen").width,
-      }}
-    >
-      <TableHeaderOrder />
+    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
+      <TableHeaderCalendar />
       {isLoading || (
         <FlatList
           data={getTableData()}
-          renderItem={appointmentsItem}
-          keyExtractor={(item) => item.id}
+          renderItem={renderTableItem}
+          estimatedItemSize={10}
           onEndReached={loadMoreData}
         />
       )}
@@ -103,4 +95,11 @@ function TableListAppointment({
   );
 }
 
-export default TableListOrder;
+const styles = StyleSheet.create({
+  listContainer: {
+    height: 500,
+    width: Dimensions.get("screen").width,
+  },
+});
+
+export default TableListAppointment;

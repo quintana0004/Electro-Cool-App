@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     left: 30,
     backgroundColor: "white",
+    height: 40,
   },
   toggleButton: {
     flexDirection: "row",

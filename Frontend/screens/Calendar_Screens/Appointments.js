@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { httpGetAllAppointments } from "../../api/appointments.api";
 
 const DATA = [
   {
@@ -33,9 +32,8 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
     <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
   </TouchableOpacity>
 );
-const Appointment = ({navigation}) => {
+const Appointment = ({ navigation }) => {
   const [selectedId, setSelectedId] = useState();
-  function getItems()
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#fff" : "#fff";
@@ -55,8 +53,8 @@ const Appointment = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <Agenda>
         showOnlySelectedDayItems={true}
-        minDate={'2023-25-01'}
-        maxDate={'2023-23-05'}
+        minDate={"2023-25-01"}
+        maxDate={"2023-23-05"}
         theme=
         {{
           dotColor: "#E5B126",
