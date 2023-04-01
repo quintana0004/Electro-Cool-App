@@ -107,7 +107,6 @@ function InvoiceDetail({ route, navigation }) {
     invoiceItems.push(newItem);
     
     setInvoiceItems([...invoiceItems]);
-    console.log("Add Invoice Items:", invoiceItems);
   }
 
   function setInvoiceInfo(data) {
@@ -163,7 +162,7 @@ function InvoiceDetail({ route, navigation }) {
               </View>
               <View style={styles.buttonGroup}>
                 <InvoiceDetailAddItem onPress={onAddItem}/>
-                <InvoiceDetailSelectDeposit invoiceId={invoiceId} amount={2} setSelectedDeposits={setSelectedDeposits} />
+                <InvoiceDetailSelectDeposit invoiceId={invoiceId} setSelectedDeposits={setSelectedDeposits} />
               </View>
               <InvoiceDetailTableHeader />
               <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />

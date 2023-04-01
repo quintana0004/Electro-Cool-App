@@ -2,11 +2,15 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetDepositsByInvoiceId } from "../../api/deposits.api";
+import { useState } from "react";
+import InvoiceDetailModal from "./InvoiceDetailModal";
 
-function InvoiceDetailSelectDeposit({ invoiceId, amount, onPress }) {
+function InvoiceDetailSelectDeposit({ invoiceId, onPress }) {
+  const [depositsCount, setDepositsCount] = useState(0);
+  const [visible, setVisible] = useState(false);
 
   const { isLoading, data } = useQuery({
-    queryKey: ["SelectedDeposits"],
+    queryKey: ["SelectedDeposits", invoiceId],
     queryFn: fetchDepositsData,
     enabled: true,
   });
@@ -14,7 +18,7 @@ function InvoiceDetailSelectDeposit({ invoiceId, amount, onPress }) {
   async function fetchDepositsData() {
     try {
       const response = await httpGetDepositsByInvoiceId(invoiceId);
-      console.log("Fetching data: ", response.data);
+      setDepositsCount(response.data.length);
       return response.data;
     }
     catch (error) {
@@ -22,17 +26,24 @@ function InvoiceDetailSelectDeposit({ invoiceId, amount, onPress }) {
     }
   }
 
+  function showDepositModal() {
+    setVisible(true);
+  }
+
   return (
-    <Pressable onPress={onPress}>
-      <View style={styles.container}>
-        <View style={styles.countContainer}>
-          <Text style={styles.countText}>{amount}</Text>
+    <View>
+      <Pressable onPress={showDepositModal}>
+        <View style={styles.container}>
+          <View style={styles.countContainer}>
+            <Text style={styles.countText}>{depositsCount}</Text>
+          </View>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Select Deposit</Text>
+          </View>
         </View>
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Select Deposit</Text>
-        </View>
-      </View>
-    </Pressable>
+      </Pressable>
+      <InvoiceDetailModal visible={visible} setVisibile={setVisible}/>
+    </View>
   );
 }
 
