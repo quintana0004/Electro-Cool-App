@@ -5,3 +5,8 @@ export async function httpGetAllInvoices(take, page, searchTerm) {
   const response = await axios("/invoices" + queryParams);
   return response;
 }
+
+export async function httpGetInvoice(id) {
+  const response = await axios(`/invoices/${id}`);
+  return response;
+}

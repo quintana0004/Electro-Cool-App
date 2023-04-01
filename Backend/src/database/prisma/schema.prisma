@@ -154,7 +154,7 @@ model Deposit {
   status       String   @db.VarChar(100)
   amountTotal  String   @db.VarChar(20)
   description  String
-  isAvailable  Boolean
+  isAvailable  Boolean  @default(false)
   createdDate  DateTime @default(now()) @db.Timestamptz(6)
   lastModified DateTime @default(now()) @db.Timestamptz(6)
   customerId   Int
