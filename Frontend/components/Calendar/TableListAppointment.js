@@ -1,17 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import { httpGetAllAppointments } from "../../api/appointments.api";
-import { httpGetAllTasks } from "../../api/tasks.api";
 
 import TableItem from "./TableItem";
-import TableHeaderCalendar from "./TableHeaderCalendar";
 
 function TableListAppointment({ activeCategory, searchTerm, filters }) {
   const TAKE = 15;
   console.log("LOAD MOTHERFUCKER");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["HomeData", activeCategory, searchTerm],
+    queryKey: ["Appointments", activeCategory, searchTerm],
     queryFn: getHomeScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage
@@ -23,11 +21,8 @@ function TableListAppointment({ activeCategory, searchTerm, filters }) {
 
   async function getHomeScreenData({ pageParam = 0 }) {
     let data = null;
-    if (activeCategory === "Appointments") {
-      data = await httpGetAllAppointments(TAKE, pageParam, searchTerm);
-    } else {
-      data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    }
+
+    data = await httpGetAllAppointments(TAKE, pageParam, searchTerm);
 
     return data;
   }
@@ -70,19 +65,23 @@ function TableListAppointment({ activeCategory, searchTerm, filters }) {
 
   function renderTableItem({ item }) {
     const itemInfo = {
-      id: item.id,
-      title: item.title,
-
-      date: item.date,
-      time: item.time,
-      status: item.status,
+      service: item.service,
+      description: item.description,
+      arrivalDateTime: item.arrivalDateTime,
+      model: item.model,
+      brand: item.brand,
+      year: item.year,
+      color: item.color,
+      licensePlate: item.licensePlate,
+      customerName: item.customerName,
+      phone: item.phone,
+      email: item.phone,
     };
-    return <TableItem itemData={itemInfo} category={activeCategory} />;
+    return <TableItem itemData={itemInfo} />;
   }
 
   return (
     <View style={{ height: 500, width: Dimensions.get("screen").width }}>
-      <TableHeaderCalendar />
       {isLoading || (
         <FlatList
           data={getTableData()}

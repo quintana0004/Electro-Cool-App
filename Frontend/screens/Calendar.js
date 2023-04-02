@@ -1,22 +1,19 @@
-<<<<<<< HEAD
-import { useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { Appbar } from "react-native-paper";
-import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
-=======
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/UI/MenuDropDown";
->>>>>>> af7e9a23e07e629a3cc512e66c62efae1613847f
 import Colors from "../constants/Colors/Colors";
 import Appointments from "../screens/Calendar_Screens/Appointments";
 import TaskDetail from "./Calendar_Screens/TaskDetail";
+import Appbar from "react-native-paper/src/components/Appbar";
+import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
+import TableListTasks from "../components/Calendar/TableListTasks";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
@@ -43,7 +40,15 @@ function Calendar({ navigation }) {
       </Appbar.Header>
 
       <View style={styles.container}>
-        {activeCategory === "Appointments" ? <Appointments /> : <TaskDetail />}
+        {activeCategory === "Appointments" ? (
+          <Appointments />
+        ) : (
+          <TableListTasks
+            activeCategory={activeCategory}
+            searchTerm={searchTerm}
+            searchLoading={searchLoading}
+          />
+        )}
       </View>
     </View>
   );

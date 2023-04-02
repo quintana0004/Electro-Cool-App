@@ -1,78 +1,92 @@
-import React, { useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { httpGetAllTasks } from "../../api/tasks.api";
+import { httpGetAllInvoices } from "../../api/invoices.api";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
+import TableItemTasks from "./TableItemTasks";
+import TableHeaderCalendar from "./TableHeaderCalendar";
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.item, { backgroundColor }]}
-  >
-    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
-  </TouchableOpacity>
-);
+//{ activeCategory, searchTerm, filters }
 
-const TableListTasks = () => {
-  const [selectedId, setSelectedId] = useState();
+function TableListTasks({
+  activeCategory,
+  searchTerm,
+  filters,
+  searchLoading,
+  setSearchLoading,
+}) {
+  console.log("List");
+  const TAKE = 15;
+  searchTerm = "2023-06-12T00:00:00.000Z";
 
-  const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-    const color = item.id === selectedId ? "white" : "black";
+  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ["TasksHomeData", activeCategory, searchTerm],
+    queryFn: getTasksHomeScreenData,
+    getNextPageParam: (lastPage) => {
+      return lastPage.data.isLastPage
+        ? undefined
+        : lastPage.data.currentPage + 1;
+    },
+    enabled: true,
+  });
 
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={backgroundColor}
-        textColor={color}
-      />
-    );
-  };
+  async function getTasksHomeScreenData({ pageParam = 0 }) {
+    let data = null;
+    data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
+    console.log("Gabo es cool", data);
+
+    // After data is returned, stop search loading if it was active
+    if (searchLoading) setSearchLoading(false);
+
+    return data;
+  }
+
+  function getTableData() {
+    console.log("GetData", data);
+    let tableData = [];
+
+    for (const items of data.pages.map((p) => p.data).flat()) {
+      tableData.push(...items.data);
+    }
+    console.log("item", tableData);
+    return tableData;
+  }
+
+  function loadMoreData() {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }
+
+  function renderTableItem({ item }) {
+    console.log("La madre q te pario", item);
+    const itemInfo = {
+      id: item.id,
+      title: item.text,
+      date: item.duedate,
+    };
+    return <TableItemTasks itemData={itemInfo} />;
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        extraData={selectedId}
-      />
-    </SafeAreaView>
+    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
+      <TableHeaderCalendar />
+      {isLoading || (
+        <FlatList
+          data={getTableData()}
+          renderItem={renderTableItem}
+          estimatedItemSize={10}
+          onEndReached={loadMoreData}
+        />
+      )}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-  },
-  item: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
+  listContainer: {
+    height: 500,
+    width: Dimensions.get("screen").width,
   },
 });
 
