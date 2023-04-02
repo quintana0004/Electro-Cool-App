@@ -1,69 +1,76 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import { StackActions } from "@react-navigation/native";
+import { Appbar } from "react-native-paper";
 
-import Header from "../../components/UI/Header";
-import SearchBar from "../../components/UI/SearchBar";
+import { useRouterStore } from "../../Store/routerStore";
+import { useCustomerInfoStore } from "../../Store/store";
+
+import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingClientTableList from "../../components/SearchExisting/ExistingClient/ExistingClientTableList";
+import SearchBanner from "../../components/UI/SearchBanner";
 
-function ExistingClient({ route, navigation }) {
-  const {
-    nextScreen,
-    previousScreen,
-    cancelScreen,
-    otherNextScreen,
-    otherPreviousScreen,
-  } = route.params;
-
-  const [searchTerm, setSearchTerm] = useState("");
+function ExistingClient({ navigation }) {
   const [selectedClient, setSelectedClient] = useState(null);
-
-  function updateSearchTerm(term) {
-    setSearchTerm(term);
-  }
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
+  const existingClientNextPage = useRouterStore((state) => state.existingClientNextPage);
+  const setCustomerInfo = useCustomerInfoStore((state) => state.setCustomerInfo);
 
   function navigateNext() {
-    navigation.navigate(nextScreen, {
-      client: selectedClient,
-      nextScreen: otherNextScreen, // RequestedService.js
-      previousScreen: otherPreviousScreen,
-      cancelScreen: cancelScreen,
-      otherNextScreen: nextScreen,
-      otherPreviousScreen: otherPreviousScreen,
-    });
+    setCustomerInfo(
+      selectedClient.id,
+      selectedClient.firstName,
+      selectedClient.lastName,
+      selectedClient.addressLine1,
+      selectedClient.addressLine2,
+      selectedClient.state,
+      selectedClient.city,
+      selectedClient.phone,
+      selectedClient.email
+    );
+    const pageAction = StackActions.push(existingClientNextPage);
+    navigation.dispatch(pageAction);
   }
 
   function navigateBack() {
-    navigation.navigate(previousScreen);
+    const pageGoBack = StackActions.pop(1);
+    navigation.dispatch(pageGoBack);
   }
 
   function navigateCancel() {
-    navigation.navigate(cancelScreen);
+    const pageGoHomeAction = StackActions.popToTop();
+    navigation.dispatch(pageGoHomeAction);
   }
 
   return (
     <View>
-      <Header
-        divideH={6}
-        divideW={1}
-        colorHeader={Colors.lightGreen}
-        headerStyles={styles.header}
-      >
-        <View style={styles.searchContainer}>
-          <SearchBar
-            widthBar={350}
-            heightBar={60}
-            placeholderText="Search client name"
-            onSearch={updateSearchTerm}
-          />
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Content title="Select Existing Client"></Appbar.Content>
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setSearchBannerVisibility(!searchBannerVisibility);
+          }}
+        />
+      </Appbar.Header>
+      <SearchBanner
+        placeholder={"Search client name"}
+        visible={searchBannerVisibility}
+        loading={searchLoading}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
       <View style={styles.body}>
         <ExistingClientTableList
           searchTerm={searchTerm}
           selectedClient={selectedClient}
           setClient={setSelectedClient}
+          searchLoading={searchLoading}
+          setSearchLoading={setSearchLoading}
         />
       </View>
       <View style={styles.footer}>
@@ -87,13 +94,10 @@ export default ExistingClient;
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 180,
-    height: 600,
     zIndex: -1,
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: Colors.lightGreenHeader,
   },
   searchContainer: {
     justifyContent: "center",

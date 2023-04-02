@@ -1,61 +1,77 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import { StackActions } from "@react-navigation/native";
+import { Appbar } from "react-native-paper";
 
-import Header from "../../components/UI/Header";
-import SearchBar from "../../components/UI/SearchBar";
+import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
 import ExistingCarTableList from "../../components/SearchExisting/ExistingCar/ExistingCarTableList";
+import SearchBanner from "../../components/UI/SearchBanner";
+import { useRouterStore } from "../../Store/routerStore";
+import { useVehicleInfoStore } from "../../Store/store";
 
-function ExistingCar({ route, navigation }) {
-  const { nextScreen, previousScreen, cancelScreen, client } = route.params;
+function ExistingCar({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCar, setSelectedCar] = useState(null);
-
-  function updateSearchTerm(term) {
-    setSearchTerm(term);
-  }
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
+  const existingCarNextPage = useRouterStore((state) => state.existingCarNextPage);
+  const setVehicleInformation = useVehicleInfoStore((state) => state.setVehicleInformation);
 
   function navigateNext() {
-    navigation.navigate(nextScreen, { client: client, car: selectedCar });
+    setVehicleInformation(
+      selectedCar.id,
+      selectedCar.brand,
+      selectedCar.licensePlate,
+      selectedCar.model,
+      selectedCar.year,
+      selectedCar.mileage,
+      selectedCar.color,
+      selectedCar.vinNumber,
+      selectedCar.carHasItems,
+      selectedCar.carItemsDescription,
+      selectedCar.customerId,
+    );
+    const pageAction = StackActions.push(existingCarNextPage);
+    navigation.dispatch(pageAction);
   }
 
   function navigateBack() {
-    navigation.navigate(previousScreen, {
-      nextScreen: "ExistingCars",
-      previousScreen: cancelScreen,
-      otherNextScreen: nextScreen,
-      otherPreviousScreen: previousScreen,
-      cancelScreen: cancelScreen,
-    });
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
   }
 
   function navigateCancel() {
-    navigation.navigate(cancelScreen);
+    const pageAction = StackActions.popToTop(1);
+    navigation.dispatch(pageAction);
   }
 
   return (
     <View>
-      <Header
-        divideH={6}
-        divideW={1}
-        colorHeader={Colors.lightGreen}
-        headerStyles={styles.header}
-      >
-        <View style={styles.searchContainer}>
-          <SearchBar
-            widthBar={350}
-            heightBar={60}
-            placeholderText="Search by license plate"
-            onSearch={updateSearchTerm}
-          />
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Content title="Select Existing Car"></Appbar.Content>
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setSearchBannerVisibility(!searchBannerVisibility);
+          }}
+        />
+      </Appbar.Header>
+      <SearchBanner
+        placeholder={"Search by license plate"}
+        visible={searchBannerVisibility}
+        loading={searchLoading}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
       <View style={styles.body}>
         <ExistingCarTableList
           searchTerm={searchTerm}
           selectedCar={selectedCar}
           setCar={setSelectedCar}
+          searchLoading={searchLoading}
+          setSearchLoading={setSearchLoading}
         />
       </View>
       <View style={styles.footer}>
@@ -79,13 +95,10 @@ export default ExistingCar;
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 180,
-    height: 600,
     zIndex: -1,
   },
   header: {
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: Colors.lightGreenHeader,
   },
   searchContainer: {
     justifyContent: "center",

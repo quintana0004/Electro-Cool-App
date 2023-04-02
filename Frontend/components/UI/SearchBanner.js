@@ -4,13 +4,7 @@ import { Searchbar } from "react-native-paper";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
-function SearchBanner({
-  visible,
-  placeholder,
-  loading,
-  setLoading,
-  setSearchTerm,
-}) {
+function SearchBanner({ visible, placeholder, loading, setLoading, setSearchTerm }) {
   //Search Query of the information
   const [searchQuery, setSearchQuery] = useState("");
 

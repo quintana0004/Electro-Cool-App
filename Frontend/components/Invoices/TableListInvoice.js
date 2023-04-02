@@ -6,7 +6,13 @@ import { httpGetAllInvoices } from "../../api/invoices.api";
 import TableHeaderInvoice from "./TableHeaderInvoice";
 import TableItemInvoice from "./TableItemInvoice";
 
-function TableListInvoice({ activeCategory, searchTerm, filters }) {
+function TableListInvoice({
+  activeCategory,
+  searchTerm,
+  filters,
+  searchLoading,
+  setSearchLoading,
+}) {
   const TAKE = 15;
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
@@ -26,6 +32,9 @@ function TableListInvoice({ activeCategory, searchTerm, filters }) {
     } else {
       data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
     }
+
+    // After data is returned, stop search loading if it was active
+    if (searchLoading) setSearchLoading(false);
 
     return data;
   }
@@ -81,7 +90,7 @@ function TableListInvoice({ activeCategory, searchTerm, filters }) {
   }
 
   return (
-    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
+    <View style={{ height: 670, width: Dimensions.get("screen").width }}>
       <TableHeaderInvoice />
       {isLoading || (
         <FlatList
@@ -94,12 +103,5 @@ function TableListInvoice({ activeCategory, searchTerm, filters }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  listContainer: {
-    height: 500,
-    width: Dimensions.get("screen").width,
-  },
-});
 
 export default TableListInvoice;

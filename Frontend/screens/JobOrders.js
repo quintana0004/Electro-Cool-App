@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
+import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
 import FilterBanner from "../components/UI/FilterBanner";
 import TableListOrder from "../components/Job Order/TableListOrder";
 import { useJobOrderStore } from "../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 function JobOrders({ navigation }) {
   // call the store function
@@ -30,6 +31,8 @@ function JobOrders({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const pageAction = StackActions.push("CustomerSelection");
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -52,13 +55,7 @@ function JobOrders({ navigation }) {
         <Appbar.Action
           icon="plus"
           onPress={() => {
-            navigation.navigate("CustomerSelection", {
-              otherNextScreen: "",
-              nextScreen: "",
-              previousScreen: "JobOrderMain",
-              otherPreviousScreen: "",
-              cancelScreen: "JobOrderMain",
-            });
+            navigation.dispatch(pageAction);
             setJobOrder("Create", false, false, false);
           }}
         />
@@ -70,11 +67,7 @@ function JobOrders({ navigation }) {
         setLoading={setSearchLoading}
         setSearchTerm={setSearchTerm}
       />
-      <FilterBanner
-        visible={openBannerFilter}
-        filters={filters}
-        updateFilters={setFilters}
-      />
+      <FilterBanner visible={openBannerFilter} filters={filters} updateFilters={setFilters} />
       <View style={styles.body}>
         <TableListOrder
           filters={filters}
@@ -106,7 +99,7 @@ const styles = StyleSheet.create({
   },
   btnCreate: {},
   header: {
-    backgroundColor: Colors.darkBlack,
+    backgroundColor: Colors.Yellow,
   },
 });
 

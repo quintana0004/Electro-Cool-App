@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import MenuBtnNav from "../components/UI/MenuBtnNav";
-import MenuDropDown from "../components/Navigation/MenuDropDown";
+import MenuDropDown from "../components/UI/MenuDropDown";
 import Header from "../components/UI/Header";
 import Colors from "../constants/Colors/Colors";
 

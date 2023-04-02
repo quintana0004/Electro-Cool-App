@@ -262,7 +262,6 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
     !depositInfo.amountTotal ||
     !depositInfo.status ||
     !depositInfo.description ||
-    !depositInfo.isAvailable ||
     !depositInfo.customerId ||
     !depositInfo.carId ||
     !depositInfo.companyId
