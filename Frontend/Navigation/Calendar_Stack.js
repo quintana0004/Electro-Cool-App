@@ -3,7 +3,7 @@ import CarSelection from "../screens/BtnSelection/CarSelection";
 import ClientSelection from "../screens/BtnSelection/CustomerSelection";
 import Calendar from "../screens/Calendar";
 import TaskScreen from "../screens/Calendar_Screens/TaskScreen";
-
+import CalendarSelection from "../screens/BtnSelection/CalendarSelection";
 const CalendarStack = createStackNavigator();
 
 function CalendarStackOption() {
@@ -31,7 +31,13 @@ function CalendarStackOption() {
         component={CarSelection}
         options={{ headerShown: false, animationEnabled: false }}
       />
+      <CalendarStack.Screen
+        name="CalendarSelection"
+        component={CalendarSelection}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
     </CalendarStack.Navigator>
+
   );
 }
 

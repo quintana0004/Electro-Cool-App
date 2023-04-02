@@ -50,11 +50,19 @@ function Calendar({ navigation }) {
           />
         )}
       </View>
+      <View>
+        <Pressable
+          style={{ backgroundColor: Colors.brightYellow }}
+          onPress={() => {
+            navigation.navigate("CalendarSelection");
+          }}
+        >
+          <Text>Cabron</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
-
-export default Calendar;
 
 const styles = StyleSheet.create({
   body: {
@@ -71,3 +79,5 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
 });
+
+export default Calendar;
