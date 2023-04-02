@@ -206,7 +206,7 @@ function CompanyPolicy({ navigation }) {
       jobOrderResponse = {
         requestedService: jobOrderInfo.requestedService,
         serviceDetails: jobOrderInfo.serviceDetails,
-        status: jobOrderInfo.status,
+        status: "New",
         jobLoadType: jobOrderInfo.jobLoadType,
         policySignature: jobOrderInfo.policySignature,
         carId: carInfoResponse.data.id,
