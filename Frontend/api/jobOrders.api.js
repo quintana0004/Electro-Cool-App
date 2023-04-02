@@ -8,6 +8,7 @@ async function httpGetAllJobOrders(take, page, searchTerm) {
 
 //?Must include an id in the jobOrderInfo for it to be update it
 async function httpUpsertJobOrder(jobOrderInfo) {
+  console.log("Job Order Info to Post: ", jobOrderInfo);
   const response = await axios.post("/job-orders", jobOrderInfo);
   return response;
 }

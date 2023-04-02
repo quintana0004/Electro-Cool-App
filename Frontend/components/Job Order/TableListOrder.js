@@ -5,7 +5,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllJobOrders } from "../../api/jobOrders.api";
 
 function jobOrderItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
   return (
     <TableItemOrder
       ID={itemData.item.id}
@@ -24,7 +23,6 @@ function TableListOrder({
   filters,
 }) {
   const TAKE = 15;
-  console.log("LOAD MOTHERFUCKER");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["JobOrderHomePage", searchTerm],

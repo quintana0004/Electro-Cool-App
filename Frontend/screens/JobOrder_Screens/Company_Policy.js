@@ -181,7 +181,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems,
+          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -195,7 +195,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems,
+          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };

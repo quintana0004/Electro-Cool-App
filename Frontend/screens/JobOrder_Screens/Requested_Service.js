@@ -146,7 +146,7 @@ function RequestedService({ navigation }) {
                 ref.current.values.Description,
                 "New",
                 checked,
-                false,
+                true, // MOCHA COMMENT: Why was this hardcoded to false? Aren't you suppose to be grabbing what the user selected when checking the Policy signature?
                 "",
                 ""
               );
