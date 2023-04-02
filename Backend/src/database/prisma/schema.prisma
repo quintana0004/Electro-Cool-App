@@ -121,9 +121,9 @@ model JobOrder {
 model Invoice {
   id           Int            @id @default(autoincrement())
   status       String         @db.VarChar(100)
-  amountTotal  String         @db.VarChar(50)
-  amountPaid   String         @db.VarChar(50)
-  amountDue    String         @db.VarChar(50)
+  amountTotal  Float
+  amountPaid   Float
+  amountDue    Float
   createdDate  DateTime       @default(now()) @db.Timestamptz(6)
   lastModified DateTime       @default(now()) @db.Timestamptz(6)
   companyId    String         @db.Uuid
