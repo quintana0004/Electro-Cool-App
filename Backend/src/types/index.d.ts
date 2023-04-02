@@ -37,10 +37,10 @@ export interface ICustomer {
   id?: number;
   firstName: string;
   lastName: string;
-  addressLine1: string;
+  addressLine1?: string;
   addressLine2?: string;
   state?: string;
-  city: string;
+  city?: string;
   phone: string;
   email?: string;
   createdDate?: Date;
