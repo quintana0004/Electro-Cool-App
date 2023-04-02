@@ -8,15 +8,19 @@ import NavBtn from "../../components/UI/NavBtns";
 import ExistingCarTableList from "../../components/SearchExisting/ExistingCar/ExistingCarTableList";
 import SearchBanner from "../../components/UI/SearchBanner";
 import { useRouterStore } from "../../Store/routerStore";
-import { useVehicleInfoStore } from "../../Store/store";
+import { useVehicleInfoStore } from "../../Store/JobOrderStore";
 
 function ExistingCar({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCar, setSelectedCar] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
-  const existingCarNextPage = useRouterStore((state) => state.existingCarNextPage);
-  const setVehicleInformation = useVehicleInfoStore((state) => state.setVehicleInformation);
+  const existingCarNextPage = useRouterStore(
+    (state) => state.existingCarNextPage
+  );
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
 
   function navigateNext() {
     setVehicleInformation(
@@ -30,7 +34,7 @@ function ExistingCar({ navigation }) {
       selectedCar.vinNumber,
       selectedCar.carHasItems,
       selectedCar.carItemsDescription,
-      selectedCar.customerId,
+      selectedCar.customerId
     );
     const pageAction = StackActions.push(existingCarNextPage);
     navigation.dispatch(pageAction);
@@ -50,12 +54,22 @@ function ExistingCar({ navigation }) {
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Action
+          icon="home"
+          iconColor={Colors.black}
+          onPress={navigateCancel}
+        />
         <Appbar.Content title="Select Existing Car"></Appbar.Content>
         <Appbar.Action
           icon="magnify"
           onPress={() => {
             setSearchBannerVisibility(!searchBannerVisibility);
           }}
+        />
+        <Appbar.Action
+          icon="arrow-right"
+          iconColor={Colors.black}
+          onPress={navigateNext}
         />
       </Appbar.Header>
       <SearchBanner
@@ -73,19 +87,6 @@ function ExistingCar({ navigation }) {
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
         />
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.navBtnGroup}>
-          <View style={styles.navBackBtn}>
-            <NavBtn choice={"Back"} nav={navigateBack} />
-          </View>
-          <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navigateCancel} />
-          </View>
-          <View style={styles.navNextBtn}>
-            <NavBtn choice={"Next"} nav={navigateNext} />
-          </View>
-        </View>
       </View>
     </View>
   );

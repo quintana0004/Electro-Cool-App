@@ -4,7 +4,7 @@ import { StackActions } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
 
 import { useRouterStore } from "../../Store/routerStore";
-import { useCustomerInfoStore } from "../../Store/store";
+import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "../../components/UI/NavBtns";
@@ -16,18 +16,18 @@ function ExistingClient({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchBannerVisibility, setSearchBannerVisibility] = useState(false);
-  const existingClientNextPage = useRouterStore((state) => state.existingClientNextPage);
-  const setCustomerInfo = useCustomerInfoStore((state) => state.setCustomerInfo);
+  const existingClientNextPage = useRouterStore(
+    (state) => state.existingClientNextPage
+  );
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
 
   function navigateNext() {
     setCustomerInfo(
       selectedClient.id,
       selectedClient.firstName,
       selectedClient.lastName,
-      selectedClient.addressLine1,
-      selectedClient.addressLine2,
-      selectedClient.state,
-      selectedClient.city,
       selectedClient.phone,
       selectedClient.email
     );
@@ -49,12 +49,22 @@ function ExistingClient({ navigation }) {
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Action
+          icon="home"
+          iconColor={Colors.black}
+          onPress={navigateCancel}
+        />
         <Appbar.Content title="Select Existing Client"></Appbar.Content>
         <Appbar.Action
           icon="magnify"
           onPress={() => {
             setSearchBannerVisibility(!searchBannerVisibility);
           }}
+        />
+        <Appbar.Action
+          icon="arrow-right"
+          iconColor={Colors.black}
+          onPress={navigateNext}
         />
       </Appbar.Header>
       <SearchBanner
@@ -72,19 +82,6 @@ function ExistingClient({ navigation }) {
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
         />
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.navBtnGroup}>
-          <View style={styles.navBackBtn}>
-            <NavBtn choice={"Back"} nav={navigateBack} />
-          </View>
-          <View style={styles.navCancelBtn}>
-            <NavBtn choice={"Cancel"} nav={navigateCancel} />
-          </View>
-          <View style={styles.navNextBtn}>
-            <NavBtn choice={"Next"} nav={navigateNext} />
-          </View>
-        </View>
       </View>
     </View>
   );

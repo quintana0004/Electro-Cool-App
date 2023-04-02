@@ -12,7 +12,10 @@ import Header from "../../components/UI/Header";
 import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+import {
+  useCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
 
 // TODO:
 // 1. Create a Add Item Component
@@ -105,9 +108,16 @@ function InvoiceDetail({ route, navigation }) {
 
   return (
     <View>
-      <Header divideH={7} divideW={1} colorHeader={Colors.yellowDark} headerStyles={styles.header}>
+      <Header
+        divideH={7}
+        divideW={1}
+        colorHeader={Colors.yellowDark}
+        headerStyles={styles.header}
+      >
         <View>
-          <Text style={styles.headerTitle}>Invoice {invoiceId && `#${invoiceId}`}</Text>
+          <Text style={styles.headerTitle}>
+            Invoice {invoiceId && `#${invoiceId}`}
+          </Text>
         </View>
       </Header>
       <View style={styles.body}>
@@ -124,8 +134,16 @@ function InvoiceDetail({ route, navigation }) {
               <InvoiceDetailSelectDeposit amount={2} />
             </View>
             <InvoiceDetailTableHeader />
-            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
-            <InvoiceDetailTableItem description={"Botellas Pruebas"} price={23} quantity={2} />
+            <InvoiceDetailTableItem
+              description={"Botellas Pruebas"}
+              price={23}
+              quantity={2}
+            />
+            <InvoiceDetailTableItem
+              description={"Botellas Pruebas"}
+              price={23}
+              quantity={2}
+            />
           </View>
         )}
       </View>

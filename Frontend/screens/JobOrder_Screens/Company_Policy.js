@@ -11,6 +11,9 @@ import {
 import { Checkbox } from "react-native-paper";
 import { StackActions } from "@react-navigation/native";
 import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { httpUpsertClient } from "../../api/clients.api";
+import { httpUpsertJobOrder } from "../../api/jobOrders.api";
+import { httpUpsertCar } from "../../api/cars.api";
 
 function CompanyPolicy({ navigation }) {
   //funtion for the page navigation
@@ -65,8 +68,8 @@ function CompanyPolicy({ navigation }) {
     status: useRequestedServiceStore((state) => state.status),
     jobLoadType: useRequestedServiceStore((state) => state.jobLoadType),
     policySignature: useRequestedServiceStore((state) => state.policySignature),
-    carId: useRequestedServiceStore((state) => state.carId),
-    customerId: useRequestedServiceStore((state) => state.customerId),
+    carId: useVehicleInfoStore((state) => state.id),
+    customerId: useCustomerInfoStore((state) => state.id),
   });
 
   const policy = [
@@ -88,53 +91,131 @@ function CompanyPolicy({ navigation }) {
   ];
 
   async function handleSaveClient(clientInfo) {
+    let response;
+
     try {
       console.log("Client Info: ", clientInfo);
-      const response = await httpUpsertClient(clientData);
+      response = await httpUpsertClient(clientInfo);
       console.log("Client Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Client: ", error);
     }
+
+    return response;
   }
 
   async function handleSaveCar(carInfo) {
+    let response;
+
     try {
       console.log("Car Info: ", carInfo);
-      const response = await httpUpsertCar(carData);
+      response = await httpUpsertCar(carInfo);
       console.log("Car Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Car: ", error);
     }
+
+    return response;
   }
 
-  async function handleSaveJobOrder(clientId, carId, jobOrderInfo) {
+  async function handleSaveJobOrder(jobOrderInfo) {
+    let response;
+
     try {
-      const response = await httpUpsertJobOrder(jobOrderData);
+      response = await httpUpsertJobOrder(jobOrderInfo);
       console.log("Job Order Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Job Order: ", error);
     }
+
+    return response;
   }
 
   // The client, car and job order info could also be variables in Use State not only parameters
-  async function handleSave(clientInfo, carInfo, jobOrderItemInfo) {
+  async function handleSave() {
+    let customerInfoResponse;
+    let carInfoResponse;
+    let jobOrderResponse;
+    //Okay, let's get to business
+    //Start to verify that each data has is new or is updated
+    //?Start with Customers Info
+    if (!clientInfo.id) {
+      customerInfoResponse = {
+        firstName: clientInfo.firstName,
+        lastName: clientInfo.lastName,
+        phone: clientInfo.phone,
+        email: clientInfo.email,
+        addressLine1: "Urb. Dorado del Mar",
+        addressLine2: "Calle Aibonito #23",
+        city: "Dorado",
+        state: "USA",
+      };
+    } else {
+      customerInfoResponse = {
+        id: clientInfo.id,
+        firstName: clientInfo.firstName,
+        lastName: clientInfo.lastName,
+        phone: clientInfo.phone,
+        email: clientInfo.email,
+        addressLine1: "Urb. Dorado del Mar",
+        addressLine2: "Calle Aibonito #23",
+        city: "Dorado",
+        state: "USA",
+      };
+    }
+
     try {
-      // Handle all API calls here
-      if (!clientInfo.id) {
-        clientInfo = await handleSaveClient(clientInfo);
+      // Make the call for the API
+      //Take into consideration there are two routes one is the new info and existing info
+
+      customerInfoResponse = await handleSaveClient(customerInfoResponse);
+      console.log("CLIENT INFO: ", customerInfoResponse);
+
+      //?When customer passes the value need their ID
+      if (!vehicleInformation.id) {
+        carInfoResponse = {
+          brand: vehicleInformation.brand,
+          licensePlate: vehicleInformation.licensePlate,
+          model: vehicleInformation.model,
+          year: vehicleInformation.year,
+          mileage: vehicleInformation.mileage,
+          color: vehicleInformation.color,
+          vinNumber: vehicleInformation.vinNumber,
+          carHasItems: vehicleInformation.carHasItems,
+          carItemsDescription: vehicleInformation.carItemsDescription,
+          customerId: customerInfoResponse.data.id,
+        };
+      } else {
+        carInfoResponse = {
+          id: vehicleInformation.id,
+          brand: vehicleInformation.brand,
+          licensePlate: vehicleInformation.licensePlate,
+          model: vehicleInformation.model,
+          year: vehicleInformation.year,
+          mileage: vehicleInformation.mileage,
+          color: vehicleInformation.color,
+          vinNumber: vehicleInformation.vinNumber,
+          carHasItems: vehicleInformation.carHasItems,
+          carItemsDescription: vehicleInformation.carItemsDescription,
+          customerId: customerInfoResponse.data.id,
+        };
       }
+      carInfoResponse = await handleSaveCar(carInfoResponse);
 
-      if (!carInfo.id) {
-        carInfo = await handleSaveCar(carInfo);
-      }
+      //?When customer and car has been sent then need to create the jobOrder
+      jobOrderResponse = {
+        requestedService: jobOrderInfo.requestedService,
+        serviceDetails: jobOrderInfo.serviceDetails,
+        status: jobOrderInfo.status,
+        jobLoadType: jobOrderInfo.jobLoadType,
+        policySignature: jobOrderInfo.policySignature,
+        carId: carInfoResponse.data.id,
+        customerId: customerInfoResponse.data.id,
+      };
+      console.log("JOB ORDER RESPONSE: ", jobOrderResponse);
+      response = await handleSaveJobOrder(jobOrderResponse);
 
-      const response = await handleSaveJobOrder(
-        clientInfo.id,
-        carInfo.id,
-        jobOrderItemInfo
-      );
-
-      console.log("Hanlde All Save Response: ", response);
+      console.log("Handle All Save Response: ", response);
     } catch (error) {
       console.log("Error at Handle Save: ", error);
     }
@@ -249,8 +330,10 @@ function CompanyPolicy({ navigation }) {
             <Dialog.Actions>
               <Button
                 textColor={Colors.darkGreen}
-                onPress={() => {
+                onPress={async () => {
+                  await handleSave();
                   setVisibleConfirmDialog(false);
+                  goHomeAction();
                 }}
               >
                 Confirm

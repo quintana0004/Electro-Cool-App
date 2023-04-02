@@ -96,6 +96,8 @@ function VehicleInformation({ route, navigation }) {
                 ref.current.values.Brand,
                 ref.current.values.LicensePlate,
                 ref.current.values.Model,
+                ref.current.values.Year,
+                ref.current.values.Milage,
                 ref.current.values.ColorVehicle,
                 ref.current.values.VinNumber,
                 checked,

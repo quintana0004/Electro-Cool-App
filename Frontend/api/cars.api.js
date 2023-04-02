@@ -12,4 +12,10 @@ async function httpCreateCar(carInfo) {
   return response;
 }
 
-export { httpGetAllCars, httpCreateCar };
+//?Car Information must be an object
+async function httpUpsertCar(carInfo) {
+  const response = await axios.post("/cars", carInfo);
+  return response;
+}
+
+export { httpGetAllCars, httpCreateCar, httpUpsertCar };
