@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
+import { httpUpdateStatusJobOrder } from "../../api/jobOrders.api";
 
 function TableItemOrder({ ID, firstName, lastName, date, status }) {
   //Change colors of the picker
@@ -27,6 +28,16 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
       colorPicked = Colors.lightRed;
       colorBorder = Colors.lightRedDark;
       break;
+  }
+
+  async function handlePickerChange(value) {
+    try {
+      await httpUpdateStatusJobOrder(ID, value);
+      setPickedValue(value);
+    }
+    catch (error) {
+      console.log("Error at Job Order Picker Change: ", error);
+    }
   }
 
   function DateText() {
@@ -58,7 +69,7 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
         >
           <Picker
             selectedValue={pickedValue}
-            onValueChange={(itemValue, itemIndex) => setPickedValue(itemValue)}
+            onValueChange={(itemValue) => handlePickerChange(itemValue)}
             dropdownIconColor={colorBorder}
           >
             <Picker.Item
