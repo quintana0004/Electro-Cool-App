@@ -4,6 +4,14 @@ export async function httpGetAllDeposits(take, page, searchTerm) {
   try {
     const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
     const deposits = await axios("/deposits" + queryParams);
+    
+    let depositLength = deposits.data.data.length;
+    if (depositLength > 0) {
+      let filteredDesposits = deposits.data.data;
+      filteredDesposits = filteredDesposits.filter((d) => d.isAvailable === true);
+      deposits.data.data = filteredDesposits;
+    }
+
     return deposits;
   } catch (error) {
     console.log("Error at the Http Get All Deposits: ", error.response.data);

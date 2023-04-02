@@ -4,7 +4,6 @@ import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import InvoiceDetailModalListItem from "./InvoiceDetailModalListItem";
 
-
 function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, onSelectedDeposit, onRemovedDeposit }) {
 
   const TAKE = 15;

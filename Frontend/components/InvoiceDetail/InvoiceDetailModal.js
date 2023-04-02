@@ -5,12 +5,14 @@ import InvoiceDetailModalList from "./InvoiceDetailModalList";
 import SearchBar from "../UI/SearchBar";
 import { useState } from "react";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { useDepositStore } from "../../Store/depositStore";
 
 function InvoiceDetailModal({ visible, setVisibile }) {
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDeposits, setSelectedDeposits] = useState([]);
+  const setClientSelectedDeposits = useDepositStore((state) => state.setClientSelectedDeposits);
 
   function hideModal() {
     setVisibile(false);
@@ -27,7 +29,9 @@ function InvoiceDetailModal({ visible, setVisibile }) {
   }
 
   function onApplyDeposits() {
-
+    setClientSelectedDeposits(selectedDeposits);
+    setSelectedDeposits([]);
+    hideModal();
   }
 
   return (

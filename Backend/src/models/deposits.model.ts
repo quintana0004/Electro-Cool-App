@@ -120,6 +120,7 @@ async function upsertDeposit(depositInfo: IDeposit) {
         customerId: depositInfo.customerId,
         carId: depositInfo.carId,
         companyId: depositInfo.companyId,
+        isAvailable: !depositInfo.invoiceId,
         invoiceId: depositInfo.invoiceId,
       },
       update: {
@@ -128,6 +129,7 @@ async function upsertDeposit(depositInfo: IDeposit) {
         description: depositInfo.description,
         customerId: depositInfo.customerId,
         carId: depositInfo.carId,
+        isAvailable: !depositInfo.invoiceId,
         invoiceId: depositInfo.invoiceId,
         lastModified: new Date(),
       },

@@ -4,7 +4,7 @@ import { Appbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { MaskedText} from "react-native-mask-text";
 
-import { httpGetInvoice } from "../../api/invoices.api";
+import { httpGetInvoice, httpUpsertInvoice } from "../../api/invoices.api";
 import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
 
 import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAddItem";
@@ -17,6 +17,7 @@ import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
 import Figures from "../../constants/figures/Figures";
+import { useDepositStore } from "../../Store/depositStore";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
@@ -51,17 +52,38 @@ function InvoiceDetail({ route, navigation }) {
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
-  const [selectedDeposits, setSelectedDeposits] = useState([]);
+  const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
+  const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
+  const resetSelectedDeposits = useDepositStore((state) => state.resetSelectedDeposits);
 
   const totalAmount = useMemo(() => {
     let amount = 0;
 
     for (let item of invoiceItems) {
-      amount += item.unitPrice * item.quantity * 100;
+      amount += item.unitPrice * item.quantity;
     }
 
-    return amount;
+    return amount * 100;
   }, [invoiceItems]);
+
+  const amountPaid = useMemo(() => {
+    let amount = 0;
+
+    for (let deposit of clientSelectedDeposits) {
+      amount += Number(deposit.amountTotal);
+    }
+
+    for (let deposit of serverSelectedDeposits) {
+      amount += Number(deposit.amountTotal);
+    }
+
+    return amount * 100;
+  }, [clientSelectedDeposits, serverSelectedDeposits]);
+
+  const amountDue = useMemo(() => {
+    return totalAmount - amountPaid;
+  }, [totalAmount, amountPaid]);
+
 
   const { isLoading } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
@@ -86,6 +108,7 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   function navigateCancel() {
+    resetSelectedDeposits();
     navigation.navigate("InvoiceMain");
   }
 
@@ -119,6 +142,20 @@ function InvoiceDetail({ route, navigation }) {
     setInvoiceItems(items);
   }
 
+  function getDepositIds() {
+    let depositIds = [];
+
+    for (let deposit of clientSelectedDeposits) {
+      depositIds.push(deposit.id);
+    }
+
+    for (let deposit of serverSelectedDeposits) {
+      depositIds.push(deposit.id);
+    }
+
+    return depositIds;
+  }
+
   async function fetchInvoiceData() {
     try {
       const data = await httpGetInvoice(invoiceId);
@@ -135,10 +172,21 @@ function InvoiceDetail({ route, navigation }) {
       const invoiceInfo = {
         id: invoiceId,
         status: option,
+        amountTotal: totalAmount,
+        amountPaid: amountPaid,
+        amountDue: amountDue,
         invoiceItems: invoiceItems,
         customerId: clientInfo.id,
         carId: carInfo.id,
+        invoiceItems: invoiceItems,
+        depositIds: getDepositIds(),
       };
+
+      console.log("On Invoice Detail Save:", invoiceInfo);
+
+      const response = await httpUpsertInvoice(invoiceInfo);
+      console.log("Save Invoice Response: ", response.data);
+
     } catch (error) {
       console.log(error);
     }
@@ -162,7 +210,7 @@ function InvoiceDetail({ route, navigation }) {
               </View>
               <View style={styles.buttonGroup}>
                 <InvoiceDetailAddItem onPress={onAddItem}/>
-                <InvoiceDetailSelectDeposit invoiceId={invoiceId} setSelectedDeposits={setSelectedDeposits} />
+                <InvoiceDetailSelectDeposit invoiceId={invoiceId} />
               </View>
               <InvoiceDetailTableHeader />
               <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />
@@ -184,8 +232,34 @@ function InvoiceDetail({ route, navigation }) {
                       {totalAmount}
                     </MaskedText>
                   </Text>
-                  <Text style={styles.amountsText}>Amount Paid: $200.36</Text>
-                  <Text style={styles.amountsText}>Amount Due: $304.36</Text>
+                  <Text style={styles.amountsText}>Amount 
+                    Paid: {' '}
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {amountPaid}
+                    </MaskedText>
+                  </Text>
+                  <Text style={styles.amountsText}>
+                    Amount Due: {' '}
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {amountDue}
+                    </MaskedText>
+                  </Text>
                 </View>
               </ImageBackground>
             </View>
