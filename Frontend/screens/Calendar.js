@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
@@ -12,6 +12,16 @@ function Calendar({ navigation }) {
       </Header>
       <View style={styles.body}>
         <Text>Calendar Screen!</Text>
+      </View>
+      <View>
+      <Pressable
+          style={{ backgroundColor: Colors.brightYellow }}
+          onPress={() => {
+            navigation.navigate("CalendarSelection");
+          }}
+        >
+          <Text>Cabron</Text>
+        </Pressable>
       </View>
     </View>
   );

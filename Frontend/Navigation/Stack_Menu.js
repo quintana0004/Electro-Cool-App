@@ -9,7 +9,7 @@ import Setting from "../screens/Settings";
 import JobOrderStackOption from "./JobOrder_Stack";
 import InvoiceStackOption from "./Invoice_Stack";
 import ClientBookStackOption from "./ClientBook_Stack";
-
+import CalendarStackOption from "./Calendar_Stack";
 //Connection navigator stack
 const Stack = createStackNavigator();
 
@@ -40,7 +40,7 @@ function MenuStack() {
       />
       <Stack.Screen
         name="Calendar"
-        component={Calendar}
+        component={CalendarStackOption}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <Stack.Screen
