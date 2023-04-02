@@ -123,6 +123,7 @@ export const useJobOrderStore = create((set) => ({
   editClientInformation: false,
   editVehicleInformation: false,
   editRequestedService: false,
+  reloadJobOrderList: false,
   setJobOrder: (
     pageSelection,
     editClientInformation,
@@ -142,4 +143,8 @@ export const useJobOrderStore = create((set) => ({
       editRequestedService: false,
       editVehicleInformation: false,
     })),
+  setReloadJobOrderList: () =>
+    set((state) => ({
+      reloadJobOrderList: !state.reloadJobOrderList
+      })),
 }));

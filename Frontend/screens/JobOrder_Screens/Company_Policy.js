@@ -72,6 +72,9 @@ function CompanyPolicy({ navigation }) {
     customerId: useCustomerInfoStore((state) => state.id),
   });
 
+  // Used to reload TableListOrder when a new job order is created or updated
+  const setReloadJobOrderList = useJobOrderStore((state) => state.setReloadJobOrderList);
+
   const policy = [
     {
       id: 1,
@@ -123,6 +126,7 @@ function CompanyPolicy({ navigation }) {
 
     try {
       response = await httpUpsertJobOrder(jobOrderInfo);
+      setReloadJobOrderList();
       console.log("Job Order Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Job Order: ", error);
