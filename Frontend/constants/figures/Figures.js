@@ -21,6 +21,10 @@ import UserIcon from "../../assets/images/UserIcon.png";
 import ClientInvoicesIcon from "../../assets/images/ClientInvoicesIcon.png";
 import ClientCarsIcon from "../../assets/images/ClientCarsIcon.png";
 import ClientBookEachCar from "../../assets/images/ClientCarsIcon.png";
+import Vector from "../../assets/images/Vector.png";
+import VectorWhite from "../../assets/images/VectorWhite.png";
+import AppointmentWhite from "../../assets/images/AppointmentWhite.png";
+import Appointment from "../../assets/images/Appointment.png";
 
 const Figures = {
   CalendarIcon,
@@ -46,6 +50,10 @@ const Figures = {
   ClientInvoicesIcon,
   ClientCarsIcon,
   ClientBookEachCar,
+  Vector,
+  VectorWhite,
+  Appointment,
+  AppointmentWhite,
 };
 
 export default Figures;

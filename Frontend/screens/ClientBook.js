@@ -1,29 +1,44 @@
-import React from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
-import Header from "../components/UI/Header";
-import MenuDropDown from "../components/UI/MenuDropDown";
+import React, { useState } from "react";
+import { Text, View, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors/Colors";
-import { Button } from "react-native-paper";
+import { Appbar } from "react-native-paper";
+import MenuDropDown from "../components/UI/MenuDropDown";
+import SearchBanner from "../components/UI/SearchBanner";
+import TableListClient from "../components/ClientBookDetail/TableListClient";
+//import { useCustomerInfoStore } from "../Store/store";
 
 function ClientBook({ navigation }) {
+  // call the store function
+  //const setClientBook = useCustomerInfoStore((state) => state.setClientBook);
+
+  //Function that will toggle the state of searchBanner
+  const [openBannerSearch, setOpenBannerSearch] = useState(false);
+
+  //Search Variables
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
-        <MenuDropDown />
-      </Header>
+    <View>
+      <Appbar.Header style={styles.header}>
+        <MenuDropDown style={{ zIndex: 4 }} />
+        <Appbar.Content></Appbar.Content>
+        <Appbar.Action
+          icon="magnify"
+          onPress={() => {
+            setOpenBannerSearch(!openBannerSearch);
+          }}
+        />
+      </Appbar.Header>
+      <SearchBanner
+        visible={openBannerSearch}
+        loading={searchLoading}
+        placeholder={"Search by Name"}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
       <View style={styles.body}>
         <Text>Client Book Screen!</Text>
-      </View>
-
-      <View>
-        <Pressable
-          style={{ backgroundColor: Colors.brightYellow }}
-          onPress={() => {
-            navigation.navigate("ClientBookCustomer");
-          }}
-        >
-          <Text>Cabron</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -36,6 +51,9 @@ const styles = StyleSheet.create({
   },
   body: {
     zIndex: -1,
+  },
+  header: {
+    backgroundColor: Colors.darkBlack,
   },
 });
 
