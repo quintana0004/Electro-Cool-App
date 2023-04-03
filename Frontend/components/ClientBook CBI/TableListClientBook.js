@@ -74,6 +74,7 @@ function TableListCB({ activeCategory, searchTerm }) {
           numColumns={2}
         />
       )}
+      {}
     </View>
   );
 }
