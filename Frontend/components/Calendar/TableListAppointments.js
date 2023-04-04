@@ -1,12 +1,10 @@
 import React from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { httpGetAllTasks } from "../../api/tasks.api";
+import { httpGetAllAppointments } from "../../api/appointments.api";
+import TableItemAppointments from "./TableItemAppointments";
 
-import TableItemTasks from "./TableItemTasks";
-import TableHeaderCalendar from "./TableHeaderTasks";
-
-function TableListTasks({
+function TableListAppointments({
   activeCategory,
   searchTerm,
   filters,
@@ -15,7 +13,7 @@ function TableListTasks({
 }) {
   console.log("List");
   const TAKE = 15;
-  searchTerm = "2023-09-12T00:00:00.000Z";
+  searchTerm = "2023-06-12T00:00:00.000Z";
 
   const queryClient = useQueryClient();
 
@@ -33,7 +31,7 @@ function TableListTasks({
   async function getTasksHomeScreenData({ pageParam = 0 }) {
     let data = null;
     data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    console.log("Await Tasks", data);
+    console.log("Gabo es cool", data);
 
     if (searchLoading) setSearchLoading(false);
 
@@ -66,7 +64,7 @@ function TableListTasks({
   }
 
   function renderTableItem({ item }) {
-    console.log("Content:", item);
+    console.log("Data:", item);
     const itemInfo = {
       id: item.id,
       title: item.text,
@@ -77,7 +75,6 @@ function TableListTasks({
 
   return (
     <View style={{ height: 500, width: Dimensions.get("screen").width }}>
-      <TableHeaderCalendar />
       {isLoading || (
         <FlatList
           data={getTableData()}
@@ -97,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableListTasks;
+export default TableListAppointments;

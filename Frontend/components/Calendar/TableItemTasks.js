@@ -1,53 +1,58 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import { format } from "date-fns";
-
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useNavigation } from "@react-navigation/core";
+import { Appbar } from "react-native-paper";
+import { httpDeleteTask } from "../../api/tasks.api";
+import Colors from "../../constants/Colors/Colors";
 
-function TableItemInvoice({ itemData, category }) {
+function TableItemTasks({ itemData, onDelete }) {
   const { id, title, date } = itemData;
   const navigation = useNavigation();
-  console.log(
-    "Me apesta el culo y no me bano muy frecuentemente",
-    id,
-    title,
-    date
-  );
+  console.log("Loading", id, title, date);
+
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
-  function navigateToDetailScreen(itemId) {
-    if (category === "Appointment") {
-      navigation.navigate("AppointmentDetail", { itemId });
-    } else {
-      navigation.navigate("TaskDetail", { itemId });
-    }
+  async function handleDelete() {
+    await httpDeleteTask(id);
+    onDelete();
   }
 
   return (
     <View>
-      <Pressable onPress={navigateToDetailScreen.bind(this, id)}>
+      <Pressable>
         <View style={styles.container}>
-          <Text>{title}</Text>
+          <View style={{ width: 300, marginLeft: 15 }}>
+            <Text>{title}</Text>
+          </View>
+          <View style={{ width: 100, marginRight: 60 }}>
+            <Text>{DateText()}</Text>
+          </View>
+          <View style={{ width: 80 }}>
+            <Appbar.Action icon="delete" onPress={handleDelete} />
+          </View>
         </View>
       </Pressable>
     </View>
   );
 }
 
-export default TableItemInvoice;
+export default TableItemTasks;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    height: 50,
-    borderWidth: 1.8,
-    borderColor: "rgba(0, 0, 0, 0.3)",
-    borderRadius: 10,
+    borderWidth: 0.5,
+    justifyContent: "space-between",
     marginHorizontal: 10,
-    marginBottom: 5,
+    alignItems: "center",
+    height: 70,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    shadowColor: Colors.black,
+    borderColor: "rgba(0, 0, 0, 0.3)",
+    marginBottom: 10,
   },
   boldText: {
     fontWeight: "bold",

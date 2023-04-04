@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Header from "../components/UI/Header";
+import { View, StyleSheet } from "react-native";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
 import Appointments from "../screens/Calendar_Screens/Appointments";
-import TaskDetail from "./Calendar_Screens/TaskDetail";
 import Appbar from "react-native-paper/src/components/Appbar";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import TableListTasks from "../components/Calendar/TableListTasks";
@@ -22,14 +20,15 @@ function Calendar({ navigation }) {
     <View>
       <Appbar.Header style={styles.header}>
         <MenuDropDown />
-        <View>
-          <ToggleButtonsCalendar
-            toggleActiveCategory={updateActiveCategory}
-            activeCategory={activeCategory}
-          />
-        </View>
+        <Appbar.Content
+          title={
+            <ToggleButtonsCalendar
+              toggleActiveCategory={updateActiveCategory}
+              activeCategory={activeCategory}
+            />
+          }
+        ></Appbar.Content>
 
-        <Appbar.Content></Appbar.Content>
         <Appbar.Action icon="plus" onPress={() => {}} />
         <Appbar.Action
           icon="magnify"
@@ -50,16 +49,6 @@ function Calendar({ navigation }) {
           />
         )}
       </View>
-      <View>
-        <Pressable
-          style={{ backgroundColor: Colors.brightYellow }}
-          onPress={() => {
-            navigation.navigate("CalendarSelection");
-          }}
-        >
-          <Text>Cabron</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -72,10 +61,19 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: Colors.darkBlack,
+    flexDirection: "row",
+  },
+  Menu: {
+    flex: 1,
+    alignItems: "stretch",
+  },
+  Buttons: { justifyContent: "center", alignItems: "center", width: 600 },
+  Things: {
+    flex: 1,
+    alignItems: "stretch",
   },
   container: {
-    width: 600,
-    height: 800,
+    height: "100%",
     zIndex: -1,
   },
 });
