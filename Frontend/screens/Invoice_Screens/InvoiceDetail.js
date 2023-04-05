@@ -92,7 +92,7 @@ function InvoiceDetail({ route, navigation }) {
   });
 
   function getHeaderTitle() {
-   return "Invoice" + (invoiceId && ` #${invoiceId}`);
+   return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
   }
 
   function navigateNext() {}

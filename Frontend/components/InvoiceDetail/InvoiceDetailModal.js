@@ -12,6 +12,7 @@ function InvoiceDetailModal({ visible, setVisibile }) {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDeposits, setSelectedDeposits] = useState([]);
+  const [isSortAscending, setIsSortAscending] = useState(false);
   const setClientSelectedDeposits = useDepositStore((state) => state.setClientSelectedDeposits);
 
   function hideModal() {
@@ -26,6 +27,10 @@ function InvoiceDetailModal({ visible, setVisibile }) {
   function onRemovedDeposit(deposit) {
     let filteredDeposits = selectedDeposits.filter(d => d.id != deposit.id);
     setSelectedDeposits([...filteredDeposits]);
+  }
+
+  function onSortClick() {
+    setIsSortAscending((prev) => !prev);
   }
 
   function onApplyDeposits() {
@@ -46,11 +51,13 @@ function InvoiceDetailModal({ visible, setVisibile }) {
               setSearchTerm={setSearchTerm}
               searchBarStyles={styles.searchBar}
             />
-            <View style={styles.sortBtn}>
-              <Text style={styles.sortText}>
-                Sort ASC
-              </Text>
-            </View>
+            <Pressable onPress={onSortClick}>
+              <View style={styles.sortBtn}>
+                <Text style={styles.sortText}>
+                  Sort ASC
+                </Text>
+              </View>
+            </Pressable>
           </View>
           <InvoiceDetailModalList 
             searchTerm={searchTerm} 
@@ -58,6 +65,7 @@ function InvoiceDetailModal({ visible, setVisibile }) {
             setSearchLoading={setSearchLoading}
             onSelectedDeposit={onSelectedDeposit}
             onRemovedDeposit={onRemovedDeposit}
+            isSortAscending={isSortAscending}
           /> 
           <View style={styles.modalFooter}>
             <Pressable onPress={hideModal}>
@@ -102,6 +110,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 150,
     padding: 10,
+    marginLeft: 10,
     marginRight: 10,
     backgroundColor: Colors.brightGreen,
     borderRadius: 15,

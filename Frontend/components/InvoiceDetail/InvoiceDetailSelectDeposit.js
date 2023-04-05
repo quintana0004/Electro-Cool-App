@@ -16,7 +16,7 @@ function InvoiceDetailSelectDeposit({ invoiceId, onPress }) {
   const { isLoading, data } = useQuery({
     queryKey: ["SelectedDeposits", invoiceId],
     queryFn: fetchDepositsData,
-    enabled: true,
+    enabled: !!invoiceId,
   });
 
   useEffect(() => {

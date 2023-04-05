@@ -3,8 +3,9 @@ import { httpGetAllDeposits } from "../../api/deposits.api";
 import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import InvoiceDetailModalListItem from "./InvoiceDetailModalListItem";
+import { useEffect } from "react";
 
-function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, onSelectedDeposit, onRemovedDeposit }) {
+function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, onSelectedDeposit, onRemovedDeposit, isSortAscending }) {
 
   const TAKE = 15;
 
@@ -17,7 +18,7 @@ function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, o
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 minutes
   });
-  
+
   async function getDepositItemsData({ pageParam = 0 }) {
     let data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
 
@@ -40,7 +41,23 @@ function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, o
       tableData.push(...items.data);
     }
 
-    return tableData;
+    let sortedData = sortTableData(tableData);
+
+    return sortedData;
+  }
+
+  function sortTableData(data) {
+
+    let sortedData = [];
+
+    if (isSortAscending) {
+      sortedData = data.sort((a, b) => a.customer.firstName.localeCompare(b.customer.firstName));
+    }
+    else {
+      sortedData = data.sort((a, b) => b.customer.firstName.localeCompare(a.customer.firstName));
+    }
+
+    return sortedData;
   }
 
   function renderTableItem({ item }) {
