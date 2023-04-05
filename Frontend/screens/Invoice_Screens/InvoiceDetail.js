@@ -18,9 +18,12 @@ import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
 import Figures from "../../constants/figures/Figures";
 import { useDepositStore } from "../../Store/depositStore";
+import { useInvoiceStore } from "../../Store/invoiceStore";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
+
+  // Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
       id: state.id,
@@ -49,13 +52,17 @@ function InvoiceDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
-  const [clientInfo, setClientInfo] = useState(client);
-  const [carInfo, setCarInfo] = useState(car);
-  const [invoiceItems, setInvoiceItems] = useState([]);
+  const toggleReloadInvoiceList = useInvoiceStore((state) => state.toggleReloadInvoiceList);
   const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
   const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
   const resetSelectedDeposits = useDepositStore((state) => state.resetSelectedDeposits);
 
+  // State Variables
+  const [clientInfo, setClientInfo] = useState(client);
+  const [carInfo, setCarInfo] = useState(car);
+  const [invoiceItems, setInvoiceItems] = useState([]);
+
+  // Calculated Variables
   const totalAmount = useMemo(() => {
     let amount = 0;
 
@@ -111,6 +118,19 @@ function InvoiceDetail({ route, navigation }) {
     resetSelectedDeposits();
     navigation.navigate("InvoiceMain");
   }
+
+  function onSaveNavigation(option) {
+    
+    toggleReloadInvoiceList();
+    Alert.alert("Success", "The invoice was saved successfully.");
+
+    if (option === "Pay") {
+      return console.log("Pay Button Clicked");
+    }
+
+    return navigation.navigate("InvoiceMain");
+  }
+
 
   function generateKey() {
     const randomString = Math.random().toString(36).substring(2, 8);
@@ -170,11 +190,10 @@ function InvoiceDetail({ route, navigation }) {
   async function onSaveUpdateInvoice(option) {
     try {
       const invoiceInfo = {
-        id: invoiceId,
         status: option,
-        amountTotal: totalAmount,
-        amountPaid: amountPaid,
-        amountDue: amountDue,
+        amountTotal: totalAmount / 100,
+        amountPaid: amountPaid / 100,
+        amountDue: amountDue / 100,
         invoiceItems: invoiceItems,
         customerId: clientInfo.id,
         carId: carInfo.id,
@@ -182,10 +201,12 @@ function InvoiceDetail({ route, navigation }) {
         depositIds: getDepositIds(),
       };
 
-      console.log("On Invoice Detail Save:", invoiceInfo);
+      // Only Add Id if present
+      if (invoiceId) invoiceInfo.id = invoiceId;
 
-      const response = await httpUpsertInvoice(invoiceInfo);
-      console.log("Save Invoice Response: ", response.data);
+      await httpUpsertInvoice(invoiceInfo);
+
+      onSaveNavigation(option);
 
     } catch (error) {
       console.log(error);

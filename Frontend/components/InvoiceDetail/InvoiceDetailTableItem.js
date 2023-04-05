@@ -6,26 +6,22 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 import InvoiceDetailSelect from "./InvoiceDetailSelect";
 
-// TODO:
-// 1. Create input for description
-// 2. Better update handeling for invoiceItemData
-// 3. Send data to parent on blur
-
 function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   const [invoiceItem, setInvoiceItem] = useState({
+    key: invoiceItemInfo.key,
     description: invoiceItemInfo.description,
     quantity: invoiceItemInfo.quantity,
-    price: invoiceItemInfo.unitPrice,
+    unitPrice: invoiceItemInfo.unitPrice,
     warranty: invoiceItemInfo.warranty,
   });
 
   const formattedTotalAmount = useMemo(() => {
-    return invoiceItem.price * invoiceItem.quantity * 100;  
-  }, [invoiceItem.price, invoiceItem.quantity]);
+    return invoiceItem.unitPrice * invoiceItem.quantity * 100;  
+  }, [invoiceItem.unitPrice, invoiceItem.quantity]);
 
   const formattedPrice = useMemo(() => {
-    return (invoiceItem.price * 100).toFixed(2).toString();
-  }, [invoiceItem.price]);
+    return (invoiceItem.unitPrice * 100).toFixed(2).toString();
+  }, [invoiceItem.unitPrice]);
 
   function handleRemoveItem() {
     removeItem(invoiceItemInfo.key);
@@ -40,8 +36,8 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   }
 
   function handlePriceChange(value) {
-    const extractedValue = value.replace('$', '');
-    setInvoiceItem({...invoiceItem, price: extractedValue});
+    const decimalValue = currencyStringToDecimal(value);
+    setInvoiceItem({...invoiceItem, unitPrice: decimalValue});
   }
 
   function handleWarrantyChange(value) {
@@ -51,9 +47,24 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
     onBlurUpdateInvoiceItem();
   }
 
+  function handleTotalAmountUpdate(item) {
+    return (item.unitPrice * invoiceItem.quantity);
+  }
+
   function onBlurUpdateInvoiceItem() {
+    invoiceItem.totalPrice = handleTotalAmountUpdate(invoiceItem);
     updateItem(invoiceItem);
   }
+
+  function currencyStringToDecimal(currencyString) {
+  // Remove any non-digit characters except for the decimal point
+  const cleanedString = currencyString.replace(/[^0-9.]+/g, '');
+
+  // Parse the cleaned string as a floating-point number
+  const decimalNumber = parseFloat(cleanedString);
+
+  return decimalNumber;
+}
 
   return (
     <View style={styles.container}>
@@ -140,6 +151,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 10,
     paddingRight: 5,
+  },
+  descText: {
+    minWidth: 100,
   },
   quantityContainer: {
     flexDirection: "row",

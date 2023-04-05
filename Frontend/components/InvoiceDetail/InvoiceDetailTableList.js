@@ -17,8 +17,16 @@ function InvoiceDetailTableList({invoiceItems, setInvoiceItems}) {
   }
 
   function updateInvoiceItems(invoiceItem) {
-    invoiceItems[invoiceItem.key] = invoiceItem;
-    setInvoiceItems([...invoiceItems]);
+
+    let updatedInoviceItems = invoiceItems.map((item) => {
+      if (item.key === invoiceItem.key) {
+        return invoiceItem;
+      }
+
+      return item;
+    });
+
+    setInvoiceItems([...updatedInoviceItems]);
   }
 
   function renderTableItem({ item }) {

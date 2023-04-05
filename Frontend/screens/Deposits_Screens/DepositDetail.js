@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useQuery } from "@tanstack/react-query";
 import { Appbar } from "react-native-paper";
@@ -13,15 +13,50 @@ import NavBtn from "../../components/UI/NavBtns";
 import SectionDivider from "../../components/UI/SectionDivider";
 import AmountInput from "../../components/UI/AmountInput";
 import SaveMenu from "../../components/UI/SaveMenu";
+import { useDepositStore } from "../../Store/depositStore";
+import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
 
 function DepositDetail({ route, navigation }) {
-  const { client, car, depositId } = route.params;
-  const isDepositRevocable = !!depositId;
+  const { depositId = null } = route.params || {};
+
+  // Store Variables
+  const client = useCustomerInfoStore((state) => {
+    return {
+      id: state.id,
+      firstName: state.firstName,
+      lastName: state.lastName,
+      addressLine1: state.addressLine1,
+      addressLine2: state.addressLine2,
+      state: state.state,
+      city: state.city,
+      phone: state.phone,
+      email: state.email,
+    };
+  });
+  const car = useVehicleInfoStore((state) => {
+    return {
+      id: state.id,
+      brand: state.brand,
+      licensePlate: state.licensePlate,
+      model: state.model,
+      year: state.year,
+      mileage: state.mileage,
+      color: state.color,
+      vinNumber: state.vinNumber,
+      carHasItems: state.carHasItems,
+      carItemsDescription: state.carItemsDescription,
+      customerId: state.customerId,
+    };
+  });
+  const toggleReloadDepositList = useDepositStore((state) => state.toggleReloadDepositList);
+
+  // Store Variables
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [depositDescription, setDepositDescription] = useState("");
   const [depositAmount, setDepositAmount] = useState(0);
-
+  const isDepositRevocable = !!depositId;
+  
   const { isLoading, data, hasError } = useQuery({
     queryKey: ["DepositDetailData", depositId],
     queryFn: fetchDepositData,
@@ -70,7 +105,6 @@ function DepositDetail({ route, navigation }) {
       if (depositId) depositInfo.id = depositId;
 
       await httpUpsertDeposit(depositInfo);
-      Alert.alert("Success", "The deposit was saved successfully.");
       onSaveNavigation(option);
     } catch (error) {
       // This is temporary until we define how we want to handle errors.
@@ -79,14 +113,15 @@ function DepositDetail({ route, navigation }) {
   }
 
   function onSaveNavigation(option) {
-    if (option === "Done") {
-      navigation.navigate("InvoiceMain");
-    } else if (option === "In Draft") {
-      navigation.navigate("InvoiceMain");
-    } else if (option === "Pay") {
-      // TODO: Navigate to the page where we generate the PDF for the Deposit.
-      console.log("Pay Button Clicked");
+    
+    Alert.alert("Success", "The deposit was saved successfully.");
+    toggleReloadDepositList();
+
+    if (option === "Pay") {
+      return console.log("Pay Button Clicked");
     }
+
+    return navigation.navigate("InvoiceMain");
   }
 
   return (

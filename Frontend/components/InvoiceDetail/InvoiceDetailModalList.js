@@ -3,14 +3,15 @@ import { httpGetAllDeposits } from "../../api/deposits.api";
 import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import InvoiceDetailModalListItem from "./InvoiceDetailModalListItem";
-import { useEffect } from "react";
+import { useInvoiceStore } from "../../Store/invoiceStore";
 
 function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, onSelectedDeposit, onRemovedDeposit, isSortAscending }) {
 
   const TAKE = 15;
+  const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
   const { isLoading, data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ["SelectDepositModalList", searchTerm],
+    queryKey: ["SelectDepositModalList", searchTerm, reloadInvoiceList],
     queryFn: getDepositItemsData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;

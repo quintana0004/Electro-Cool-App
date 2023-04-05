@@ -151,6 +151,7 @@ async function updateDepositsParentInvoice(depositIds: number[], invoiceId: numb
       },
       data: {
         invoiceId: invoiceId,
+        isAvailable: false,
       },
     });
 

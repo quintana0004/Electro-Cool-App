@@ -12,6 +12,14 @@ export async function httpGetInvoice(id) {
 }
 
 export async function httpUpsertInvoice(invoiceInfo) {
-  const response = await axios("/invoices", {invoiceInfo});
+  try {
+  const response = await axios.post("/invoices", invoiceInfo);
   return response;
+  }
+  catch (error) {
+    if (error.response) {
+      console.log("Error on Http Upsert Invoice Message: ", error.message);
+      console.log("Error on Http Upsert Invoice Data: ", error.response.data);
+    }
+  }
 }

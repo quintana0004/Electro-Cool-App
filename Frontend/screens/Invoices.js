@@ -9,6 +9,7 @@ import TableListInvoice from "../components/Invoices/TableListInvoice";
 import ToggleButtons from "../components/Invoices/ToggleButtons";
 import ActionBtn from "../components/UI/ActionBtn";
 import Colors from "../constants/Colors/Colors";
+import { useRouterStore } from "../Store/routerStore";
 
 function Invoices({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,25 +23,21 @@ function Invoices({ navigation }) {
     "In Draft": false,
   });
   const [filterBannerVisibility, setFilterBannerVisibility] = useState(false);
+  
+  // Store For Management of Routers
+  const setExistingClientNextPage = useRouterStore((state) => state.setExistingClientNextPage);
+  const setExistingCarNextPage = useRouterStore((state) => state.setExistingCarNextPage);
 
   function navigateToCreateInvoiceFlow() {
-    navigation.navigate("ExistingClients", {
-      nextScreen: "ExistingCars",
-      previousScreen: "InvoiceMain",
-      cancelScreen: "InvoiceMain",
-      otherNextScreen: "InvoiceDetail",
-      otherPreviousScreen: "ExistingClients",
-    });
+    setExistingClientNextPage("ExistingCars");
+    setExistingCarNextPage("InvoiceDetail");
+    navigation.navigate("ExistingClients");
   }
 
   function navigateToCreateDepositFlow() {
-    navigation.navigate("ExistingClients", {
-      nextScreen: "ExistingCars",
-      previousScreen: "InvoiceMain",
-      cancelScreen: "InvoiceMain",
-      otherNextScreen: "DepositDetail",
-      otherPreviousScreen: "ExistingClients",
-    });
+    setExistingClientNextPage("ExistingCars");
+    setExistingCarNextPage("DepositDetail");
+    navigation.navigate("ExistingClients");
   }
 
   function updateActiveCategory(category) {
