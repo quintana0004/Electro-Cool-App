@@ -15,6 +15,7 @@ import AmountInput from "../../components/UI/AmountInput";
 import SaveMenu from "../../components/UI/SaveMenu";
 import { useDepositStore } from "../../Store/depositStore";
 import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+import { StackActions } from "@react-navigation/native";
 
 function DepositDetail({ route, navigation }) {
   const { depositId = null } = route.params || {};
@@ -57,7 +58,7 @@ function DepositDetail({ route, navigation }) {
   const [depositAmount, setDepositAmount] = useState(0);
   const isDepositRevocable = !!depositId;
   
-  const { isLoading, data, hasError } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["DepositDetailData", depositId],
     queryFn: fetchDepositData,
     enabled: !!depositId,
@@ -66,16 +67,13 @@ function DepositDetail({ route, navigation }) {
   function navigateNext() {}
 
   function navigateBack() {
-    navigation.navigate("ExistingCars", {
-      nextScreen: "DepositDetail",
-      previousScreen: "ExistingClients",
-      cancelScreen: "InvoiceMain",
-      client: client,
-    });
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
   }
 
   function navigateCancel() {
-    navigation.navigate("InvoiceMain");
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
   }
 
   function setDepositInfo(data) {
@@ -86,30 +84,29 @@ function DepositDetail({ route, navigation }) {
   }
 
   async function fetchDepositData() {
-    const data = await httpGetDeposit(depositId);
-    setDepositInfo(data.data);
-    return data.data;
+    const response = await httpGetDeposit(depositId);
+    setDepositInfo(response.data);
+    return response.data;
   }
 
   async function onSaveUpdateDeposit(option) {
-    try {
-      const depositInfo = {
-        customerId: clientInfo.id,
-        carId: carInfo.id,
-        description: depositDescription,
-        amountTotal: depositAmount,
-        status: option,
-      };
+    const depositInfo = {
+      customerId: clientInfo.id,
+      carId: carInfo.id,
+      description: depositDescription,
+      amountTotal: depositAmount,
+      status: option,
+    };
 
-      // Only assign the depositId if it exists. If it doesn't exist, then we are creating a new deposit.
-      if (depositId) depositInfo.id = depositId;
+    // Only assign the depositId if it exists. If it doesn't exist, then we are creating a new deposit.
+    if (depositId) depositInfo.id = depositId;
 
-      await httpUpsertDeposit(depositInfo);
-      onSaveNavigation(option);
-    } catch (error) {
-      // This is temporary until we define how we want to handle errors.
-      Alert.alert("Error", "There was an error saving the deposit.");
+    const response = await httpUpsertDeposit(depositInfo);
+    if (response.hasError) {
+      return Alert.alert("Error", "There was an error saving the deposit. Please try again later.");
     }
+
+    onSaveNavigation(option);
   }
 
   function onSaveNavigation(option) {
@@ -122,6 +119,11 @@ function DepositDetail({ route, navigation }) {
     }
 
     return navigation.navigate("InvoiceMain");
+  }
+
+  if (isError) {
+    console.log("Error Fetching Deposit Detail: ", error);
+    Alert.alert("Error", "There was an error fetching the deposit detail data. Please try again later.");
   }
 
   return (

@@ -77,6 +77,8 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
             onBlur={onBlurUpdateInvoiceItem}
           />
         </View>
+      </View>
+      <View style={styles.selectContainer}>
         <InvoiceDetailSelect value={invoiceItem.warranty} onSelect={handleWarrantyChange}/>
       </View>
       <View style={styles.quantityContainer}>
@@ -133,13 +135,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "relative",
     backgroundColor: Colors.brightYellow,
     height: 50,
     marginHorizontal: 15,
     marginVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15,
-    zIndex: 0,
+    elevation: 0,
   },
   descContainer: {
     flexDirection: "row",
@@ -154,6 +157,13 @@ const styles = StyleSheet.create({
   },
   descText: {
     minWidth: 100,
+  },
+  selectContainer: {
+    position: "absolute",
+    top: 10,
+    left: 130,
+    elevation: 99999,
+    zIndex: 99999
   },
   quantityContainer: {
     flexDirection: "row",

@@ -19,11 +19,12 @@ import Colors from "../../constants/Colors/Colors";
 import Figures from "../../constants/figures/Figures";
 import { useDepositStore } from "../../Store/depositStore";
 import { useInvoiceStore } from "../../Store/invoiceStore";
+import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
 
-  // Store Variables
+  // --- Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
       id: state.id,
@@ -57,12 +58,12 @@ function InvoiceDetail({ route, navigation }) {
   const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
   const resetSelectedDeposits = useDepositStore((state) => state.resetSelectedDeposits);
 
-  // State Variables
+  // --- State Variables
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
 
-  // Calculated Variables
+  // --- Calculated Variables
   const totalAmount = useMemo(() => {
     let amount = 0;
 
@@ -92,7 +93,8 @@ function InvoiceDetail({ route, navigation }) {
   }, [totalAmount, amountPaid]);
 
 
-  const { isLoading } = useQuery({
+  // --- Data Fetching
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
@@ -106,31 +108,15 @@ function InvoiceDetail({ route, navigation }) {
 
   // TODO: Fix Navigations for new implementation
   function navigateBack() {
-    navigation.navigate("ExistingCars", {
-      nextScreen: "InvoiceDetail",
-      previousScreen: "ExistingClients",
-      cancelScreen: "InvoiceMain",
-      client: client,
-    });
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
   }
 
   function navigateCancel() {
     resetSelectedDeposits();
-    navigation.navigate("InvoiceMain");
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
   }
-
-  function onSaveNavigation(option) {
-    
-    toggleReloadInvoiceList();
-    Alert.alert("Success", "The invoice was saved successfully.");
-
-    if (option === "Pay") {
-      return console.log("Pay Button Clicked");
-    }
-
-    return navigation.navigate("InvoiceMain");
-  }
-
 
   function generateKey() {
     const randomString = Math.random().toString(36).substring(2, 8);
@@ -177,40 +163,50 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function fetchInvoiceData() {
-    try {
-      const data = await httpGetInvoice(invoiceId);
-      setInvoiceInfo(data.data);
-      return data.data;
-    } catch (error) {
-      // This is temporary until I can figure out how to handle errors
-      Alert.alert("Error", "There was an error fetching the invoice data.");
-    }
+    const data = await httpGetInvoice(invoiceId);
+    setInvoiceInfo(data.data);
+    return data.data;
   }
 
   async function onSaveUpdateInvoice(option) {
-    try {
-      const invoiceInfo = {
-        status: option,
-        amountTotal: totalAmount / 100,
-        amountPaid: amountPaid / 100,
-        amountDue: amountDue / 100,
-        invoiceItems: invoiceItems,
-        customerId: clientInfo.id,
-        carId: carInfo.id,
-        invoiceItems: invoiceItems,
-        depositIds: getDepositIds(),
-      };
+    const invoiceInfo = {
+      status: option,
+      amountTotal: totalAmount / 100,
+      amountPaid: amountPaid / 100,
+      amountDue: amountDue / 100,
+      invoiceItems: invoiceItems,
+      customerId: clientInfo.id,
+      carId: carInfo.id,
+      invoiceItems: invoiceItems,
+      depositIds: getDepositIds(),
+    };
 
-      // Only Add Id if present
-      if (invoiceId) invoiceInfo.id = invoiceId;
+    // Only Add Id if present
+    if (invoiceId) invoiceInfo.id = invoiceId;
 
-      await httpUpsertInvoice(invoiceInfo);
-
-      onSaveNavigation(option);
-
-    } catch (error) {
-      console.log(error);
+    const response = await httpUpsertInvoice(invoiceInfo);
+    if (response.hasError) {
+      return Alert.alert("Error", "There was an error saving the invoice. Please try again later.");
     }
+
+    onSaveNavigation(option);
+  }
+
+  function onSaveNavigation(option) {
+
+    toggleReloadInvoiceList();
+    Alert.alert("Success", "The invoice was saved successfully.");
+
+    if (option === "Pay") {
+      return console.log("Pay Button Clicked");
+    }
+
+    return navigation.navigate("InvoiceMain");
+  }
+
+  if (isError) {
+    console.log("Error Fetching Invoice Detail: ", error);
+    Alert.alert("Error", "There was an error fetching the invoice detail data. Please try again later.");
   }
 
   return (

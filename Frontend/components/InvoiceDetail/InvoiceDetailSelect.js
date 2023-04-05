@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Octicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors/Colors';
 
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: Colors.black,
     position: 'relative',
-    zIndex: 9999,
+    zIndex: Platform.OS === 'ios' ? 99999 : undefined,
+    elevation: Platform.OS === 'android' ? 99999 : undefined,
   },
   select: {
     flexDirection: 'row',
@@ -71,7 +72,8 @@ const styles = StyleSheet.create({
     right: 0,
     borderRadius: 10,
     backgroundColor: Colors.white,
-    zIndex: 99999,
+    zIndex: Platform.OS === 'ios' ? 99999 : undefined,
+    elevation: Platform.OS === 'android' ? 99999 : undefined,
   },
   optionsWrapper: {
     borderWidth: 1,

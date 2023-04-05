@@ -1,11 +1,10 @@
 import { Dimensions, FlatList, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { httpGetAllClients } from "../../../api/clients.api";
+import { httpGetAllCars } from "../../../api/cars.api";
 import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils";
 import ExistingCarItemTableItem from "./ExistingCarTableItem";
 import ExistingCarTableHeader from "./ExistingCarTableHeader";
-import { httpGetAllCars } from "../../../api/cars.api";
 
 function ExistingCarTableList({
   searchTerm,
@@ -17,7 +16,7 @@ function ExistingCarTableList({
   const TAKE = 15;
   const queryClient = useQueryClient();
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
     queryKey: ["ExistingCarData", searchTerm],
     queryFn: getExistingCarData,
     getNextPageParam: (lastPage) => {
@@ -85,6 +84,11 @@ function ExistingCarTableList({
     };
 
     return <ExistingCarItemTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
+  }
+
+  if (isError) {
+    console.log("Error Fetching Existing Cars: ", error);
+    Alert.alert("Error", "There was an error fetching existing cars. Please try again later.");
   }
 
   return (

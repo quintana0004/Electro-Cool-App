@@ -1,46 +1,52 @@
 import axios from "./axios";
 
 export async function httpGetAllDeposits(take, page, searchTerm) {
-  try {
-    const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
-    const deposits = await axios("/deposits" + queryParams);
-    
-    let depositLength = deposits.data.data.length;
-    if (depositLength > 0) {
-      let filteredDesposits = deposits.data.data;
-      filteredDesposits = filteredDesposits.filter((d) => d.isAvailable === true);
-      deposits.data.data = filteredDesposits;
-    }
+  const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
+  const deposits = await axios("/deposits" + queryParams);
 
-    return deposits;
-  } catch (error) {
-    console.log("Error at the Http Get All Deposits: ", error.response.data);
+  return deposits;
+}
+
+export async function httpGetAllAvailableDeposits(take, page, searchTerm) {
+  const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
+  const deposits = await axios("/deposits" + queryParams);
+
+  let depositLength = deposits.data.data.length;
+  if (depositLength > 0) {
+    let filteredDesposits = deposits.data.data;
+    filteredDesposits = filteredDesposits.filter((d) => d.isAvailable === true);
+    deposits.data.data = filteredDesposits;
   }
+
+  return deposits;
 }
 
 export async function httpGetDepositsByInvoiceId(invoiceId) {
-   try {
-    const deposits = await axios("/deposits/invoice/" + invoiceId);
-    return deposits;
-  } catch (error) {
-    console.log("Error at the Http Get Deposits By Invoice Id: ", error.response.data);
-  } 
+  const deposits = await axios("/deposits/invoice/" + invoiceId);
+  return deposits;
 }
 
 export async function httpGetDeposit(id) {
-  try {
-    const deposit = await axios("/deposits/" + id);
-    return deposit;
-  } catch (error) {
-    console.log("Error at the Http Get Deposit: ", error.response.data);
-  }
+  const deposit = await axios("/deposits/" + id);
+  return deposit;
 }
 
 export async function httpUpsertDeposit(depositInfo) {
+  
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
+
   try {
     const response = await axios.post("/deposits", depositInfo);
-    return response;
+    responseToReturn.data = response.data;
   } catch (error) {
-    console.log("Error at the Http Upsert Deposits: ", error.response.data);
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error.errorMessage;
   }
+
+  return responseToReturn;
 }

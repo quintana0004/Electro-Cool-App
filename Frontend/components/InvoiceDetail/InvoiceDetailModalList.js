@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { httpGetAllDeposits } from "../../api/deposits.api";
+import { httpGetAllAvailableDeposits } from "../../api/deposits.api";
 import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import InvoiceDetailModalListItem from "./InvoiceDetailModalListItem";
@@ -10,7 +10,7 @@ function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, o
   const TAKE = 15;
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
-  const { isLoading, data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const { isLoading, data, fetchNextPage, hasNextPage, isError, error } = useInfiniteQuery({
     queryKey: ["SelectDepositModalList", searchTerm, reloadInvoiceList],
     queryFn: getDepositItemsData,
     getNextPageParam: (lastPage) => {
@@ -21,7 +21,7 @@ function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, o
   });
 
   async function getDepositItemsData({ pageParam = 0 }) {
-    let data = await httpGetAllDeposits(TAKE, pageParam, searchTerm);
+    let data = await httpGetAllAvailableDeposits(TAKE, pageParam, searchTerm);
 
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);
@@ -70,6 +70,11 @@ function InvoiceDetailModalList({ searchTerm, searchLoading, setSearchLoading, o
     }
 
     return <InvoiceDetailModalListItem itemData={itemInfo} onSelectedDeposit={onSelectedDeposit} onRemovedDeposit={onRemovedDeposit} />
+  }
+
+  if (isError) {
+    console.log("Error Fetching Deposits for Invoice Detail Modal List: ", error);
+    Alert.alert("Error", "There was an error fetching the deposits for selection. Please try again later.");
   }
 
   return (

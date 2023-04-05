@@ -4,13 +4,6 @@ import InvoiceDetailTableItem from "./InvoiceDetailTableItem";
 
 function InvoiceDetailTableList({invoiceItems, setInvoiceItems}) {
 
-  // Things Needed:
-  // 1. FlatList - Done
-  // 2. Setup Render Item Function - Done
-  // 4. Ability to remove items - Done
-  // 5. Ability to update items
-  // 6. Display items
-
   function removeInvoiceItem(key) {
     let filteredData = invoiceItems.filter((item) => item.key != key);
     setInvoiceItems([...filteredData]);

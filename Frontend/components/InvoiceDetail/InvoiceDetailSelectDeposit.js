@@ -6,14 +6,14 @@ import { useEffect, useState } from "react";
 import InvoiceDetailModal from "./InvoiceDetailModal";
 import { useDepositStore } from "../../Store/depositStore";
 
-function InvoiceDetailSelectDeposit({ invoiceId, onPress }) {
+function InvoiceDetailSelectDeposit({ invoiceId }) {
   const [depositsCount, setDepositsCount] = useState(0);
   const [visible, setVisible] = useState(false);
   const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
   const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
   const setServerSelectedDeposits = useDepositStore((state) => state.setServerSelectedDeposits);
 
-  const { isLoading, data } = useQuery({
+  const { isError, error } = useQuery({
     queryKey: ["SelectedDeposits", invoiceId],
     queryFn: fetchDepositsData,
     enabled: !!invoiceId,
@@ -24,14 +24,9 @@ function InvoiceDetailSelectDeposit({ invoiceId, onPress }) {
   }, [clientSelectedDeposits, serverSelectedDeposits]);
 
   async function fetchDepositsData() {
-    try {
-      const response = await httpGetDepositsByInvoiceId(invoiceId);
-      setServerSelectedDeposits(response.data);
-      return response.data;
-    }
-    catch (error) {
-      console.log("Select Deposit Fetch Error: ", error);
-    }
+    const response = await httpGetDepositsByInvoiceId(invoiceId);
+    setServerSelectedDeposits(response.data);
+    return response.data;
   }
 
   function calculateSelectedDepositsCount() {
@@ -41,6 +36,11 @@ function InvoiceDetailSelectDeposit({ invoiceId, onPress }) {
 
   function showDepositModal() {
     setVisible(true);
+  }
+
+  if (isError) {
+    console.log("Error Fetching Deposit Count: ", error);
+    Alert.alert("Error", "There was an error fetching the deposits for this invoice. Please reload app.");
   }
 
   return (

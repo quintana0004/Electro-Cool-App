@@ -19,7 +19,7 @@ function TableListInvoice({
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
   const reloadDepositList = useDepositStore((state) => state.reloadDepositList);
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
     queryKey: ["InvoicesHomeData", activeCategory, searchTerm, reloadInvoiceList, reloadDepositList],
     queryFn: getInvoicesHomeScreenData,
     getNextPageParam: (lastPage) => {
@@ -91,6 +91,11 @@ function TableListInvoice({
     };
 
     return <TableItemInvoice itemData={itemInfo} category={activeCategory} />;
+  }
+
+  if (isError) {
+    console.log("Error Fetching Invoice & Deposit Items: ", error);
+    Alert.alert("Error", "There was an error fetching the invoice & deposit items. Please try again later.");
   }
 
   return (
