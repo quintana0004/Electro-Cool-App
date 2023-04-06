@@ -4,18 +4,17 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { httpGetAllTasks } from "../../api/tasks.api";
 
 import TableItemTasks from "./TableItemTasks";
-import TableHeaderCalendar from "./TableHeaderTasks";
+import TableHeaderCalendar from "./TableHeaderCalendar";
 
 function TableListTasks({
   activeCategory,
   searchTerm,
-  filters,
   searchLoading,
   setSearchLoading,
 }) {
   console.log("List");
   const TAKE = 15;
-  searchTerm = "2023-09-12T00:00:00.000Z";
+  searchTerm = "2023-06-12T00:00:00.000Z";
 
   const queryClient = useQueryClient();
 
@@ -33,7 +32,7 @@ function TableListTasks({
   async function getTasksHomeScreenData({ pageParam = 0 }) {
     let data = null;
     data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    console.log("Await Tasks", data);
+    console.log("Gabo es cool", data);
 
     if (searchLoading) setSearchLoading(false);
 
@@ -66,7 +65,7 @@ function TableListTasks({
   }
 
   function renderTableItem({ item }) {
-    console.log("Content:", item);
+    console.log("Loading", item);
     const itemInfo = {
       id: item.id,
       title: item.text,

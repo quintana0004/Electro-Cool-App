@@ -6,7 +6,7 @@ const CalendarData = [
         id: 1,
         name: "HOLA",
         startTime: "T23:59:59.999Z",
-        endTime: "T23:59:59.999Z",
+        endTime: "T00:59:59.999Z",
       },
       {
         id: 2,

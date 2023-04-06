@@ -1,88 +1,112 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  FlatList,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
+  View,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
+import { Card, Avatar } from "react-native-paper";
+import CalendarData from "../../constants/Dummy_Data/AppointmentsData";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
+const App = () => {
+  const [items, setItems] = React.useState({});
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.item, { backgroundColor }]}
-  >
-    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
-  </TouchableOpacity>
-);
-const Appointment = ({ navigation }) => {
-  const [selectedId, setSelectedId] = useState();
+  const loadItems = (day) => {
+    setTimeout(() => {
+      const newItems = {};
 
-  const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#fff" : "#fff";
-    const color = item.id === selectedId ? "white" : "black";
+      CalendarData.forEach((entry) => {
+        const date = entry.date;
+        const appointments = entry.appointments;
 
+        newItems[date] = appointments.map((appointment) => {
+          const startTime = formatLocaleDateTime(appointment.startTime);
+          const endTime = formatLocaleDateTime(appointment.endTime);
+          return {
+            ...appointment,
+            day: date,
+            startTime,
+            endTime,
+          };
+        });
+      });
+
+      setItems(newItems);
+    }, 1000);
+  };
+  const formatLocaleDateTime = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const renderItem = (item) => {
+    const startComponents = item.startTime.substring(1).split(":");
+    const startHours = parseInt(startComponents[0]);
+    const startMinutes = parseInt(startComponents[1]);
+    const startDate = new Date(0, 0, 0, startHours, startMinutes);
+
+    const endComponents = item.endTime.substring(1).split(":");
+    const endHours = parseInt(endComponents[0]);
+    const endMinutes = parseInt(endComponents[1]);
+    const endDate = new Date(0, 0, 0, endHours, endMinutes);
     return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={backgroundColor}
-        textColor={color}
-      />
+      <TouchableOpacity style={styles.item}>
+        <Card>
+          <Card.Content>
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text>{item.name}</Text>
+              <Text>{Array.from(startDate)[3]}</Text>
+              <Text>{formatLocaleDateTime(endDate)}</Text>
+
+              <Avatar.Text label="A" />
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
     );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Agenda>
+    <View style={styles.container}>
+      <Agenda
+        items={items}
+        loadItemsForMonth={loadItems}
+        refreshControl={null}
+        showClosingKnob={true}
+        refreshing={false}
+        renderItem={renderItem}
         showOnlySelectedDayItems={true}
-        minDate={"2023-25-01"}
-        maxDate={"2023-23-05"}
-        theme=
-        {{
+        theme={{
           dotColor: "#E5B126",
         }}
-        <FlatList
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          extraData={selectedId}
-        />
-      </Agenda>
-    </SafeAreaView>
+      />
+      <StatusBar />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
+    flex: 1,
+    borderRadius: 2,
+    padding: 11,
+    marginRight: 10,
+    marginTop: 17,
   },
 });
 
-export default Appointment;
+export default App;

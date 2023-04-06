@@ -1,14 +1,11 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { format } from "date-fns";
-import { useNavigation } from "@react-navigation/core";
 import { Appbar } from "react-native-paper";
 import { httpDeleteTask } from "../../api/tasks.api";
 import Colors from "../../constants/Colors/Colors";
 
 function TableItemTasks({ itemData, onDelete }) {
   const { id, title, date } = itemData;
-  const navigation = useNavigation();
-  console.log("Loading", id, title, date);
 
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
@@ -21,19 +18,17 @@ function TableItemTasks({ itemData, onDelete }) {
 
   return (
     <View>
-      <Pressable>
-        <View style={styles.container}>
-          <View style={{ width: 300, marginLeft: 15 }}>
-            <Text>{title}</Text>
-          </View>
-          <View style={{ width: 100, marginRight: 60 }}>
-            <Text>{DateText()}</Text>
-          </View>
-          <View style={{ width: 80 }}>
-            <Appbar.Action icon="delete" onPress={handleDelete} />
-          </View>
+      <View style={styles.container}>
+        <View style={{ width: 300, marginLeft: 15 }}>
+          <Text>{title}</Text>
         </View>
-      </Pressable>
+        <View style={{ width: 100, marginRight: 60 }}>
+          <Text>{DateText()}</Text>
+        </View>
+        <View style={{ width: 80 }}>
+          <Appbar.Action icon="delete" onPress={handleDelete} />
+        </View>
+      </View>
     </View>
   );
 }

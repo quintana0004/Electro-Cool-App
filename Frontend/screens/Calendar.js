@@ -6,12 +6,16 @@ import Appointments from "../screens/Calendar_Screens/Appointments";
 import Appbar from "react-native-paper/src/components/Appbar";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import TableListTasks from "../components/Calendar/TableListTasks";
+import SearchBanner from "../components/UI/SearchBanner";
+import { StackActions } from "@react-navigation/native";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
+  const pageAction = StackActions.push("CalendarSelection");
+  //Initialize Function and set
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
@@ -29,14 +33,28 @@ function Calendar({ navigation }) {
           }
         ></Appbar.Content>
 
-        <Appbar.Action icon="plus" onPress={() => {}} />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("CalendarSelection");
+            //   navigation.dispatch(pageAction);
+          }}
+        />
         <Appbar.Action
           icon="magnify"
           onPress={() => {
             setOpenBannerSearch(!openBannerSearch);
+            // Store function being called
           }}
         />
       </Appbar.Header>
+      <SearchBanner
+        visible={openBannerSearch}
+        loading={searchLoading}
+        placeholder={"Search by Name"}
+        setLoading={setSearchLoading}
+        setSearchTerm={setSearchTerm}
+      />
 
       <View style={styles.container}>
         {activeCategory === "Appointments" ? (

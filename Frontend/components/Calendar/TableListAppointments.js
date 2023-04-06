@@ -1,25 +1,22 @@
 import React from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
-
+import { Agenda } from "react-native-calendars";
 function TableListAppointments({
   activeCategory,
   searchTerm,
-  filters,
   searchLoading,
   setSearchLoading,
 }) {
   console.log("List");
   const TAKE = 15;
-  searchTerm = "2023-06-12T00:00:00.000Z";
-
-  const queryClient = useQueryClient();
+  searchTerm = "2022-02-25T10:31:00.000Z";
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["TasksHomeData", activeCategory, searchTerm],
-    queryFn: getTasksHomeScreenData,
+    queryKey: ["AppointmentsHomeData", activeCategory, searchTerm],
+    queryFn: getAppointmentsHomeScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage
         ? undefined
@@ -28,22 +25,14 @@ function TableListAppointments({
     enabled: true,
   });
 
-  async function getTasksHomeScreenData({ pageParam = 0 }) {
+  async function getAppointmentsHomeScreenData({ pageParam = 0 }) {
     let data = null;
-    data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
+    data = await httpGetAllAppointments(TAKE, pageParam, searchTerm);
     console.log("Gabo es cool", data);
 
     if (searchLoading) setSearchLoading(false);
 
     return data;
-  }
-
-  function handleRefresh() {
-    queryClient.invalidateQueries([
-      "TasksHomeData",
-      activeCategory,
-      searchTerm,
-    ]);
   }
 
   function getTableData() {
@@ -67,17 +56,20 @@ function TableListAppointments({
     console.log("Data:", item);
     const itemInfo = {
       id: item.id,
-      title: item.text,
-      date: item.dueDate,
+      customername: item.customername,
+      arrivalDateTime: item.arrivalDateTime,
+      service: item.service,
+      brand: item.brand,
+      licensePlate: item.licensePlate,
     };
-    return <TableItemTasks itemData={itemInfo} onDelete={handleRefresh} />;
+    return <TableItemAppointments itemData={itemInfo} />;
   }
 
   return (
     <View style={{ height: 500, width: Dimensions.get("screen").width }}>
       {isLoading || (
-        <FlatList
-          data={getTableData()}
+        <Agenda
+          item={getTableData()}
           renderItem={renderTableItem}
           estimatedItemSize={10}
           onEndReached={loadMoreData}

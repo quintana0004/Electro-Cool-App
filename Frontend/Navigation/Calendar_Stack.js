@@ -2,7 +2,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CarSelection from "../screens/BtnSelection/CarSelection";
 import ClientSelection from "../screens/BtnSelection/CustomerSelection";
 import Calendar from "../screens/Calendar";
-import TaskDetail from "../screens/Calendar_Screens/TaskDetail";
 import CalendarSelection from "../screens/BtnSelection/CalendarSelection";
 const CalendarStack = createStackNavigator();
 
@@ -19,11 +18,6 @@ function CalendarStackOption() {
       <CalendarStack.Screen
         name="ClientSelection"
         component={ClientSelection}
-        options={{ headerShown: false, animationEnabled: false }}
-      />
-      <CalendarStack.Screen
-        name="TaskDetail"
-        component={TaskDetail}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen
