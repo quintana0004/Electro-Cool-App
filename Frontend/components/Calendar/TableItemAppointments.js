@@ -3,36 +3,32 @@ import { format } from "date-fns";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 function TableItemAppointments({ itemData }) {
-  const { id, firstName, lastName, date, service } = itemData;
+  console.log("ItemData:", itemData);
+  const { id, customerName, arrivalDateTime, service } = itemData;
 
   function DateText() {
-    return format(new Date(date), "MM/dd/yyyy");
+    return format(new Date(arrivalDateTime), "MM/dd/yyyy");
   }
 
   return (
-    <View style={styles.container}>
-      <Text> La pinga de Brayan </Text>
+    <View>
+      <Pressable onPress={navigateToDetailScreen.bind(this, id)}>
+        <View style={styles.container}>
+          <View style={{ width: 80 }}>
+            <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
+          </View>
+          <View style={{ width: 150 }}>
+            <Text style={styles.boldText}>{customerName}</Text>
+          </View>
+          <View style={{ width: 80 }}>
+            <Text style={styles.boldText}>{DateText()}</Text>
+          </View>
+          <View style={{ width: 80, marginLeft: 55 }}>
+            <Text style={styles.boldText}>{service}</Text>
+          </View>
+        </View>
+      </Pressable>
     </View>
-    //   <View>
-    //     <Pressable onPress={navigateToDetailScreen.bind(this, id)}>
-    //       <View style={styles.container}>
-    //         <View style={{ width: 80 }}>
-    //           <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
-    //         </View>
-    //         <View style={{ width: 150 }}>
-    //           <Text style={styles.boldText}>
-    //             {lastName}, {firstName}
-    //           </Text>
-    //         </View>
-    //         <View style={{ width: 80 }}>
-    //           <Text style={styles.boldText}>{DateText()}</Text>
-    //         </View>
-    //         <View style={{ width: 80, marginLeft: 55 }}>
-    //           <Text style={styles.boldText}>{service}</Text>
-    //         </View>
-    //       </View>
-    //     </Pressable>
-    //  </View>
   );
 }
 

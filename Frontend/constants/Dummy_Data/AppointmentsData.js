@@ -5,14 +5,14 @@ const CalendarData = [
       {
         id: 1,
         name: "HOLA",
-        startTime: "T23:59:59.999Z",
-        endTime: "T00:59:59.999Z",
+        startTime: "2023-03-25T23:59:59.999Z",
+        endTime: "2023-03-25T00:59:59.999Z",
       },
       {
         id: 2,
         name: "BRYAN ES NEGRO",
-        startTime: "T23:59:59.999Z",
-        endTime: "T23:59:59.999Z",
+        startTime: "2023-03-25T23:59:59.999Z",
+        endTime: "2023-03-25T23:59:59.999Z",
       },
       {
         id: 3,

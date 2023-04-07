@@ -1,112 +1,65 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  StatusBar,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { Card, Avatar } from "react-native-paper";
-import CalendarData from "../../constants/Dummy_Data/AppointmentsData";
+import { httpGetAllAppointments } from "../../api/appointments.api";
 
-const App = () => {
-  const [items, setItems] = React.useState({});
+const Appointments = () => {
+  const [agendaItems, setAgendaItems] = useState({});
 
-  const loadItems = (day) => {
-    setTimeout(() => {
-      const newItems = {};
+  const processAppointments = (appointments) => {
+    const groupedAppointments = appointments.reduce((acc, appointment) => {
+      const dateObject = new Date(appointment.arrivalDateTime);
+      const date = dateObject.toISOString().split("T")[0];
 
-      CalendarData.forEach((entry) => {
-        const date = entry.date;
-        const appointments = entry.appointments;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
 
-        newItems[date] = appointments.map((appointment) => {
-          const startTime = formatLocaleDateTime(appointment.startTime);
-          const endTime = formatLocaleDateTime(appointment.endTime);
-          return {
-            ...appointment,
-            day: date,
-            startTime,
-            endTime,
-          };
-        });
-      });
+      acc[date].push(appointment);
+      return acc;
+    }, {});
 
-      setItems(newItems);
-    }, 1000);
+    return groupedAppointments;
   };
-  const formatLocaleDateTime = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const fetchData = async (selectedDate) => {
+    try {
+      const dateObject = new Date(selectedDate);
+      dateObject.setHours(23, 59, 59, 999); // Set the time
+      const isoDate = dateObject.toISOString();
+      console.log("Cago en to", isoDate);
+
+      const response = await httpGetAllAppointments(5, 0, isoDate);
+      const appointments = response.data;
+      const groupedAppointments = processAppointments(appointments);
+
+      setAgendaItems(groupedAppointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
+  // Set the initial date to today or any other date you prefer
+  const initialDate = new Date().toISOString().split("T")[0];
 
-  const renderItem = (item) => {
-    const startComponents = item.startTime.substring(1).split(":");
-    const startHours = parseInt(startComponents[0]);
-    const startMinutes = parseInt(startComponents[1]);
-    const startDate = new Date(0, 0, 0, startHours, startMinutes);
-
-    const endComponents = item.endTime.substring(1).split(":");
-    const endHours = parseInt(endComponents[0]);
-    const endMinutes = parseInt(endComponents[1]);
-    const endDate = new Date(0, 0, 0, endHours, endMinutes);
-    return (
-      <TouchableOpacity style={styles.item}>
-        <Card>
-          <Card.Content>
-            <View
-              style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text>{item.name}</Text>
-              <Text>{Array.from(startDate)[3]}</Text>
-              <Text>{formatLocaleDateTime(endDate)}</Text>
-
-              <Avatar.Text label="A" />
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
-  };
+  // Call fetchData with the initial date when the component mounts
+  useEffect(() => {
+    fetchData(initialDate);
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <Agenda
-        items={items}
-        loadItemsForMonth={loadItems}
-        refreshControl={null}
-        showClosingKnob={true}
-        refreshing={false}
-        renderItem={renderItem}
-        showOnlySelectedDayItems={true}
-        theme={{
-          dotColor: "#E5B126",
+        items={agendaItems}
+        onDayPress={(day) => {
+          console.log("Day pressed:", day.dateString);
+          fetchData(day.dateString);
+        }}
+        renderItem={(item) => {
+          console.log("Item:", item);
+          return <TableItemAppointments item={item} />;
         }}
       />
-      <StatusBar />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  item: {
-    flex: 1,
-    borderRadius: 2,
-    padding: 11,
-    marginRight: 10,
-    marginTop: 17,
-  },
-});
-
-export default App;
+export default Appointments;
