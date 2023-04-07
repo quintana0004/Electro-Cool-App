@@ -18,4 +18,10 @@ async function httpUpsertCar(carInfo) {
   return response;
 }
 
-export { httpGetAllCars, httpCreateCar, httpUpsertCar };
+//?Car will need ID
+async function httpGetCar(id) {
+  const response = await axios(`/cars/${id}`);
+  return response;
+}
+
+export { httpGetAllCars, httpCreateCar, httpUpsertCar, httpGetCar };

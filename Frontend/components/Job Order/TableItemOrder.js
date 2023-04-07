@@ -4,12 +4,47 @@ import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { httpUpdateStatusJobOrder } from "../../api/jobOrders.api";
+import {
+  useJobOrderStore,
+  useCustomerInfoStore,
+  useRequestedServiceStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
+import { StackActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-function TableItemOrder({ ID, firstName, lastName, date, status }) {
+function TableItemOrder({
+  ID,
+  firstName,
+  lastName,
+  date,
+  status,
+  carId,
+  customerId,
+  requestedId,
+}) {
   //Change colors of the picker
   let colorPicked;
   let colorBorder;
+
   const [pickedValue, setPickedValue] = useState(status.toString());
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
+
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
+  const setRequestedService = useRequestedServiceStore(
+    (state) => state.setRequestedService
+  );
+
+  const setJobOrder = useJobOrderStore((state) => state.setJobOrder);
+  const navigation = useNavigation();
+  const pageAction = StackActions.push("ClientInformation");
 
   switch (pickedValue) {
     case "New":
@@ -34,8 +69,8 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
     try {
       await httpUpdateStatusJobOrder(ID, value);
       setPickedValue(value);
-    }
-    catch (error) {
+      setReloadJobOrderList();
+    } catch (error) {
       console.log("Error at Job Order Picker Change: ", error);
     }
   }
@@ -45,8 +80,17 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
   }
 
   return (
-    <Pressable>
-      <View style={styles.content}>
+    <View style={styles.content}>
+      <Pressable
+        style={{ flexDirection: "row" }}
+        onPress={() => {
+          navigation.dispatch(pageAction);
+          setJobOrder("Edit", true, true, true);
+          setCustomerInfo(customerId, "", "", "", "");
+          setVehicleInformation(carId, "", "", "", "", "", "", "", "", "", "");
+          setRequestedService(requestedId, "", "", "", "", "", "", "");
+        }}
+      >
         <View style={{ width: 50, marginLeft: 15 }}>
           <Text style={styles.boldText}>{`000` + ID}</Text>
         </View>
@@ -58,44 +102,44 @@ function TableItemOrder({ ID, firstName, lastName, date, status }) {
         <View style={{ width: 100 }}>
           <Text style={styles.boldText}>{DateText()}</Text>
         </View>
-        <View
-          style={{
-            borderWidth: 0.7,
-            borderRadius: 50,
-            width: 150,
-            backgroundColor: colorPicked,
-            borderColor: colorBorder,
-          }}
+      </Pressable>
+      <View
+        style={{
+          borderWidth: 0.7,
+          borderRadius: 50,
+          width: 150,
+          backgroundColor: colorPicked,
+          borderColor: colorBorder,
+        }}
+      >
+        <Picker
+          selectedValue={pickedValue}
+          onValueChange={(itemValue) => handlePickerChange(itemValue)}
+          dropdownIconColor={colorBorder}
         >
-          <Picker
-            selectedValue={pickedValue}
-            onValueChange={(itemValue) => handlePickerChange(itemValue)}
-            dropdownIconColor={colorBorder}
-          >
-            <Picker.Item
-              label="New"
-              value="New"
-              style={{ color: Colors.lightBlueDark }}
-            />
-            <Picker.Item
-              label="Working"
-              value="Working"
-              style={{ color: Colors.lightOrangeDark }}
-            />
-            <Picker.Item
-              label="Complete"
-              value="Complete"
-              style={{ color: Colors.lightGreenDark }}
-            />
-            <Picker.Item
-              label="Canceled"
-              value="Canceled"
-              style={{ color: Colors.lightRedDark }}
-            />
-          </Picker>
-        </View>
+          <Picker.Item
+            label="New"
+            value="New"
+            style={{ color: Colors.lightBlueDark }}
+          />
+          <Picker.Item
+            label="Working"
+            value="Working"
+            style={{ color: Colors.lightOrangeDark }}
+          />
+          <Picker.Item
+            label="Complete"
+            value="Complete"
+            style={{ color: Colors.lightGreenDark }}
+          />
+          <Picker.Item
+            label="Canceled"
+            value="Canceled"
+            style={{ color: Colors.lightRedDark }}
+          />
+        </Picker>
       </View>
-    </Pressable>
+    </View>
   );
 }
 

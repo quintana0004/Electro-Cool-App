@@ -30,7 +30,7 @@ function CompanyPolicy({ navigation }) {
   }
 
   //Values needed for the alert and the checked box
-  const [checked, setChecked] = useState("");
+  const [checked, setChecked] = useState(false);
   const [visibleErrorDialog, setVisibleErrorDialog] = useState(false);
   const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
 
@@ -67,13 +67,15 @@ function CompanyPolicy({ navigation }) {
     serviceDetails: useRequestedServiceStore((state) => state.serviceDetails),
     status: useRequestedServiceStore((state) => state.status),
     jobLoadType: useRequestedServiceStore((state) => state.jobLoadType),
-    policySignature: useRequestedServiceStore((state) => state.policySignature),
+    policySignature: false,
     carId: useVehicleInfoStore((state) => state.id),
     customerId: useCustomerInfoStore((state) => state.id),
   });
 
   // Used to reload TableListOrder when a new job order is created or updated
-  const setReloadJobOrderList = useJobOrderStore((state) => state.setReloadJobOrderList);
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
 
   const policy = [
     {
@@ -149,10 +151,6 @@ function CompanyPolicy({ navigation }) {
         lastName: clientInfo.lastName,
         phone: clientInfo.phone,
         email: clientInfo.email,
-        addressLine1: "Urb. Dorado del Mar",
-        addressLine2: "Calle Aibonito #23",
-        city: "Dorado",
-        state: "USA",
       };
     } else {
       customerInfoResponse = {
@@ -161,10 +159,6 @@ function CompanyPolicy({ navigation }) {
         lastName: clientInfo.lastName,
         phone: clientInfo.phone,
         email: clientInfo.email,
-        addressLine1: "Urb. Dorado del Mar",
-        addressLine2: "Calle Aibonito #23",
-        city: "Dorado",
-        state: "USA",
       };
     }
 
@@ -212,7 +206,7 @@ function CompanyPolicy({ navigation }) {
         serviceDetails: jobOrderInfo.serviceDetails,
         status: "New",
         jobLoadType: jobOrderInfo.jobLoadType,
-        policySignature: jobOrderInfo.policySignature,
+        policySignature: checked,
         carId: carInfoResponse.data.id,
         customerId: customerInfoResponse.data.id,
       };

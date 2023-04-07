@@ -1,24 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
-  Alert,
+  ToastAndroid,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
-import { useCustomerInfoStore } from "../../Store/JobOrderStore";
+import {
+  useCustomerInfoStore,
+  useJobOrderStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import { Button, Dialog, Portal, Provider } from "react-native-paper";
-import { startOfDay } from "date-fns";
+import { MaskedText, MaskedTextInput } from "react-native-mask-text";
+import { httpGetClient, httpUpsertClient } from "../../api/clients.api";
+import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import LoadingOverlay from "../../components/UI/LoadingOverlay";
 
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
@@ -34,8 +38,111 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function ClientInformation({ route, navigation }) {
-  //Navigation of the page
+  //Store Hooks
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
+  const id = useCustomerInfoStore((state) => state.id);
+  const pageSelection = useJobOrderStore((state) => state.pageSelection);
+  const editClientInformation = useJobOrderStore(
+    (state) => state.editClientInformation
+  );
 
+  //Other Hooks
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const ref = useRef(null);
+  const [clientData, setClientData] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+  const [saveData, setSaveData] = useState(false);
+  const [initilizeData, setInitializeData] = useState(false);
+  const [disableInput, setDisableInput] = useState();
+
+  //Use Effect Hook to get the data
+  useEffect(() => {
+    async function handleGetClientInfo() {
+      try {
+        const clientInfo = await httpGetClient(id);
+        setClientData(clientInfo);
+      } catch (error) {
+        setErrorMessage("Could not fetch customer information.");
+      }
+      setIsFetching(false);
+      setInitializeData(true);
+    }
+
+    if (editClientInformation) {
+      handleGetClientInfo();
+    } else {
+      setIsFetching(false);
+    }
+  }, [editClientInformation]);
+
+  function errorHandler() {
+    setErrorMessage(null);
+  }
+
+  if (errorMessage && !isFetching) {
+    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+  }
+
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
+
+  function DataRespondFormik() {
+    let dataPassed;
+
+    if (initilizeData) {
+      dataPassed = {
+        firstName: clientData.data.fullName,
+        lastName: clientData.data.lastName,
+        phoneNumber: clientData.data.phone,
+        email: clientData.data.email,
+      };
+      setDisableInput(true);
+    } else {
+      dataPassed = {
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+      };
+      setDisableInput(false);
+    }
+
+    return dataPassed;
+  }
+
+  //Update the data of the Client
+  async function handleUpdateClient() {
+    let info = {
+      id: id,
+      firstName: ref.current.values.firstName,
+      lastName: ref.current.values.lastName,
+      phone: ref.current.values.phoneNumber,
+      email: ref.current.values.email,
+    };
+    console.log("INFO DATA: ", info);
+    try {
+      const clientData = await httpUpsertClient(info);
+      showSuccessMessage();
+    } catch (error) {
+      console.log("ERROR MESSAGE CLIENT: ", error);
+      showFailedMessage();
+    }
+  }
+
+  //Toast Message
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+  }
+
+  function showFailedMessage() {
+    ToastAndroid.show("Try Again, there was a problem!", ToastAndroid.SHORT);
+  }
+
+  //Navigation of the page
   //?Home
   function goHome() {
     const pageAction = StackActions.popToTop();
@@ -48,19 +155,16 @@ function ClientInformation({ route, navigation }) {
     navigation.dispatch(pageAction);
   }
 
+  function goNextOption() {
+    const pageAction = StackActions.push("VehicleInformation");
+    navigation.dispatch(pageAction);
+  }
+
   //?Go Back
   function goBackPage() {
     const pageAction = StackActions.pop(1);
     navigation.dispatch(pageAction);
   }
-
-  //Get the store information
-  const setCustomerInfo = useCustomerInfoStore(
-    (state) => state.setCustomerInfo
-  );
-
-  const ref = useRef(null);
-  const [dialogVisible, setDialogVisible] = useState(false);
 
   return (
     <View>
@@ -70,6 +174,27 @@ function ClientInformation({ route, navigation }) {
             goBackPage();
           }}
         />
+        {editClientInformation === true && saveData === false && (
+          <Appbar.Action
+            icon="square-edit-outline"
+            onPress={() => {
+              setSaveData(!saveData);
+              setDisableInput(false);
+            }}
+            iconColor={Colors.black}
+          />
+        )}
+        {editClientInformation === true && saveData === true && (
+          <Appbar.Action
+            icon="content-save"
+            onPress={async () => {
+              handleUpdateClient();
+              setSaveData(!saveData);
+              setDisableInput(true);
+            }}
+            iconColor={Colors.black}
+          />
+        )}
         <Appbar.Content title="Customer Information"></Appbar.Content>
         <Appbar.Action
           icon="home"
@@ -81,17 +206,23 @@ function ClientInformation({ route, navigation }) {
           onPress={() => {
             const TouchedObject = Object.keys(ref.current.touched).length > 0;
 
-            if (ref.current && ref.current.isValid && TouchedObject) {
-              setCustomerInfo(
-                "",
-                ref.current.values.firstName,
-                ref.current.values.lastName,
-                ref.current.values.phoneNumber,
-                ref.current.values.email
-              );
-              goNext();
-            } else {
-              setDialogVisible(true);
+            if (pageSelection === "Edit" && editClientInformation) {
+              goNextOption();
+            }
+
+            if (pageSelection === "Create" && editClientInformation === false) {
+              if (ref.current && ref.current.isValid && TouchedObject) {
+                setCustomerInfo(
+                  "",
+                  ref.current.values.firstName,
+                  ref.current.values.lastName,
+                  ref.current.values.phoneNumber,
+                  ref.current.values.email
+                );
+                goNext();
+              } else {
+                setDialogVisible(true);
+              }
             }
           }}
           iconColor={Colors.black}
@@ -101,15 +232,11 @@ function ClientInformation({ route, navigation }) {
         <Text style={styles.instruction}>Enter new customer information</Text>
       </View>
       <Formik
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          phoneNumber: "",
-          email: "",
-        }}
+        initialValues={DataRespondFormik()}
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
+        enableReinitialize={initilizeData}
       >
         {({
           handleChange,
@@ -145,6 +272,7 @@ function ClientInformation({ route, navigation }) {
                       value={values.firstName}
                       error={touched.firstName && errors.firstName}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -165,6 +293,7 @@ function ClientInformation({ route, navigation }) {
                       value={values.lastName}
                       error={touched.lastName && errors.lastName}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -193,6 +322,7 @@ function ClientInformation({ route, navigation }) {
                       value={values.phoneNumber}
                       error={touched.phoneNumber && errors.phoneNumber}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -219,6 +349,7 @@ function ClientInformation({ route, navigation }) {
                       value={values.email}
                       error={touched.email && errors.email}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"

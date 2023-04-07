@@ -50,16 +50,16 @@ function ExistingClient({ navigation }) {
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction onPress={navigateBack} />
         <Appbar.Action
-          icon="home"
-          iconColor={Colors.black}
-          onPress={navigateCancel}
-        />
-        <Appbar.Content title="Select Existing Client"></Appbar.Content>
-        <Appbar.Action
           icon="magnify"
           onPress={() => {
             setSearchBannerVisibility(!searchBannerVisibility);
           }}
+        />
+        <Appbar.Content title="Select Existing Client"></Appbar.Content>
+        <Appbar.Action
+          icon="home"
+          iconColor={Colors.black}
+          onPress={navigateCancel}
         />
         <Appbar.Action
           icon="arrow-right"

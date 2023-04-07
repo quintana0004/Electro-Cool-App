@@ -6,6 +6,8 @@ import { httpGetAllJobOrders } from "../../api/jobOrders.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 
 function jobOrderItem(itemData) {
+  console.log("ITEM DATA OF THE STORE: ", itemData);
+
   return (
     <TableItemOrder
       ID={itemData.item.id}
@@ -13,6 +15,9 @@ function jobOrderItem(itemData) {
       firstName={itemData.item.customer.firstName}
       lastName={itemData.item.customer.lastName}
       status={itemData.item.status}
+      carId={itemData.item.carId}
+      customerId={itemData.item.customerId}
+      requestedId={itemData.item.id}
     />
   );
 }
@@ -24,7 +29,9 @@ function TableListOrder({
   filters,
 }) {
   const TAKE = 15;
-  const reloadJobOrderList = useJobOrderStore((state) => state.reloadJobOrderList);
+  const reloadJobOrderList = useJobOrderStore(
+    (state) => state.reloadJobOrderList
+  );
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["JobOrderHomePage", searchTerm, reloadJobOrderList],

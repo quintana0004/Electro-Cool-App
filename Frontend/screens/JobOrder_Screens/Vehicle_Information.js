@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,9 +14,13 @@ import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText, RadioButton } from "react-native-paper";
 import * as Yup from "yup";
-import { useVehicleInfoStore } from "../../Store/JobOrderStore";
+import {
+  useVehicleInfoStore,
+  useJobOrderStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { httpGetClient } from "../../api/clients.api";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
@@ -42,6 +46,25 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function VehicleInformation({ route, navigation }) {
+  //Check the page selection for both the options
+  const pageSelection = useJobOrderStore((state) => state.pageSelection);
+
+  const editVehicleInformation = useJobOrderStore(
+    (state) => state.editVehicleInformation
+  );
+
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
+
+  const id = useVehicleInfoStore((state) => state.id);
+
+  const [dataServer, setDataServer] = useState(null);
+
+  if (pageSelection === "Edit" && editVehicleInformation) {
+    //Make with use effect
+  }
+
   //funtions that will navigate the stack
   //?Home
   function goBackHome() {
@@ -61,15 +84,26 @@ function VehicleInformation({ route, navigation }) {
     navigation.dispatch(pageGoNext);
   }
 
-  const setVehicleInformation = useVehicleInfoStore(
-    (state) => state.setVehicleInformation
-  );
-
   const [checked, setChecked] = useState("No");
   const [dialogVisible, setDialogVisible] = useState(false);
   const [touchedDescription, setTouchedDescription] = useState(false);
 
   const ref = useRef(null);
+
+  //Handle information response
+  async function handleGetClient(id) {
+    let response;
+
+    try {
+      console.log("Client Info: ", id);
+      response = await httpGetClient(id);
+      console.log("Client Saved Data: ", response.data);
+    } catch (error) {
+      console.log("Error at Handle Save Client: ", error);
+    }
+
+    return response;
+  }
 
   return (
     <View>
@@ -79,6 +113,13 @@ function VehicleInformation({ route, navigation }) {
             goBackPageAction();
           }}
         />
+        {editVehicleInformation && (
+          <Appbar.Action
+            icon="square-edit-outline"
+            onPress={() => console.log("EDIT ICON")}
+            iconColor={Colors.black}
+          />
+        )}
         <Appbar.Content title="Vehicle Information"></Appbar.Content>
         <Appbar.Action
           icon="home"
@@ -90,23 +131,32 @@ function VehicleInformation({ route, navigation }) {
           onPress={() => {
             const TouchedObject = Object.keys(ref.current.touched).length > 0;
 
-            if (ref.current && ref.current.isValid && TouchedObject) {
-              setVehicleInformation(
-                "",
-                ref.current.values.Brand,
-                ref.current.values.LicensePlate,
-                ref.current.values.Model,
-                ref.current.values.Year,
-                ref.current.values.Milage,
-                ref.current.values.ColorVehicle,
-                ref.current.values.VinNumber,
-                checked,
-                ref.current.values.Description,
-                ""
-              );
+            if (pageSelection === "Edit" && editVehicleInformation) {
               goNextPageAction();
-            } else {
-              setDialogVisible(true);
+            }
+
+            if (
+              pageSelection === "Create" &&
+              editVehicleInformation === false
+            ) {
+              if (ref.current && ref.current.isValid && TouchedObject) {
+                setVehicleInformation(
+                  "",
+                  ref.current.values.Brand,
+                  ref.current.values.LicensePlate,
+                  ref.current.values.Model,
+                  ref.current.values.Year,
+                  ref.current.values.Milage,
+                  ref.current.values.ColorVehicle,
+                  ref.current.values.VinNumber,
+                  checked,
+                  ref.current.values.Description,
+                  ""
+                );
+                goNextPageAction();
+              } else {
+                setDialogVisible(true);
+              }
             }
           }}
           iconColor={Colors.black}

@@ -19,7 +19,10 @@ import {
   Checkbox,
 } from "react-native-paper";
 import * as Yup from "yup";
-import { useRequestedServiceStore } from "../../Store/JobOrderStore";
+import {
+  useRequestedServiceStore,
+  useJobOrderStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import { Button, Dialog, Portal, Provider } from "react-native-paper";
 
@@ -109,6 +112,12 @@ function RequestedService({ navigation }) {
   const [checkedAirConditioning, setCheckedAirConditioning] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  //Check the page selection for both the options
+  const pageSelection = useJobOrderStore((state) => state.pageSelection);
+  const editRequestedService = useJobOrderStore(
+    (state) => state.editRequestedService
+  );
+
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
@@ -117,6 +126,13 @@ function RequestedService({ navigation }) {
             goBackAction();
           }}
         />
+        {editRequestedService && (
+          <Appbar.Action
+            icon="square-edit-outline"
+            onPress={() => console.log("EDIT ICON")}
+            iconColor={Colors.black}
+          />
+        )}
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
@@ -137,22 +153,28 @@ function RequestedService({ navigation }) {
               checkedScan ||
               checkedAirConditioning;
 
-            if (validationSelection && checked) {
-              let valueCheck = CheckedServiceRequested();
-              console.log("VALUE CHECK: ", valueCheck);
-              setRequestedService(
-                "",
-                valueCheck,
-                ref.current.values.Description,
-                "New",
-                checked,
-                true, // MOCHA COMMENT: Why was this hardcoded to false? Aren't you suppose to be grabbing what the user selected when checking the Policy signature?
-                "",
-                ""
-              );
+            if (pageSelection === "Edit" && editRequestedService) {
               goNextAction();
-            } else {
-              setDialogVisible(true);
+            }
+
+            if (pageSelection === "Create" && editRequestedService === false) {
+              if (validationSelection && checked) {
+                let valueCheck = CheckedServiceRequested();
+                console.log("VALUE CHECK: ", valueCheck);
+                setRequestedService(
+                  "",
+                  valueCheck,
+                  ref.current.values.Description,
+                  "New",
+                  checked,
+                  true, // MOCHA COMMENT: Why was this hardcoded to false? Aren't you suppose to be grabbing what the user selected when checking the Policy signature?
+                  "",
+                  ""
+                );
+                goNextAction();
+              } else {
+                setDialogVisible(true);
+              }
             }
           }}
           iconColor={Colors.black}
