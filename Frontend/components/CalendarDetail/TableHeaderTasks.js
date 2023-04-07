@@ -10,7 +10,7 @@ function TableHeaderTasks() {
 
       <View style={styles.headerGroupRight}>
         <Text style={[styles.headerText, { marginLeft: 30 }]}>Date</Text>
-        <Text style={[styles.headerText, { marginRight: 20 }]}>Select</Text>
+        <Text style={[styles.headerText, { marginRight: 20 }]}>Delete</Text>
       </View>
     </View>
   );

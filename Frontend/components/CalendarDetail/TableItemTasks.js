@@ -2,10 +2,17 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
+import { Avatar } from "react-native-paper";
+import axios from "../../api/axios";
 
 function TableItemTasks({ text, date }) {
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
+  }
+
+  async function deleteTask(id) {
+    const response = await axios.delete("/tasks", id);
+    return response;
   }
 
   return (
@@ -17,6 +24,22 @@ function TableItemTasks({ text, date }) {
         <View style={{ width: 250 }}>
           <Text style={styles.boldText}>{DateText()}</Text>
         </View>
+        <Pressable
+          onPress={() => {
+            deleteTask();
+          }}
+        >
+          <Avatar.Icon
+            size={35}
+            icon="delete"
+            style={{
+              backgroundColor: "#D9D9D9",
+              color: Colors.darkGrey,
+              alignItems: "center",
+              marginRight: 40,
+            }}
+          />
+        </Pressable>
       </View>
     </View>
   );

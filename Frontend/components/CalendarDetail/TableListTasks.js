@@ -16,7 +16,7 @@ function taskItem(itemData) {
   );
 }
 
-function TableListTasks({ setSearchLoading, searchTerm, searchLoading }) {
+function TableListTasks({ searchTerm }) {
   const TAKE = 15;
   function DateText() {
     return format(new Date(), "yyyy-MM-dd");

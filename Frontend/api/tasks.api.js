@@ -5,7 +5,7 @@ async function httpGetAllTasks(take, page, searchTerm) {
   return response;
 }
 
-//?Car Information has to be an object
+//?Task Information has to be an object
 async function httpCreateTask(taskInfo) {
   const response = await axios.post("/tasks", taskInfo);
   return response;

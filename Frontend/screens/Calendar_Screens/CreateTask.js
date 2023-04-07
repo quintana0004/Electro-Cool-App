@@ -3,6 +3,7 @@ import { Appbar } from "react-native-paper";
 import MenuDropDown from "../../components/UI/MenuDropDown";
 import Colors from "../../constants/Colors/Colors";
 import TableListTasks from "../../components/CalendarDetail/TableListTasks";
+import { TextInput } from "react-native-paper";
 
 function CreateTask() {
   return (
@@ -11,6 +12,14 @@ function CreateTask() {
         <MenuDropDown style={{ zIndex: 4 }} />
         <Appbar.Content></Appbar.Content>
       </Appbar.Header>
+      <View style={styles.container}>
+        <TextInput
+          mode="outlined"
+          label="Enter Task"
+          placeholder=""
+          right={<TextInput.Affix text="/100" />}
+        />
+      </View>
       <TableListTasks />
       <View style={styles.body}></View>
     </View>
@@ -19,8 +28,10 @@ function CreateTask() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
+    zIndex: -1,
+    margin: 10,
+    borderRadius: 30,
+    width: 250,
   },
   body: {
     zIndex: -1,
