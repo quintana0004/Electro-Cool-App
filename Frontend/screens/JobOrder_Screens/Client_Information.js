@@ -48,16 +48,6 @@ function ClientInformation({ route, navigation }) {
     (state) => state.editClientInformation
   );
 
-  //Other Hooks
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const ref = useRef(null);
-  const [clientData, setClientData] = useState();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isFetching, setIsFetching] = useState(true);
-  const [saveData, setSaveData] = useState(false);
-  const [initilizeData, setInitializeData] = useState(false);
-  const [disableInput, setDisableInput] = useState();
-
   //Use Effect Hook to get the data
   useEffect(() => {
     async function handleGetClientInfo() {
@@ -69,14 +59,26 @@ function ClientInformation({ route, navigation }) {
       }
       setIsFetching(false);
       setInitializeData(true);
+      setDisableInput(true);
     }
 
     if (editClientInformation) {
       handleGetClientInfo();
     } else {
+      setDisableInput(false);
       setIsFetching(false);
     }
   }, [editClientInformation]);
+
+  //Other Hooks
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const ref = useRef(null);
+  const [clientData, setClientData] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+  const [saveData, setSaveData] = useState(false);
+  const [initilizeData, setInitializeData] = useState(false);
+  const [disableInput, setDisableInput] = useState(false);
 
   function errorHandler() {
     setErrorMessage(null);
@@ -95,12 +97,11 @@ function ClientInformation({ route, navigation }) {
 
     if (initilizeData) {
       dataPassed = {
-        firstName: clientData.data.fullName,
+        firstName: clientData.data.firstName,
         lastName: clientData.data.lastName,
         phoneNumber: clientData.data.phone,
         email: clientData.data.email,
       };
-      setDisableInput(true);
     } else {
       dataPassed = {
         firstName: "",
@@ -108,7 +109,6 @@ function ClientInformation({ route, navigation }) {
         phoneNumber: "",
         email: "",
       };
-      setDisableInput(false);
     }
 
     return dataPassed;
