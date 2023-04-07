@@ -4,6 +4,7 @@ import ClientSelection from "../screens/BtnSelection/CustomerSelection";
 import Calendar from "../screens/Calendar";
 import TaskScreen from "../screens/Calendar_Screens/TaskScreen";
 import CalendarSelection from "../screens/BtnSelection/CalendarSelection";
+import CreateTask from "../screens/Calendar_Screens/CreateTask";
 const CalendarStack = createStackNavigator();
 
 function CalendarStackOption() {
@@ -36,8 +37,12 @@ function CalendarStackOption() {
         component={CalendarSelection}
         options={{ headerShown: false, animationEnabled: false }}
       />
+      <CalendarStack.Screen
+        name="CreateTask"
+        component={CreateTask}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
     </CalendarStack.Navigator>
-
   );
 }
 
