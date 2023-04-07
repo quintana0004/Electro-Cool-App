@@ -26,7 +26,7 @@ function TableListTasks({ searchTerm }) {
   console.log("dori dori dori dori dori", searchTerm);
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["CalendarHomePage", searchTerm],
+    queryKey: ["TasksHomePage", searchTerm],
     queryFn: getTasksScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage

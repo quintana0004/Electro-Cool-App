@@ -11,4 +11,9 @@ async function httpCreateTask(taskInfo) {
   return response;
 }
 
-export { httpGetAllTasks, httpCreateTask };
+async function httpDeleteTask(taskId) {
+  const response = await axios.delete(`/tasks/${taskId}`);
+  return response;
+}
+
+export { httpGetAllTasks, httpCreateTask, httpDeleteTask };

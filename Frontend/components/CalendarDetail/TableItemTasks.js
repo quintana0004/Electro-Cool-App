@@ -3,16 +3,11 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
-import axios from "../../api/axios";
+import { httpDeleteTask } from "../../api/tasks.api";
 
-function TableItemTasks({ text, date }) {
+function TableItemTasks({ id, text, date }) {
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
-  }
-
-  async function deleteTask(id) {
-    const response = await axios.delete("/tasks", id);
-    return response;
   }
 
   return (
@@ -24,11 +19,7 @@ function TableItemTasks({ text, date }) {
         <View style={{ width: 250 }}>
           <Text style={styles.boldText}>{DateText()}</Text>
         </View>
-        <Pressable
-          onPress={() => {
-            deleteTask();
-          }}
-        >
+        <Pressable onPress={() => {}}>
           <Avatar.Icon
             size={35}
             icon="delete"
