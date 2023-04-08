@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StatusBar,
 } from "react-native";
-import { Agenda } from "react-native-calendars";
 import { Card, Avatar } from "react-native-paper";
 import CalendarData from "../../constants/Dummy_Data/AppointmentsData";
 
@@ -70,18 +69,6 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Agenda
-        items={items}
-        loadItemsForMonth={loadItems}
-        refreshControl={null}
-        showClosingKnob={true}
-        refreshing={false}
-        renderItem={renderItem}
-        showOnlySelectedDayItems={true}
-        theme={{
-          dotColor: "#E5B126",
-        }}
-      />
       <StatusBar />
     </View>
   );

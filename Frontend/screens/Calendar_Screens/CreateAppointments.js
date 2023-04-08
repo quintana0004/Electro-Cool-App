@@ -5,9 +5,12 @@ import CarCard from "../../components/UI/CarCard";
 
 import Appbar from "react-native-paper/src/components/Appbar";
 import Colors from "../../constants/Colors/Colors";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+import {
+  useCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
 
-function CreateAppointments({ route, navigation }) {
+function CreateAppointments({ navigation }) {
   const client = useCustomerInfoStore((state) => {
     return {
       id: state.id,
