@@ -136,7 +136,7 @@ export interface ITask {
 export interface IJobOrder {
   id?: number;
   requestedService: string;
-  serviceDetails: string;
+  serviceDetails?: string;
   status: string;
   jobLoadType: string;
   policySignature: boolean;

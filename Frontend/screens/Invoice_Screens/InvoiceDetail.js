@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { MaskedText} from "react-native-mask-text";
 
 import { httpGetInvoice, httpUpsertInvoice } from "../../api/invoices.api";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
 
 import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAddItem";
 import InvoiceDetailSelectDeposit from "../../components/InvoiceDetail/InvoiceDetailSelectDeposit";

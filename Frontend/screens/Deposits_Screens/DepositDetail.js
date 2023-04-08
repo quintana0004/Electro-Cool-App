@@ -14,7 +14,7 @@ import SectionDivider from "../../components/UI/SectionDivider";
 import AmountInput from "../../components/UI/AmountInput";
 import SaveMenu from "../../components/UI/SaveMenu";
 import { useDepositStore } from "../../Store/depositStore";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 
 function DepositDetail({ route, navigation }) {

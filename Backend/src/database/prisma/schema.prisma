@@ -104,7 +104,7 @@ model Car {
 model JobOrder {
   id               Int       @id @default(autoincrement())
   requestedService String    @db.VarChar(255)
-  serviceDetails   String
+  serviceDetails   String?
   status           String    @db.VarChar(100)
   jobLoadType      String    @db.VarChar(100)
   policySignature  Boolean
