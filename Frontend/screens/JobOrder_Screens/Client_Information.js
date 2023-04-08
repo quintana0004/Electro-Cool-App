@@ -27,8 +27,8 @@ import LoadingOverlay from "../../components/UI/LoadingOverlay";
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
     .required("First Name is required.")
-    .matches("^[A-Za-z]{2,50}$", "First name can't have digits."),
-  lastName: Yup.string("No digits, only letters are valid.")
+    .matches("^[A-Za-z ]{2,50}$", "First name can't have digits."),
+  lastName: Yup.string()
     .required("Last Name is required.")
     .matches("^[A-Za-z ]{2,50}$", "Last name can't have digits."),
   phoneNumber: Yup.string().required("Phone Number  is required."),
@@ -126,7 +126,7 @@ function ClientInformation({ route, navigation }) {
       phone: ref.current.values.phoneNumber,
       email: ref.current.values.email,
     };
-    console.log("INFO DATA: ", info);
+
     try {
       const clientData = await httpUpsertClient(info);
       showSuccessMessage();

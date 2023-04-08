@@ -29,7 +29,7 @@ import { httpGetCar, httpUpsertCar } from "../../api/cars.api";
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
     .required("Brand is required.")
-    .matches("^[A-Za-z]{2,50}$", "Brand can't contain digits."),
+    .matches("^[A-Za-z ]{2,50}$", "Brand can't contain digits."),
   LicensePlate: Yup.string()
     .required("License Plate is required.")
     .matches("^[A-Z0-9]{6,8}$", "License Plate can't contain symbols."),
@@ -39,7 +39,7 @@ const ValidationCustomer = Yup.object().shape({
     .matches("^[12][0-9]{3}$", "Year is incorrect."),
   ColorVehicle: Yup.string()
     .required("Color is required.")
-    .matches("^[A-Za-z]{2,50}$", "Color can't contain digits."),
+    .matches("^[A-Za-z ]{2,50}$", "Color can't contain digits."),
   Milage: Yup.string()
     .required("Milage is required.")
     .matches("^[0-9]{1,6}$", "Milage can't contain symbols, space or comma."),
@@ -126,7 +126,6 @@ function VehicleInformation({ route, navigation }) {
       carItemsDescription: ref.current.values.Description,
       customerId: customerId,
     };
-    console.log("INFO DATA: ", info);
     try {
       const infoCar = await httpUpsertCar(info);
       showSuccessMessage();
@@ -271,7 +270,7 @@ function VehicleInformation({ route, navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => console.log("Vehicle Information Values on Submit: ", values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}

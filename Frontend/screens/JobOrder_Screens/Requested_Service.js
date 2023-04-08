@@ -57,7 +57,6 @@ function RequestedService({ navigation }) {
     async function handleGetRequestedInfo() {
       try {
         const jobInfo = await httpGetJobOrder(id);
-        console.log("DATA FETCHED: ", jobInfo);
         setRequestedData(jobInfo);
         CheckedServiceRequest(jobInfo);
       } catch (error) {
@@ -156,8 +155,6 @@ function RequestedService({ navigation }) {
       valueChecked.push("AirConditioning");
     }
 
-    console.log("Value State: ", valueChecked.join(";"));
-
     return valueChecked.join(";");
   }
 
@@ -222,10 +219,10 @@ function RequestedService({ navigation }) {
       carId: carId,
       customerId: customerId,
     };
-    console.log("INFO DATA: ", info);
+
     try {
       const infoCar = await httpUpsertJobOrder(info);
-      console.log("DATA GET: ", infoCar);
+
       showSuccessMessage();
       setReloadJobOrderList();
     } catch (error) {
@@ -319,14 +316,14 @@ function RequestedService({ navigation }) {
               ) {
                 if (validationSelection && checked) {
                   let valueCheck = CheckedServiceRequested();
-                  console.log("VALUE CHECK: ", valueCheck);
+
                   setRequestedService(
                     "",
                     valueCheck,
                     ref.current.values.Description,
                     "New",
                     checked,
-                    true, // MOCHA COMMENT: Why was this hardcoded to false? Aren't you suppose to be grabbing what the user selected when checking the Policy signature?
+                    true, 
                     "",
                     ""
                   );
@@ -347,7 +344,7 @@ function RequestedService({ navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => console.log("Requested Service Values on Submit:", values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}

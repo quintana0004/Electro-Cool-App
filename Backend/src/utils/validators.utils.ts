@@ -210,7 +210,6 @@ function hasRequiredCarFields(carInfo: ICar) {
 function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
   if (
     !jobOrderInfo.requestedService ||
-    !jobOrderInfo.serviceDetails ||
     !jobOrderInfo.policySignature ||
     !jobOrderInfo.status ||
     !jobOrderInfo.jobLoadType ||

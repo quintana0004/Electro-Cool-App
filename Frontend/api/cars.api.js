@@ -6,6 +6,18 @@ async function httpGetAllCars(take, page, searchTerm) {
   return response;
 }
 
+//?Car will need ID
+async function httpGetCar(id) {
+  const response = await axios(`/cars/${id}`);
+  return response;
+}
+
+async function httpGetCarsByCustomerId(customerId) {
+  const queryParams = `?customerId=${customerId}&searchTerm=${searchTerm}`;
+  const response = await axios("/cars/customer" + queryParams);
+  return response;
+}
+
 //?Car Information has to be an object
 async function httpCreateCar(carInfo) {
   const response = await axios.post("/cars", carInfo);
@@ -18,10 +30,5 @@ async function httpUpsertCar(carInfo) {
   return response;
 }
 
-//?Car will need ID
-async function httpGetCar(id) {
-  const response = await axios(`/cars/${id}`);
-  return response;
-}
 
-export { httpGetAllCars, httpCreateCar, httpUpsertCar, httpGetCar };
+export { httpGetAllCars, httpCreateCar, httpUpsertCar, httpGetCar, httpGetCarsByCustomerId };
