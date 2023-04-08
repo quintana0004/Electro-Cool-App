@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  ToastAndroid,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
@@ -17,10 +18,13 @@ import * as Yup from "yup";
 import {
   useVehicleInfoStore,
   useJobOrderStore,
+  useCustomerInfoStore,
 } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import { Button, Dialog, Portal, Provider } from "react-native-paper";
-import { httpGetClient } from "../../api/clients.api";
+import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import { httpGetCar, httpUpsertCar } from "../../api/cars.api";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
@@ -46,23 +50,130 @@ const ValidationCustomer = Yup.object().shape({
 });
 
 function VehicleInformation({ route, navigation }) {
-  //Check the page selection for both the options
+  //Store Hooks
   const pageSelection = useJobOrderStore((state) => state.pageSelection);
-
   const editVehicleInformation = useJobOrderStore(
     (state) => state.editVehicleInformation
   );
-
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
-
   const id = useVehicleInfoStore((state) => state.id);
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
+  const customerId = useCustomerInfoStore((state) => state.id);
 
-  const [dataServer, setDataServer] = useState(null);
+  // Use Effect Hook that get the data
+  useEffect(() => {
+    async function handleGetVehicleInfo() {
+      try {
+        const vehicleInfo = await httpGetCar(id);
+        setVehicleData(vehicleInfo);
+      } catch (error) {
+        setErrorMessage("Could not fetch vehicle information.");
+      }
 
-  if (pageSelection === "Edit" && editVehicleInformation) {
-    //Make with use effect
+      setIsFetching(false);
+      setInitializeData(true);
+      setDisableInput(true);
+    }
+
+    if (editVehicleInformation) {
+      handleGetVehicleInfo();
+    } else {
+      setDisableInput(false);
+      setIsFetching(false);
+    }
+  }, [editVehicleInformation]);
+
+  //Other Hooks
+  const [checked, setChecked] = useState("No");
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [touchedDescription, setTouchedDescription] = useState(false);
+  const ref = useRef(null);
+  const [vehicleData, setVehicleData] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+  const [saveData, setSaveData] = useState(false);
+  const [initilizeData, setInitializeData] = useState(false);
+  const [disableInput, setDisableInput] = useState(false);
+
+  function errorHandler() {
+    setErrorMessage(null);
+  }
+
+  if (errorMessage && !isFetching) {
+    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+  }
+
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
+
+  //Update the data of the Client
+  async function handleUpdateCar() {
+    let info = {
+      id: id,
+      brand: ref.current.values.Brand,
+      licensePlate: ref.current.values.LicensePlate,
+      model: ref.current.values.Model,
+      year: ref.current.values.Year,
+      mileage: ref.current.values.Milage,
+      color: ref.current.values.ColorVehicle,
+      vinNumber: ref.current.values.VinNumber,
+      carHasItems: checked === "Yes",
+      carItemsDescription: ref.current.values.Description,
+      customerId: customerId,
+    };
+    console.log("INFO DATA: ", info);
+    try {
+      const infoCar = await httpUpsertCar(info);
+      showSuccessMessage();
+      setReloadJobOrderList();
+    } catch (error) {
+      console.log("ERROR MESSAGE CLIENT: ", error);
+      showFailedMessage();
+    }
+  }
+
+  //Toast Message
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+  }
+
+  function showFailedMessage() {
+    ToastAndroid.show("Try Again, there was a problem!", ToastAndroid.SHORT);
+  }
+
+  function DataRespondFormik() {
+    let dataPassed;
+
+    if (initilizeData) {
+      dataPassed = {
+        Brand: vehicleData.data.brand,
+        LicensePlate: vehicleData.data.licensePlate,
+        Model: vehicleData.data.model,
+        Year: vehicleData.data.year,
+        ColorVehicle: vehicleData.data.color,
+        Milage: vehicleData.data.mileage,
+        VinNumber: vehicleData.data.vinNumber,
+        Description: vehicleData.data.carItemsDescription,
+      };
+    } else {
+      dataPassed = {
+        Brand: "",
+        LicensePlate: "",
+        Model: "",
+        Year: "",
+        ColorVehicle: "",
+        Milage: "",
+        VinNumber: "",
+        Description: "",
+      };
+    }
+
+    return dataPassed;
   }
 
   //funtions that will navigate the stack
@@ -84,27 +195,6 @@ function VehicleInformation({ route, navigation }) {
     navigation.dispatch(pageGoNext);
   }
 
-  const [checked, setChecked] = useState("No");
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [touchedDescription, setTouchedDescription] = useState(false);
-
-  const ref = useRef(null);
-
-  //Handle information response
-  async function handleGetClient(id) {
-    let response;
-
-    try {
-      console.log("Client Info: ", id);
-      response = await httpGetClient(id);
-      console.log("Client Saved Data: ", response.data);
-    } catch (error) {
-      console.log("Error at Handle Save Client: ", error);
-    }
-
-    return response;
-  }
-
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
@@ -113,10 +203,24 @@ function VehicleInformation({ route, navigation }) {
             goBackPageAction();
           }}
         />
-        {editVehicleInformation && (
+        {editVehicleInformation === true && saveData === false && (
           <Appbar.Action
             icon="square-edit-outline"
-            onPress={() => console.log("EDIT ICON")}
+            onPress={() => {
+              setSaveData(!saveData);
+              setDisableInput(false);
+            }}
+            iconColor={Colors.black}
+          />
+        )}
+        {editVehicleInformation === true && saveData === true && (
+          <Appbar.Action
+            icon="content-save"
+            onPress={async () => {
+              handleUpdateCar();
+              setSaveData(!saveData);
+              setDisableInput(true);
+            }}
             iconColor={Colors.black}
           />
         )}
@@ -166,19 +270,11 @@ function VehicleInformation({ route, navigation }) {
         <Text style={styles.instruction}>Enter new vehicle information</Text>
       </View>
       <Formik
-        initialValues={{
-          Brand: "",
-          LicensePlate: "",
-          Model: "",
-          Year: "",
-          ColorVehicle: "",
-          Milage: "",
-          VinNumber: "",
-          Description: "",
-        }}
+        initialValues={DataRespondFormik()}
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
+        enableReinitialize={initilizeData}
       >
         {({
           handleChange,
@@ -213,6 +309,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.Brand}
                       error={touched.Brand && errors.Brand}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -233,6 +330,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.LicensePlate}
                       error={touched.LicensePlate && errors.LicensePlate}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -261,6 +359,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.Model}
                       error={!!(touched.Model && errors.Model)}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -281,6 +380,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.Year}
                       error={!!(touched.Year && errors.Year)}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -301,6 +401,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.ColorVehicle}
                       error={!!(touched.ColorVehicle && errors.ColorVehicle)}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -323,6 +424,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.Milage}
                       error={touched.Milage && errors.Milage}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -343,6 +445,7 @@ function VehicleInformation({ route, navigation }) {
                       value={values.VinNumber}
                       error={touched.VinNumber && errors.VinNumber}
                       style={styles.textInputStyle}
+                      disabled={disableInput}
                     />
                     <HelperText
                       type="error"
@@ -390,6 +493,7 @@ function VehicleInformation({ route, navigation }) {
                           status={checked === "Yes" ? "checked" : "unchecked"}
                           onPress={() => setChecked("Yes")}
                           color={Colors.brightGreen}
+                          disableInput={disableInput}
                         />
                       </View>
                       <View
@@ -412,6 +516,7 @@ function VehicleInformation({ route, navigation }) {
                             values.Description = "";
                           }}
                           color={Colors.brightGreen}
+                          disabled={disableInput}
                         />
                       </View>
                     </View>
@@ -449,7 +554,7 @@ function VehicleInformation({ route, navigation }) {
                         onBlur={handleBlur("Description")}
                         value={values.Description}
                         error={touched.Description && errors.Description}
-                        disabled={checked === "No"}
+                        disabled={checked === "No" || disableInput === true}
                         numberOfLines={3}
                         style={[styles.textInputStyle]}
                         onPressIn={() => setTouchedDescription(true)}
