@@ -1,32 +1,30 @@
-import { Dimensions, FlatList, View } from "react-native";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { Alert, Dimensions, FlatList, View } from "react-native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { httpGetAllCars } from "../../../api/cars.api";
-import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils";
+import { httpGetCarsByCustomerId } from "../../../api/cars.api";
 import ExistingCarItemTableItem from "./ExistingCarTableItem";
 import ExistingCarTableHeader from "./ExistingCarTableHeader";
 
 function ExistingCarTableList({
+  customerId,
   searchTerm,
   selectedCar,
   setCar,
   searchLoading,
   setSearchLoading,
 }) {
-  const TAKE = 15;
   const queryClient = useQueryClient();
 
-  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
+  const { isLoading, data, isError, error } = useQuery({
     queryKey: ["ExistingCarData", searchTerm],
     queryFn: getExistingCarData,
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
-    },
     select: (data) => {
-      return transformData(data, setDefaultSelectedField);
+      console.log("Data being received for Car: ", data);
+      let modifiedCarData = data.map((car) => setDefaultSelectedField(car));
+      console.log("Data Modified for Car: ", modifiedCarData);
+      return modifiedCarData;
     },
     enabled: true,
-    staleTime: 1000 * 60 * 60 * 1, // 1 hour
   });
 
   function setDefaultSelectedField(car) {
@@ -36,33 +34,22 @@ function ExistingCarTableList({
     };
   }
 
-  async function getExistingCarData({ pageParam = 0 }) {
-    let data = await httpGetAllCars(TAKE, pageParam, searchTerm);
+  async function getExistingCarData() {
+    let response = await httpGetCarsByCustomerId(customerId, searchTerm);
 
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);
 
-    return data;
-  }
-
-  function loadMoreData() {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
+    return response.data;
   }
 
   function updateSelectedItem(id, value) {
     queryClient.setQueryData(["ExistingCarData", searchTerm], (oldData) => {
-      const newPages = {
-        ...transformData(oldData, setSelectedCar, id, value),
-      };
-      return newPages;
+      return oldData.map((car) => setSelectedCar(car, id, value));
     });
   }
 
-  function setSelectedCar(car, args) {
-    const [id, value] = args;
-
+  function setSelectedCar(car, id, value) {
     if (id === car.id) {
       setCar(car);
     }
@@ -96,10 +83,9 @@ function ExistingCarTableList({
       <ExistingCarTableHeader />
       {isLoading || (
         <FlatList
-          data={getFlattenedData(data)}
+          data={data}
           renderItem={renderTableItem}
           estimatedItemSize={10}
-          onEndReached={loadMoreData}
         />
       )}
     </View>

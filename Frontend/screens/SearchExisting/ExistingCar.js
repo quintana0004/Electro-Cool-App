@@ -4,11 +4,10 @@ import { StackActions } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
-import NavBtn from "../../components/UI/NavBtns";
 import ExistingCarTableList from "../../components/SearchExisting/ExistingCar/ExistingCarTableList";
 import SearchBanner from "../../components/UI/SearchBanner";
 import { useRouterStore } from "../../Store/routerStore";
-import { useVehicleInfoStore } from "../../Store/JobOrderStore";
+import { useVehicleInfoStore, useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function ExistingCar({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +20,7 @@ function ExistingCar({ navigation }) {
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
+  const customerId = useCustomerInfoStore((state) => state.id);
 
   function navigateNext() {
     setVehicleInformation(
@@ -81,6 +81,7 @@ function ExistingCar({ navigation }) {
       />
       <View style={styles.body}>
         <ExistingCarTableList
+          customerId={customerId}
           searchTerm={searchTerm}
           selectedCar={selectedCar}
           setCar={setSelectedCar}
