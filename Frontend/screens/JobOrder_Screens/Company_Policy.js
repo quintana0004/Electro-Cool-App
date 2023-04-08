@@ -99,9 +99,7 @@ function CompanyPolicy({ navigation }) {
     let response;
 
     try {
-      console.log("Client Info: ", clientInfo);
       response = await httpUpsertClient(clientInfo);
-      console.log("Client Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Client: ", error);
     }
@@ -113,9 +111,7 @@ function CompanyPolicy({ navigation }) {
     let response;
 
     try {
-      console.log("Car Info: ", carInfo);
       response = await httpUpsertCar(carInfo);
-      console.log("Car Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Car: ", error);
     }
@@ -129,7 +125,6 @@ function CompanyPolicy({ navigation }) {
     try {
       response = await httpUpsertJobOrder(jobOrderInfo);
       setReloadJobOrderList();
-      console.log("Job Order Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Job Order: ", error);
     }
@@ -165,9 +160,7 @@ function CompanyPolicy({ navigation }) {
     try {
       // Make the call for the API
       //Take into consideration there are two routes one is the new info and existing info
-
       customerInfoResponse = await handleSaveClient(customerInfoResponse);
-      console.log("CLIENT INFO: ", customerInfoResponse);
 
       //?When customer passes the value need their ID
       if (!vehicleInformation.id) {
@@ -179,7 +172,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
+          carHasItems: vehicleInformation.carHasItems === "Yes", 
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -193,7 +186,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
+          carHasItems: vehicleInformation.carHasItems === "Yes", 
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -210,10 +203,8 @@ function CompanyPolicy({ navigation }) {
         carId: carInfoResponse.data.id,
         customerId: customerInfoResponse.data.id,
       };
-      console.log("JOB ORDER RESPONSE: ", jobOrderResponse);
-      response = await handleSaveJobOrder(jobOrderResponse);
 
-      console.log("Handle All Save Response: ", response);
+      response = await handleSaveJobOrder(jobOrderResponse);
     } catch (error) {
       console.log("Error at Handle Save: ", error);
     }

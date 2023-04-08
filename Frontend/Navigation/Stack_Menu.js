@@ -3,8 +3,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 //Screens to connect
 import Dashboard from "../screens/Dashboard";
-import Calendar from "../screens/Calendar";
-import ClientBook from "../screens/ClientBook";
 import Setting from "../screens/Settings";
 import JobOrderStackOption from "./JobOrder_Stack";
 import InvoiceStackOption from "./Invoice_Stack";

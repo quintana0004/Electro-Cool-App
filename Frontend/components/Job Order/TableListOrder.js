@@ -6,7 +6,6 @@ import { httpGetAllJobOrders } from "../../api/jobOrders.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 
 function jobOrderItem(itemData) {
-  console.log("ITEM DATA OF THE STORE: ", itemData);
 
   return (
     <TableItemOrder
@@ -46,10 +45,11 @@ function TableListOrder({
 
   async function getJobOrderScreenData({ pageParam = 0 }) {
     let data = await httpGetAllJobOrders(TAKE, pageParam, searchTerm);
+
     if (searchLoading) {
       setSearchLoading(false);
     }
-    console.log("DATA : ", data.data);
+
     return data;
   }
 

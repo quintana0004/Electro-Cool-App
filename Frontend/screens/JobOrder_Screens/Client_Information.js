@@ -126,7 +126,7 @@ function ClientInformation({ route, navigation }) {
       phone: ref.current.values.phoneNumber,
       email: ref.current.values.email,
     };
-    console.log("INFO DATA: ", info);
+
     try {
       const clientData = await httpUpsertClient(info);
       showSuccessMessage();

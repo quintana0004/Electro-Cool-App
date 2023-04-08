@@ -126,7 +126,6 @@ function VehicleInformation({ route, navigation }) {
       carItemsDescription: ref.current.values.Description,
       customerId: customerId,
     };
-    console.log("INFO DATA: ", info);
     try {
       const infoCar = await httpUpsertCar(info);
       showSuccessMessage();
@@ -271,7 +270,7 @@ function VehicleInformation({ route, navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => console.log("Vehicle Information Values on Submit: ", values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}
