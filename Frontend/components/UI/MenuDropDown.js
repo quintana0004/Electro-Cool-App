@@ -11,22 +11,38 @@ function MenuDropDown() {
   const navigation = useNavigation();
 
   // Store For Management of Routers
-  const setExistingClientNextPage = useRouterStore((state) => state.setExistingClientNextPage);
-  const setExistingCarNextPage = useRouterStore((state) => state.setExistingCarNextPage);
+  const setExistingClientNextPage = useRouterStore(
+    (state) => state.setExistingClientNextPage
+  );
+  const setExistingCarNextPage = useRouterStore(
+    (state) => state.setExistingCarNextPage
+  );
 
   //Set the toggle btn when closed or open
   const [toggle, setToggleBtn] = useState(false);
 
   //Create the variable to hold the icon
   let iconChoice = (
-    <MaterialCommunityIcons name="window-close" size={20} color={Colors.yellowDark} />
+    <MaterialCommunityIcons
+      name="window-close"
+      size={20}
+      color={Colors.yellowDark}
+    />
   );
 
   //Verify the toggle to change the icon
   if (toggle === true) {
-    iconChoice = <MaterialCommunityIcons name="window-close" size={20} color={Colors.yellowDark} />;
+    iconChoice = (
+      <MaterialCommunityIcons
+        name="window-close"
+        size={20}
+        color={Colors.yellowDark}
+      />
+    );
   } else if (toggle === false) {
-    iconChoice = <SimpleLineIcons name="menu" size={20} color={Colors.yellowDark} />;
+    iconChoice = (
+      <SimpleLineIcons name="menu" size={20} color={Colors.yellowDark} />
+    );
   }
 
   function navDashboard() {
