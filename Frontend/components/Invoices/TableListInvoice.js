@@ -1,10 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import { httpGetAllDeposits } from "../../api/deposits.api";
 import { httpGetAllInvoices } from "../../api/invoices.api";
 
 import TableHeaderInvoice from "./TableHeaderInvoice";
 import TableItemInvoice from "./TableItemInvoice";
+import { useInvoiceStore } from "../../Store/invoiceStore";
+import { useDepositStore } from "../../Store/depositStore";
 
 function TableListInvoice({
   activeCategory,
@@ -14,9 +16,11 @@ function TableListInvoice({
   setSearchLoading,
 }) {
   const TAKE = 15;
+  const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
+  const reloadDepositList = useDepositStore((state) => state.reloadDepositList);
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["InvoicesHomeData", activeCategory, searchTerm],
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
+    queryKey: ["InvoicesHomeData", activeCategory, searchTerm, reloadInvoiceList, reloadDepositList],
     queryFn: getInvoicesHomeScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
@@ -87,6 +91,11 @@ function TableListInvoice({
     };
 
     return <TableItemInvoice itemData={itemInfo} category={activeCategory} />;
+  }
+
+  if (isError) {
+    console.log("Error Fetching Invoice & Deposit Items: ", error);
+    Alert.alert("Error", "There was an error fetching the invoice & deposit items. Please try again later.");
   }
 
   return (

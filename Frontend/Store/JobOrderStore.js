@@ -4,31 +4,13 @@ export const useCustomerInfoStore = create((set) => ({
   id: "",
   firstName: "",
   lastName: "",
-  addressLine1: "",
-  addressLine2: "",
-  state: "",
-  city: "",
   phone: "",
   email: "",
-  setCustomerInfo: (
-    id,
-    firstName,
-    lastName,
-    addressLine1,
-    addressLine2,
-    State,
-    city,
-    phone,
-    email
-  ) =>
+  setCustomerInfo: (id, firstName, lastName, phone, email) =>
     set((state) => ({
       id: id,
       firstName: firstName,
       lastName: lastName,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
-      state: State,
-      city: city,
       phone: phone,
       email: email,
     })),
@@ -37,10 +19,6 @@ export const useCustomerInfoStore = create((set) => ({
       id: "",
       firstName: "",
       lastName: "",
-      addressLine1: "",
-      addressLine2: "",
-      state: "",
-      city: "",
       phone: "",
       email: "",
     })),
@@ -63,10 +41,11 @@ export const useVehicleInfoStore = create((set) => ({
     brand,
     licensePlate,
     model,
+    year,
+    mileage,
     color,
     vinNumber,
     carHasItems,
-
     carItemsDescription,
     customerId
   ) =>
@@ -75,6 +54,8 @@ export const useVehicleInfoStore = create((set) => ({
       brand: brand,
       licensePlate: licensePlate,
       model: model,
+      year: year,
+      mileage: mileage,
       color: color,
       vinNumber: vinNumber,
       carHasItems: carHasItems,
@@ -142,6 +123,7 @@ export const useJobOrderStore = create((set) => ({
   editClientInformation: false,
   editVehicleInformation: false,
   editRequestedService: false,
+  reloadJobOrderList: false,
   setJobOrder: (
     pageSelection,
     editClientInformation,
@@ -161,4 +143,8 @@ export const useJobOrderStore = create((set) => ({
       editRequestedService: false,
       editVehicleInformation: false,
     })),
+  setReloadJobOrderList: () =>
+    set((state) => ({
+      reloadJobOrderList: !state.reloadJobOrderList
+      })),
 }));

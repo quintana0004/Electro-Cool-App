@@ -16,7 +16,7 @@ function ExistingClientTableList({
   const TAKE = 15;
   const queryClient = useQueryClient();
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
     queryKey: ["ExistingClientData", searchTerm],
     queryFn: getExistingClientData,
     getNextPageParam: (lastPage) => {
@@ -83,6 +83,11 @@ function ExistingClientTableList({
     };
 
     return <ExistingClientTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
+  }
+
+  if (isError) {
+    console.log("Error Fetching Existing Clients: ", error);
+    Alert.alert("Error", "There was an error fetching existing clients. Please try again later.");
   }
 
   return (
