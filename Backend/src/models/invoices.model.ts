@@ -91,6 +91,7 @@ async function findInvoiceWithChildsById(id: number) {
       include: {
         customer: true,
         car: true,
+        invoiceItems: true,
       },
     });
 

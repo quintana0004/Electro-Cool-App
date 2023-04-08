@@ -88,6 +88,7 @@ function CarSelection({ navigation, route }) {
             navPrevious();
           }}
         />
+        <Appbar.Content title="Select a Vehicle"></Appbar.Content>
         <Appbar.Action
           icon="home"
           iconColor={Colors.black}
@@ -95,7 +96,6 @@ function CarSelection({ navigation, route }) {
             navCancel();
           }}
         />
-        <Appbar.Content title="Select vehicle for Job Order"></Appbar.Content>
         <Appbar.Action
           icon="arrow-right"
           iconColor={Colors.black}

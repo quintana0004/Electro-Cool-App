@@ -91,6 +91,7 @@ function ClientSelection({ navigation, route }) {
             navigation.dispatch(pageGoBackAction);
           }}
         />
+        <Appbar.Content title="Select a Customer"></Appbar.Content>
         <Appbar.Action
           icon="home"
           iconColor={Colors.black}
@@ -98,8 +99,6 @@ function ClientSelection({ navigation, route }) {
             navigation.dispatch(pageGoHomeAction);
           }}
         />
-        <Appbar.Content title="Select customer for Job Order"></Appbar.Content>
-
         <Appbar.Action
           icon="arrow-right"
           iconColor={Colors.black}
