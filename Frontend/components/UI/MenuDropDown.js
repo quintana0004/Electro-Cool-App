@@ -72,6 +72,8 @@ function MenuDropDown() {
   }
 
   function navCalendar() {
+    setExistingClientNextPage("CarSelection");
+    setExistingCarNextPage("CreateAppointments");
     navigation.navigate("Calendar");
     setToggleBtn(false);
   }

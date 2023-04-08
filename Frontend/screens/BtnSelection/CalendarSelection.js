@@ -7,39 +7,37 @@ import { Appbar } from "react-native-paper";
 import NavBtn from "../../components/UI/NavBtns";
 import { StackActions } from "@react-navigation/native";
 
-function CalendarSelection({ navigation, route}) {
-
- //Navigation of the page
+function CalendarSelection({ navigation, route }) {
+  //Navigation of the page
   //?Home
   function goHome() {
     const pageAction = StackActions.popToTop();
     navigation.dispatch(pageAction);
   }
- //?Go Back
- function goBackPage() {
-  const pageAction = StackActions.pop(1);
-  navigation.dispatch(pageAction);
-}
-//?Next
-function goNext() {
-  const pageAction = StackActions.push("CarSelection");
-  navigation.dispatch(pageAction);
-}
-
+  //?Go Back
+  function goBackPage() {
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
+  }
+  //?Next
+  function goNext() {
+    if (toggleTasks) {
+      const pageAction = StackActions.push(""); // BRYAN ADD YOUR PAGINA HERE :)
+      navigation.dispatch(pageAction);
+    } else if (toggleAppointment) {
+      const pageAction = StackActions.push("ClientSelection");
+      navigation.dispatch(pageAction);
+    }
+  }
 
   const [toggleTasks, setToggleBtn1] = useState(false);
   const [toggleAppointment, setToggleBtn2] = useState(false);
 
   function TasksView() {
-    
-
     if (toggleTasks === true) {
       return (
         <View style={styles.ButtonPressed}>
-          <Image
-          style={styles.NewCarIconStyle}
-            source={Figures.VectorWhite}
-          />
+          <Image style={styles.NewCarIconStyle} source={Figures.VectorWhite} />
           <Text style={[styles.ButtonText, { color: Colors.white }]}>
             Tasks
           </Text>
@@ -72,7 +70,7 @@ function goNext() {
       return (
         <View style={styles.Button}>
           <Image
-          style={styles.ExistingCarIconStyle}
+            style={styles.ExistingCarIconStyle}
             source={Figures.Appointment}
           />
           <Text style={styles.ButtonText}>Appointment</Text>
@@ -82,24 +80,21 @@ function goNext() {
   }
 
   return (
-    
     <View>
-        <Appbar.Header style={styles.HeaderContent}mode="center-aligned">
-        
+      <Appbar.Header style={styles.HeaderContent} mode="center-aligned">
         <Appbar.BackAction
           onPress={() => {
             goBackPage();
           }}
         />
-        
-        
+
         <Appbar.Content title="Select option to create card"></Appbar.Content>
         <Appbar.Action
           icon="arrow-right"
           onPress={() => goNext()}
           iconColor={Colors.black}
         />
-        </Appbar.Header>
+      </Appbar.Header>
       <View style={styles.Container}>
         <View>
           <Pressable
@@ -107,7 +102,6 @@ function goNext() {
               TasksView(),
               setToggleBtn1(!toggleTasks),
               setToggleBtn2(false),
-              navigation.navigate("CalendarSelection"),
             ]}
           >
             <View>{TasksView(toggleTasks)}</View>
@@ -192,6 +186,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.yellowDark,
   },
 });
-
 
 export default CalendarSelection;

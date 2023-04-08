@@ -66,15 +66,18 @@ function TableListAppointments({
   }
 
   return (
-    <View style={{ height: 500, width: Dimensions.get("screen").width }}>
-      {isLoading || (
-        <Agenda
-          item={getTableData()}
-          renderItem={renderTableItem}
-          estimatedItemSize={10}
-          onEndReached={loadMoreData}
-        />
-      )}
+    <View style={{ flex: 1 }}>
+      <Agenda
+        items={agendaItems}
+        onDayPress={(day) => {
+          console.log("Day pressed:", day.dateString);
+          fetchData(day.dateString);
+        }}
+        renderItem={(item) => {
+          console.log("Item:", item);
+          return <TableItemAppointments item={item} />;
+        }}
+      />
     </View>
   );
 }

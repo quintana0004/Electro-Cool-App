@@ -1,65 +1,103 @@
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import { Agenda } from "react-native-calendars";
-import { httpGetAllAppointments } from "../../api/appointments.api";
+import { Card, Avatar } from "react-native-paper";
+import CalendarData from "../../constants/Dummy_Data/AppointmentsData";
 
-const Appointments = () => {
-  const [agendaItems, setAgendaItems] = useState({});
+const App = () => {
+  const [items, setItems] = React.useState({});
 
-  const processAppointments = (appointments) => {
-    const groupedAppointments = appointments.reduce((acc, appointment) => {
-      const dateObject = new Date(appointment.arrivalDateTime);
-      const date = dateObject.toISOString().split("T")[0];
+  const loadItems = (day) => {
+    setTimeout(() => {
+      const newItems = {};
 
-      if (!acc[date]) {
-        acc[date] = [];
-      }
+      CalendarData.forEach((entry) => {
+        const date = entry.date;
+        const appointments = entry.appointments;
 
-      acc[date].push(appointment);
-      return acc;
-    }, {});
+        newItems[date] = appointments.map((appointment) => {
+          const startTime = formatLocaleDateTime(appointment.startTime);
+          const endTime = formatLocaleDateTime(appointment.endTime);
+          return {
+            ...appointment,
+            day: date,
+            startTime,
+            endTime,
+          };
+        });
+      });
 
-    return groupedAppointments;
+      setItems(newItems);
+    }, 1000);
   };
-  const fetchData = async (selectedDate) => {
-    try {
-      const dateObject = new Date(selectedDate);
-      dateObject.setHours(23, 59, 59, 999); // Set the time
-      const isoDate = dateObject.toISOString();
-      console.log("Cago en to", isoDate);
 
-      const response = await httpGetAllAppointments(5, 0, isoDate);
-      const appointments = response.data;
-      const groupedAppointments = processAppointments(appointments);
-
-      setAgendaItems(groupedAppointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-    }
+  const formatLocaleDateTime = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
-  // Set the initial date to today or any other date you prefer
-  const initialDate = new Date().toISOString().split("T")[0];
 
-  // Call fetchData with the initial date when the component mounts
-  useEffect(() => {
-    fetchData(initialDate);
-  }, []);
+  const renderItem = (item) => {
+    return (
+      <TouchableOpacity style={styles.item}>
+        <Card>
+          <Card.Content>
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text>{item.name}</Text>
+              <Text>{item.startTime}</Text>
+              <Text>{item.endTime}</Text>
+              <Avatar.Text label="A" />
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Agenda
-        items={agendaItems}
-        onDayPress={(day) => {
-          console.log("Day pressed:", day.dateString);
-          fetchData(day.dateString);
-        }}
-        renderItem={(item) => {
-          console.log("Item:", item);
-          return <TableItemAppointments item={item} />;
+        items={items}
+        loadItemsForMonth={loadItems}
+        refreshControl={null}
+        showClosingKnob={true}
+        refreshing={false}
+        renderItem={renderItem}
+        showOnlySelectedDayItems={true}
+        theme={{
+          dotColor: "#E5B126",
         }}
       />
+      <StatusBar />
     </View>
   );
 };
 
-export default Appointments;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  item: {
+    flex: 1,
+    borderRadius: 2,
+    padding: 11,
+    marginRight: 10,
+    marginTop: 17,
+  },
+});
+
+export default App;
