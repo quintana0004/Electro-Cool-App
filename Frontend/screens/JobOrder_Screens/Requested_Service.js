@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  ToastAndroid,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
@@ -19,14 +20,82 @@ import {
   Checkbox,
 } from "react-native-paper";
 import * as Yup from "yup";
-import { useRequestedServiceStore } from "../../Store/store";
+import {
+  useRequestedServiceStore,
+  useJobOrderStore,
+  useCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
+import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { httpGetJobOrder, httpUpsertJobOrder } from "../../api/jobOrders.api";
+import ErrorOverlay from "../../components/UI/ErrorOverlay";
+import LoadingOverlay from "../../components/UI/LoadingOverlay";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
 });
 
 function RequestedService({ navigation }) {
+  //Store Hooks
+  const setRequestedService = useRequestedServiceStore(
+    (state) => state.setRequestedService
+  );
+  const pageSelection = useJobOrderStore((state) => state.pageSelection);
+  const editRequestedService = useJobOrderStore(
+    (state) => state.editRequestedService
+  );
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
+  const carId = useVehicleInfoStore((state) => state.id);
+  const customerId = useCustomerInfoStore((state) => state.id);
+  const id = useRequestedServiceStore((state) => state.id);
+
+  // Use Effect Hook that get the data
+  useEffect(() => {
+    async function handleGetRequestedInfo() {
+      try {
+        const jobInfo = await httpGetJobOrder(id);
+        console.log("DATA FETCHED: ", jobInfo);
+        setRequestedData(jobInfo);
+        CheckedServiceRequest(jobInfo);
+      } catch (error) {
+        setErrorMessage("Could not fetch requested service information.");
+      }
+
+      setIsFetching(false);
+      setInitializeData(true);
+      setDisableInput(true);
+    }
+
+    if (editRequestedService) {
+      handleGetRequestedInfo();
+    } else {
+      setDisableInput(false);
+      setIsFetching(false);
+    }
+  }, [editRequestedService]);
+
+  //Use State Hook
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [checkedOilChange, setCheckedOilChange] = useState(false);
+  const [checkedTuneUp, setCheckedTuneUp] = useState(false);
+  const [checkedBreaks, setCheckedBreaks] = useState(false);
+  const [checkedMotor, setCheckedMotor] = useState(false);
+  const [checkedElectricSystem, setCheckedElectricSystem] = useState(false);
+  const [checkedCoolingSystem, setCheckedCoolingSystem] = useState(false);
+  const [checkedSuspencion, setCheckedSuspencion] = useState(false);
+  const [checkedScan, setCheckedScan] = useState(false);
+  const [checkedAirConditioning, setCheckedAirConditioning] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [requestedData, setRequestedData] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isFetching, setIsFetching] = useState(true);
+  const [saveData, setSaveData] = useState(false);
+  const [initilizeData, setInitializeData] = useState(false);
+  const [disableInput, setDisableInput] = useState(false);
+
   //funtion for the page navigation
   //? home
   function goHomeAction() {
@@ -46,18 +115,149 @@ function RequestedService({ navigation }) {
     navigation.dispatch(pageAction);
   }
 
-  const [checkedOilChange, setCheckedOilChange] = useState(false);
-  const [checkedTuneUp, setCheckedTuneUp] = useState(false);
-  const [checkedBreaks, setCheckedBreaks] = useState(false);
-  const [checkedMotor, setCheckedMotor] = useState(false);
-  const [checkedElectricSystem, setCheckedElectricSystem] = useState(false);
-  const [checkedCoolingSystem, setCheckedCoolingSystem] = useState(false);
-  const [checkedSuspencion, setCheckedSuspencion] = useState(false);
-  const [checkedScan, setCheckedScan] = useState(false);
-  const [checkedAirConditioning, setCheckedAirConditioning] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const ref = useRef(null);
 
-  const [height, setHeight] = useState(undefined);
+  function CheckedServiceRequested() {
+    let valueChecked = [];
+
+    if (checkedOilChange) {
+      valueChecked.push("OilChange");
+    }
+
+    if (checkedTuneUp) {
+      valueChecked.push("TuneUp");
+    }
+
+    if (checkedBreaks) {
+      valueChecked.push("Breaks");
+    }
+
+    if (checkedMotor) {
+      valueChecked.push("Motor");
+    }
+
+    if (checkedElectricSystem) {
+      valueChecked.push("ElectricSystem");
+    }
+
+    if (checkedCoolingSystem) {
+      valueChecked.push("CoolingSystem");
+    }
+
+    if (checkedSuspencion) {
+      valueChecked.push("Suspencion");
+    }
+
+    if (checkedScan) {
+      valueChecked.push("Scan");
+    }
+
+    if (checkedAirConditioning) {
+      valueChecked.push("AirConditioning");
+    }
+
+    console.log("Value State: ", valueChecked.join(";"));
+
+    return valueChecked.join(";");
+  }
+
+  function CheckedServiceRequest(info) {
+    const val = info.data.requestedService.split(";");
+    setChecked(info.data.jobLoadType);
+
+    val.forEach((value) => {
+      if (value == "OilChange") {
+        setCheckedOilChange(true);
+      }
+      if (value == "TuneUp") {
+        setCheckedTuneUp(true);
+      }
+      if (value == "Breaks") {
+        setCheckedBreaks(true);
+      }
+      if (value == "Motor") {
+        setCheckedMotor(true);
+      }
+      if (value == "ElectricSystem") {
+        setCheckedElectricSystem(true);
+      }
+      if (value == "CoolingSystem") {
+        setCheckedCoolingSystem(true);
+      }
+      if (value == "Suspencion") {
+        setCheckedSuspencion(true);
+      }
+      if (value == "Scan") {
+        setCheckedScan(true);
+      }
+      if (value == "AirConditioning") {
+        setCheckedAirConditioning(true);
+      }
+    });
+  }
+
+  function errorHandler() {
+    setErrorMessage(null);
+  }
+
+  if (errorMessage && !isFetching) {
+    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+  }
+
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
+
+  //Update the data of the Client
+  async function handleRequestedServiceUpdate() {
+    let val = CheckedServiceRequested();
+
+    let info = {
+      id: id,
+      requestedService: val,
+      serviceDetails: ref.current.values.Description,
+      status: requestedData.data.status,
+      jobLoadType: checked,
+      policySignature: requestedData.data.policySignature,
+      carId: carId,
+      customerId: customerId,
+    };
+    console.log("INFO DATA: ", info);
+    try {
+      const infoCar = await httpUpsertJobOrder(info);
+      console.log("DATA GET: ", infoCar);
+      showSuccessMessage();
+      setReloadJobOrderList();
+    } catch (error) {
+      console.log("ERROR MESSAGE CLIENT: ", error);
+      showFailedMessage();
+    }
+  }
+
+  //Toast Message
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+  }
+
+  function showFailedMessage() {
+    ToastAndroid.show("Try Again, there was a problem!", ToastAndroid.SHORT);
+  }
+
+  function DataRespondFormik() {
+    let dataPassed;
+
+    if (initilizeData) {
+      dataPassed = {
+        Description: requestedData.data.serviceDetails,
+      };
+    } else {
+      dataPassed = {
+        Description: "",
+      };
+    }
+
+    return dataPassed;
+  }
 
   return (
     <View>
@@ -67,17 +267,78 @@ function RequestedService({ navigation }) {
             goBackAction();
           }}
         />
+        {editRequestedService === true && saveData === false && (
+          <Appbar.Action
+            icon="square-edit-outline"
+            onPress={() => {
+              setSaveData(!saveData);
+              setDisableInput(false);
+            }}
+            iconColor={Colors.black}
+          />
+        )}
+        {editRequestedService === true && saveData === true && (
+          <Appbar.Action
+            icon="content-save"
+            onPress={async () => {
+              handleRequestedServiceUpdate();
+              setSaveData(!saveData);
+              setDisableInput(true);
+            }}
+            iconColor={Colors.black}
+          />
+        )}
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
           onPress={() => goHomeAction()}
           iconColor={Colors.black}
         />
-        <Appbar.Action
-          icon="arrow-right"
-          onPress={() => goNextAction()}
-          iconColor={Colors.black}
-        />
+        {pageSelection === "Create" && (
+          <Appbar.Action
+            icon="arrow-right"
+            onPress={() => {
+              const validationSelection =
+                checkedOilChange ||
+                checkedTuneUp ||
+                checkedBreaks ||
+                checkedMotor ||
+                checkedElectricSystem ||
+                checkedCoolingSystem ||
+                checkedSuspencion ||
+                checkedScan ||
+                checkedAirConditioning;
+
+              if (pageSelection === "Edit" && editRequestedService) {
+                goNextAction();
+              }
+
+              if (
+                pageSelection === "Create" &&
+                editRequestedService === false
+              ) {
+                if (validationSelection && checked) {
+                  let valueCheck = CheckedServiceRequested();
+                  console.log("VALUE CHECK: ", valueCheck);
+                  setRequestedService(
+                    "",
+                    valueCheck,
+                    ref.current.values.Description,
+                    "New",
+                    checked,
+                    true, // MOCHA COMMENT: Why was this hardcoded to false? Aren't you suppose to be grabbing what the user selected when checking the Policy signature?
+                    "",
+                    ""
+                  );
+                  goNextAction();
+                } else {
+                  setDialogVisible(true);
+                }
+              }
+            }}
+            iconColor={Colors.black}
+          />
+        )}
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>
@@ -85,11 +346,11 @@ function RequestedService({ navigation }) {
         </Text>
       </View>
       <Formik
-        initialValues={{
-          Description: "",
-        }}
+        initialValues={DataRespondFormik()}
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
+        innerRef={ref}
+        enableReinitialize={initilizeData}
       >
         {({
           handleChange,
@@ -125,6 +386,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedOilChange(!checkedOilChange);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -147,6 +409,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedTuneUp(!checkedTuneUp);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -169,6 +432,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedBreaks(!checkedBreaks);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -191,6 +455,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedMotor(!checkedMotor);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -215,6 +480,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedElectricSystem(!checkedElectricSystem);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -227,7 +493,7 @@ function RequestedService({ navigation }) {
                         </Text>
                       </View>
                     </View>
-                    <View style={{ marginRight: 30 }}>
+                    <View style={{ marginRight: 40 }}>
                       <View
                         style={{
                           flexDirection: "row",
@@ -241,6 +507,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedCoolingSystem(!checkedCoolingSystem);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -263,6 +530,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedSuspencion(!checkedSuspencion);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -285,6 +553,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedScan(!checkedScan);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -309,6 +578,7 @@ function RequestedService({ navigation }) {
                           onPress={() => {
                             setCheckedAirConditioning(!checkedAirConditioning);
                           }}
+                          disabled={disableInput}
                         />
                         <Text
                           style={{
@@ -361,6 +631,8 @@ function RequestedService({ navigation }) {
                               checked === "Heavy" ? "checked" : "unchecked"
                             }
                             onPress={() => setChecked("Heavy")}
+                            color={Colors.brightGreen}
+                            disabled={disableInput}
                           />
                         </View>
                         <View
@@ -383,6 +655,8 @@ function RequestedService({ navigation }) {
                             onPress={() => {
                               setChecked("Light");
                             }}
+                            color={Colors.brightGreen}
+                            disabled={disableInput}
                           />
                         </View>
                       </View>
@@ -413,11 +687,9 @@ function RequestedService({ navigation }) {
                           onBlur={handleBlur("Description")}
                           value={values.Description}
                           error={touched.Description && errors.Description}
-                          multiline
-                          onContentSizeChange={(event) => {
-                            setHeight(event.nativeEvent.contentSize.height);
-                          }}
-                          style={{ height: height }}
+                          multiline={true}
+                          style={styles.textInputStyle}
+                          disabled={disableInput}
                         />
                         <HelperText
                           type="error"
@@ -436,6 +708,35 @@ function RequestedService({ navigation }) {
           </KeyboardAvoidingView>
         )}
       </Formik>
+      {dialogVisible && (
+        <Portal>
+          <Dialog
+            visible={dialogVisible}
+            onDismiss={() => setDialogVisible(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="alert-circle-outline"
+              size={80}
+              color={Colors.darkRed}
+            />
+            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                There are missing required or need to correct information.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                textColor={Colors.yellowDark}
+                onPress={() => setDialogVisible(false)}
+              >
+                Okay
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
     </View>
   );
 }
@@ -470,6 +771,13 @@ const styles = StyleSheet.create({
   navNextBtn: { marginLeft: 10 },
   header: {
     backgroundColor: Colors.yellowDark,
+  },
+  textInputStyle: {
+    backgroundColor: Colors.white,
+    fontSize: 16,
+  },
+  textAlert: {
+    textAlign: "center",
   },
 });
 

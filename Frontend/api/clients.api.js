@@ -12,4 +12,10 @@ async function httpUpsertClient(clientInfo) {
   return response;
 }
 
-export { httpGetAllClients, httpUpsertClient };
+//?Client will need ID
+async function httpGetClient(id) {
+  const response = await axios(`/customers/${id}`);
+  return response;
+}
+
+export { httpGetAllClients, httpUpsertClient, httpGetClient };

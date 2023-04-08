@@ -16,6 +16,11 @@ import ClientCard from "../../components/UI/ClientCard";
 import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
+import {
+  useCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
+
 import Figures from "../../constants/figures/Figures";
 import { useDepositStore } from "../../Store/depositStore";
 import { useInvoiceStore } from "../../Store/invoiceStore";

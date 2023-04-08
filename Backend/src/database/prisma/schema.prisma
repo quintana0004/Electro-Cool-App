@@ -61,10 +61,10 @@ model Customer {
   fullName     String
   firstName    String        @db.VarChar(255)
   lastName     String        @db.VarChar(255)
-  addressLine1 String        @db.VarChar(255)
+  addressLine1 String?       @db.VarChar(255)
   addressLine2 String?       @db.VarChar(255)
   state        String?       @db.VarChar(50)
-  city         String        @db.VarChar(100)
+  city         String?       @db.VarChar(100)
   phone        String        @db.VarChar(15)
   email        String?       @db.VarChar(255)
   createdDate  DateTime      @default(now()) @db.Timestamptz(6)

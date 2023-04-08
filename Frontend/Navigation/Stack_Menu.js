@@ -8,8 +8,11 @@ import ClientBook from "../screens/ClientBook";
 import Setting from "../screens/Settings";
 import JobOrderStackOption from "./JobOrder_Stack";
 import InvoiceStackOption from "./Invoice_Stack";
+import LogIn from "../screens/LogIn";
+import SignUp from "../screens/SignUp";
 import ClientBookStackOption from "./ClientBook_Stack";
 import CalendarStackOption from "./Calendar_Stack";
+
 //Connection navigator stack
 const Stack = createStackNavigator();
 
@@ -18,6 +21,16 @@ function MenuStack() {
     <Stack.Navigator
       screenOptions={{ cardStyle: { backgroundColor: "white" } }}
     >
+      <Stack.Screen
+        name="LogIn"
+        component={LogIn}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <Stack.Screen
+        name="SignUn"
+        component={SignUp}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
