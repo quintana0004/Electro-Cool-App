@@ -1,14 +1,18 @@
+import { useMemo, useState } from "react";
+import { Alert, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Appbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
-import { httpGetInvoice } from "../../api/invoices.api";
+import { MaskedText} from "react-native-mask-text";
+
+import { httpGetInvoice, httpUpsertInvoice } from "../../api/invoices.api";
+import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/store";
+
 import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAddItem";
 import InvoiceDetailSelectDeposit from "../../components/InvoiceDetail/InvoiceDetailSelectDeposit";
 import InvoiceDetailTableHeader from "../../components/InvoiceDetail/InvoiceDetailTableHeader";
-import InvoiceDetailTableItem from "../../components/InvoiceDetail/InvoiceDetailTableItem";
+import InvoiceDetailTableList from "../../components/InvoiceDetail/InvoiceDetailTableList";
 import CarCard from "../../components/UI/CarCard";
 import ClientCard from "../../components/UI/ClientCard";
-import Header from "../../components/UI/Header";
 import NavBtn from "../../components/UI/NavBtns";
 import SaveMenu from "../../components/UI/SaveMenu";
 import Colors from "../../constants/Colors/Colors";
@@ -17,16 +21,15 @@ import {
   useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
 
-// TODO:
-// 1. Create a Add Item Component
-// 2. Creat a Select Deposit Component
-// 3. Create a Invoice Detail Table Header Component
-// 4. Create a Invoice Detail Table List Component
-// 5. Create a Invoice Detail Table Item Component
-// 6. Create a Invoice Detail Sumamry Component
+import Figures from "../../constants/figures/Figures";
+import { useDepositStore } from "../../Store/depositStore";
+import { useInvoiceStore } from "../../Store/invoiceStore";
+import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
+
+  // --- Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
       id: state.id,
@@ -55,95 +58,233 @@ function InvoiceDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
+  const toggleReloadInvoiceList = useInvoiceStore((state) => state.toggleReloadInvoiceList);
+  const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
+  const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
+  const resetSelectedDeposits = useDepositStore((state) => state.resetSelectedDeposits);
+
+  // --- State Variables
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
+  const [invoiceItems, setInvoiceItems] = useState([]);
 
-  const { isLoading, data, hasError } = useQuery({
+  // --- Calculated Variables
+  const totalAmount = useMemo(() => {
+    let amount = 0;
+
+    for (let item of invoiceItems) {
+      amount += item.unitPrice * item.quantity;
+    }
+
+    return amount * 100;
+  }, [invoiceItems]);
+
+  const amountPaid = useMemo(() => {
+    let amount = 0;
+
+    for (let deposit of clientSelectedDeposits) {
+      amount += Number(deposit.amountTotal);
+    }
+
+    for (let deposit of serverSelectedDeposits) {
+      amount += Number(deposit.amountTotal);
+    }
+
+    return amount * 100;
+  }, [clientSelectedDeposits, serverSelectedDeposits]);
+
+  const amountDue = useMemo(() => {
+    return totalAmount - amountPaid;
+  }, [totalAmount, amountPaid]);
+
+
+  // --- Data Fetching
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
   });
 
+  function getHeaderTitle() {
+   return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
+  }
+
   function navigateNext() {}
 
+  // TODO: Fix Navigations for new implementation
   function navigateBack() {
-    navigation.navigate("ExistingCars", {
-      nextScreen: "InvoiceDetail",
-      previousScreen: "ExistingClients",
-      cancelScreen: "InvoiceMain",
-      client: client,
-    });
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
   }
 
   function navigateCancel() {
-    navigation.navigate("InvoiceMain");
+    resetSelectedDeposits();
+    const pageAction = StackActions.popToTop();
+    navigation.dispatch(pageAction);
+  }
+
+  function generateKey() {
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `key-${randomString}`;
+  }
+
+  function onAddItem() {
+    const newItem = {
+      key: generateKey(),
+      invoiceId: invoiceId,
+      description: "",
+      quantity: 0,
+      unitPrice: 0,
+      warranty: "N/A",
+      totalPrice: 0,
+    };
+    invoiceItems.push(newItem);
+    
+    setInvoiceItems([...invoiceItems]);
   }
 
   function setInvoiceInfo(data) {
+    // Set Client and Car data
     setClientInfo(data.customer);
     setCarInfo(data.car);
+
+    // Set a unique key for every invoice.
+    const items = data.invoiceItems.map((item) => ({key: generateKey(), ...item}));
+    setInvoiceItems(items);
+  }
+
+  function getDepositIds() {
+    let depositIds = [];
+
+    for (let deposit of clientSelectedDeposits) {
+      depositIds.push(deposit.id);
+    }
+
+    for (let deposit of serverSelectedDeposits) {
+      depositIds.push(deposit.id);
+    }
+
+    return depositIds;
   }
 
   async function fetchInvoiceData() {
-    try {
-      const data = await httpGetInvoice(invoiceId);
-      setInvoiceInfo(data.data);
-      return data.data;
-    } catch (error) {
-      // This is temporary until I can figure out how to handle errors
-      Alert.alert("Error", "There was an error fetching the invoice data.");
-    }
+    const data = await httpGetInvoice(invoiceId);
+    setInvoiceInfo(data.data);
+    return data.data;
   }
 
   async function onSaveUpdateInvoice(option) {
-    try {
-      const invoiceInfo = {
-        customer: clientInfo.id,
-        car: carInfo.id,
-      };
-    } catch (error) {
-      console.log(error);
+    const invoiceInfo = {
+      status: option,
+      amountTotal: totalAmount / 100,
+      amountPaid: amountPaid / 100,
+      amountDue: amountDue / 100,
+      invoiceItems: invoiceItems,
+      customerId: clientInfo.id,
+      carId: carInfo.id,
+      invoiceItems: invoiceItems,
+      depositIds: getDepositIds(),
+    };
+
+    // Only Add Id if present
+    if (invoiceId) invoiceInfo.id = invoiceId;
+
+    const response = await httpUpsertInvoice(invoiceInfo);
+    if (response.hasError) {
+      return Alert.alert("Error", "There was an error saving the invoice. Please try again later.");
     }
+
+    onSaveNavigation(option);
+  }
+
+  function onSaveNavigation(option) {
+
+    toggleReloadInvoiceList();
+    Alert.alert("Success", "The invoice was saved successfully.");
+
+    if (option === "Pay") {
+      return console.log("Pay Button Clicked");
+    }
+
+    return navigation.navigate("InvoiceMain");
+  }
+
+  if (isError) {
+    console.log("Error Fetching Invoice Detail: ", error);
+    Alert.alert("Error", "There was an error fetching the invoice detail data. Please try again later.");
   }
 
   return (
     <View>
-      <Header
-        divideH={7}
-        divideW={1}
-        colorHeader={Colors.yellowDark}
-        headerStyles={styles.header}
-      >
-        <View>
-          <Text style={styles.headerTitle}>
-            Invoice {invoiceId && `#${invoiceId}`}
-          </Text>
-        </View>
-      </Header>
+      <Appbar.Header style={styles.header} mode="center-aligned">
+        <Appbar.BackAction onPress={navigateBack} />
+        <Appbar.Content title={getHeaderTitle()}></Appbar.Content>
+      </Appbar.Header>
       <View style={styles.body}>
         {(isLoading && !!invoiceId) || (
-          <View style={{ height: 600 }}>
-            <View style={styles.cardsContainer}>
-              <View style={{ marginRight: 10 }}>
-                <ClientCard client={clientInfo} />
+          <View>
+            <View style={{ height: 540 }}>
+              <View style={styles.cardsContainer}>
+                <View style={{ marginRight: 10 }}>
+                  <ClientCard client={clientInfo} />
+                </View>
+                <CarCard car={carInfo} />
               </View>
-              <CarCard car={carInfo} />
+              <View style={styles.buttonGroup}>
+                <InvoiceDetailAddItem onPress={onAddItem}/>
+                <InvoiceDetailSelectDeposit invoiceId={invoiceId} />
+              </View>
+              <InvoiceDetailTableHeader />
+              <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />
             </View>
-            <View style={styles.buttonGroup}>
-              <InvoiceDetailAddItem />
-              <InvoiceDetailSelectDeposit amount={2} />
+            <View style={styles.invoiceSummary}>
+              <ImageBackground source={Figures.InvoiceSummaryImage} style={styles.imageBackgroundContainer}>
+                <View>
+                  <Text style={[ styles.amountsText, styles.totalAmountText ]}>
+                    Total:{' '} 
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {totalAmount}
+                    </MaskedText>
+                  </Text>
+                  <Text style={styles.amountsText}>Amount 
+                    Paid: {' '}
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {amountPaid}
+                    </MaskedText>
+                  </Text>
+                  <Text style={styles.amountsText}>
+                    Amount Due: {' '}
+                    <MaskedText
+                      type="currency"
+                      options={{
+                        prefix: "$",
+                        decimalSeparator: ".",
+                        groupSeparator: ",",
+                        precision: 2,
+                      }}
+                    > 
+                      {amountDue}
+                    </MaskedText>
+                  </Text>
+                </View>
+              </ImageBackground>
             </View>
-            <InvoiceDetailTableHeader />
-            <InvoiceDetailTableItem
-              description={"Botellas Pruebas"}
-              price={23}
-              quantity={2}
-            />
-            <InvoiceDetailTableItem
-              description={"Botellas Pruebas"}
-              price={23}
-              quantity={2}
-            />
           </View>
         )}
       </View>
@@ -167,13 +308,14 @@ export default InvoiceDetail;
 
 const styles = StyleSheet.create({
   body: {
-    marginTop: 180,
-    height: 600,
+    marginTop: 30,
+    height: 690,
     zIndex: -1,
   },
   header: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.yellowDark
   },
   headerTitle: {
     fontSize: 40,
@@ -190,6 +332,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  invoiceSummary: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 15,
+  },
+  imageBackgroundContainer: {
+    height: 150,
+    width: 500,
+    resizeMode: 'contain',
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 10,
+  },
+  totalAmountText: {
+    paddingVertical: 8,
+    paddingHorizontal: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(40, 160, 103, 0.4);',
+  },
+  amountsText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginVertical: 5,
   },
   footer: {
     height: 100,

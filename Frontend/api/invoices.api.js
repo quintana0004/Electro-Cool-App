@@ -10,3 +10,25 @@ export async function httpGetInvoice(id) {
   const response = await axios(`/invoices/${id}`);
   return response;
 }
+
+export async function httpUpsertInvoice(invoiceInfo) {
+  
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
+
+  try {
+    const response = await axios.post("/invoices", invoiceInfo);
+    responseToReturn.data = response.data;
+  }
+  catch (error) {
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error.errorMessage;
+  }
+
+  return responseToReturn;
+
+}

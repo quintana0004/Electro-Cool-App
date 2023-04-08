@@ -68,9 +68,9 @@ export interface ICar {
 export interface IInvoice {
   id?: number;
   status: string;
-  amountTotal: string;
-  amountPaid: string;
-  amountDue: string;
+  amountTotal: number;
+  amountPaid: number;
+  amountDue: number;
   createdDate?: Date;
   lastModified?: Date;
   companyId: string;
@@ -83,9 +83,9 @@ export interface IInvoice {
 export interface IInvoiceItem {
   id?: number;
   description: string;
-  quantity: string;
-  unitPrice: string;
-  totalPrice: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
   warranty: string;
   createdDate?: Date;
   lastModified?: Date;
