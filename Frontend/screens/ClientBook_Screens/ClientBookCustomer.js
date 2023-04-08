@@ -8,8 +8,7 @@ import CBToggleButtons from "../../components/Client Book/ClientBook CBI/ClientB
 import CarList from "../../components/Client Book/ClientBook CBI/CarItem/TableListCarCB";
 import CustomerItemCB from "../../components/Client Book/ClientBook CBI/CustomerItem/CustomerItemClienBook";
 import InvoiceItemCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceItemClientBook";
-import { CBCustomerInfoStore } from "../../Store/store";
-
+import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
     return {
@@ -66,7 +65,7 @@ function ClientBookCustomer({ navigation }) {
           <Appbar.Action
             icon="arrow-left"
             onPress={() => {
-              navigation.navigate("ClientBook");
+              navigation.navigate("ClientBookMain");
             }}
           />
         </View>

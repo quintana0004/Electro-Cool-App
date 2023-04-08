@@ -51,6 +51,11 @@ const Figures = {
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  ClientBookEachCar,
+  UserIcon,
+  ClientInvoicesIcon,
+  ClientCarsIcon,
+  InvoiceSummaryImage,
 };
 
 export default Figures;

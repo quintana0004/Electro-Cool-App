@@ -31,12 +31,6 @@ export async function httpGetAllOfCustomer(searchTerm = "", customerId) {
   return response;
 }
 
-export async function httpGetAllOfCustomer(searchTerm = "", customerId) {
-  const queryParams = `?searchTerm=${searchTerm}&customerId=${customerId}`;
-  const response = await axios("/cars/customer/" + queryParams);
-  return response;
-}
-
 //?Car Information must be an object
 async function httpUpsertCar(carInfo) {
   const response = await axios.post("/cars", carInfo);

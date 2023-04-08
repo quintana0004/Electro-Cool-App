@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
-import { CBCustomerInfoStore } from "../../../Store/store";
+import { CBCustomerInfoStore } from "../../../Store/JobOrderStore";
 import { StackActions, useNavigation } from "@react-navigation/native";
 
 function TableItemClient({ id, firstName, lastName, date, phone, email }) {
