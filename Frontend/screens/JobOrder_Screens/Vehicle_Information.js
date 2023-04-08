@@ -493,7 +493,7 @@ function VehicleInformation({ route, navigation }) {
                           status={checked === "Yes" ? "checked" : "unchecked"}
                           onPress={() => setChecked("Yes")}
                           color={Colors.brightGreen}
-                          disableInput={disableInput}
+                          disabled={disableInput}
                         />
                       </View>
                       <View
