@@ -47,6 +47,9 @@ function ClientInformation({ route, navigation }) {
   const editClientInformation = useJobOrderStore(
     (state) => state.editClientInformation
   );
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
 
   //Use Effect Hook to get the data
   useEffect(() => {
@@ -127,6 +130,7 @@ function ClientInformation({ route, navigation }) {
     try {
       const clientData = await httpUpsertClient(info);
       showSuccessMessage();
+      setReloadJobOrderList();
     } catch (error) {
       console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
