@@ -180,8 +180,6 @@ function hasRequiredCustomerFields(customerInfo: ICustomer) {
   if (
     !customerInfo.firstName ||
     !customerInfo.lastName ||
-    !customerInfo.addressLine1 ||
-    !customerInfo.city ||
     !customerInfo.phone ||
     !isValidUUID(customerInfo.companyId)
   ) {

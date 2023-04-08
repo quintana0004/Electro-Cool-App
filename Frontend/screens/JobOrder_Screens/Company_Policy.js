@@ -7,9 +7,13 @@ import {
   useRequestedServiceStore,
   useVehicleInfoStore,
   useJobOrderStore,
-} from "../../Store/store";
+} from "../../Store/JobOrderStore";
 import { Checkbox } from "react-native-paper";
 import { StackActions } from "@react-navigation/native";
+import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { httpUpsertClient } from "../../api/clients.api";
+import { httpUpsertJobOrder } from "../../api/jobOrders.api";
+import { httpUpsertCar } from "../../api/cars.api";
 
 function CompanyPolicy({ navigation }) {
   //funtion for the page navigation
@@ -25,7 +29,53 @@ function CompanyPolicy({ navigation }) {
     navigation.dispatch(pageAction);
   }
 
-  const [checked, setChecked] = useState("");
+  //Values needed for the alert and the checked box
+  const [checked, setChecked] = useState(false);
+  const [visibleErrorDialog, setVisibleErrorDialog] = useState(false);
+  const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
+
+  // Values contain the result of the store for the Vehicle, client and joborder
+  const [clientInfo, setClientInfo] = useState({
+    id: useCustomerInfoStore((state) => state.id),
+    firstName: useCustomerInfoStore((state) => state.firstName),
+    lastName: useCustomerInfoStore((state) => state.lastName),
+    phone: useCustomerInfoStore((state) => state.phone),
+    email: useCustomerInfoStore((state) => state.email),
+  });
+
+  const [vehicleInformation, setVehicleInformation] = useState({
+    id: useVehicleInfoStore((state) => state.id),
+    brand: useVehicleInfoStore((state) => state.brand),
+    licensePlate: useVehicleInfoStore((state) => state.licensePlate),
+    model: useVehicleInfoStore((state) => state.model),
+    year: useVehicleInfoStore((state) => state.year),
+    mileage: useVehicleInfoStore((state) => state.mileage),
+    color: useVehicleInfoStore((state) => state.color),
+    vinNumber: useVehicleInfoStore((state) => state.vinNumber),
+    carHasItems: useVehicleInfoStore((state) => state.carHasItems),
+    carItemsDescription: useVehicleInfoStore(
+      (state) => state.carItemsDescription
+    ),
+    customerId: useVehicleInfoStore((state) => state.customerId),
+  });
+
+  const [jobOrderInfo, setJobOrderInfo] = useState({
+    id: useRequestedServiceStore((state) => state.id),
+    requestedService: useRequestedServiceStore(
+      (state) => state.requestedService
+    ),
+    serviceDetails: useRequestedServiceStore((state) => state.serviceDetails),
+    status: useRequestedServiceStore((state) => state.status),
+    jobLoadType: useRequestedServiceStore((state) => state.jobLoadType),
+    policySignature: false,
+    carId: useVehicleInfoStore((state) => state.id),
+    customerId: useCustomerInfoStore((state) => state.id),
+  });
+
+  // Used to reload TableListOrder when a new job order is created or updated
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
 
   const policy = [
     {
@@ -46,96 +96,124 @@ function CompanyPolicy({ navigation }) {
   ];
 
   async function handleSaveClient(clientInfo) {
+    let response;
+
     try {
       console.log("Client Info: ", clientInfo);
-
-      // If you do not include an Id in the clientData object, it will create a new customer
-      let clientData = {
-        id: clientInfo.id, // String or Number - Only send this Id, if you are updating an existing customer
-        firstName: clientInfo.firstName, // String
-        lastName: clientInfo.lastName, // String
-        addressLine1: clientInfo.addressLine1, // String
-        addressLine2: clientInfo.addressLine2, // String - Optional
-        state: clientInfo.state, // String - Optional
-        city: clientInfo.city, // String
-        phone: clientInfo.phone, // String
-        email: clientInfo.email, // Optional
-      };
-
-      const response = await httpUpsertClient(clientData);
+      response = await httpUpsertClient(clientInfo);
       console.log("Client Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Client: ", error);
     }
+
+    return response;
   }
 
   async function handleSaveCar(carInfo) {
+    let response;
+
     try {
       console.log("Car Info: ", carInfo);
-
-      // If you do not include an Id in the carData object, it will create a new car
-      let carData = {
-        id: carInfo.id, // String or Number - Only send this Id, if you are updating an existing car
-        brand: carInfo.brand, // String
-        licensePlate: carInfo.licensePlate, // String
-        model: carInfo.model, // String
-        year: carInfo.year, // String
-        mileage: carInfo.mileage, // String
-        color: carInfo.color, // String
-        vinNumber: carInfo.vinNumber, // String
-        carHasItems: carInfo.carHasItems, // Boolean - Optional
-        carItemsDescription: carInfo.carItemsDescription, // String - Optional
-        customerId: carInfo.customerId, // String or Number
-      };
-
-      const response = await httpUpsertCar(carData);
+      response = await httpUpsertCar(carInfo);
       console.log("Car Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Car: ", error);
     }
+
+    return response;
   }
 
-  async function handleSaveJobOrder(clientId, carId, jobOrderInfo) {
+  async function handleSaveJobOrder(jobOrderInfo) {
+    let response;
+
     try {
-      console.log("Job Order: ", jobOrder);
-
-      // If you do not include an Id in the jobOrderData object, it will create a new job order
-      let jobOrderData = {
-        id: jobOrderInfo.id, // Only send this Id, if you are updating an existing job order
-        requestedService: jobOrderInfo.requestedService, // "Oil Change;Tune Up;Motor"
-        serviceDetails: jobOrderInfo.serviceDetails, // String
-        status: jobOrderInfo.status, // String
-        jobLoadType: jobOrderInfo.jobLoadType, // String
-        policySignature: jobOrderInfo.policySignature, // Boolean
-        carId: carId, // String o Number
-        customerId: clientId, // String o Number
-      };
-
-      const response = await httpUpsertJobOrder(jobOrderData);
+      response = await httpUpsertJobOrder(jobOrderInfo);
+      setReloadJobOrderList();
       console.log("Job Order Saved Data: ", response.data);
     } catch (error) {
       console.log("Error at Handle Save Job Order: ", error);
     }
+
+    return response;
   }
 
   // The client, car and job order info could also be variables in Use State not only parameters
-  async function handleSave(clientInfo, carInfo, jobOrderItemInfo) {
+  async function handleSave() {
+    let customerInfoResponse;
+    let carInfoResponse;
+    let jobOrderResponse;
+    //Okay, let's get to business
+    //Start to verify that each data has is new or is updated
+    //?Start with Customers Info
+    if (!clientInfo.id) {
+      customerInfoResponse = {
+        firstName: clientInfo.firstName,
+        lastName: clientInfo.lastName,
+        phone: clientInfo.phone,
+        email: clientInfo.email,
+      };
+    } else {
+      customerInfoResponse = {
+        id: clientInfo.id,
+        firstName: clientInfo.firstName,
+        lastName: clientInfo.lastName,
+        phone: clientInfo.phone,
+        email: clientInfo.email,
+      };
+    }
+
     try {
-      // Handle all API calls here
-      if (!clientInfo.id) {
-        clientInfo = await handleSaveClient(clientInfo);
-      }
+      // Make the call for the API
+      //Take into consideration there are two routes one is the new info and existing info
 
-      if (!carInfo.id) {
-        carInfo = await handleSaveCar(carInfo);
-      }
+      customerInfoResponse = await handleSaveClient(customerInfoResponse);
+      console.log("CLIENT INFO: ", customerInfoResponse);
 
-      const response = await handleSaveJobOrder(
-        clientInfo.id,
-        carInfo.id,
-        jobOrderItemInfo
-      );
-      console.log("Hanlde All Save Response: ", response);
+      //?When customer passes the value need their ID
+      if (!vehicleInformation.id) {
+        carInfoResponse = {
+          brand: vehicleInformation.brand,
+          licensePlate: vehicleInformation.licensePlate,
+          model: vehicleInformation.model,
+          year: vehicleInformation.year,
+          mileage: vehicleInformation.mileage,
+          color: vehicleInformation.color,
+          vinNumber: vehicleInformation.vinNumber,
+          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
+          carItemsDescription: vehicleInformation.carItemsDescription,
+          customerId: customerInfoResponse.data.id,
+        };
+      } else {
+        carInfoResponse = {
+          id: vehicleInformation.id,
+          brand: vehicleInformation.brand,
+          licensePlate: vehicleInformation.licensePlate,
+          model: vehicleInformation.model,
+          year: vehicleInformation.year,
+          mileage: vehicleInformation.mileage,
+          color: vehicleInformation.color,
+          vinNumber: vehicleInformation.vinNumber,
+          carHasItems: vehicleInformation.carHasItems === "Yes", // MOCHA COMMENT: Change this line, you can't send "Yes" to backend. It's true or false.
+          carItemsDescription: vehicleInformation.carItemsDescription,
+          customerId: customerInfoResponse.data.id,
+        };
+      }
+      carInfoResponse = await handleSaveCar(carInfoResponse);
+
+      //?When customer and car has been sent then need to create the jobOrder
+      jobOrderResponse = {
+        requestedService: jobOrderInfo.requestedService,
+        serviceDetails: jobOrderInfo.serviceDetails,
+        status: "New",
+        jobLoadType: jobOrderInfo.jobLoadType,
+        policySignature: checked,
+        carId: carInfoResponse.data.id,
+        customerId: customerInfoResponse.data.id,
+      };
+      console.log("JOB ORDER RESPONSE: ", jobOrderResponse);
+      response = await handleSaveJobOrder(jobOrderResponse);
+
+      console.log("Handle All Save Response: ", response);
     } catch (error) {
       console.log("Error at Handle Save: ", error);
     }
@@ -151,6 +229,17 @@ function CompanyPolicy({ navigation }) {
           color="#FFFFFF"
         />
         <Appbar.Content title="Company Policy" color="#FFFFFF"></Appbar.Content>
+        <Appbar.Action
+          icon="check-decagram"
+          onPress={() => {
+            if (checked) {
+              setVisibleConfirmDialog(true);
+            } else {
+              setVisibleErrorDialog(true);
+            }
+          }}
+          color="#FFFFFF"
+        />
       </Appbar.Header>
       <View>
         <Text style={styles.instruction}>
@@ -187,6 +276,76 @@ function CompanyPolicy({ navigation }) {
           I, agree to the company policy
         </Text>
       </View>
+      {visibleErrorDialog && (
+        <Portal>
+          <Dialog
+            visible={visibleErrorDialog}
+            onDismiss={() => setVisibleErrorDialog(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="alert-circle-outline"
+              size={80}
+              color={Colors.darkRed}
+            />
+            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                There are missing required or need to correct information.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                textColor={Colors.yellowDark}
+                onPress={() => setVisibleErrorDialog(false)}
+              >
+                Okay
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+      {visibleConfirmDialog && (
+        <Portal>
+          <Dialog
+            visible={visibleConfirmDialog}
+            onDismiss={() => setVisibleConfirmDialog(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="check-circle-outline"
+              size={80}
+              color={Colors.darkGreen}
+            />
+            <Dialog.Title style={styles.textAlert}>
+              Confirm Job Order
+            </Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                Is this the final statement of the Job Order?
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                textColor={Colors.darkGreen}
+                onPress={async () => {
+                  await handleSave();
+                  setVisibleConfirmDialog(false);
+                  goHomeAction();
+                }}
+              >
+                Confirm
+              </Button>
+              <Button
+                textColor={Colors.yellowDark}
+                onPress={() => setVisibleConfirmDialog(false)}
+              >
+                Cancel
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
     </View>
   );
 }
@@ -221,6 +380,9 @@ const styles = StyleSheet.create({
   navNextBtn: { marginLeft: 10 },
   header: {
     backgroundColor: Colors.darkBlack,
+  },
+  textAlert: {
+    textAlign: "center",
   },
 });
 
