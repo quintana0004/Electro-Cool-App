@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
-import Colors from "../../constants/Colors/Colors";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 
-import Figures from "../../constants/figures/Figures";
+import Colors from "../../../constants/Colors/Colors";
+import Figures from "../../../constants/figures/Figures";
 
 function CBToggleButtons({ toggleActiveCategory, activeCategory }) {
   const [isClientsActive, setIsClientsActive] = useState(

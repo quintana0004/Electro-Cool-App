@@ -4,7 +4,7 @@ import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
-import TableListClient from "../components/ClientBookDetail/TableListClient";
+import TableListClient from "../components/Client Book/ClientBookDetail/TableListClient";
 //import { useCustomerInfoStore } from "../Store/store";
 
 function ClientBook({ navigation }) {
@@ -38,7 +38,11 @@ function ClientBook({ navigation }) {
         setSearchTerm={setSearchTerm}
       />
       <View style={styles.body}>
-        <Text>Client Book Screen!</Text>
+        <TableListClient
+          searchLoading={searchLoading}
+          searchTerm={searchTerm}
+          setSearchLoading={setSearchLoading}
+        />
       </View>
     </View>
   );

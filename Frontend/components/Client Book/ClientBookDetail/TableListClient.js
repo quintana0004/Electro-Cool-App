@@ -2,13 +2,12 @@ import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import TableHeaderClient from "./TableHeaderClient";
 import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { httpGetAllClients } from "../../api/clients.api";
+import { httpGetAllClients } from "../../../api/clients.api";
 
 function clientBookItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
   return (
     <TableItemClient
-      ID={itemData.item.id}
+      id={itemData.item.id}
       date={itemData.item.createdDate}
       firstName={itemData.item.firstName}
       lastName={itemData.item.lastName}
@@ -20,7 +19,6 @@ function clientBookItem(itemData) {
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
-  console.log("dori dori dori dori dori");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["ClientBookHomePage", searchTerm],
@@ -38,7 +36,6 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     if (searchLoading) {
       setSearchLoading(false);
     }
-    console.log("DATA : ", data.data);
     return data;
   }
 

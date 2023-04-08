@@ -3,23 +3,29 @@ import { View, StyleSheet } from "react-native";
 import { Appbar, Avatar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
-import Figures from "../../constants/figures/Figures";
 import SearchBanner from "../../components/UI/SearchBanner";
-import CBToggleButtons from "../../components/ClientBook CBI/ClientBookToggleButtons";
-import TableListCB from "../../components/ClientBook CBI/TableListClientBook";
+import CBToggleButtons from "../../components/Client Book/ClientBook CBI/ClientBookToggleButtons";
+import CarList from "../../components/Client Book/ClientBook CBI/CarItem/TableListCarCB";
+import CustomerItemCB from "../../components/Client Book/ClientBook CBI/CustomerItem/CustomerItemClienBook";
+import InvoiceItemCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceItemClientBook";
+import { CBCustomerInfoStore } from "../../Store/store";
 
 function ClientBookCustomer({ navigation }) {
-  const id = 4; //in the future bryan will send me the customer id
+  const client = CBCustomerInfoStore((state) => {
+    return {
+      id: state.id,
+      firstName: state.firstName,
+      lastName: state.lastName,
+      email: state.email,
+      date: state.date,
+    };
+  });
+
+  const cutomerId = client.id;
+  const [searchTerm, setSearchTerm] = useState("");
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Clients");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({
-    Paid: false,
-    Pending: false,
-    Canceled: false,
-    "In Draft": false,
-  });
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
@@ -27,6 +33,23 @@ function ClientBookCustomer({ navigation }) {
 
   function updateSearchTerm(term) {
     setSearchTerm(term);
+  }
+
+  function ToggleScreens(Category) {
+    if (Category === "Clients") {
+      return <CustomerItemCB />;
+    } else if (Category === "Vehicles") {
+      return (
+        <CarList
+          searchLoading={searchLoading}
+          setSearchLoading={setSearchLoading}
+          searchTerm={searchTerm}
+          customerId={cutomerId}
+        />
+      );
+    } else {
+      return <InvoiceItemCB />;
+    }
   }
 
   return (
@@ -49,7 +72,7 @@ function ClientBookCustomer({ navigation }) {
         </View>
 
         <Appbar.Content
-          title="El KABRON Cliente"
+          title={client.firstName + " " + client.lastName}
           color={Colors.brightYellow}
           style={{
             justifyContent: "center",
@@ -90,7 +113,7 @@ function ClientBookCustomer({ navigation }) {
           activeCategory={activeCategory}
         />
       </View>
-      <TableListCB activeCategory={activeCategory} searchTerm={searchTerm} />
+      <View>{ToggleScreens(activeCategory)}</View>
     </View>
   );
 }

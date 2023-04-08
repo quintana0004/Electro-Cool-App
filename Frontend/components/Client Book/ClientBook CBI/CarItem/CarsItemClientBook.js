@@ -2,11 +2,11 @@ import { Text, View, StyleSheet } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/core";
 
-import Figures from "../../constants/figures/Figures";
-import Colors from "../../constants/Colors/Colors";
+import Figures from "../../../../constants/figures/Figures";
+import Colors from "../../../../constants/Colors/Colors";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
-function CarItemCB({ itemData }) {
+function CarItemCB({ itemData, activateModal }) {
   const {
     ID,
     brand,
@@ -20,7 +20,7 @@ function CarItemCB({ itemData }) {
   } = itemData;
 
   function showCarInfo() {
-    console.log("Bryan es Pato pero mas PATO SOY YO");
+    activateModal(true);
   }
 
   return (

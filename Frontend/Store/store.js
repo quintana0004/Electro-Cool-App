@@ -162,3 +162,31 @@ export const useJobOrderStore = create((set) => ({
       editVehicleInformation: false,
     })),
 }));
+
+// ClietBook Store
+export const CBCustomerInfoStore = create((set) => ({
+  id: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  email: "",
+  date: "",
+  setCBCustomerInfo: (id, firstName, lastName, phone, email, date) =>
+    set((state) => ({
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      date: date,
+    })),
+  resetClientInformation: () =>
+    set((state) => ({
+      id: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      date: "",
+    })),
+}));
