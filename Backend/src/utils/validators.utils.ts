@@ -3,7 +3,7 @@ import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask 
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
-import { findDespositById } from "../models/deposits.model";
+import { findDepositById } from "../models/deposits.model";
 import { findAppointmentById } from "../models/appointments.model";
 import { findTaskById } from "../models/tasks.model";
 import { findUserById } from "../models/users.model";
@@ -118,14 +118,14 @@ async function isValidInvoiceId(id: number | string) {
   return true;
 }
 
-async function isValidDespositId(id: number | string) {
+async function isValidDepositId(id: number | string) {
   id = Number(id);
   if (isNaN(id)) {
     return false;
   }
 
-  const doesDespositExist = await findDespositById(id);
-  if (!doesDespositExist) {
+  const doesDepositExist = await findDepositById(id);
+  if (!doesDepositExist) {
     return false;
   }
 
@@ -180,8 +180,6 @@ function hasRequiredCustomerFields(customerInfo: ICustomer) {
   if (
     !customerInfo.firstName ||
     !customerInfo.lastName ||
-    !customerInfo.addressLine1 ||
-    !customerInfo.city ||
     !customerInfo.phone ||
     !isValidUUID(customerInfo.companyId)
   ) {
@@ -212,7 +210,6 @@ function hasRequiredCarFields(carInfo: ICar) {
 function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
   if (
     !jobOrderInfo.requestedService ||
-    !jobOrderInfo.serviceDetails ||
     !jobOrderInfo.policySignature ||
     !jobOrderInfo.status ||
     !jobOrderInfo.jobLoadType ||
@@ -229,9 +226,9 @@ function hasRequiredJobOrderFields(jobOrderInfo: IJobOrder) {
 function hasRequiredInvoiceFields(invoiceInfo: IInvoice) {
   if (
     !invoiceInfo.status ||
-    !invoiceInfo.amountTotal ||
-    !invoiceInfo.amountPaid ||
-    !invoiceInfo.amountDue ||
+    (!invoiceInfo.amountTotal && invoiceInfo.amountTotal != 0) ||
+    (!invoiceInfo.amountPaid && invoiceInfo.amountPaid != 0) ||
+    (!invoiceInfo.amountDue && invoiceInfo.amountDue != 0) ||
     !invoiceInfo.companyId ||
     !invoiceInfo.customerId ||
     !invoiceInfo.carId ||
@@ -311,7 +308,7 @@ export {
   isValidCarId,
   isValidJobOrderId,
   isValidInvoiceId,
-  isValidDespositId,
+  isValidDepositId,
   isValidAppointmentId,
   isValidTaskId,
   hasRequiredUserFields,

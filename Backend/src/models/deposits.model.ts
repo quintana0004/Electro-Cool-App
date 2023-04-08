@@ -50,23 +50,23 @@ async function findAllDeposits(page: number, take: number, searchTerm: string | 
   }
 }
 
-async function findDespositById(id: number) {
+async function findDepositById(id: number) {
   try {
-    const desposit = await prisma.deposit.findUnique({
+    const deposit = await prisma.deposit.findUnique({
       where: {
         id: id,
       },
     });
 
-    return desposit;
+    return deposit;
   } catch (error) {
     throw error;
   }
 }
 
-async function findDespositWithChildsById(id: number) {
+async function findDepositWithChildsById(id: number) {
   try {
-    const desposit = await prisma.deposit.findUnique({
+    const deposit = await prisma.deposit.findUnique({
       where: {
         id: id,
       },
@@ -76,11 +76,32 @@ async function findDespositWithChildsById(id: number) {
       },
     });
 
-    if (!desposit) {
+    if (!deposit) {
       return null;
     }
 
-    return excludeFields(desposit, "customerId", "carId");
+    return excludeFields(deposit, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findDepositsByInvoiceId(invoiceId: number) {
+  try {
+    const deposits = await prisma.deposit.findMany({
+      where: {
+        invoiceId: invoiceId,
+      },
+      include: {
+        customer: {
+          select: {
+            fullName: true,
+          }
+        },
+      },
+    });
+
+    return deposits;
   } catch (error) {
     throw error;
   }
@@ -99,6 +120,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         customerId: depositInfo.customerId,
         carId: depositInfo.carId,
         companyId: depositInfo.companyId,
+        isAvailable: !depositInfo.invoiceId,
+        invoiceId: depositInfo.invoiceId,
       },
       update: {
         amountTotal: depositInfo.amountTotal,
@@ -106,6 +129,8 @@ async function upsertDeposit(depositInfo: IDeposit) {
         description: depositInfo.description,
         customerId: depositInfo.customerId,
         carId: depositInfo.carId,
+        isAvailable: !depositInfo.invoiceId,
+        invoiceId: depositInfo.invoiceId,
         lastModified: new Date(),
       },
     });
@@ -126,6 +151,7 @@ async function updateDepositsParentInvoice(depositIds: number[], invoiceId: numb
       },
       data: {
         invoiceId: invoiceId,
+        isAvailable: false,
       },
     });
 
@@ -151,8 +177,9 @@ async function deleteDeposit(id: number) {
 
 export {
   findAllDeposits,
-  findDespositById,
-  findDespositWithChildsById,
+  findDepositById,
+  findDepositWithChildsById,
+  findDepositsByInvoiceId,
   upsertDeposit,
   updateDepositsParentInvoice,
   deleteDeposit,

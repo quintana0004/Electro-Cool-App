@@ -4,12 +4,15 @@ import {
   httpDeleteDeposit,
   httpGetAllDeposits,
   httpGetDepoist,
+  httpGetDepositsByInvoiceId,
   httpUpsertDeposit,
 } from "./deposits.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllDeposits);
+
+router.get("/invoice/:invoiceId", httpGetDepositsByInvoiceId);
 
 router.get("/:id", httpGetDepoist);
 

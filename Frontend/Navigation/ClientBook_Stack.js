@@ -13,7 +13,7 @@ function ClientBookStackOption() {
       screenOptions={{ cardStyle: { backgroundColor: "white" } }}
     >
       <ClientBookStack.Screen
-        name="ClientBook"
+        name="ClientBookMain"
         component={ClientBook}
         options={{ headerShown: false, animationEnabled: false }}
       />
