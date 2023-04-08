@@ -3,9 +3,10 @@ import TableHeaderOrder from "./TableHeaderOrder";
 import TableItemOrder from "./TableItemOrder";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllJobOrders } from "../../api/jobOrders.api";
+import { useJobOrderStore } from "../../Store/JobOrderStore";
 
 function jobOrderItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
+
   return (
     <TableItemOrder
       ID={itemData.item.id}
@@ -13,6 +14,9 @@ function jobOrderItem(itemData) {
       firstName={itemData.item.customer.firstName}
       lastName={itemData.item.customer.lastName}
       status={itemData.item.status}
+      carId={itemData.item.carId}
+      customerId={itemData.item.customerId}
+      requestedId={itemData.item.id}
     />
   );
 }
@@ -24,10 +28,12 @@ function TableListOrder({
   filters,
 }) {
   const TAKE = 15;
-  console.log("LOAD MOTHERFUCKER");
+  const reloadJobOrderList = useJobOrderStore(
+    (state) => state.reloadJobOrderList
+  );
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["JobOrderHomePage", searchTerm],
+    queryKey: ["JobOrderHomePage", searchTerm, reloadJobOrderList],
     queryFn: getJobOrderScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage
@@ -39,10 +45,11 @@ function TableListOrder({
 
   async function getJobOrderScreenData({ pageParam = 0 }) {
     let data = await httpGetAllJobOrders(TAKE, pageParam, searchTerm);
+
     if (searchLoading) {
       setSearchLoading(false);
     }
-    console.log("DATA : ", data.data);
+
     return data;
   }
 

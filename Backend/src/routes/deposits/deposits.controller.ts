@@ -6,12 +6,14 @@ import {
   isValidCompanyId,
   isValidCustomerId,
   hasRequiredDepositFields,
-  isValidDespositId,
+  isValidDepositId,
+  isValidInvoiceId,
 } from "../../utils/validators.utils";
 import {
   deleteDeposit,
   findAllDeposits,
-  findDespositWithChildsById,
+  findDepositWithChildsById,
+  findDepositsByInvoiceId,
   upsertDeposit,
 } from "../../models/deposits.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
@@ -33,7 +35,7 @@ async function httpGetDepoist(req: Request, res: Response) {
   try {
     const depositId = req.params.id;
 
-    const isDepositIdValid = await isValidDespositId(depositId);
+    const isDepositIdValid = await isValidDepositId(depositId);
     if (!isDepositIdValid) {
       return handleBadResponse(
         400,
@@ -42,11 +44,32 @@ async function httpGetDepoist(req: Request, res: Response) {
       );
     }
 
-    const deposit = await findDespositWithChildsById(+depositId);
+    const deposit = await findDepositWithChildsById(+depositId);
 
     return res.status(200).json(deposit);
   } catch (error) {
     return handleExceptionErrorResponse("get deposit by id", error, res);
+  }
+}
+
+async function httpGetDepositsByInvoiceId(req: Request, res: Response) {
+  try {
+    const invoiceId = req.params.invoiceId;
+
+    const isInvoiceIdValid = await isValidInvoiceId(invoiceId);
+    if (!isInvoiceIdValid) {
+      return handleBadResponse(
+        400,
+        "The invoice Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const deposits = await findDepositsByInvoiceId(+invoiceId);
+
+    return res.status(200).json(deposits);
+  } catch (error) {
+    return handleExceptionErrorResponse("get deposits by invoice id", error, res);
   }
 }
 
@@ -63,6 +86,7 @@ async function httpUpsertDeposit(req: Request, res: Response) {
       isAvailable: req.body.isAvailable,
       customerId: req.body.customerId,
       carId: req.body.carId,
+      invoiceId: req.body.invoiceId,
       companyId: companyId,
     };
 
@@ -113,7 +137,7 @@ async function httpDeleteDeposit(req: Request, res: Response) {
   try {
     const depositId = req.params.id;
 
-    const isDepositIdValid = await isValidDespositId(depositId);
+    const isDepositIdValid = await isValidDepositId(depositId);
     if (!isDepositIdValid) {
       return handleBadResponse(
         400,
@@ -129,4 +153,4 @@ async function httpDeleteDeposit(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllDeposits, httpGetDepoist, httpUpsertDeposit, httpDeleteDeposit };
+export { httpGetAllDeposits, httpGetDepoist, httpUpsertDeposit, httpDeleteDeposit, httpGetDepositsByInvoiceId };

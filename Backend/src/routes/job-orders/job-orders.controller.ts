@@ -69,7 +69,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
 
     const hasRequiredFields = hasRequiredJobOrderFields(jobOrderInfo);
     if (!hasRequiredFields) {
-      handleBadResponse(
+      return handleBadResponse(
         400,
         "Missing required fields to create job order. Please provide the following fields: requestedService, serviceDetails, status, jobLoadType, carId, companyId and customerId.",
         res
@@ -78,7 +78,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
 
     const isCompanyIdValid = await isValidCompanyId(jobOrderInfo.companyId);
     if (!isCompanyIdValid) {
-      handleBadResponse(
+      return handleBadResponse(
         400,
         "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
@@ -87,7 +87,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
 
     const isCustomerIdValid = await isValidCustomerId(jobOrderInfo.customerId);
     if (!isCustomerIdValid) {
-      handleBadResponse(
+      return handleBadResponse(
         400,
         "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res
@@ -96,7 +96,7 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
 
     const isCarIdValid = await isValidCarId(jobOrderInfo.carId);
     if (!isCarIdValid) {
-      handleBadResponse(
+      return handleBadResponse(
         400,
         "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
         res

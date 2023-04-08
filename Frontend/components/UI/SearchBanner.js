@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Banner } from "react-native-paper";
 import { Searchbar } from "react-native-paper";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
 function SearchBanner({ visible, placeholder, loading, setLoading, setSearchTerm }) {

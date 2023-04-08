@@ -5,7 +5,7 @@ import {
   isValidCarId,
   isValidCompanyId,
   isValidCustomerId,
-  isValidDespositId,
+  isValidDepositId,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   isValidInvoiceId,
@@ -63,8 +63,6 @@ async function httpUpsertInvoice(req: Request, res: Response) {
       amountTotal: req.body.amountTotal,
       amountPaid: req.body.amountPaid,
       amountDue: req.body.amountDue,
-      createdDate: req.body.createdDate,
-      lastModified: req.body.lastModified,
       companyId: companyId,
       customerId: req.body.customerId,
       carId: req.body.carId,
@@ -121,7 +119,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
 
     if (invoiceInfo.depositIds?.length) {
       for (const id of invoiceInfo.depositIds) {
-        const isDepositIdValid = await isValidDespositId(id);
+        const isDepositIdValid = await isValidDepositId(id);
         if (!isDepositIdValid) {
           return handleBadResponse(
             400,
