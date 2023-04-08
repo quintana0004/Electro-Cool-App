@@ -1,9 +1,12 @@
 import { Text, View } from "react-native";
+import { useCustomerInfoStore } from "../../Store/store";
 
 function CustomerInformation() {
+  const firstNameStore = useCustomerInfoStore((state) => state.firstName);
+
   return (
     <View>
-      <Text>Customer Information</Text>
+      <Text>{firstNameStore}</Text>
     </View>
   );
 }
