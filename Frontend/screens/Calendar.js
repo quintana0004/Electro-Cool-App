@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
-import Appointments from "../screens/Calendar_Screens/Appointments";
 import Appbar from "react-native-paper/src/components/Appbar";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import TableListTasks from "../components/Calendar/TableListTasks";
 import SearchBanner from "../components/UI/SearchBanner";
 import { StackActions } from "@react-navigation/native";
+import TableListAppointments from "../components/Calendar/TableListAppointments";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
@@ -58,7 +58,7 @@ function Calendar({ navigation }) {
 
       <View style={styles.container}>
         {activeCategory === "Appointments" ? (
-          <Appointments />
+          <TableListAppointments />
         ) : (
           <TableListTasks
             activeCategory={activeCategory}

@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.yellowDark,
   },
   title: {
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
   },
   Container: {
     alignItems: "center",
-    margin: 130,
+    margin: 60,
   },
   Button: {
     borderColor: "#cccccc",
@@ -166,22 +166,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
   },
-  naviBtnsPosition: {
-    width: 540,
-    height: 150,
-    justifyContent: "flex-end",
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  navBackBtn: {
-    marginRight: 130,
-  },
-  navCancelBtn: {
-    marginRight: 10,
-  },
-  navNextBtn: {
-    marginLeft: 10,
-  },
+
   header: {
     backgroundColor: Colors.yellowDark,
   },

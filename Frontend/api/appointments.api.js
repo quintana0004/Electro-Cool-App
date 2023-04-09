@@ -15,8 +15,15 @@ async function httpUpsertAppointments(appointmentInfo) {
   return response;
 }
 
+//?Delete Appointment for the date
+async function httpDeleteAppointment(AppointmentId) {
+  const response = await axios.delete(`/appointments/${AppointmentId}`);
+  return response;
+}
+
 export {
   httpGetAllAppointments,
   httpUpsertAppointments,
   httpGetAppointmentbyId,
+  httpDeleteAppointment,
 };
