@@ -37,7 +37,26 @@ async function httpGetAllAppointments(req: Request, res: Response) {
 
     const appointmentsData = await findAllAppointments(page, take, searchTerm);
 
-    return res.status(200).json(appointmentsData);
+    // Group the appointments by arrivalDateTime
+    const groupedAppointments = appointmentsData.data.reduce(
+      (
+        accumulator: Record<string, typeof appointmentsData.data>,
+        appointment
+      ) => {
+        const dateKey = appointment.arrivalDateTime.toISOString().split("T")[0];
+
+        if (!accumulator[dateKey]) {
+          accumulator[dateKey] = [];
+        }
+
+        accumulator[dateKey].push(appointment);
+
+        return accumulator;
+      },
+      {}
+    );
+
+    return res.status(200).json(groupedAppointments);
   } catch (error) {
     return handleExceptionErrorResponse("get all appointments", error, res);
   }
