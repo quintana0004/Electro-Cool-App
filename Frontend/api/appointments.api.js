@@ -1,7 +1,7 @@
 import axios from "./axios";
 
-async function httpGetAllAppointments(take, page, searchTerm = "") {
-  const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
+async function httpGetAllAppointments(searchTerm) {
+  const queryParams = `?&searchTerm=${searchTerm}`;
   const response = await axios("/appointments" + queryParams);
   return response;
 }

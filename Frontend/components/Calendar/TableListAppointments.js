@@ -71,7 +71,7 @@ function TableListAppointments({
   useEffect(() => {
     async function getAppointment() {
       try {
-        const appointmentData = await httpGetAllAppointments(15, 0, searchTerm);
+        const appointmentData = await httpGetAllAppointments(searchTerm);
         console.log("DATA APPOINTMENT:  ", appointmentData.data);
         setAppData(appointmentData.data);
       } catch (error) {
