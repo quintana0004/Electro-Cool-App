@@ -59,9 +59,6 @@ function MenuDropDown() {
   }
 
   function navInvoices() {
-    setExistingClientNextPage("ExistingCars");
-    setExistingCarNextPage("InvoiceDetail");
-
     navigation.navigate("Invoices");
     setToggleBtn(false);
   }

@@ -19,9 +19,7 @@ function ExistingCarTableList({
     queryKey: ["ExistingCarData", searchTerm],
     queryFn: getExistingCarData,
     select: (data) => {
-      console.log("Data being received for Car: ", data);
       let modifiedCarData = data.map((car) => setDefaultSelectedField(car));
-      console.log("Data Modified for Car: ", modifiedCarData);
       return modifiedCarData;
     },
     enabled: true,
