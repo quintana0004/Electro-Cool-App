@@ -6,9 +6,11 @@ import {
   Text,
   Button,
   Pressable,
+  TextInput,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Appbar } from "react-native-paper";
+import CarModal from "./CarModal";
 
 import { httpGetAllCars, httpGetAllOfCustomer } from "../../../../api/cars.api";
 import CarItemCB from "./CarsItemClientBook";
@@ -77,16 +79,7 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
         style={{ backgroundColor: "#F7F7F7" }}
         contentContainerStyle={{ margin: 30 }}
       >
-        <Appbar.Header>
-          <Appbar.BackAction onPress={() => setModalVisible(!modalVisible)} />
-          <Appbar.Action
-            icon="file-edit"
-            onPress={() => {
-              console.log("Edita Cabron");
-            }}
-          />
-        </Appbar.Header>
-        <View></View>
+        <CarModal></CarModal>
       </Modal>
     </View>
   );
@@ -96,6 +89,7 @@ const styles = StyleSheet.create({
   listContainer: {
     alignItems: "center",
     height: 713,
+    marginHorizontal: 40,
   },
 });
 
