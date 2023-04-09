@@ -20,8 +20,6 @@ import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
   try {
-    let page = req.query.page ? +req.query.page : 0;
-    let take = req.query.take ? +req.query.take : 0;
     let searchTerm = req.query.searchTerm
       ? req.query.searchTerm.toString()
       : "";
@@ -35,9 +33,25 @@ async function httpGetAllAppointments(req: Request, res: Response) {
       );
     }
 
-    const appointmentsData = await findAllAppointments(page, take, searchTerm);
+    const appointmentsData = await findAllAppointments(searchTerm);
 
-    return res.status(200).json(appointmentsData);
+    // Group the appointments by arrivalDateTime
+    const groupedAppointments = appointmentsData.reduce(
+      (accumulator: Record<string, typeof appointmentsData>, appointment) => {
+        const dateKey = appointment.arrivalDateTime.toISOString().split("T")[0];
+
+        if (!accumulator[dateKey]) {
+          accumulator[dateKey] = [];
+        }
+
+        accumulator[dateKey].push(appointment);
+
+        return accumulator;
+      },
+      {}
+    );
+
+    return res.status(200).json(groupedAppointments);
   } catch (error) {
     return handleExceptionErrorResponse("get all appointments", error, res);
   }
