@@ -68,6 +68,33 @@ async function findAllInvoices(
   }
 }
 
+async function findInvoicesByCustomer(
+  searchTerm: string | undefined,
+  customerId: number
+) {
+  try {
+    const invoiceStatus = searchTerm ? searchTerm : undefined;
+    const clientInvoices = await prisma.invoice.findMany({
+      where: {
+        AND: [
+          {
+            status: {
+              in: invoiceStatus,
+            },
+          },
+          {
+            customerId: customerId,
+          },
+        ],
+      },
+    });
+
+    return clientInvoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findInvoiceById(id: number) {
   try {
     const invoice = await prisma.invoice.findUnique({
@@ -242,6 +269,7 @@ async function deleteInvoice(id: number) {
 
 export {
   findAllInvoices,
+  findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
   upsertInvoice,
