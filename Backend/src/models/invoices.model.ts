@@ -132,6 +132,48 @@ async function findInvoiceWithChildsById(id: number) {
   }
 }
 
+async function updatePolicyAmount() {
+  try {
+    const policyAmount = 10.0;
+
+    const invoice = await prisma.invoice.findMany({
+      where: {
+        AND: [
+          {
+            status: "Pending",
+          },
+          {
+            lastModified: {
+              lt: new Date(),
+            },
+          },
+        ],
+      },
+    });
+
+    const invoiceIds = invoice.map((invoice) => invoice.id);
+    const updatedinvoices = await prisma.invoice.updateMany({
+      where: {
+        id: {
+          in: invoiceIds,
+        },
+      },
+      data: {
+        amountDue: {
+          increment: policyAmount,
+        },
+        amountTotal: {
+          increment: policyAmount,
+        },
+      },
+    });
+
+    return updatedinvoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertInvoice(invoiceInfo: IInvoice) {
   try {
     const invoice = await prisma.invoice.upsert({
@@ -272,6 +314,7 @@ export {
   findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
+  updatePolicyAmount,
   upsertInvoice,
   deleteInvoice,
 };
