@@ -150,7 +150,7 @@ async function updatePolicyAmount() {
             },
           },
           {
-            createdDate: {
+            lastModified: {
               lt: date15DaysAgo,
             },
           },
