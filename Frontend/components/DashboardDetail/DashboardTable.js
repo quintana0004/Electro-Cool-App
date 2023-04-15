@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Figures from "../../constants/figures/Figures";
-
-function Peneerecto({
+import { Avatar, Button, Card } from "react-native-paper";
+function TheComponent({
   navigation,
   testfigure,
   FirstText,
@@ -21,7 +21,7 @@ function Peneerecto({
 }) {
   if (Choice == 1) {
     return (
-      <View style={styles.Button}>
+      <View style={[styles.Button]}>
         <Image
           style={[
             styles.IconBigButton,
@@ -35,25 +35,32 @@ function Peneerecto({
     );
   } else if (Choice == 2) {
     return (
-      <View
-        style={[
-          styles.ButtonSmall,
-          { marginTop: MarginTableTop, marginRight: margin },
-        ]}
-      >
-        <Image style={styles.IconButtonSmall} source={Figures.Wheel} />
-        <Text style={styles.SmallText}>{FirstText}</Text>
-        <Text style={styles.ButtonTextSmall}>{SecondText}</Text>
-
-        <View
+      <View>
+        <Card
           style={[
             styles.ButtonSmall,
-            { marginBottom: MarginTable, height: HeightSmallIcon },
+            { height: HeightBig, width: WidthBig, marginTop: MarginTableTop },
           ]}
         >
-          <Text style={styles.SmallText}>{ThirdText}</Text>
-          <Text style={styles.ButtonTextSmall}>{FourthText}</Text>
-        </View>
+          <Card.Content style={[{ flexDirection: "row" }]}>
+            <Text variant="bodyMedium" style={[{ marginTop: 15 }]}>
+              Miguelito El Heredero
+            </Text>
+          </Card.Content>
+        </Card>
+
+        <Card
+          style={[
+            styles.ButtonSmall,
+            { height: HeightBig, width: WidthBig, marginTop: 10 },
+          ]}
+        >
+          <Card.Content style={[{ flexDirection: "row" }]}>
+            <Text variant="bodyMedium" style={[{ marginTop: 15 }]}>
+              {FirstText}
+            </Text>
+          </Card.Content>
+        </Card>
       </View>
     );
   } else if (Choice == 3) {
@@ -64,7 +71,7 @@ function Peneerecto({
             {
               height: HeightIcon,
               width: WidthIcon,
-              marginTop: 5,
+              marginTop: 10,
               marginRight: 10,
             },
           ]}
@@ -72,10 +79,36 @@ function Peneerecto({
         />
 
         <Text style={[{ fontSize: 18, fontWeight: "600" }]}>{FirstText}</Text>
+        <Pressable onPress={() => console.log("Card pressed")}>
+          <Card
+            style={[
+              styles.cardstyle,
+              {
+                height: 90,
+                width: 293,
+              },
+            ]}
+          >
+            <Card.Content>
+              <Text style={[{ marginLeft: 5 }]}>Invoice</Text>
+              <Text style={[{ alignSelf: "flex-end" }]}>
+                Cristobal Colon the Conqueror
+              </Text>
+            </Card.Content>
 
-        <View style={[styles.Button, { height: HeightBig, width: WidthBig }]}>
-          <Text style={styles.SmallText}>{SecondText}</Text>
-        </View>
+            <Card
+              style={[
+                {
+                  width: 65,
+                  marginLeft: 10,
+                  backgroundColor: "#cccccc",
+                },
+              ]}
+            >
+              <Text style={[{ alignSelf: "center" }]}>#1234</Text>
+            </Card>
+          </Card>
+        </Pressable>
         {
           //arreglar font size y verificar los styles a ver si todo esta en orden.
         }
@@ -83,19 +116,57 @@ function Peneerecto({
     );
   } else if (Choice == 4) {
     return (
-      <View style={[styles.ButtonHuge]}>
-        <Text style={[{ fontSize: 22, fontWeight: "600" }]}>{FirstText}</Text>
-        <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
-          {SecondText}
-        </Text>
+      <View>
+        <Card
+          style={[
+            styles.ButtonSmall,
+            { height: HeightBig, width: WidthBig, marginRight: margin },
+          ]}
+        >
+          <Card.Cover
+            source={testfigure}
+            style={[
+              {
+                height: 60,
+                width: 90,
+                backgroundColor: "white",
+                alignSelf: "center",
+              },
+            ]}
+          />
 
-        <Text style={[{ fontSize: 22, fontWeight: "600" }]}>{FirstText}</Text>
-        <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
-          {SecondText}
-        </Text>
-        {
-          //arreglar font size y verificar los styles a ver si todo esta en orden.
-        }
+          <Card.Content>
+            <Text style={[styles.ButtonTextBig]}>#1234</Text>
+          </Card.Content>
+        </Card>
+
+        <Card
+          style={[
+            styles.ButtonSmall,
+            {
+              height: HeightBig,
+              width: WidthBig,
+              marginTop: 10,
+              marginRight: margin,
+            },
+          ]}
+        >
+          <Card.Cover
+            source={testfigure}
+            style={[
+              {
+                height: 60,
+                width: 90,
+                backgroundColor: "white",
+                alignSelf: "center",
+              },
+            ]}
+          />
+
+          <Card.Content>
+            <Text style={styles.ButtonTextBig}>#1234</Text>
+          </Card.Content>
+        </Card>
       </View>
     );
   }
@@ -113,7 +184,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderRadius: 20,
     width: 143,
-    height: 220,
+    height: 250,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 0,
@@ -125,14 +196,14 @@ const styles = StyleSheet.create({
     borderColor: "#cccccc",
     borderWidth: 4,
     borderRadius: 20,
-    width: 290,
+    width: 310,
     height: 550,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 0,
-    marginTop: 15,
+    marginTop: 0,
     marginLeft: 0,
-    marginRight: 3,
+    marginRight: 7,
     flexDirection: "row",
     flexWrap: "wrap",
   },
@@ -160,6 +231,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   ButtonSmall: {
+    backgroundColor: "white",
     borderColor: "#cccccc",
     borderWidth: 4,
     borderRadius: 20,
@@ -169,6 +241,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     flexWrap: "nowrap",
+    marginTop: 0,
+    marginLeft: 3,
+    marginRight: 3,
+  },
+  cardstyle: {
+    height: 90,
+    width: 293,
+    backgroundColor: "white",
+    borderColor: "#cccccc",
+    borderWidth: 4,
+    borderRadius: 20,
   },
 });
-export default Peneerecto;
+export default TheComponent;
