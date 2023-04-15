@@ -143,7 +143,12 @@ async function updatePolicyAmount() {
             status: "Pending",
           },
           {
-            lastModified: {
+            amountDue: {
+              gt: 0,
+            },
+          },
+          {
+            createdDate: {
               lt: new Date(),
             },
           },
