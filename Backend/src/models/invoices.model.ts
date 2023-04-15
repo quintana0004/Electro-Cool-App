@@ -135,6 +135,8 @@ async function findInvoiceWithChildsById(id: number) {
 async function updatePolicyAmount() {
   try {
     const policyAmount = 10.0;
+    const date15DaysAgo = new Date();
+    date15DaysAgo.setDate(date15DaysAgo.getDate() - 15);
 
     const invoice = await prisma.invoice.findMany({
       where: {
@@ -149,7 +151,7 @@ async function updatePolicyAmount() {
           },
           {
             createdDate: {
-              lt: new Date(),
+              lt: date15DaysAgo,
             },
           },
         ],
