@@ -3,9 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
+  FlatList,
   Button,
   ToastAndroid,
   Pressable,
@@ -34,7 +32,18 @@ import "intl";
 import "intl/locale-data/jsonp/en";
 import intlFormat from "date-fns/intlFormat";
 import format from "date-fns/format";
-
+import { StackActions, useNavigation } from "@react-navigation/native";
+import TableItemCTasks from "../../components/CalendarDetail/TableItemCTasks";
+function cTaskItem(itemData) {
+  console.log("ITEAM DATA: ", itemData);
+  return (
+    <TableItemCTasks
+      id={itemData.item.id}
+      text={itemData.item.text}
+      dueDate={itemData.item.dueDate}
+    />
+  );
+}
 function CreateTask() {
   //Store Hooks
   const setTask = useTaskStore((state) => state.setTask);
@@ -109,21 +118,42 @@ function CreateTask() {
     return dataPassed;
   }
 
-  async function handleCreateTask() {
-    let info = {
-      id: id,
-      text: ref.current.values.text,
-      dueDate: ref.current.values.dueDate,
+  let taskTable = [];
+
+  function handleCreateTask() {
+    const text = ref.current.values.text;
+    const dueDate = date;
+
+    if (!text || !dueDate) {
+      showFailedMessage();
+      return null;
+    }
+
+    const parsedDueDate = Date.parse(dueDate);
+    if (isNaN(parsedDueDate)) {
+      showFailedMessage();
+      return null;
+    }
+
+    const task = {
+      id: id + 1,
+      text: text,
+      dueDate: new Date(parsedDueDate),
     };
 
-    try {
-      const taskData = await httpCreateTask(info);
-      showSuccessMessage();
-      setReloadTaskList();
-    } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
-      showFailedMessage();
+    taskTable.push(task);
+    showSuccessMessage();
+
+    return task;
+  }
+
+  function getTableData() {
+    let tableData = [];
+
+    for (const task of taskTable) {
+      tableData.push(task);
     }
+    return tableData;
   }
 
   function showSuccessMessage() {
@@ -134,10 +164,21 @@ function CreateTask() {
     ToastAndroid.show("Try Again, there was a problem!", ToastAndroid.SHORT);
   }
 
+  const navigation = useNavigation();
+
+  function navPrevious() {
+    const pageAction = StackActions.pop(1);
+    navigation.dispatch(pageAction);
+  }
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
-        <MenuDropDown style={{ zIndex: 4 }} />
+        <Appbar.BackAction
+          onPress={() => {
+            navPrevious();
+          }}
+        />
         <Appbar.Content></Appbar.Content>
       </Appbar.Header>
       <SafeAreaProvider>
@@ -191,8 +232,8 @@ function CreateTask() {
               onPress={async () => {
                 console.log("OwO");
                 handleCreateTask();
+                console.log(getTableData());
                 setSaveData(!saveData);
-                setDisableInput(true);
               }}
             >
               <Avatar.Icon
@@ -204,6 +245,12 @@ function CreateTask() {
           </View>
         )}
       </Formik>
+      <FlatList
+        data={getTableData()}
+        renderItem={cTaskItem}
+        keyExtractor={(item) => item.id}
+        onEndReached={setReloadTaskList()}
+      />
       {dialogVisible && (
         <Portal>
           <Dialog
@@ -233,7 +280,6 @@ function CreateTask() {
           </Dialog>
         </Portal>
       )}
-      <TableListCTasks />
       <View style={styles.body}></View>
     </View>
   );
@@ -252,7 +298,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   header: {
-    backgroundColor: Colors.darkBlack,
+    backgroundColor: Colors.yellowDark,
   },
   content: {
     flexDirection: "row",
