@@ -4,12 +4,15 @@ import {
   httpDeleteInvoice,
   httpGetAllInvoices,
   httpGetInvoice,
+  httpGetInvoicesByCustomer,
   httpUpsertInvoice,
 } from "./invoices.controller";
 
 const router = express.Router();
 
 router.get("/", httpGetAllInvoices);
+
+router.get("/customer", httpGetInvoicesByCustomer);
 
 router.get("/:id", httpGetInvoice);
 

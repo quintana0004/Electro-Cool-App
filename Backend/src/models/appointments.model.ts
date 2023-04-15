@@ -2,32 +2,23 @@ import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
 import { IAppointment } from "./../types/index.d";
 
-async function findAllAppointments(
-  page: number,
-  take: number,
-  searchTerm: string
-) {
+async function findAllAppointments(searchTerm: string) {
   try {
-    const EODtime = new Date(searchTerm.substring(0, 10) + "T23:59:59.999Z");
-    const overFetchAmount = take * 2;
-    const skipAmount = page * take;
+    const searchDate = new Date(searchTerm);
+    const EODtime = new Date(searchDate);
+    EODtime.setMonth(EODtime.getMonth() + 2);
+    EODtime.setHours(23, 59, 59, 999);
+
     const appointments = await prisma.appointment.findMany({
-      skip: skipAmount,
-      take: overFetchAmount,
       where: {
         arrivalDateTime: {
-          gte: new Date(searchTerm),
-          lt: new Date(EODtime),
+          gte: searchDate,
+          lt: EODtime,
         },
       },
     });
 
-    const appointmentsData = {
-      data: appointments.slice(0, take),
-      isLastPage: appointments.length <= take,
-      currentPage: page,
-    };
-    return appointmentsData;
+    return appointments;
   } catch (error) {
     throw error;
   }

@@ -1,11 +1,14 @@
 import { IInvoice } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   isValidCarId,
   isValidCompanyId,
   isValidCustomerId,
-  isValidDespositId,
+  isValidDepositId,
   hasRequiredInvoiceFields,
   hasRequiredInvoiceItemFields,
   isValidInvoiceId,
@@ -13,6 +16,7 @@ import {
 import {
   deleteInvoice,
   findInvoiceWithChildsById,
+  findInvoicesByCustomer,
   upsertInvoice,
 } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
@@ -22,12 +26,34 @@ async function httpGetAllInvoices(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
+
     //this variable will work with both full name and phone number to convert it to string.
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
     const invoicesData = await findAllInvoices(page, take, searchTerm);
+
     return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
+  }
+}
+
+async function httpGetInvoicesByCustomer(req: Request, res: Response) {
+  try {
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+    let customerId = req.query.customerId ? +req.query.customerId : 0;
+
+    const customerInvoices = await findInvoicesByCustomer(
+      searchTerm,
+      customerId
+    );
+
+    return res.status(200).json(customerInvoices);
+  } catch (error) {
+    return handleExceptionErrorResponse("get invoices by customer", error, res);
   }
 }
 
@@ -63,8 +89,6 @@ async function httpUpsertInvoice(req: Request, res: Response) {
       amountTotal: req.body.amountTotal,
       amountPaid: req.body.amountPaid,
       amountDue: req.body.amountDue,
-      createdDate: req.body.createdDate,
-      lastModified: req.body.lastModified,
       companyId: companyId,
       customerId: req.body.customerId,
       carId: req.body.carId,
@@ -121,7 +145,7 @@ async function httpUpsertInvoice(req: Request, res: Response) {
 
     if (invoiceInfo.depositIds?.length) {
       for (const id of invoiceInfo.depositIds) {
-        const isDepositIdValid = await isValidDespositId(id);
+        const isDepositIdValid = await isValidDepositId(id);
         if (!isDepositIdValid) {
           return handleBadResponse(
             400,
@@ -160,4 +184,10 @@ async function httpDeleteInvoice(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllInvoices, httpGetInvoice, httpUpsertInvoice, httpDeleteInvoice };
+export {
+  httpGetAllInvoices,
+  httpGetInvoice,
+  httpUpsertInvoice,
+  httpDeleteInvoice,
+  httpGetInvoicesByCustomer,
+};

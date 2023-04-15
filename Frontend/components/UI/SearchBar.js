@@ -1,63 +1,44 @@
-import { useState } from "react";
-import { View, StyleSheet, TextInput, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
+import { Searchbar } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors/Colors";
-import { FontAwesome } from "@expo/vector-icons";
 
-function SearchBar({ widthBar, heightBar, placeholderText, onSearch }) {
-  // Info states needed for each search
-  const [searchValue, setSearchValue] = useState();
-  const [searching, setSearching] = useState(true);
+function SearchBar({ placeholder, loading, setLoading, setSearchTerm, searchBarStyles }) {
+  //Search Query of the information
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const onSearchIconPress = () => {
+    setSearchTerm(searchQuery);
+    setLoading(true);
+  };
 
   return (
-    <View style={[{ width: widthBar, height: heightBar }, styles.container]}>
-      <TextInput
-        placeholder={placeholderText}
-        placeholderTextColor="#595959"
-        onChangeText={setSearchValue}
-        value={searchValue}
-        style={styles.Input}
+    <View style={[styles.container, searchBarStyles]}>
+      <Searchbar
+        loading={loading}
+        style={styles.searchbar}
+        placeholder={placeholder}
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onIconPress={onSearchIconPress}
+        selectionColor={Colors.lightGrey}
       />
-      {searching ? (
-        <FontAwesome
-          name="search"
-          size={30}
-          color={Colors.darkGrey}
-          style={styles.icon}
-          onPress={() => {
-            onSearch(searchValue);
-            // setSearching(true);
-          }}
-        />
-      ) : (
-        <ActivityIndicator
-          size="large"
-          color={Colors.yellowDark}
-          style={styles.loading}
-        />
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  searchbar: {
     backgroundColor: Colors.white,
-    borderRadius: 25,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    borderRadius: 50,
+    color: Colors.black,
   },
-  Input: {
-    fontSize: 20,
-    marginLeft: 15,
-    fontWeight: "400",
-  },
-  icon: {
-    marginRight: 20,
-    marginBottom: 5,
-  },
-  loading: {
-    marginRight: 15,
+  container: {
+    width: 568,
   },
 });
 
