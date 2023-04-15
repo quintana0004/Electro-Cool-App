@@ -7,6 +7,7 @@ import {
   Button,
   ToastAndroid,
   Pressable,
+  Dimensions,
 } from "react-native";
 import {
   Appbar,
@@ -136,7 +137,6 @@ function CreateTask() {
     }
 
     const task = {
-      id: id + 1,
       text: text,
       dueDate: new Date(parsedDueDate),
     };
@@ -154,6 +154,17 @@ function CreateTask() {
       tableData.push(task);
     }
     return tableData;
+  }
+
+  async function pushTask() {
+    try {
+      const taskData = await httpCreateTask(taskTable);
+      showSuccessMessage();
+      setReloadTaskList();
+    } catch (error) {
+      console.log("ERROR MESSAGE CLIENT: ", error);
+      showFailedMessage();
+    }
   }
 
   function showSuccessMessage() {
@@ -186,7 +197,6 @@ function CreateTask() {
           style={{ justifyContent: "center", flex: 1, alignItems: "center" }}
         >
           <DatePickerModal
-            locale="en"
             mode="single"
             visible={open}
             onDismiss={onDismissSingle}
@@ -226,14 +236,18 @@ function CreateTask() {
               </HelperText>
             </View>
             <View style={styles.container2}>
-              <Button title="Set Due Date" onPress={() => setOpen(true)} />
+              <Button
+                title="Set Due Date"
+                onPress={() => setOpen(true)}
+                color={Colors.darkGreyAsh}
+              />
             </View>
             <Pressable
               onPress={async () => {
                 console.log("OwO");
                 handleCreateTask();
-                console.log(getTableData());
-                setSaveData(!saveData);
+                console.log(taskTable);
+                setReloadTaskList();
               }}
             >
               <Avatar.Icon
@@ -245,42 +259,27 @@ function CreateTask() {
           </View>
         )}
       </Formik>
-      <FlatList
-        data={getTableData()}
-        renderItem={cTaskItem}
-        keyExtractor={(item) => item.id}
-        onEndReached={setReloadTaskList()}
-      />
-      {dialogVisible && (
-        <Portal>
-          <Dialog
-            visible={dialogVisible}
-            onDismiss={() => setDialogVisible(false)}
-            style={{ backgroundColor: Colors.white }}
-          >
-            <Dialog.Icon
-              icon="alert-circle-outline"
-              size={80}
-              color={Colors.darkRed}
-            />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
-            <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setDialogVisible(false)}
-              >
-                Okay
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      )}
-      <View style={styles.body}></View>
+      <View>
+        <FlatList
+          data={getTableData()}
+          renderItem={cTaskItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+      <Pressable
+        onPress={async () => {
+          console.log("UwU");
+          pushTask();
+          console.log(taskTable);
+          setReloadTaskList();
+        }}
+      >
+        <Avatar.Icon
+          size={48}
+          icon="edit"
+          style={{ backgroundColor: Colors.darkGreen, marginTop: 30 }}
+        />
+      </Pressable>
     </View>
   );
 }
