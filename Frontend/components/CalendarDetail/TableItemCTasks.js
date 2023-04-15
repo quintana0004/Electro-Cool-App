@@ -5,9 +5,9 @@ import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
 import { httpDeleteTask } from "../../api/tasks.api";
 
-function TableItemTasks({ id, text, date }) {
+function TableItemCTasks({ id, text, dueDate }) {
   function DateText() {
-    return format(new Date(date), "MM/dd/yyyy");
+    return format(new Date(dueDate), "MM/dd/yyyy");
   }
 
   return (
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableItemTasks;
+export default TableItemCTasks;

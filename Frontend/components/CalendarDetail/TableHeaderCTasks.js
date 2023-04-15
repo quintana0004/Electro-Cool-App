@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 
-function TableHeaderTasks() {
+function TableHeaderCTasks() {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerGroupLeft}>
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableHeaderTasks;
+export default TableHeaderCTasks;

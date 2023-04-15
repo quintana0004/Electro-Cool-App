@@ -1,22 +1,22 @@
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import TableHeaderTasks from "./TableHeaderTasks";
-import TableItemTasks from "./TableItemTasks";
+import TableHeaderTasks from "./TableHeaderCTasks";
+import TableItemCTasks from "./TableItemCTasks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllTasks } from "../../api/tasks.api";
 import { format } from "date-fns";
 
-function taskItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
+function cTaskItem(itemData) {
+  //console.log("ITEAM DATA: ", itemData);
   return (
-    <TableItemTasks
+    <TableItemCTasks
       id={itemData.item.id}
       text={itemData.item.text}
-      date={itemData.item.dueDate}
+      dueDate={itemData.item.dueDate}
     />
   );
 }
 
-function TableListTasks({ searchTerm }) {
+function TableListCTasks({ searchTerm }) {
   const TAKE = 15;
   function DateText() {
     return format(new Date(), "yyyy-MM-dd");
@@ -24,6 +24,7 @@ function TableListTasks({ searchTerm }) {
 
   searchTerm = `${DateText()}T00:00:00.000Z`;
   console.log("dori dori dori dori dori", searchTerm);
+  console.log("-----------------------");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["TasksHomePage", searchTerm],
@@ -38,14 +39,7 @@ function TableListTasks({ searchTerm }) {
 
   async function getTasksScreenData({ pageParam = 0 }) {
     let data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    console.log("DATA : ", data.data);
     return data;
-  }
-
-  function loadMoreData() {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
   }
 
   function getTableData() {
@@ -54,8 +48,14 @@ function TableListTasks({ searchTerm }) {
     for (const items of data.pages.map((p) => p.data).flat()) {
       tableData.push(...items.data);
     }
-
+    console.log(tableData);
     return tableData;
+  }
+
+  function loadMoreData() {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
   }
 
   return (
@@ -69,7 +69,7 @@ function TableListTasks({ searchTerm }) {
       {isLoading || (
         <FlatList
           data={getTableData()}
-          renderItem={taskItem}
+          renderItem={cTaskItem}
           keyExtractor={(item) => item.id}
           onEndReached={loadMoreData}
         />
@@ -78,4 +78,4 @@ function TableListTasks({ searchTerm }) {
   );
 }
 
-export default TableListTasks;
+export default TableListCTasks;
