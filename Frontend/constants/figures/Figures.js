@@ -22,6 +22,10 @@ import Vector from "../../assets/images/Vector.png";
 import VectorWhite from "../../assets/images/VectorWhite.png";
 import AppointmentWhite from "../../assets/images/AppointmentWhite.png";
 import Appointment from "../../assets/images/Appointment.png";
+import BackGroundLogIn from "../../assets/images/backgroundLogIn.png";
+import logoCompany from "../../assets/images/LOGO.png";
+import Arrow from "../../assets/images/arrow.png";
+import SignUpLogo from "../../assets/images/SignUpLogo.png";
 
 const Figures = {
   CalendarIcon,
@@ -48,6 +52,10 @@ const Figures = {
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  BackGroundLogIn,
+  logoCompany,
+  Arrow,
+  SignUpLogo,
 };
 
 export default Figures;
