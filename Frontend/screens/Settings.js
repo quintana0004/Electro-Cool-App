@@ -3,13 +3,15 @@ import { Text, View, StyleSheet } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
+import { Appbar } from "react-native-paper";
 
 function Setting({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-      </Header>
+        <Appbar.Content></Appbar.Content>
+      </Appbar.Header>
       <View style={styles.body}>
         <Text>Settings Screen!</Text>
       </View>
@@ -18,10 +20,6 @@ function Setting({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
   body: {
     zIndex: -1,
   },
