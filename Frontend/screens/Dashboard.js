@@ -11,15 +11,11 @@ import {
 } from "react-native";
 import Figures from "../constants/figures/Figures";
 import { Appbar, Modal } from "react-native-paper";
-import TheComponent from "../components/DashboardDetail/DashboardTable";
+import DashboardTables from "../components/DashboardDetail/DashboardTable";
 
 function Dashboard({ navigation }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const currentDate = new Date();
 
-  // Update the current date every second
-  setInterval(() => {
-    setCurrentDate(new Date());
-  }, 1000);
   return (
     <View>
       <Appbar.Header style={styles.HeaderContent} mode="center-aligned">
@@ -40,7 +36,7 @@ function Dashboard({ navigation }) {
         showsHorizontalScrollIndicator={false}
       >
         <View style={styles.containerHeader1}>
-          <TheComponent
+          <DashboardTables
             testfigure={Figures.Wheel}
             FirstText={<Text>Current Vehicles Working With</Text>}
             SecondText={<Text>150</Text>}
@@ -51,7 +47,7 @@ function Dashboard({ navigation }) {
           {
             //Multiple buttons area
           }
-          <TheComponent
+          <DashboardTables
             testfigure={Figures.Vehicle}
             FirstText={<Text>Cars Pending Confirmation</Text>}
             SecondText={<Text>Invoice</Text>}
@@ -61,7 +57,7 @@ function Dashboard({ navigation }) {
             Choice={2}
           />
 
-          <TheComponent
+          <DashboardTables
             testfigure={Figures.NewIconDashboard}
             FirstText={<Text>New Vehicles Received Today</Text>}
             SecondText={<Text>150</Text>}
@@ -75,7 +71,7 @@ function Dashboard({ navigation }) {
           {
             //Fourth Button area
           }
-          <TheComponent
+          <DashboardTables
             testfigure={Figures.Vehicle}
             FirstText={<Text>New Vehicles Received Today</Text>}
             SecondText={<Text>150</Text>}
@@ -87,7 +83,7 @@ function Dashboard({ navigation }) {
             //Another view in order to allow scrollview to work as pages instead of scrolling normally.
           }
           <View style={styles.containerHeader1}>
-            <TheComponent
+            <DashboardTables
               testfigure={Figures.NewIconDashboard}
               FirstText={<Text>New Vehicles Received Today</Text>}
               SecondText={<Text>150</Text>}
@@ -95,7 +91,7 @@ function Dashboard({ navigation }) {
               WidthIcon={50}
               Choice={1}
             />
-            <TheComponent
+            <DashboardTables
               testfigure={Figures.NewIconDashboard}
               FirstText={<Text>New Vehicles Received Today</Text>}
               SecondText={<Text>150</Text>}
@@ -103,7 +99,7 @@ function Dashboard({ navigation }) {
               WidthIcon={50}
               Choice={1}
             />
-            <TheComponent
+            <DashboardTables
               testfigure={Figures.NewIconDashboard}
               FirstText={<Text>New Vehicles Received Today</Text>}
               SecondText={<Text>150</Text>}
@@ -111,7 +107,7 @@ function Dashboard({ navigation }) {
               WidthIcon={50}
               Choice={1}
             />
-            <TheComponent
+            <DashboardTables
               testfigure={Figures.NewIconDashboard}
               FirstText={<Text>New Vehicles Received Today</Text>}
               SecondText={<Text>150</Text>}
@@ -126,7 +122,7 @@ function Dashboard({ navigation }) {
         // area containing seperate view in order to make scrollable work on previous view.
       }
       <View style={styles.containerHeader1}>
-        <TheComponent
+        <DashboardTables
           testfigure={Figures.Vehicle}
           FirstText={<Text>Cars Pending Confirmation</Text>}
           SecondText={<Text>Invoice</Text>}
@@ -137,7 +133,7 @@ function Dashboard({ navigation }) {
           Choice={3}
         />
 
-        <TheComponent
+        <DashboardTables
           testfigure={Figures.Vehicle}
           FirstText={<Text>Cars Pending Confirmation</Text>}
           SecondText={<Text>Invoice</Text>}
