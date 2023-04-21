@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
@@ -12,16 +11,14 @@ import {
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../../../constants/Colors/Colors";
-import { ErrorMessage, Formik } from "formik";
-import { TextInput, HelperText, RadioButton } from "react-native-paper";
+import { Formik } from "formik";
+import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
 import {
   useVehicleInfoStore,
-  useJobOrderStore,
-  useCustomerInfoStore,
+  CBCustomerInfoStore,
 } from "../../../../Store/JobOrderStore";
-import { StackActions } from "@react-navigation/native";
-import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { Button, Dialog, Portal } from "react-native-paper";
 import ErrorOverlay from "../../../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../../../components/UI/LoadingOverlay";
 import { httpGetCar, httpUpsertCar } from "../../../../api/cars.api";
@@ -32,7 +29,7 @@ const ValidationCustomer = Yup.object().shape({
     .matches("^[A-Za-z ]{2,50}$", "Brand can't contain digits."),
   LicensePlate: Yup.string()
     .required("License Plate is required.")
-    .matches("^[A-Z0-9]{6,8}$", "License Plate can't contain symbols."),
+    .matches("^[A-Z0-9]{2,8}$", "License Plate can't contain symbols."),
   Model: Yup.string().required("Model is required."),
   Year: Yup.string()
     .required("Year is required.")
@@ -42,29 +39,25 @@ const ValidationCustomer = Yup.object().shape({
     .matches("^[A-Za-z ]{2,50}$", "Color can't contain digits."),
   Milage: Yup.string()
     .required("Milage is required.")
-    .matches("^[0-9]{1,6}$", "Milage can't contain symbols, space or comma."),
+    .matches("^[0-9]{1,6}$", "Can't contain symbols, space or comma."),
   VinNumber: Yup.string()
     .required("Vin Number is required.")
-    .matches("^[A-HJ-NPR-Z0-9]{17}$", "Vin Number must contain 17 characters."),
+    .matches("^[A-HJ-NPR-Z0-9]{17}$", "Must contain 17 characters."),
   Description: Yup.string(),
 });
 
-function CarModal({ route, navigation }) {
+function CarModal({ activateModal }) {
   //Store Hooks
-  const pageSelection = useJobOrderStore((state) => state.pageSelection);
-  const editVehicleInformation = useJobOrderStore(
-    (state) => state.editVehicleInformation
-  );
+  const id = useVehicleInfoStore((state) => state.id);
+  const customerId = CBCustomerInfoStore((state) => state.id);
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
-  const id = useVehicleInfoStore((state) => state.id);
-  const setReloadJobOrderList = useJobOrderStore(
-    (state) => state.setReloadJobOrderList
+  const setReloadClientBookCarList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookCarList
   );
-  const customerId = useCustomerInfoStore((state) => state.id);
 
-  // Use Effect Hook that get the data
+  //Use Effect Hook to get the data
   useEffect(() => {
     async function handleGetVehicleInfo() {
       try {
@@ -73,24 +66,22 @@ function CarModal({ route, navigation }) {
       } catch (error) {
         setErrorMessage("Could not fetch vehicle information.");
       }
-
       setIsFetching(false);
       setInitializeData(true);
       setDisableInput(true);
+      setDataFetched(true);
     }
-
-    if (editVehicleInformation) {
+    if (!dataFetched) {
       handleGetVehicleInfo();
     } else {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editVehicleInformation]);
-
+  }, [dataFetched]);
   //Other Hooks
-  const [checked, setChecked] = useState("No");
+
+  const [dataFetched, setDataFetched] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [touchedDescription, setTouchedDescription] = useState(false);
   const ref = useRef(null);
   const [vehicleData, setVehicleData] = useState();
   const [errorMessage, setErrorMessage] = useState("");
@@ -110,7 +101,6 @@ function CarModal({ route, navigation }) {
   if (isFetching) {
     return <LoadingOverlay />;
   }
-
   //Update the data of the Client
   async function handleUpdateCar() {
     let info = {
@@ -122,14 +112,12 @@ function CarModal({ route, navigation }) {
       mileage: ref.current.values.Milage,
       color: ref.current.values.ColorVehicle,
       vinNumber: ref.current.values.VinNumber,
-      carHasItems: checked === "Yes",
-      carItemsDescription: ref.current.values.Description,
       customerId: customerId,
     };
     try {
       const infoCar = await httpUpsertCar(info);
       showSuccessMessage();
-      setReloadJobOrderList();
+      setReloadClientBookCarList();
     } catch (error) {
       console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
@@ -175,98 +163,61 @@ function CarModal({ route, navigation }) {
     return dataPassed;
   }
 
-  //funtions that will navigate the stack
-  //?Home
-  function goBackHome() {
-    const pageGoHome = StackActions.popToTop("JobOrderMain");
-    navigation.dispatch(pageGoHome);
-  }
-
-  //?Go Back
   function goBackPageAction() {
-    const pageGoBackAction = StackActions.pop(1);
-    navigation.dispatch(pageGoBackAction);
+    activateModal(false);
   }
-
-  //?Next
-  function goNextPageAction() {
-    const pageGoNext = StackActions.push("RequestedService");
-    navigation.dispatch(pageGoNext);
+  function savePress() {
+    if (ref.current && ref.current.isValid) {
+      console.log("jodio:", ref.current, ref.current.isValid);
+      setVehicleInformation(
+        id,
+        ref.current.values.Brand,
+        ref.current.values.LicensePlate,
+        ref.current.values.Model,
+        ref.current.values.Year,
+        ref.current.values.Milage,
+        ref.current.values.ColorVehicle,
+        ref.current.values.VinNumber,
+        customerId
+      );
+      handleUpdateCar();
+      setSaveData(!saveData);
+      setDisableInput(true);
+    } else {
+      setDialogVisible(true);
+    }
   }
-
   return (
     <View>
-      <Appbar.Header style={styles.header} mode="center-aligned">
-        <Appbar.BackAction
-          onPress={() => {
-            goBackPageAction();
-          }}
-        />
-        {editVehicleInformation === true && saveData === false && (
-          <Appbar.Action
-            icon="square-edit-outline"
-            onPress={() => {
-              setSaveData(!saveData);
-              setDisableInput(false);
-            }}
-            iconColor={Colors.black}
-          />
-        )}
-        {editVehicleInformation === true && saveData === true && (
-          <Appbar.Action
-            icon="content-save"
-            onPress={async () => {
-              handleUpdateCar();
-              setSaveData(!saveData);
-              setDisableInput(true);
-            }}
-            iconColor={Colors.black}
-          />
-        )}
-        <Appbar.Content title="Vehicle Information"></Appbar.Content>
-        <Appbar.Action
-          icon="home"
-          onPress={() => goBackHome()}
-          iconColor={Colors.black}
-        />
-        <Appbar.Action
-          icon="arrow-right"
-          onPress={() => {
-            const TouchedObject = Object.keys(ref.current.touched).length > 0;
-
-            if (pageSelection === "Edit" && editVehicleInformation) {
-              goNextPageAction();
-            }
-
-            if (
-              pageSelection === "Create" &&
-              editVehicleInformation === false
-            ) {
-              if (ref.current && ref.current.isValid && TouchedObject) {
-                setVehicleInformation(
-                  "",
-                  ref.current.values.Brand,
-                  ref.current.values.LicensePlate,
-                  ref.current.values.Model,
-                  ref.current.values.Year,
-                  ref.current.values.Milage,
-                  ref.current.values.ColorVehicle,
-                  ref.current.values.VinNumber,
-                  checked,
-                  ref.current.values.Description,
-                  ""
-                );
-                goNextPageAction();
-              } else {
-                setDialogVisible(true);
-              }
-            }
-          }}
-          iconColor={Colors.black}
-        />
-      </Appbar.Header>
       <View>
-        <Text style={styles.instruction}>Enter new vehicle information</Text>
+        <Appbar.Header style={styles.header} mode="center-aligned">
+          <Appbar.BackAction
+            icon="close"
+            onPress={() => {
+              goBackPageAction();
+            }}
+          />
+          <Appbar.Content title="Vehicle Information"></Appbar.Content>
+          {saveData === false && (
+            <Appbar.Action
+              icon="square-edit-outline"
+              onPress={() => {
+                setSaveData(!saveData);
+                setDisableInput(false);
+              }}
+              iconColor={Colors.black}
+            />
+          )}
+          {saveData === true && (
+            <Appbar.Action
+              icon="content-save"
+              onPress={async () => {
+                savePress();
+              }}
+              iconColor={Colors.black}
+            />
+          )}
+        </Appbar.Header>
       </View>
       <Formik
         initialValues={DataRespondFormik()}
@@ -277,14 +228,7 @@ function CarModal({ route, navigation }) {
         innerRef={ref}
         enableReinitialize={initilizeData}
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
+        {({ handleChange, handleBlur, values, errors, touched }) => (
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled
@@ -293,12 +237,13 @@ function CarModal({ route, navigation }) {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View
                 style={{
-                  marginHorizontal: 20,
                   justifyContent: "space-around",
+                  margin: 10,
+                  marginTop: 42,
                 }}
               >
                 <View style={[styles.containerText]}>
-                  <View style={{ width: 280 }}>
+                  <View style={{ width: 220 }}>
                     <TextInput
                       label="Brand"
                       mode="outlined"
@@ -319,7 +264,7 @@ function CarModal({ route, navigation }) {
                       {errors.Brand}
                     </HelperText>
                   </View>
-                  <View style={{ width: 260 }}>
+                  <View style={{ width: 250 }}>
                     <TextInput
                       label="License Plate"
                       mode="outlined"
@@ -343,12 +288,11 @@ function CarModal({ route, navigation }) {
                 </View>
                 <View
                   style={{
-                    marginVertical: 20,
                     flexDirection: "row",
                     justifyContent: "space-between",
                   }}
                 >
-                  <View style={{ width: 200 }}>
+                  <View style={{ width: 170 }}>
                     <TextInput
                       label="Model"
                       mode="outlined"
@@ -369,7 +313,7 @@ function CarModal({ route, navigation }) {
                       {errors.Model}
                     </HelperText>
                   </View>
-                  <View style={{ width: 150 }}>
+                  <View style={{ width: 120 }}>
                     <TextInput
                       label="Year"
                       mode="outlined"
@@ -390,7 +334,7 @@ function CarModal({ route, navigation }) {
                       {errors.Year}
                     </HelperText>
                   </View>
-                  <View style={{ width: 170 }}>
+                  <View style={{ width: 200 }}>
                     <TextInput
                       label="Color"
                       mode="outlined"
@@ -413,7 +357,7 @@ function CarModal({ route, navigation }) {
                   </View>
                 </View>
                 <View style={[styles.containerText]}>
-                  <View style={{ width: 230 }}>
+                  <View style={{ width: 250 }}>
                     <TextInput
                       label="Milage"
                       mode="outlined"
@@ -434,7 +378,7 @@ function CarModal({ route, navigation }) {
                       {errors.Milage}
                     </HelperText>
                   </View>
-                  <View style={{ width: 300 }}>
+                  <View style={{ width: 250 }}>
                     <TextInput
                       label="Vin Number"
                       mode="outlined"
@@ -454,122 +398,6 @@ function CarModal({ route, navigation }) {
                     >
                       {errors.VinNumber}
                     </HelperText>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    marginVertical: 15,
-                  }}
-                >
-                  <View>
-                    <Text
-                      style={{
-                        color: Colors.black,
-                        fontWeight: "bold",
-                        fontSize: 15,
-                      }}
-                    >
-                      Does the vehicle contain any object of value ?
-                    </Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: Colors.black,
-                            fontWeight: "bold",
-                            fontSize: 15,
-                          }}
-                        >
-                          Yes
-                        </Text>
-                        <RadioButton
-                          value="Yes"
-                          status={checked === "Yes" ? "checked" : "unchecked"}
-                          onPress={() => setChecked("Yes")}
-                          color={Colors.brightGreen}
-                          disabled={disableInput}
-                        />
-                      </View>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Text
-                          style={{
-                            color: Colors.black,
-                            fontWeight: "bold",
-                            fontSize: 15,
-                          }}
-                        >
-                          No
-                        </Text>
-                        <RadioButton
-                          value="No"
-                          status={checked === "No" ? "checked" : "unchecked"}
-                          onPress={() => {
-                            setChecked("No");
-                            values.Description = "";
-                          }}
-                          color={Colors.brightGreen}
-                          disabled={disableInput}
-                        />
-                      </View>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      marginVertical: 20,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: Colors.black,
-                        fontWeight: "bold",
-                        fontSize: 15,
-                        marginBottom: 10,
-                        marginTop: 10,
-                      }}
-                    >
-                      If yes, what object of value is left in the car?
-                    </Text>
-                    <View
-                      style={{
-                        height: touchedDescription ? 160 : 2,
-                      }}
-                    >
-                      <TextInput
-                        label="Description"
-                        mode="outlined"
-                        outlineColor={Colors.lightGreyDark}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="default"
-                        onChangeText={handleChange("Description")}
-                        onBlur={handleBlur("Description")}
-                        value={values.Description}
-                        error={touched.Description && errors.Description}
-                        disabled={checked === "No" || disableInput === true}
-                        numberOfLines={3}
-                        style={[styles.textInputStyle]}
-                        onPressIn={() => setTouchedDescription(true)}
-                        onPressOut={() => {
-                          setTouchedDescription(false);
-                        }}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.Description && errors.Description)}
-                      >
-                        {errors.Description}
-                      </HelperText>
-                    </View>
                   </View>
                 </View>
               </View>
@@ -614,33 +442,13 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.darkGreen,
   },
-  instruction: {
-    fontWeight: "400",
-    color: Colors.black,
-    fontSize: 20,
-    textAlign: "center",
-    marginVertical: 20,
-  },
+
   containerText: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 20,
   },
-  containerKey: {
-    flex: 1,
-  },
-  navBtnsPosition: {
-    width: 540,
-    height: 10,
-    justifyContent: "flex-end",
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  navCancelBtn: { marginRight: 10 },
-  navNextBtn: { marginLeft: 10 },
-  header: {
-    backgroundColor: Colors.yellowDark,
-  },
+
   textInputStyle: {
     backgroundColor: Colors.white,
     fontSize: 16,
@@ -648,7 +456,6 @@ const styles = StyleSheet.create({
   textAlert: {
     textAlign: "center",
   },
-  descriptionText: {},
 });
 
 export default CarModal;

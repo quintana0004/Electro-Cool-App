@@ -9,13 +9,13 @@ import {
   TextInput,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { Appbar } from "react-native-paper";
 import CarModal from "./CarModal";
 
-import { httpGetAllCars, httpGetAllOfCustomer } from "../../../../api/cars.api";
+import { httpGetAllOfCustomer } from "../../../../api/cars.api";
 import CarItemCB from "./CarsItemClientBook";
 import { useState } from "react";
 import { Modal } from "react-native-paper";
+import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
 
 function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
   const TAKE = 15;
@@ -23,12 +23,15 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
+  const reloadClientBookCarList = CBCustomerInfoStore(
+    (state) => state.reloadClientBookCarList
+  );
+
   const { isLoading, data, hasNextPage, fetchNextPage } = useQuery({
-    queryKey: ["ClientBookHomeData", customerId],
+    queryKey: ["ClientBookHomeData", customerId, reloadClientBookCarList],
     queryFn: getClientBookHomeScreenData,
     enabled: true,
   });
-
   async function getClientBookHomeScreenData() {
     let data = null;
     data = await httpGetAllOfCustomer(searchTerm, customerId);
@@ -48,7 +51,7 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
   //Car Items
   function renderCarTableItem({ item }) {
     const itemInfo = {
-      ID: item.id,
+      id: item.id,
       brand: item.brand,
       model: item.model,
       licensePlate: item.licensePlate,
@@ -58,12 +61,13 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
       vinNumber: item.vinNumber,
       date: item.createdDate,
     };
+
     return <CarItemCB itemData={itemInfo} activateModal={setModalVisible} />;
   }
 
   return (
-    <View style={styles.listContainer}>
-      <View>
+    <View style={[modalVisible ? styles.ModalContiner : styles.itemsContainer]}>
+      <View style={{ alignItems: "center" }}>
         {isLoading || (
           <FlatList
             data={VehicleData}
@@ -74,22 +78,23 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
         )}
       </View>
 
-      <Modal
-        visible={modalVisible}
-        style={{ backgroundColor: "#F7F7F7" }}
-        contentContainerStyle={{ margin: 30 }}
-      >
-        <CarModal></CarModal>
+      <Modal visible={modalVisible} style={styles.ModalScreen}>
+        <CarModal activateModal={setModalVisible} />
       </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    alignItems: "center",
-    height: 713,
-    marginHorizontal: 40,
+  ModalContiner: {
+    margin: 20,
+  },
+  itemsContainer: { margin: 10 },
+  ModalScreen: {
+    backgroundColor: "#F7F7F7",
+    borderColor: "#e3e1e1",
+    borderWidth: 2,
+    height: 440,
   },
 });
 

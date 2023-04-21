@@ -3,25 +3,15 @@ import TableHeaderClient from "./TableHeaderClient";
 import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllClients } from "../../../api/clients.api";
-
-function clientBookItem(itemData) {
-  return (
-    <TableItemClient
-      id={itemData.item.id}
-      date={itemData.item.createdDate}
-      firstName={itemData.item.firstName}
-      lastName={itemData.item.lastName}
-      phone={itemData.item.phone}
-      email={itemData.item.email}
-    />
-  );
-}
+import { CBCustomerInfoStore } from "../../../Store/JobOrderStore";
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
-
+  const reloadClientBookList = CBCustomerInfoStore(
+    (state) => state.reloadClientBookList
+  );
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["ClientBookHomePage", searchTerm],
+    queryKey: ["ClientBookHomePage", searchTerm, reloadClientBookList],
     queryFn: getClientBookScreenData,
     getNextPageParam: (lastPage) => {
       return lastPage.data.isLastPage
@@ -55,6 +45,18 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     return tableData;
   }
 
+  function clientBookItem(itemData) {
+    return (
+      <TableItemClient
+        id={itemData.item.id}
+        date={itemData.item.createdDate}
+        firstName={itemData.item.firstName}
+        lastName={itemData.item.lastName}
+        phone={itemData.item.phone}
+        email={itemData.item.email}
+      />
+    );
+  }
   return (
     <View
       style={{

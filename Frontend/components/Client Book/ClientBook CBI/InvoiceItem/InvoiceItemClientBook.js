@@ -1,21 +1,40 @@
 import { Text, View, StyleSheet } from "react-native";
 import { format } from "date-fns";
+import Status from "../../../Invoices/Status";
 
-function InvoiceItemCB() {
+function InvoiceItemClientBook({ itemData }) {
+  const { id, firstName, lastName, date, amountTotal, status } = itemData;
+
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
   return (
     <View>
-      <View>
-        <Text> Cutomer Invoices </Text>
+      <View style={styles.container}>
+        <View style={{ width: 80 }}>
+          <Text style={[{ textAlign: "center" }, styles.boldText]}>{id}</Text>
+        </View>
+        <View style={{ width: 150 }}>
+          <Text style={styles.boldText}>
+            {lastName}, {firstName}
+          </Text>
+        </View>
+        <View style={{ width: 80 }}>
+          <Text style={styles.boldText}>{DateText()}</Text>
+        </View>
+        <View style={{ width: 80, marginLeft: 55 }}>
+          <Text style={styles.boldText}>${amountTotal}</Text>
+        </View>
+        <View style={{ width: 80, marginLeft: 30 }}>
+          <Status parentTextStyles={styles.boldText} status={status} />
+        </View>
       </View>
     </View>
   );
 }
 
-export default InvoiceItemCB;
+export default InvoiceItemClientBook;
 
 const styles = StyleSheet.create({
   container: {

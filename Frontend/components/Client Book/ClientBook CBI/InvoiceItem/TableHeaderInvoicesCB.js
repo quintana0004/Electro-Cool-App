@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import Colors from "../../../../constants/Colors/Colors";
 
 function TableHeaderCB() {
   return (

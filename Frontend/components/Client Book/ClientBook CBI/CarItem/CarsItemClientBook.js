@@ -1,20 +1,19 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Pressable, Modal } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/core";
 
 import Figures from "../../../../constants/figures/Figures";
-import Colors from "../../../../constants/Colors/Colors";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { useVehicleInfoStore } from "../../../../Store/JobOrderStore";
 
 function CarItemCB({ itemData, activateModal }) {
   const {
-    ID,
+    id,
     brand,
-    model,
     licensePlate,
-    color,
+    model,
     year,
     mileage,
+    color,
     vinNumber,
     date,
   } = itemData;
@@ -22,10 +21,31 @@ function CarItemCB({ itemData, activateModal }) {
   function showCarInfo() {
     activateModal(true);
   }
+  const setVehicleInfo = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
 
   return (
     <View style={styles.container}>
-      <Pressable style={{ margin: 10, width: 200 }} onPress={showCarInfo}>
+      <Pressable
+        style={{ margin: 10, width: 200 }}
+        onPress={() => {
+          showCarInfo();
+          setVehicleInfo(
+            id,
+            brand,
+            licensePlate,
+            model,
+            year,
+            mileage,
+            color,
+            vinNumber,
+            "",
+            "",
+            ""
+          );
+        }}
+      >
         <View style={{ flexDirection: "column", alignItems: "center" }}>
           <Avatar.Icon
             size={60}
@@ -74,5 +94,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     elevation: 5,
     margin: 15,
+    alignItems: "center",
   },
 });

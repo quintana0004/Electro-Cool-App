@@ -7,8 +7,10 @@ import SearchBanner from "../../components/UI/SearchBanner";
 import CBToggleButtons from "../../components/Client Book/ClientBook CBI/ClientBookToggleButtons";
 import CarList from "../../components/Client Book/ClientBook CBI/CarItem/TableListCarCB";
 import CustomerItemCB from "../../components/Client Book/ClientBook CBI/CustomerItem/CustomerItemClienBook";
-import InvoiceItemCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceItemClientBook";
+import InvoiceListCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceListClientBook";
 import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
+import { StackActions } from "@react-navigation/native";
+
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
     return {
@@ -25,6 +27,9 @@ function ClientBookCustomer({ navigation }) {
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Clients");
+  const [fullName, setFullName] = useState(
+    client.firstName + " " + client.lastName
+  );
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
@@ -36,7 +41,7 @@ function ClientBookCustomer({ navigation }) {
 
   function ToggleScreens(Category) {
     if (Category === "Clients") {
-      return <CustomerItemCB />;
+      return <CustomerItemCB onUpdateFullName={updateFullName} />;
     } else if (Category === "Vehicles") {
       return (
         <CarList
@@ -47,8 +52,18 @@ function ClientBookCustomer({ navigation }) {
         />
       );
     } else {
-      return <InvoiceItemCB />;
+      return (
+        <InvoiceListCB
+          searchTerm={searchTerm}
+          searchLoading={searchLoading}
+          setSearchLoading={setSearchLoading}
+          customerId={cutomerId}
+        />
+      );
     }
+  }
+  function updateFullName(firstName, lastName) {
+    setFullName(firstName + " " + lastName);
   }
 
   return (
@@ -65,13 +80,14 @@ function ClientBookCustomer({ navigation }) {
           <Appbar.Action
             icon="arrow-left"
             onPress={() => {
-              navigation.navigate("ClientBookMain");
+              const pageAction = StackActions.popToTop();
+              navigation.dispatch(pageAction);
             }}
           />
         </View>
 
         <Appbar.Content
-          title={client.firstName + " " + client.lastName}
+          title={fullName}
           color={Colors.brightYellow}
           style={{
             justifyContent: "center",
@@ -88,12 +104,14 @@ function ClientBookCustomer({ navigation }) {
         <View
           style={{ justifyContent: "flex-end", flexDirection: "row", flex: 1 }}
         >
-          <Appbar.Action
-            icon="magnify"
-            onPress={() => {
-              setOpenBannerSearch(!openBannerSearch);
-            }}
-          />
+          {activeCategory !== "Clients" && (
+            <Appbar.Action
+              icon="magnify"
+              onPress={() => {
+                setOpenBannerSearch(!openBannerSearch);
+              }}
+            />
+          )}
         </View>
       </Appbar.Header>
       <View>

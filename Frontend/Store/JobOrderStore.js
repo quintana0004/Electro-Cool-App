@@ -145,8 +145,8 @@ export const useJobOrderStore = create((set) => ({
     })),
   setReloadJobOrderList: () =>
     set((state) => ({
-      reloadJobOrderList: !state.reloadJobOrderList
-      })),
+      reloadJobOrderList: !state.reloadJobOrderList,
+    })),
 }));
 
 // ClietBook Store
@@ -174,5 +174,13 @@ export const CBCustomerInfoStore = create((set) => ({
       phone: "",
       email: "",
       date: "",
+    })),
+  setReloadClientBookList: () =>
+    set((state) => ({
+      reloadClientBookList: !state.reloadClientBookList,
+    })),
+  setReloadClientBookCarList: () =>
+    set((state) => ({
+      reloadClientBookCarList: !state.reloadClientBookCarList,
     })),
 }));
