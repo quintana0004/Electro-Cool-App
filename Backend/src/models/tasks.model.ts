@@ -1,20 +1,16 @@
 import prisma from "../database/prisma";
 import { ITask } from "./../types/index.d";
 
-async function findAllTasks(page: number, take: number, searchTerm: string) {
+async function findAllTasks(page: number, take: number) {
   try {
-    const EODtime = new Date(searchTerm.substring(0, 10) + "T23:59:59.999Z");
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
     const tasks = await prisma.task.findMany({
       skip: skipAmount,
       take: overFetchAmount,
-      where: {
-        dueDate: {
-          gte: new Date(searchTerm),
-          lt: new Date(EODtime),
-        },
+      orderBy: {
+        dueDate: "asc",
       },
     });
 
