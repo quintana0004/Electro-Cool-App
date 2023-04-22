@@ -18,8 +18,6 @@ import { Modal } from "react-native-paper";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
 
 function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
-  const TAKE = 15;
-
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
 

@@ -11,7 +11,7 @@ import InvoiceListCB from "../../components/Client Book/ClientBook CBI/InvoiceIt
 import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import FilterBanner from "../../components/UI/FilterBanner";
-
+import { useVehicleInfoStore } from "../../Store/JobOrderStore";
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
     return {
@@ -22,6 +22,10 @@ function ClientBookCustomer({ navigation }) {
       date: state.date,
     };
   });
+
+  const resetVehicleInfo = useVehicleInfoStore(
+    (state) => state.resetVehicleInformation
+  );
 
   const cutomerId = client.id;
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,7 +67,6 @@ function ClientBookCustomer({ navigation }) {
     } else {
       return (
         <InvoiceListCB
-          searchTerm={searchTerm}
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
           customerId={cutomerId}
@@ -92,6 +95,7 @@ function ClientBookCustomer({ navigation }) {
             onPress={() => {
               const pageAction = StackActions.popToTop();
               navigation.dispatch(pageAction);
+              resetVehicleInfo();
             }}
           />
         </View>

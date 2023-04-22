@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, Pressable, Modal } from "react-native";
 import { Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/core";
 
 import Figures from "../../../../constants/figures/Figures";
 import { useVehicleInfoStore } from "../../../../Store/JobOrderStore";

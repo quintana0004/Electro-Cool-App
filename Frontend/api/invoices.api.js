@@ -11,8 +11,8 @@ export async function httpGetInvoice(id) {
   return response;
 }
 
-export async function httpGetInvoiceByCustomerId(customerId) {
-  const queryParams = `?customerId=${customerId}`;
+export async function httpGetInvoiceByCustomerId(take, page, customerId) {
+  const queryParams = `?take=${take}&page=${page}&customerId=${customerId}`;
   const response = await axios("/invoices/customer" + queryParams);
   return response;
 }

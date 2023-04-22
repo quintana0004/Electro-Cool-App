@@ -6,16 +6,15 @@ import TableHeaderCB from "./TableHeaderInvoicesCB";
 import InvoiceItemClientBook from "./InvoiceItemClientBook";
 
 function InvoiceListCB({
-  searchTerm,
   searchLoading,
   setSearchLoading,
-  customerID,
+  customerId,
   filters,
 }) {
-  customerID = 1;
+  const TAKE = 15;
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
-      queryKey: ["InvoicesHomeData", customerID],
+      queryKey: ["InvoicesHomeData", customerId],
       queryFn: getInvoicesHomeScreenData,
       getNextPageParam: (lastPage) => {
         return lastPage.data.isLastPage
@@ -25,8 +24,8 @@ function InvoiceListCB({
       enabled: true,
     });
 
-  async function getInvoicesHomeScreenData() {
-    let data = await httpGetInvoiceByCustomerId(customerID);
+  async function getInvoicesHomeScreenData({ pageParam = 0 }) {
+    let data = await httpGetInvoiceByCustomerId(TAKE, pageParam, customerId);
 
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);
