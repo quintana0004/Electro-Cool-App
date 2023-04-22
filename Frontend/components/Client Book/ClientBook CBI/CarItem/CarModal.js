@@ -168,7 +168,6 @@ function CarModal({ activateModal }) {
   }
   function savePress() {
     if (ref.current && ref.current.isValid) {
-      console.log("jodio:", ref.current, ref.current.isValid);
       setVehicleInformation(
         id,
         ref.current.values.Brand,

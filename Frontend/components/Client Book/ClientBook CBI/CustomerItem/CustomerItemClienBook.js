@@ -17,7 +17,6 @@ import * as Yup from "yup";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
 import { Button, Dialog, Portal } from "react-native-paper";
 import { httpUpsertClient } from "../../../../api/clients.api";
-import ErrorOverlay from "../../../UI/ErrorOverlay";
 
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
@@ -51,7 +50,6 @@ function CustomerItemCB({ onUpdateFullName }) {
   const [dialogVisible, setDialogVisible] = useState(false);
   const ref = useRef(null);
   const [saveData, setSaveData] = useState(false);
-  const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(true);
 
   function DataRespondFormik() {
@@ -123,9 +121,7 @@ function CustomerItemCB({ onUpdateFullName }) {
           <Appbar.Action
             icon="content-save"
             onPress={async () => {
-              const TouchedObject = Object.keys(ref.current.touched).length > 0;
-
-              if (ref.current && ref.current.isValid && TouchedObject) {
+              if (ref.current && ref.current.isValid) {
                 handleUpdateClient();
                 setSaveData(!saveData);
                 setDisableInput(true);
@@ -143,7 +139,6 @@ function CustomerItemCB({ onUpdateFullName }) {
         onSubmit={(values) => console.log(values)}
         validationSchema={ValidationCustomer}
         innerRef={ref}
-        enableReinitialize={initilizeData}
       >
         {({ handleChange, handleBlur, values, errors, touched }) => (
           <KeyboardAvoidingView

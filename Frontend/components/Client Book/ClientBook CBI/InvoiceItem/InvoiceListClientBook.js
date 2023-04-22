@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dimensions, FlatList, View } from "react-native";
 
-import { httpGetAllInvoices } from "../../../../api/invoices.api";
+import { httpGetInvoiceByCustomerId } from "../../../../api/invoices.api";
 import TableHeaderCB from "./TableHeaderInvoicesCB";
 import InvoiceItemClientBook from "./InvoiceItemClientBook";
 
@@ -10,12 +10,12 @@ function InvoiceListCB({
   searchLoading,
   setSearchLoading,
   customerID,
+  filters,
 }) {
-  const TAKE = 15;
-
+  customerID = 1;
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
-      queryKey: ["InvoicesHomeData", searchTerm],
+      queryKey: ["InvoicesHomeData", customerID],
       queryFn: getInvoicesHomeScreenData,
       getNextPageParam: (lastPage) => {
         return lastPage.data.isLastPage
@@ -25,9 +25,8 @@ function InvoiceListCB({
       enabled: true,
     });
 
-  async function getInvoicesHomeScreenData({ pageParam = 0 }) {
-    let data = null;
-    data = await httpGetAllInvoices(TAKE, pageParam, searchTerm);
+  async function getInvoicesHomeScreenData() {
+    let data = await httpGetInvoiceByCustomerId(customerID);
 
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);
@@ -41,8 +40,28 @@ function InvoiceListCB({
     for (const items of data.pages.map((p) => p.data).flat()) {
       tableData.push(...items.data);
     }
+    const filteredData = filterTableData(tableData);
+    return filteredData;
+  }
 
-    return tableData;
+  function filterTableData(tableData) {
+    let activeFilters = [];
+    for (const [filterKey, filterValue] of Object.entries(filters)) {
+      if (filterValue) {
+        activeFilters.push(filterKey);
+      }
+    }
+
+    let filteredData = tableData;
+    if (activeFilters.length > 0) {
+      const activeFilterChecker = (data) => {
+        return activeFilters.some((element) => data.status.includes(element));
+      };
+
+      filteredData = tableData.filter(activeFilterChecker);
+    }
+
+    return filteredData;
   }
 
   function loadMoreData() {

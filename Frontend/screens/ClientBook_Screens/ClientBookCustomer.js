@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Appbar, Avatar } from "react-native-paper";
+import { Appbar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
 import SearchBanner from "../../components/UI/SearchBanner";
@@ -10,6 +10,7 @@ import CustomerItemCB from "../../components/Client Book/ClientBook CBI/Customer
 import InvoiceListCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceListClientBook";
 import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
+import FilterBanner from "../../components/UI/FilterBanner";
 
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
@@ -25,11 +26,19 @@ function ClientBookCustomer({ navigation }) {
   const cutomerId = client.id;
   const [searchTerm, setSearchTerm] = useState("");
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
+  const [openBannerFilter, setOpenBannerFilter] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Clients");
   const [fullName, setFullName] = useState(
     client.firstName + " " + client.lastName
   );
+
+  const [filters, setFilters] = useState({
+    Paid: false,
+    Pending: false,
+    Canceled: false,
+    InDraft: false,
+  });
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
@@ -58,6 +67,7 @@ function ClientBookCustomer({ navigation }) {
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
           customerId={cutomerId}
+          filters={filters}
         />
       );
     }
@@ -104,11 +114,21 @@ function ClientBookCustomer({ navigation }) {
         <View
           style={{ justifyContent: "flex-end", flexDirection: "row", flex: 1 }}
         >
-          {activeCategory !== "Clients" && (
+          {activeCategory == "Vehicles" && (
             <Appbar.Action
               icon="magnify"
               onPress={() => {
                 setOpenBannerSearch(!openBannerSearch);
+                setOpenBannerFilter(false);
+              }}
+            />
+          )}
+          {activeCategory == "Invoices" && (
+            <Appbar.Action
+              icon="filter"
+              onPress={() => {
+                setOpenBannerFilter(!openBannerFilter);
+                setOpenBannerSearch(false);
               }}
             />
           )}
@@ -121,6 +141,11 @@ function ClientBookCustomer({ navigation }) {
           placeholder={"Search by License Plate"}
           setLoading={setSearchLoading}
           setSearchTerm={updateSearchTerm}
+        />
+        <FilterBanner
+          visible={openBannerFilter}
+          filters={filters}
+          updateFilters={setFilters}
         />
       </View>
 
