@@ -9,7 +9,7 @@ import {
 } from "../../Store/JobOrderStore";
 
 import CarCard from "../UI/CarCard";
-
+import InvoiceDetailTableList from "../InvoiceDetail/InvoiceDetailTableList";
 function DashboardTables({
   navigation,
   testfigure,
@@ -26,6 +26,9 @@ function DashboardTables({
   HeightBig,
   WidthBig,
   margin,
+  SecondTextSize,
+  testfigure2,
+  backgroundeffect,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const client = useCustomerInfoStore((state) => {
@@ -58,6 +61,8 @@ function DashboardTables({
   });
   const [clientInfo] = useState(client);
   const [carInfo] = useState(car);
+  const [invoiceItems, setInvoiceItems] = useState([]);
+
   if (Choice == 1) {
     return (
       <View style={[styles.Button]}>
@@ -69,7 +74,9 @@ function DashboardTables({
           source={testfigure}
         />
         <Text style={styles.SmallText}>{FirstText}</Text>
-        <Text style={styles.ButtonTextBig}>{SecondText}</Text>
+        <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
+          {SecondText}
+        </Text>
       </View>
     );
   } else if (Choice == 2) {
@@ -81,11 +88,16 @@ function DashboardTables({
             { height: HeightBig, width: WidthBig, marginTop: MarginTableTop },
           ]}
         >
-          <Card.Content style={[{ flexDirection: "row" }]}>
-            <Text variant="bodyMedium" style={[{ marginTop: 15 }]}>
-              Miguelito El Heredero
-            </Text>
-          </Card.Content>
+          <Card.Cover
+            source={testfigure}
+            style={
+              ([styles.IconBigButton], { height: HeightIcon, width: WidthIcon })
+            }
+          />
+
+          <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
+            {SecondText}
+          </Text>
         </Card>
 
         <Card
@@ -94,14 +106,19 @@ function DashboardTables({
             { height: HeightBig, width: WidthBig, marginTop: 10 },
           ]}
         >
-          <Card.Content style={[{ flexDirection: "row" }]}>
-            <Text variant="bodyMedium" style={[{ marginTop: 15 }]}>
-              {FirstText}
-            </Text>
-          </Card.Content>
+          <Text style={[{ fontWeight: "bold" }]}>{FirstText}</Text>
+          <Text
+            style={[
+              styles.ButtonTextBig,
+              { fontSize: SecondTextSize, alignSelf: "center" },
+            ]}
+          >
+            {SecondText}
+          </Text>
         </Card>
       </View>
     );
+    //this choice builds a huge card with a card inside (Cars Pending Confirmation)
   } else if (Choice == 3) {
     return (
       <View style={[styles.ButtonHuge]}>
@@ -123,7 +140,7 @@ function DashboardTables({
             style={[
               styles.cardstyle,
               {
-                height: 90,
+                height: 65,
                 width: 293,
               },
             ]}
@@ -170,6 +187,7 @@ function DashboardTables({
                   {
                     //en esta seccion se encuentra el boton del modal que nos da el total
                   }
+                  <InvoiceDetailTableList invoiceItems={invoiceItems} />
                   <Card.Actions style={{ alignSelf: "center" }}>
                     <Button
                       buttonColor="#A9D9C2"
@@ -185,7 +203,6 @@ function DashboardTables({
                       Total: $500.36
                     </Button>
                   </Card.Actions>
-
                   {
                     //en esta seccion se encuentra el boton del modal que dicen cancel y confirmation
                   }
@@ -216,24 +233,25 @@ function DashboardTables({
             {
               //en esta seccion se encuentra el card que tiene la informacion del invoice con su ID y nombre del cliente
             }
-            <Card.Content>
-              <Text style={[{ marginLeft: 5 }]}>Invoice</Text>
-              <Text style={[{ alignSelf: "flex-end" }]}>
+            <View style={{ flexDirection: "row", width: 200 }}>
+              <Card.Content>
+                <Text style={[{ marginLeft: 11, marginTop: 5 }]}>Invoice</Text>
+                <Card
+                  style={[
+                    {
+                      width: 65,
+                      backgroundColor: "#cccccc",
+                    },
+                  ]}
+                >
+                  <Text style={[{ alignSelf: "center" }]}>#1234</Text>
+                </Card>
+              </Card.Content>
+
+              <Text style={{ marginVertical: 15 }}>
                 Cristobal Colon the Conqueror
               </Text>
-            </Card.Content>
-
-            <Card
-              style={[
-                {
-                  width: 65,
-                  marginLeft: 10,
-                  backgroundColor: "#cccccc",
-                },
-              ]}
-            >
-              <Text style={[{ alignSelf: "center" }]}>#1234</Text>
-            </Card>
+            </View>
           </Card>
         </Pressable>
         {
@@ -241,32 +259,49 @@ function DashboardTables({
         }
       </View>
     );
+    //this choice will build two vertically alligned cards
   } else if (Choice == 4) {
     return (
       <View>
         <Card
           style={[
             styles.ButtonSmall,
-            { height: HeightBig, width: WidthBig, marginRight: margin },
+            {
+              height: HeightBig,
+              width: WidthBig,
+              marginRight: margin,
+            },
           ]}
         >
-          <Card.Cover
-            source={testfigure}
-            style={[
-              {
-                height: 60,
-                width: 90,
-                backgroundColor: "white",
-                alignSelf: "center",
-              },
-            ]}
-          />
-
+          <View
+            style={{
+              flexDirection: "row",
+              width: 170,
+              marginRight: 80,
+              marginBottom: 30,
+            }}
+          >
+            <Card.Cover
+              source={testfigure}
+              style={[
+                {
+                  height: 60,
+                  width: 60,
+                  backgroundColor: "white",
+                },
+              ]}
+            />
+            <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
+              Total Amount of Task Today
+            </Text>
+          </View>
           <Card.Content>
-            <Text style={[styles.ButtonTextBig]}>#1234</Text>
+            <Text style={[styles.ButtonTextBig, { marginBottom: 60 }]}>25</Text>
           </Card.Content>
         </Card>
-
+        {
+          //second button
+        }
         <Card
           style={[
             styles.ButtonSmall,
@@ -278,26 +313,69 @@ function DashboardTables({
             },
           ]}
         >
-          <Card.Cover
-            source={testfigure}
-            style={[
-              {
-                height: 60,
-                width: 90,
-                backgroundColor: "white",
-                alignSelf: "center",
-              },
-            ]}
-          />
-
+          <View
+            style={{
+              flexDirection: "row",
+              width: 170,
+              marginRight: 80,
+              marginBottom: 30,
+            }}
+          >
+            <Card.Cover
+              source={testfigure2}
+              style={[
+                {
+                  height: 60,
+                  width: 60,
+                  backgroundColor: "white",
+                  marginVertical: 0,
+                },
+              ]}
+            />
+            <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
+              Total Amount of Task Today
+            </Text>
+          </View>
           <Card.Content>
-            <Text style={styles.ButtonTextBig}>#1234</Text>
+            <Text style={[styles.ButtonTextBig, { marginBottom: 60 }]}>34</Text>
           </Card.Content>
         </Card>
       </View>
     );
+  } else if (Choice == 5) {
+    return (
+      <View style={[styles.Button]}>
+        <Image
+          style={[
+            styles.IconBigButton,
+            { height: HeightIcon, width: WidthIcon },
+          ]}
+          source={testfigure}
+        />
+
+        <Text style={styles.SmallText}>{FirstText}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}
+          >
+            {ThirdText}
+          </Text>
+          <Text
+            style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}
+          >
+            {FourthText}
+          </Text>
+        </View>
+        <View style={styles.quantityButtonStyle}>
+          <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
+            {SecondText}
+          </Text>
+        </View>
+      </View>
+    );
   }
 }
+
 const styles = StyleSheet.create({
   containerHeader1: {
     flex: 1,
@@ -336,11 +414,14 @@ const styles = StyleSheet.create({
   },
   IconBigButton: {
     resizeMode: "contain",
-    marginRight: 65,
+    alignSelf: "baseline",
+    marginLeft: 10,
+    backgroundColor: "white",
   },
   ButtonTextBig: {
     fontSize: 55,
     fontWeight: "bold",
+    alignSelf: "center",
   },
   SmallText: {
     fontSize: 15,
@@ -397,6 +478,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  quantityButtonStyle: {
+    backgroundColor: "#cccccc",
+    borderRadius: 10,
+    borderWidth: 2,
+    justifyContent: "center",
     alignItems: "center",
   },
 });
