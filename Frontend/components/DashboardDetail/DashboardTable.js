@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, Image, Modal } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import Figures from "../../constants/figures/Figures";
-import { Avatar, Button, Card } from "react-native-paper";
+import { Avatar, Button, Card, Modal, Portal } from "react-native-paper";
 import ClientCard from "../UI/ClientCard";
 import {
   useCustomerInfoStore,
@@ -10,7 +10,7 @@ import {
 
 import CarCard from "../UI/CarCard";
 
-function TheComponent({
+function DashboardTables({
   navigation,
   testfigure,
   FirstText,
@@ -128,27 +128,53 @@ function TheComponent({
               },
             ]}
           >
-            <Modal
-              visible={modalVisible}
-              animationType="fade"
-              transparent={true}
-            >
-              <Card style={[styles.modalContainer]}>
-                <View style={{ flexDirection: "column" }}>
-                  <Text
-                    style={{
-                      alignSelf: "center",
-                      fontWeight: "bold",
-                      fontSize: 25,
-                    }}
-                  >
-                    Invoice
-                  </Text>
+            <Portal>
+              <Modal
+                visible={modalVisible}
+                animationType="fade"
+                transparent={true}
+              >
+                <Card style={[styles.modalContainer]}>
+                  <View style={{ flexDirection: "column" }}>
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "bold",
+                        fontSize: 25,
+                      }}
+                    >
+                      Invoice
+                    </Text>
+                    <Card.Actions style={{ alignSelf: "center" }}>
+                      <Button
+                        buttonColor="#E5B126"
+                        textColor="black"
+                        borderColor="#E5B126"
+                        mode="contained"
+                        style={[
+                          {
+                            borderRadius: 20,
+                          },
+                        ]}
+                      >
+                        #0014
+                      </Button>
+                    </Card.Actions>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <ClientCard client={clientInfo} />
+                    <View style={{ marginLeft: 10 }}>
+                      <CarCard car={carInfo} />
+                    </View>
+                  </View>
+                  {
+                    //en esta seccion se encuentra el boton del modal que nos da el total
+                  }
                   <Card.Actions style={{ alignSelf: "center" }}>
                     <Button
-                      buttonColor="#E5B126"
+                      buttonColor="#A9D9C2"
                       textColor="black"
-                      borderColor="#E5B126"
+                      borderColor="#A9D9C2"
                       mode="contained"
                       style={[
                         {
@@ -156,61 +182,37 @@ function TheComponent({
                         },
                       ]}
                     >
-                      #0014
+                      Total: $500.36
                     </Button>
                   </Card.Actions>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <ClientCard client={clientInfo} />
-                  <View style={{ marginLeft: 10 }}>
-                    <CarCard car={carInfo} />
-                  </View>
-                </View>
-                {
-                  //en esta seccion se encuentra el boton del modal que nos da el total
-                }
-                <Card.Actions style={{ alignSelf: "center" }}>
-                  <Button
-                    buttonColor="#A9D9C2"
-                    textColor="black"
-                    borderColor="#A9D9C2"
-                    mode="contained"
-                    style={[
-                      {
-                        borderRadius: 20,
-                      },
-                    ]}
-                  >
-                    Total: $500.36
-                  </Button>
-                </Card.Actions>
 
-                {
-                  //en esta seccion se encuentra el boton del modal que dicen cancel y confirmation
-                }
-                <Card.Actions>
-                  <Button
-                    title="Cancel"
-                    onPress={() => setModalVisible(false)}
-                    buttonColor="#C4E2E2"
-                    textColor="#138A8C"
-                    borderColor="#138A8C"
-                    mode="contained"
-                    style={[{ borderRadius: 10 }]}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    title="Confirmation"
-                    onPress={() => setModalVisible(false)}
-                    buttonColor="#138A8C"
-                    style={[{ borderRadius: 10 }]}
-                  >
-                    Confirmation
-                  </Button>
-                </Card.Actions>
-              </Card>
-            </Modal>
+                  {
+                    //en esta seccion se encuentra el boton del modal que dicen cancel y confirmation
+                  }
+                  <Card.Actions>
+                    <Button
+                      title="Cancel"
+                      onPress={() => setModalVisible(false)}
+                      buttonColor="#C4E2E2"
+                      textColor="#138A8C"
+                      borderColor="#138A8C"
+                      mode="contained"
+                      style={[{ borderRadius: 10 }]}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      title="Confirmation"
+                      onPress={() => setModalVisible(false)}
+                      buttonColor="#138A8C"
+                      style={[{ borderRadius: 10 }]}
+                    >
+                      Confirmation
+                    </Button>
+                  </Card.Actions>
+                </Card>
+              </Modal>
+            </Portal>
             {
               //en esta seccion se encuentra el card que tiene la informacion del invoice con su ID y nombre del cliente
             }
@@ -389,7 +391,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 200,
   },
   buttonGroup: {
     marginHorizontal: 10,
@@ -399,4 +400,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-export default TheComponent;
+export default DashboardTables;
