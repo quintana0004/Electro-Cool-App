@@ -1,14 +1,73 @@
-import { Request, Response } from 'express';
-import { carsExclude, createCar, findCarByVIN } from '../../models/cars.model';
-import { formatPhoneNumber, titleCase } from '../../utils/helpers';
-import { ICar, IErrorResponse } from './../../types/index.d';
+import { Request, Response } from "express";
+import {
+  isUniqueCar,
+  upsertCar,
+  findAllCars,
+  findCarsByCustomer,
+  findCarById,
+  deleteCar,
+} from "../../models/cars.model";
+import { ICar } from "../../types";
+import {
+  hasRequiredCarFields,
+  isValidCarId,
+  isValidCompanyId,
+  isValidCustomerId,
+} from "../../utils/validators.utils";
+import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import { getDummyCompanyId } from "../../utils/db.utils";
 
-
-async function httpAddCar( req: Request, res: Response ) {
-  
+async function httpGetAllCars(req: Request, res: Response) {
   try {
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
 
-    const newCar: ICar = {
+    const cars = await findAllCars(page, take, searchTerm);
+    return res.status(200).json(cars);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all cars", error, res);
+  }
+}
+
+async function httpGetCarsByCustomer(req: Request, res: Response) {
+  try {
+    let customerId = req.query.customerId ? +req.query.customerId : 0;
+    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    const cars = await findCarsByCustomer(searchTerm, customerId);
+    return res.status(200).json(cars);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all cars by customer", error, res);
+  }
+}
+
+async function httpGetCarById(req: Request, res: Response) {
+  try {
+    const carId = req.params.id;
+
+    let isCarIdValid = await isValidCarId(carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const car = await findCarById(+carId);
+    return res.status(200).json(car);
+  } catch (error) {
+    return handleExceptionErrorResponse("get car by id", error, res);
+  }
+}
+
+async function httpUpsertCar(req: Request, res: Response) {
+  try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
+    const carInfo: ICar = {
+      id: req.body.id,
       brand: req.body.brand,
       licensePlate: req.body.licensePlate,
       model: req.body.model,
@@ -18,91 +77,71 @@ async function httpAddCar( req: Request, res: Response ) {
       vinNumber: req.body.vinNumber,
       carHasItems: req.body.carHasItems,
       carItemsDescription: req.body.carItemsDescription,
-      companyName: titleCase(req.body.companyName),
-      customerName: titleCase(req.body.customerName),
-      customerPhone: formatPhoneNumber(req.body.customerPhone),
+      companyId: companyId,
+      customerId: req.body.customerId,
     };
 
-    
-    if (
-      !newCar.brand ||
-      !newCar.licensePlate ||
-      !newCar.model ||
-      !newCar.year ||
-      !newCar.mileage ||
-      !newCar.color ||
-      !newCar.vinNumber ||
-      !newCar.carHasItems ||
-      !newCar.companyName ||
-      !newCar.customerName ||
-      !newCar.customerPhone
-    ) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage: "Car is missing required fields for creation."
-      };
-      return res.status(error.errorCode).json({ error });
+    const hasRequiredFields = hasRequiredCarFields(carInfo);
+    if (!hasRequiredFields) {
+      return handleBadResponse(
+        400,
+        "Missing required fields to create/update car. Please provide the following fields: brand, licensePlate, model, year, mileage, color, vinNumber, companyId, customerId. Additionally assure that your numeric ids are in number format.",
+        res
+      );
     }
 
-    
-    const response = await createCar(newCar);
-
-    if ('errorCode' in response) {
-      return res.status(response.errorCode).json({
-        error: response
-      });
+    const isCompanyIdValid = await isValidCompanyId(carInfo.companyId);
+    if (!isCompanyIdValid) {
+      return handleBadResponse(
+        400,
+        "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
     }
 
-    return res.status(201).json(response);
+    const isCustomerIdValid = await isValidCustomerId(carInfo.customerId);
+    if (!isCustomerIdValid) {
+      return handleBadResponse(
+        400,
+        "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
 
+    const isCarUnique = await isUniqueCar(carInfo.licensePlate, carInfo.vinNumber, carInfo.id);
+    if (!isCarUnique) {
+      return handleBadResponse(
+        400,
+        "Car does not have a unique license plate and/or vin number.",
+        res
+      );
+    }
+
+    const upsertedCar = await upsertCar(carInfo);
+    res.status(200).json(upsertedCar);
   } catch (error) {
-    const errorResponse: IErrorResponse = {
-      errorCode: 500,
-      errorMessage: "The resquest to create a car failed. Please report this to Tech Support for further investigation."
-    };
-    return res.status(errorResponse.errorCode).json({
-      error: errorResponse
-    });
+    return handleExceptionErrorResponse("upsert car", error, res);
   }
-
 }
 
-async function httpGetCarByVIN( req: Request, res: Response ) {
+async function httpDeleteCar(req: Request, res: Response) {
   try {
-    
-    const vinNumberParameter = req.query.vinNumber?.toString();
-    if (!vinNumberParameter) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage: "The 'vinNumber' paramter was empty. Please provide the 'vinNumber' in request."
-      };
-      return res.status(error.errorCode).json({ error });
+    const carId = req.params.id;
+
+    let isCarIdValid = await isValidCarId(carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
     }
 
-    const car = await findCarByVIN(vinNumberParameter);
-    if (!car) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage: "No car with this VIN Number was found in the system. Please provide an existing VIN Number."
-      };
-      return res.status(error.errorCode).json({ error });
-    }
-    const carWithoutIds = carsExclude(car, 'id', 'customerId', 'companyId');
-    return res.status(200).json(carWithoutIds);
-    
+    const car = await deleteCar(+carId);
+    return res.status(200).json(car);
   } catch (error) {
-    const errorResponse: IErrorResponse = {
-      errorCode: 500,
-      errorMessage: "The resquest to find a car failed. Please report this to Tech Support for further investigation."
-    };
-    return res.status(errorResponse.errorCode).json({
-      error: errorResponse
-    });
+    return handleExceptionErrorResponse("delete car by id", error, res);
   }
 }
 
-
-export {
-  httpAddCar,
-  httpGetCarByVIN
-}
+export { httpGetAllCars, httpGetCarById, httpGetCarsByCustomer, httpUpsertCar, httpDeleteCar };

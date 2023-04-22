@@ -1,12 +1,23 @@
-import express from 'express';
-import { httpAddCar, httpGetCarByVIN } from './cars.controller';
-
+import express from "express";
+import { authenticateJWTMiddleWare } from "../../services/auth.service";
+import {
+  httpDeleteCar,
+  httpGetAllCars,
+  httpGetCarById,
+  httpGetCarsByCustomer,
+  httpUpsertCar,
+} from "./cars.controller";
 
 const router = express.Router();
 
-router.get("/search", httpGetCarByVIN);
+router.get("/", httpGetAllCars);
 
-router.post("/", httpAddCar);
+router.get("/customer", httpGetCarsByCustomer);
 
+router.get("/:id", httpGetCarById);
+
+router.post("/", httpUpsertCar);
+
+router.delete("/:id", httpDeleteCar);
 
 export default router;

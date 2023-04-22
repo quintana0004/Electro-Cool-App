@@ -1,31 +1,55 @@
-import { Company } from "@prisma/client";
-import { prisma } from "../database";
+import prisma from "../database/prisma";
+import { ICompany } from "./../types/index.d";
 
-async function findCompanyByName(name: string): Promise<Company | null> {
-  let company = null;
+async function createCompany(companyInfo: ICompany) {
   try {
-    company = await prisma.company.findFirst({
+    const company = await prisma.company.create({
+      data: {
+        name: companyInfo.name,
+        businessType: companyInfo.businessType,
+        addressLine1: companyInfo.addressLine1,
+        addressLine2: companyInfo.addressLine2,
+        country: companyInfo.country,
+        state: companyInfo.state,
+        city: companyInfo.city,
+        zipcode: companyInfo.zipcode,
+        email: companyInfo.email,
+        phone: companyInfo.phone,
+      },
+    });
+
+    return company;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCompanyById(id: string) {
+  try {
+    const company = await prisma.company.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return company;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCompanyByName(name: string) {
+  try {
+    const company = await prisma.company.findUnique({
       where: {
         name: name,
       },
     });
+
+    return company;
   } catch (error) {
     throw error;
   }
-
-  return company;
 }
 
-function exclude<Company, Key extends keyof Company>(
-  company: Company,
-  ...keys: Key[]
-): Company {
-  for (let key of keys) {
-    delete company[key]
-  }
-  return company
-}
-
-export {
-  findCompanyByName
-}
+export { createCompany, findCompanyById, findCompanyByName };

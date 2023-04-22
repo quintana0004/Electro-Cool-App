@@ -1,11 +1,20 @@
 import express from "express";
-import { httpAddCustomer, httpGetCustomersByName } from "./customers.controller";
+import { authenticateJWTMiddleWare } from "../../services/auth.service";
+import {
+  httpDeleteCustomer,
+  httpGetAllCustomers,
+  httpGetCustomerById,
+  httpUpsertCustomer,
+} from "./customers.controller";
 
 const router = express.Router();
 
-router.get("/search", httpGetCustomersByName);
+router.get("/", httpGetAllCustomers);
 
-router.post("/", httpAddCustomer);
+router.get("/:id", httpGetCustomerById);
 
+router.post("/", httpUpsertCustomer);
+
+router.delete("/:id", httpDeleteCustomer);
 
 export default router;

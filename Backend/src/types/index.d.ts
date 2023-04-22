@@ -1,165 +1,162 @@
-
 export interface ICompany {
-  id?:            string     
-  name:           string     
-  businessType:   string     
-  addressLine1:   string     
-  addressLine2?:  string    
-  country:        string     
-  state?:         string    
-  city:           string     
-  zipcode:        string     
-  email?:         string    
-  phone?:         string    
-  createdAt?:     Date   
-  updatedAt?:     Date   
-  cars?:          ICar[]
-  customers?:     ICustomer[]
-  invoices?:      IInvoice[]
-  jobOrders?:     IJobOrder[]
-  users?:         IUser[]
+  id?: string;
+  name: string;
+  businessType: string;
+  addressLine1: string;
+  addressLine2?: string;
+  country: string;
+  state?: string;
+  city: string;
+  zipcode: string;
+  email?: string;
+  phone?: string;
+  createdDate?: Date;
+  lastModified?: Date;
 }
 
 export interface IUser {
-  id?:            string        
-  firstName:      string        
-  lastName:       string        
-  gender:         string        
-  age:            Int
-  phone:          string        
-  email:          string        
-  username:       string        
-  password:       string        
-  salt:           string        
-  role:           string        
-  companyId?:     string        
-  customerId?:    string       
-  createdAt?:     DateTime      
-  updatedAt?:     DateTime      
-  company?:       ICompany      
-  customer?:      ICustomer     
-  appointments?:  IAppointment[]
-  notes?:         INote[]
-  reminders?:     IReminder[]
+  id?: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  username: string;
+  password: string;
+  newPassword?: string;
+  salt?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  isApproved?: boolean;
+  role?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId?: string;
 }
 
 export interface ICustomer {
-  id?:            string
-  fullName:       string  
-  firstName:      string  
-  lastName:       string  
-  addressLine1:   string  
-  addressLine2?:  string 
-  state?:         string  
-  city:           string  
-  phone:          string  
-  email?:         string  
-  companyName:    string
-  createdAt?:     Date
-  updatedAt?:     Date
-  company?:       Company
-  cars?:          ICar[]
-  invoices?:      IInvoice[]
-  jobOrders?:     IJobOrder[]
-  users?:         IUser[]
+  id?: number;
+  firstName: string;
+  lastName: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  state?: string;
+  city?: string;
+  phone: string;
+  email?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
 }
 
 export interface ICar {
-  id?:                   string     
-  brand:                 string     
-  licensePlate:          string     
-  model:                 string     
-  year:                  string     
-  mileage:               string     
-  color:                 string     
-  vinNumber:             string     
-  carHasItems:           boolean
-  carItemsDescription?:  string
-  customerName:          string    
-  customerPhone:         string    
-  companyName:           string    
-  createdAt?:            Date   
-  updatedAt?:            Date   
-  company?:              Company   
-  customer?:             ICustomer  
-  jobOrders?:            IJobOrder[]
+  id?: number;
+  brand: string;
+  licensePlate: string;
+  model: string;
+  year: string;
+  mileage: string;
+  color: string;
+  vinNumber: string;
+  carHasItems: boolean;
+  carItemsDescription?: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+  customerId: number;
 }
 
 export interface IInvoice {
-  id?:            string         
-  totalPrice:     string         
-  status:         string         
-  dueDate:        Date       
-  companyId?:     string        
-  customerId?:    string        
-  createdAt?:     Date       
-  updatedAt?:     Date       
-  company?:       ICompany       
-  customer?:      ICustomer      
-  invoiceItems?:  IInvoice_Item[]
+  id?: number;
+  status: string;
+  amountTotal: number;
+  amountPaid: number;
+  amountDue: number;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+  customerId: number;
+  carId: number;
+  invoiceItems: IInvoiceItem[];
+  depositIds?: number[];
 }
 
-export interface IInvoice_Item {
-  id?:          string   
-  description:  string
-  quantity:     string   
-  unitPrice:    string   
-  totalPrice:   string   
-  warranty:     string   
-  invoiceId?:   string  
-  createdAt?:   Date 
-  updatedAt?:   Date 
-  invoice?:     IInvoice 
+export interface IInvoiceItem {
+  id?: number;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  warranty: string;
+  createdDate?: Date;
+  lastModified?: Date;
 }
 
-export interface IJobOder {
-  id?:             string    
-  service:         string    
-  serviceDetails:  string
-  status:          string    
-  isHeavy:         boolean
-  isLight:         boolean
-  companyName:     string   
-  customerName:    string   
-  customerPhone:   string   
-  carVinNumber:    string   
-  createdAt?:      Date  
-  updatedAt?:      Date  
-  car?:            ICar      
-  company?:        ICompany  
-  customer?:       ICustomer 
-}
-
-export interface INote {
-  id?:         string   
-  text:        string
-  userId?:     string
-  createdAt?:  Date 
-  updatedAt?:  Date 
-  user?:       IUser    
-}
-
-export interface IReminder {
-  id:           string   
-  description:  string
-  datetime:     Date 
-  userId?:      string  
-  createdAt?:   Date 
-  updatedAt?:   Date 
-  user?:        IUser    
+export interface IDeposit {
+  id?: number;
+  status: string;
+  amountTotal: string;
+  description: string;
+  isAvailable?: boolean;
+  createdDate?: Date;
+  lastModified?: Date;
+  customerId: number;
+  carId: number;
+  invoiceId?: number;
+  companyId: string;
 }
 
 export interface IAppointment {
-  id:          string   
-  reason:      string
-  datetime:    Date 
-  userId?:     string  
-  createdAt?:  Date 
-  updatedAt?:  Date 
-  user?:       IUser    
+  id?: number;
+  service: string;
+  description: string;
+  arrivalDateTime: string;
+  model: string;
+  brand: string;
+  year: string;
+  color: string;
+  licensePlate: string;
+  customerName: string;
+  phone: string;
+  email: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+  customerId?: number;
+  carId?: number;
+}
+
+export interface ITask {
+  text: string;
+  dueDate: string;
+  createdDate?: Date;
+  lastModified?: Date;
+  companyId: string;
+}
+
+export interface IJobOrder {
+  id?: number;
+  requestedService: string;
+  serviceDetails?: string;
+  status: string;
+  jobLoadType: string;
+  policySignature: boolean;
+  createdDate?: Date;
+  lastModified?: Date;
+  carId: number;
+  companyId: string;
+  customerId: number;
 }
 
 export interface IErrorResponse {
-  errorCode:     number
-  errorMessage:  string
+  errorCode: number;
+  errorMessage: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId: string;
+      companyId: string;
+    }
+  }
 }

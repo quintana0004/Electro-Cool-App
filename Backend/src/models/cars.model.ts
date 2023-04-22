@@ -1,94 +1,151 @@
-import { prisma } from "../database";
-import { Car } from "@prisma/client";
-import { ICar, IErrorResponse } from "./../types/index.d";
-import { findCompanyByName } from "./company.model";
-import { findCustomerByNameAndPhone } from "./customers.model";
+import { ICar } from "./../types/index.d";
+import prisma from "../database/prisma";
 
-async function createCar(car: ICar): Promise<Car | IErrorResponse> {
+async function isUniqueCar(
+  licensePlate: string,
+  vinNumber: string,
+  id: number | undefined
+): Promise<boolean> {
   try {
-    
-    const company = await findCompanyByName(car.companyName);
-    if (!company) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage:
-          "The company name was not found in the system. Please assure you pass a valid company name.",
-      };
-      return error;
-    }
-
-    const customer = await findCustomerByNameAndPhone(
-      car.customerName,
-      car.customerPhone
-    );
-    if (!customer) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage:
-          "The customer specified was not found in the system. Please assure you pass a valid customer name and customer phone number.",
-      };
-      return error;
-    }
-
-    const existingCar = await findCarByVIN(car.vinNumber);
-    if (existingCar) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage:
-          "A Car with this VIN Number already exists. Please provide another VIN Number.",
-      };
-      return error;
-    }
-
-    const createdCar = await prisma.car.create({
-      data: {
-        brand: car.brand,
-        licensePlate: car.licensePlate,
-        model: car.model,
-        year: car.year,
-        mileage: car.mileage,
-        color: car.color,
-        vinNumber: car.vinNumber,
-        carHasItems: car.carHasItems,
-        carItemsDescription: car.carItemsDescription,
-        customerId: customer?.id,
-        companyId: company?.id,
-      },
-    });
-
-    const createdCarWithoutId = carsExclude(createdCar, "id");
-    return createdCarWithoutId;
-
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function findCarByVIN(vinNumber: string): Promise<Car | null> {
-  try {
-
     const car = await prisma.car.findFirst({
       where: {
-        vinNumber: vinNumber,
+        OR: [
+          {
+            licensePlate: licensePlate,
+          },
+          {
+            vinNumber: vinNumber,
+          },
+        ],
       },
     });
 
     if (!car) {
-      return null;
+      return true;
+    } else if (car.id === id) {
+      return true;
+    } else {
+      return false;
     }
-
-    return car;
-
   } catch (error) {
     throw error;
   }
 }
 
-function carsExclude<Car, Key extends keyof Car>(car: Car, ...keys: Key[]): Car {
-  for (let key of keys) {
-    delete car[key];
+async function findCarById(id: number) {
+  try {
+    const car = await prisma.car.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
   }
-  return car;
 }
 
-export { createCar, findCarByVIN, carsExclude };
+async function findAllCars(page: number, take: number, searchTerm: string | undefined) {
+  try {
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+
+    const cars = await prisma.car.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        licensePlate: {
+          contains: searchTerm,
+        },
+      },
+    });
+
+    const carsData = {
+      data: cars.slice(0, take),
+      isLastPage: cars.length <= take,
+      currentPage: page,
+    };
+    return carsData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCarsByCustomer(searchTerm: string | undefined, customerId: number) {
+  try {
+    const licensePlate = searchTerm ? searchTerm : undefined;
+    const clientCars = await prisma.car.findMany({
+      where: {
+        AND: [
+          {
+            licensePlate: {
+              contains: licensePlate,
+            },
+          },
+          { customerId: customerId },
+        ],
+      },
+    });
+
+    return clientCars;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function upsertCar(carInfo: ICar) {
+  try {
+    const car = await prisma.car.upsert({
+      where: {
+        id: carInfo?.id ?? -1,
+      },
+      create: {
+        brand: carInfo.brand,
+        licensePlate: carInfo.licensePlate,
+        model: carInfo.model,
+        year: carInfo.year,
+        mileage: carInfo.mileage,
+        color: carInfo.color,
+        vinNumber: carInfo.vinNumber,
+        carHasItems: carInfo.carHasItems,
+        carItemsDescription: carInfo.carItemsDescription,
+        companyId: carInfo.companyId,
+        customerId: Number(carInfo.customerId),
+      },
+      update: {
+        brand: carInfo.brand,
+        licensePlate: carInfo.licensePlate,
+        model: carInfo.model,
+        year: carInfo.year,
+        mileage: carInfo.mileage,
+        color: carInfo.color,
+        vinNumber: carInfo.vinNumber,
+        carHasItems: carInfo.carHasItems,
+        carItemsDescription: carInfo.carItemsDescription,
+        customerId: Number(carInfo.customerId),
+        lastModified: new Date(),
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteCar(id: number) {
+  try {
+    const car = await prisma.car.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return car;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer, deleteCar };

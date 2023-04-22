@@ -1,19 +1,23 @@
-// Navigation Library
-import { NavigationContainer } from "@react-navigation/native";
+import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
+import MenuStack from "./Navigation/Stack_Menu";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider as PaperProvider } from "react-native-paper";
 
-//Screens
-import MenuDrawer from "./components/navigation/drawer";
+const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     <>
       <StatusBar hidden={true} />
-      <NavigationContainer>
-        <MenuDrawer />
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <PaperProvider>
+          <NavigationContainer>
+            <MenuStack />
+          </NavigationContainer>
+        </PaperProvider>
+      </QueryClientProvider>
     </>
   );
 }
-
-export default App;

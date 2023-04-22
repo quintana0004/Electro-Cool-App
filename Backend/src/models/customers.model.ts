@@ -1,110 +1,160 @@
-import { Customer } from "@prisma/client";
-import { prisma } from "../database";
+import prisma from "../database/prisma";
+import { ICustomer } from "./../types/index.d";
 
-import { ICustomer, IErrorResponse } from "../types";
-import { findCompanyByName } from "./company.model";
-
-async function createCustomer(
-  customer: ICustomer
-): Promise<Customer | IErrorResponse> {
+async function findAllCustomers(page: number, take: number, searchTerm: string | undefined) {
   try {
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
 
-    const company = await findCompanyByName(customer.companyName);
-    if (!company) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage:
-          "The company name was not found in the system. Please assure you pass a valid company name.",
-      };
-      return error;
-    }
-
-    const existingCustomer = await findCustomerByNameAndPhone(
-      customer.fullName,
-      customer.phone
-    );
-    if (existingCustomer) {
-      const error: IErrorResponse = {
-        errorCode: 400,
-        errorMessage:
-          "A Customer with this Name and Phone Number already exists. Please provide another Name or Phone Number.",
-      };
-      return error;
-    }
-
-    const createdCustomer = await prisma.customer.create({
-      data: {
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        fullName: customer.fullName,
-        addressLine1: customer.addressLine1,
-        addressLine2: customer.addressLine2,
-        state: customer.state,
-        city: customer.city,
-        phone: customer.phone,
-        email: customer.email,
-        companyId: company.id,
+    const customers = await prisma.customer.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        OR: [
+          {
+            phone: {
+              contains: searchTerm,
+            },
+          },
+          {
+            fullName: {
+              contains: searchTerm,
+            },
+          },
+        ],
       },
     });
 
-    const createdCustomerWithoutId = exclude(createdCustomer, "id", "companyId");
-    return createdCustomerWithoutId;
-
+    const customersData = {
+      data: customers.slice(0, take),
+      isLastPage: customers.length <= take,
+      currentPage: page,
+    };
+    return customersData;
   } catch (error) {
     throw error;
   }
 }
 
-async function findCustomerByNameAndPhone(
-  name: string,
-  phone: string
-): Promise<Customer | null> {
+async function findAllCustomersWithActiveJobOrders(
+  page: number,
+  take: number,
+  searchTerm: string | undefined
+) {
   try {
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
 
-    const customer = await prisma.customer.findFirst({
+    const customers = await prisma.customer.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
-        fullName: name,
-        phone: phone,
+        OR: [
+          {
+            phone: {
+              contains: searchTerm,
+            },
+          },
+          {
+            fullName: {
+              contains: searchTerm,
+            },
+          },
+          {
+            jobOrders: {
+              some: {
+                status: {
+                  in: ["Complete", "New", "Working"],
+                },
+              },
+            },
+          },
+        ],
       },
     });
-    
+
+    const customersData = {
+      data: customers.slice(0, take),
+      isLastPage: customers.length <= take,
+      currentPage: page,
+    };
+    return customersData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findCustomerById(id: number) {
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
     return customer;
-
   } catch (error) {
     throw error;
   }
 }
 
-async function findManyCustomersByName(name: string): Promise<Customer[]> {
+async function upsertCustomer(customerInfo: ICustomer) {
   try {
-    let customersWithId = await prisma.customer.findMany({
+    const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
+    const customer = await prisma.customer.upsert({
       where: {
-        fullName: {
-          contains: name,
-        },
+        id: customerInfo?.id ?? -1,
+      },
+      create: {
+        fullName: fullName,
+        firstName: customerInfo.firstName,
+        lastName: customerInfo.lastName,
+        addressLine1: customerInfo.addressLine1,
+        addressLine2: customerInfo.addressLine2,
+        state: customerInfo.state,
+        city: customerInfo.city,
+        phone: customerInfo.phone,
+        email: customerInfo.email,
+        companyId: customerInfo.companyId,
+      },
+      update: {
+        fullName: fullName,
+        firstName: customerInfo.firstName,
+        lastName: customerInfo.lastName,
+        addressLine1: customerInfo.addressLine1,
+        addressLine2: customerInfo.addressLine2,
+        state: customerInfo.state,
+        city: customerInfo.city,
+        phone: customerInfo.phone,
+        email: customerInfo.email,
+        lastModified: new Date(),
       },
     });
 
-    const customers = customersWithId.map((c) => exclude(c, "id", "companyId"));
-    return customers;
-
+    return customer;
   } catch (error) {
     throw error;
   }
 }
 
-function exclude<Customer, Key extends keyof Customer>(
-  customer: Customer,
-  ...keys: Key[]
-): Customer {
-  for (let key of keys) {
-    delete customer[key];
+async function deleteCustomer(id: number) {
+  try {
+    const customer = await prisma.customer.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return customer;
+  } catch (error) {
+    throw error;
   }
-  return customer;
 }
 
-export { 
-  createCustomer, 
-  findCustomerByNameAndPhone, 
-  findManyCustomersByName 
+export {
+  findCustomerById,
+  findAllCustomers,
+  findAllCustomersWithActiveJobOrders,
+  upsertCustomer,
+  deleteCustomer,
 };

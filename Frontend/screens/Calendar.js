@@ -1,11 +1,28 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Colors } from "../constants/colors";
+import { Text, View, StyleSheet, Pressable } from "react-native";
+import Header from "../components/UI/Header";
+import MenuDropDown from "../components/UI/MenuDropDown";
+import Colors from "../constants/Colors/Colors";
 
-function Calendar() {
+function Calendar({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Calendar</Text>
+      <Header divideH={8} colorHeader={Colors.darkBlack} divideW={1}>
+        <MenuDropDown />
+      </Header>
+      <View style={styles.body}>
+        <Text>Calendar Screen!</Text>
+      </View>
+      <View>
+      <Pressable
+          style={{ backgroundColor: Colors.brightYellow }}
+          onPress={() => {
+            navigation.navigate("CalendarSelection");
+          }}
+        >
+          <Text>Cabron</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -13,9 +30,10 @@ function Calendar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.white,
+  },
+  body: {
+    zIndex: -1,
   },
 });
 

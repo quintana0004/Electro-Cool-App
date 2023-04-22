@@ -1,15 +1,20 @@
-import app from './app';
-// import { db, syncrhonize } from './database/index';
-import environment from './config/environment';
-import { setupDummyCompany } from './database';
+import http from "http";
+import app from "./app";
+import { findCompanyByName } from "./models/company.model";
+import scheduleJobs from "./services/scheduler.service";
 
+import { createDummyCompany } from "./utils/db.utils";
 
-let PORT = environment.PORT || 5000;
+const SERVER_HOST = process.env.SERVER_HOST;
+const SERVER_PORT = process.env.SERVER_PORT;
 
-setupDummyCompany()
-  .then(() => console.log('--- DATABASE IS READY ---'))
-  .catch((e) => {
-    throw e
-  });
+const server = http.createServer(app);
 
-app.listen(PORT, () => console.log(`Server is running https://localhost:${PORT}`));
+// --- Insert Dummy Company Information: Temporary ---
+(async () => {
+  await createDummyCompany();
+})();
+
+scheduleJobs();
+
+server.listen(SERVER_PORT, () => console.log(`Server is running ${SERVER_HOST}:${SERVER_PORT}`));

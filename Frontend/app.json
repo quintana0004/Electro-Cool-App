@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Mech Driven",
-    "slug": "mech",
+    "name": "electro-cool",
+    "slug": "electro-cool",
     "version": "1.0.0",
-    "orientation": "landscape",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

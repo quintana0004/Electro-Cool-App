@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,161 +10,192 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Appointment {
-  id        String   @id @default(uuid()) @db.Uuid
-  reason    String
-  datetime  DateTime @db.Timestamptz(6)
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @db.Timestamptz(6)
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction)
-}
-
-model Car {
-  id                  String     @id @default(uuid()) @db.Uuid
-  brand               String     @db.VarChar(100)
-  licensePlate        String     @db.VarChar(20)
-  model               String     @db.VarChar(100)
-  year                String     @db.VarChar(4)
-  mileage             String     @db.VarChar(10)
-  color               String     @db.VarChar(50)
-  vinNumber           String     @unique @db.VarChar(20)
-  carHasItems         Boolean
-  carItemsDescription String?
-  customerId          String    @db.Uuid
-  companyId           String    @db.Uuid
-  createdAt           DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt           DateTime   @default(now()) @db.Timestamptz(6)
-  company             Company   @relation(fields: [companyId], references: [id], onDelete: NoAction)
-  customer            Customer  @relation(fields: [customerId], references: [id], onDelete: NoAction)
-  jobOrders           JobOrder[]
-}
-
 model Company {
-  id           String     @id @default(uuid()) @db.Uuid
-  name         String     @unique @db.VarChar(255)
-  businessType String     @db.VarChar(150)
-  addressLine1 String     @db.VarChar(255)
-  addressLine2 String?    @db.VarChar(255)
-  country      String     @db.VarChar(100)
-  state        String?    @db.VarChar(50)
-  city         String     @db.VarChar(100)
-  zipcode      String     @db.VarChar(10)
-  email        String?    @db.VarChar(255)
-  phone        String?    @db.VarChar(15)
-  createdAt    DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime   @default(now()) @db.Timestamptz(6)
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @unique @db.VarChar(255)
+  businessType String        @db.VarChar(150)
+  addressLine1 String        @db.VarChar(255)
+  addressLine2 String?       @db.VarChar(255)
+  country      String        @db.VarChar(100)
+  state        String?       @db.VarChar(50)
+  city         String        @db.VarChar(100)
+  zipcode      String        @db.VarChar(10)
+  email        String?       @db.VarChar(255)
+  phone        String?       @db.VarChar(15)
+  createdDate  DateTime      @default(now()) @db.Timestamptz(6)
+  lastModified DateTime      @default(now()) @db.Timestamptz(6)
   cars         Car[]
   customers    Customer[]
   invoices     Invoice[]
+  deposits     Deposit[]
   jobOrders    JobOrder[]
   users        User[]
-}
-
-model Customer {
-  id           String     @id @default(uuid()) @db.Uuid
-  fullName     String     @default("")
-  firstName    String     @db.VarChar(255)
-  lastName     String     @db.VarChar(255)
-  addressLine1 String     @db.VarChar(255)
-  addressLine2 String?    @db.VarChar(255)
-  state        String?    @db.VarChar(50)
-  city         String     @db.VarChar(100)
-  phone        String     @db.VarChar(15)
-  email        String?    @db.VarChar(255)
-  companyId    String     @db.Uuid
-  createdAt    DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime   @default(now()) @db.Timestamptz(6)
-  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  cars         Car[]
-  invoices     Invoice[]
-  jobOrders    JobOrder[]
-  user         User?
-  @@unique([fullName, phone])
-}
-
-model Invoice {
-  id           String         @id @default(uuid()) @db.Uuid
-  totalPrice   String         @db.VarChar(50)
-  status       String         @db.VarChar(100)
-  dueDate      DateTime       @db.Timestamptz(6)
-  companyId    String         @db.Uuid
-  customerId   String         @db.Uuid
-  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime       @default(now()) @db.Timestamptz(6)
-  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer     Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  invoiceItems Invoice_Item[]
-}
-
-model Invoice_Item {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String
-  quantity    String   @db.VarChar(10)
-  unitPrice   String   @db.VarChar(20)
-  totalPrice  String   @db.VarChar(20)
-  warranty    String   @db.VarChar(20)
-  invoiceId   String   @db.Uuid
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: NoAction)
-}
-
-model JobOrder {
-  id             String    @id @default(uuid()) @db.Uuid
-  service        String    @db.VarChar(255)
-  serviceDetails String
-  status         String    @db.VarChar(100)
-  isHeavy        Boolean
-  isLight        Boolean
-  companyId      String    @db.Uuid
-  customerId     String    @db.Uuid
-  carId          String    @db.Uuid
-  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime  @default(now()) @db.Timestamptz(6)
-  car            Car       @relation(fields: [carId], references: [id], onDelete: Cascade)
-  company        Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer       Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-}
-
-model Note {
-  id        String   @id @default(uuid()) @db.Uuid
-  text      String
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @db.Timestamptz(6)
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction)
-}
-
-model Reminder {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String
-  datetime    DateTime @db.Timestamptz(6)
-  userId      String   @db.Uuid
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
-  user        User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+  appointments Appointment[]
+  tasks        Task[]
 }
 
 model User {
-  id           String        @id @default(uuid()) @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
+  fullName        String
+  firstName       String    @db.VarChar(255)
+  lastName        String    @db.VarChar(255)
+  phone           String    @db.VarChar(15)
+  email           String    @unique @db.VarChar(255)
+  username        String    @unique @db.VarChar(255)
+  password        String    @unique @db.VarChar(65)
+  passwordSalt    String    @db.VarChar(65)
+  accessToken     String?
+  refreshToken    String?
+  accessState     String    @default("Pending") @db.VarChar(25)
+  role            String?   @db.VarChar(150)
+  accessStartDate DateTime? @db.Timestamptz(6)
+  accessEndDate   DateTime? @db.Timestamptz(6)
+  createdDate     DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified    DateTime  @default(now()) @db.Timestamptz(6)
+  companyId       String    @db.Uuid
+  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Customer {
+  id           Int           @id @default(autoincrement())
+  fullName     String
   firstName    String        @db.VarChar(255)
   lastName     String        @db.VarChar(255)
-  gender       String        @db.VarChar(10)
-  age          Int
+  addressLine1 String?       @db.VarChar(255)
+  addressLine2 String?       @db.VarChar(255)
+  state        String?       @db.VarChar(50)
+  city         String?       @db.VarChar(100)
   phone        String        @db.VarChar(15)
-  email        String        @db.VarChar(255)
-  username     String        @db.VarChar(255)
-  password     String        @db.VarChar(255)
-  salt         String        @db.VarChar(255)
-  role         String        @db.VarChar(255)
+  email        String?       @db.VarChar(255)
+  createdDate  DateTime      @default(now()) @db.Timestamptz(6)
+  lastModified DateTime      @default(now()) @db.Timestamptz(6)
   companyId    String        @db.Uuid
-  customerId   String?       @db.Uuid
-  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime      @default(now()) @db.Timestamptz(6)
   company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  cars         Car[]
+  invoices     Invoice[]
+  jobOrders    JobOrder[]
+  deposits     Deposit[]
   appointments Appointment[]
-  notes        Note[]
-  reminders    Reminder[]
+}
+
+model Car {
+  id                  Int           @id @default(autoincrement())
+  brand               String        @db.VarChar(100)
+  licensePlate        String        @unique @db.VarChar(20)
+  model               String        @db.VarChar(100)
+  year                String        @db.VarChar(4)
+  mileage             String        @db.VarChar(10)
+  color               String        @db.VarChar(50)
+  vinNumber           String        @unique @db.VarChar(20)
+  carHasItems         Boolean?      @default(false)
+  carItemsDescription String?
+  createdDate         DateTime      @default(now()) @db.Timestamptz(6)
+  lastModified        DateTime      @default(now()) @db.Timestamptz(6)
+  companyId           String        @db.Uuid
+  company             Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerId          Int
+  customer            Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  jobOrders           JobOrder[]
+  deposits            Deposit[]
+  invoices            Invoice[]
+  appointments        Appointment[]
+}
+
+model JobOrder {
+  id               Int       @id @default(autoincrement())
+  requestedService String    @db.VarChar(255)
+  serviceDetails   String?
+  status           String    @db.VarChar(100)
+  jobLoadType      String    @db.VarChar(100)
+  policySignature  Boolean
+  createdDate      DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified     DateTime  @default(now()) @db.Timestamptz(6)
+  carId            Int?
+  car              Car?      @relation(fields: [carId], references: [id], onDelete: SetNull)
+  companyId        String    @db.Uuid
+  company          Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerId       Int?
+  customer         Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+}
+
+model Invoice {
+  id           Int            @id @default(autoincrement())
+  status       String         @db.VarChar(100)
+  amountTotal  Float
+  amountPaid   Float
+  amountDue    Float
+  createdDate  DateTime       @default(now()) @db.Timestamptz(6)
+  lastModified DateTime       @default(now()) @db.Timestamptz(6)
+  companyId    String         @db.Uuid
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerId   Int?
+  customer     Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  carId        Int?
+  car          Car?           @relation(fields: [carId], references: [id], onDelete: SetNull)
+  invoiceItems Invoice_Item[]
+  deposits     Deposit[]
+}
+
+model Invoice_Item {
+  id           Int      @id @default(autoincrement())
+  description  String
+  quantity     Int
+  unitPrice    Float
+  totalPrice   Float
+  warranty     String   @db.VarChar(20)
+  createdDate  DateTime @default(now()) @db.Timestamptz(6)
+  lastModified DateTime @default(now()) @db.Timestamptz(6)
+  invoiceId    Int
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Deposit {
+  id           Int      @id @default(autoincrement())
+  status       String   @db.VarChar(100)
+  amountTotal  String   @db.VarChar(20)
+  description  String
+  isAvailable  Boolean  @default(false)
+  createdDate  DateTime @default(now()) @db.Timestamptz(6)
+  lastModified DateTime @default(now()) @db.Timestamptz(6)
+  customerId   Int
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  carId        Int
+  car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  invoiceId    Int?
+  invoice      Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  companyId    String   @db.Uuid
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id              Int       @id @default(autoincrement())
+  service         String    @db.VarChar(255)
+  description     String
+  arrivalDateTime DateTime  @db.Timestamptz(6)
+  model           String    @db.VarChar(255)
+  brand           String    @db.VarChar(100)
+  year            String    @db.VarChar(4)
+  color           String    @db.VarChar(50)
+  licensePlate    String    @db.VarChar(255)
+  customerName    String    @db.VarChar(255)
+  phone           String    @db.VarChar(10)
+  email           String    @db.VarChar(255)
+  createdDate     DateTime  @default(now()) @db.Timestamptz(6)
+  lastModified    DateTime  @default(now()) @db.Timestamptz(6)
+  customerId      Int?
+  customer        Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  carId           Int?
+  car             Car?      @relation(fields: [carId], references: [id], onDelete: SetNull)
+  companyId       String    @db.Uuid
+  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id           Int      @id @default(autoincrement())
+  text         String
+  dueDate      DateTime @db.Timestamptz(6)
+  createdDate  DateTime @default(now()) @db.Timestamptz(6)
+  lastModified DateTime @default(now()) @db.Timestamptz(6)
+  companyId    String   @db.Uuid
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
