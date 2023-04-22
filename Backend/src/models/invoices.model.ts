@@ -87,6 +87,14 @@ async function findInvoicesByCustomer(
           },
         ],
       },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     return clientInvoices;
