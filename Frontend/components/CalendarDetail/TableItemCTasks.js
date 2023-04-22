@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
-import { httpDeleteTask } from "../../api/tasks.api";
 
 function TableItemCTasks({ id, text, dueDate }) {
   function DateText() {
@@ -19,7 +18,7 @@ function TableItemCTasks({ id, text, dueDate }) {
         <View style={{ width: 250 }}>
           <Text style={styles.boldText}>{DateText()}</Text>
         </View>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={async () => {}}>
           <Avatar.Icon
             size={35}
             icon="delete"

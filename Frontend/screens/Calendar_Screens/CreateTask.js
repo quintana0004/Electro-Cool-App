@@ -18,16 +18,14 @@ import {
   Portal,
   Provider,
 } from "react-native-paper";
-import MenuDropDown from "../../components/UI/MenuDropDown";
 import Colors from "../../constants/Colors/Colors";
-import TableListCTasks from "../../components/CalendarDetail/TableListCTasks";
 import { Formik } from "formik";
 import { useTaskStore } from "../../Store/taskStore";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
-import { httpCreateTask, httpGetAllTasks } from "../../api/tasks.api";
+import { httpCreateTask } from "../../api/tasks.api";
 import * as Yup from "yup";
-import { TimePickerModal, DatePickerModal } from "react-native-paper-dates";
+import { DatePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "intl";
 import "intl/locale-data/jsonp/en";
@@ -35,8 +33,10 @@ import intlFormat from "date-fns/intlFormat";
 import format from "date-fns/format";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import TableItemCTasks from "../../components/CalendarDetail/TableItemCTasks";
+import TableHeaderCTasks from "../../components/CalendarDetail/TableHeaderCTasks";
+
 function cTaskItem(itemData) {
-  console.log("ITEAM DATA: ", itemData);
+  //console.log("ITEAM DATA: ", itemData);
   return (
     <TableItemCTasks
       id={itemData.item.id}
@@ -45,6 +45,7 @@ function cTaskItem(itemData) {
     />
   );
 }
+
 function CreateTask() {
   //Store Hooks
   const setTask = useTaskStore((state) => state.setTask);
@@ -65,24 +66,10 @@ function CreateTask() {
     [setOpen, setDate]
   );
 
-  useEffect(() => {
-    async function handleGetTaskInfo() {
-      try {
-        const taskInfo = await httpGetAllTasks();
-        setTaskData(taskInfo);
-      } catch (error) {
-        setErrorMessage("Could not fetch task.");
-      }
-      setIsFetching(false);
-      setInitializeData(true);
-      setDisableInput(true);
-    }
-  });
-
   //Other Hooks
   const [dialogVisible, setDialogVisible] = useState(false);
   const ref = useRef(null);
-  const [taskData, setTaskData] = useState();
+  const [taskData, setTaskData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [saveData, setSaveData] = useState(false);
@@ -107,7 +94,7 @@ function CreateTask() {
     if (initilizeData) {
       dataPassed = {
         text: taskData.data.text,
-        text: taskData.data.dueDate,
+        dueDate: taskData.data.dueDate,
       };
     } else {
       dataPassed = {
@@ -119,9 +106,12 @@ function CreateTask() {
     return dataPassed;
   }
 
-  let taskTable = [];
+  function generateKey() {
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `key-${randomString}`;
+  }
 
-  function handleCreateTask() {
+  async function handleCreateTask() {
     const text = ref.current.values.text;
     const dueDate = date;
 
@@ -137,30 +127,32 @@ function CreateTask() {
     }
 
     const task = {
+      key: generateKey(),
       text: text,
       dueDate: new Date(parsedDueDate),
     };
 
-    taskTable.push(task);
-    showSuccessMessage();
+    taskData.push(task);
+    setTaskData([...taskData]);
 
-    return task;
+    return task.key;
   }
 
-  function getTableData() {
-    let tableData = [];
-
-    for (const task of taskTable) {
-      tableData.push(task);
+  async function popAllTasks() {
+    for (const items in taskData) {
+      console.log(taskData[items]);
+      taskData.pop();
     }
-    return tableData;
   }
 
   async function pushTask() {
     try {
-      const taskData = await httpCreateTask(taskTable);
-      showSuccessMessage();
-      setReloadTaskList();
+      for (const items in taskData) {
+        console.log(taskData[items]);
+        const beans = await httpCreateTask(taskData[items]);
+        console.log(beans);
+        showSuccessMessage();
+      }
     } catch (error) {
       console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
@@ -180,6 +172,19 @@ function CreateTask() {
   function navPrevious() {
     const pageAction = StackActions.pop(1);
     navigation.dispatch(pageAction);
+  }
+
+  //Formats date
+  function selectedDate() {
+    let dateObj;
+    while (dateObj === undefined) {
+      if (typeof date === "object" && date instanceof Date) {
+        dateObj = date;
+      } else {
+        return "";
+      }
+    }
+    return format(new Date(dateObj), "MM/dd/yyyy");
   }
 
   return (
@@ -241,12 +246,11 @@ function CreateTask() {
                 onPress={() => setOpen(true)}
                 color={Colors.darkGreyAsh}
               />
+              <Text>Date selected: {selectedDate()}</Text>
             </View>
             <Pressable
               onPress={async () => {
-                console.log("OwO");
                 handleCreateTask();
-                console.log(taskTable);
                 setReloadTaskList();
               }}
             >
@@ -259,27 +263,37 @@ function CreateTask() {
           </View>
         )}
       </Formik>
-      <View>
+      <TableHeaderCTasks />
+      <View style={{ height: 520 }}>
         <FlatList
-          data={getTableData()}
+          data={taskData}
           renderItem={cTaskItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.key}
+          style={{ flexGrow: 1 }}
         />
       </View>
-      <Pressable
-        onPress={async () => {
-          console.log("UwU");
-          pushTask();
-          console.log(taskTable);
-          setReloadTaskList();
-        }}
-      >
-        <Avatar.Icon
-          size={48}
-          icon="edit"
-          style={{ backgroundColor: Colors.darkGreen, marginTop: 30 }}
-        />
-      </Pressable>
+      <View style={styles.box}>
+        <Pressable
+          style={[styles.button, { backgroundColor: Colors.darkGreyAsh }]}
+          onPress={async () => {
+            console.log("-w-");
+            popAllTasks();
+            setReloadTaskList();
+          }}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, { backgroundColor: Colors.darkGreen }]}
+          onPress={async () => {
+            console.log("UwU");
+            pushTask();
+            setReloadTaskList();
+          }}
+        >
+          <Text style={styles.buttonText}>Finish</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -318,12 +332,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   container2: {
+    flexDirection: "column",
     zIndex: -4,
     marginTop: 37,
     marginLeft: 15,
     margin: 17,
     borderRadius: 30,
     width: 220,
+  },
+  box: {
+    flexDirection: "row",
+    borderWidth: 0.5,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginHorizontal: 10,
+    height: 60,
+    borderRadius: 10,
+    shadowColor: Colors.black,
+    borderColor: "rgba(0, 0, 0, 0.3)",
+    marginBottom: 10,
+    marginTop: 25,
+    backgroundColor: "#D9D9D9",
+    zIndex: -4,
+  },
+  button: {
+    backgroundColor: Colors.darkGreen,
+    borderRadius: 10,
+    width: 120,
+    height: 50,
+    padding: 10,
+    marginRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 
