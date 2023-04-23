@@ -13,6 +13,15 @@ import Figures from "../constants/figures/Figures";
 import { Appbar, Modal } from "react-native-paper";
 import DashboardTables from "../components/DashboardDetail/DashboardTable";
 
+// TODO:
+// * Create a Flat List so we can dynamically render the Invoices.
+//    - Develop a Flat List Component (DashboardInvoiceTableList)
+//    - Develop a Item to Render (DashboardInvoiceTableListItem)
+// * Develop Scroll Functionality for the Invoices List.
+// * Create a Flat List for the Invoice Items.
+//    - Develop a Flat List Component (DashboardInvoiceItemTableList)
+//    - Develop a Item to Render (DashboardInvoiceItemTableListItem)
+
 function Dashboard({ navigation }) {
   const currentDate = new Date();
 

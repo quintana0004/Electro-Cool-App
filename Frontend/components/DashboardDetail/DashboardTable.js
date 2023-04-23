@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import Figures from "../../constants/figures/Figures";
-import { Avatar, Button, Card, Modal, Portal } from "react-native-paper";
-import ClientCard from "../UI/ClientCard";
+import { useState } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { Card } from "react-native-paper";
 import {
   useCustomerInfoStore,
   useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
 
-import CarCard from "../UI/CarCard";
-import InvoiceDetailTableList from "../InvoiceDetail/InvoiceDetailTableList";
+import {useQuery} from "@tanstack/react-query";
+import {httpGetInvoice} from "../../api/invoices.api";
+import CarsPendingConfirmation from "../Dashboard/CarsPendingConfirmation";
+
 function DashboardTables({
   navigation,
   testfigure,
@@ -30,7 +30,6 @@ function DashboardTables({
   testfigure2,
   backgroundeffect,
 }) {
-  const [modalVisible, setModalVisible] = useState(false);
   const client = useCustomerInfoStore((state) => {
     return {
       id: state.id,
@@ -61,7 +60,19 @@ function DashboardTables({
   });
   const [clientInfo] = useState(client);
   const [carInfo] = useState(car);
+  const [invoiceId, setInvoiceId] = useState(1); // TODO: This is just a test id, please pass the id from the parent component
   const [invoiceItems, setInvoiceItems] = useState([]);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["DashboardInvoiceDetail", invoiceId],
+    queryFn: fetchInvoiceData,
+    enabled: !!invoiceId,
+  });
+
+  async function fetchInvoiceData() {
+    const data = await httpGetInvoice(invoiceId);
+    return data.data.invoiceItems;
+  }
 
   if (Choice == 1) {
     return (
@@ -119,145 +130,9 @@ function DashboardTables({
       </View>
     );
     //this choice builds a huge card with a card inside (Cars Pending Confirmation)
-  } else if (Choice == 3) {
+  } else if (Choice === 3) {
     return (
-      <View style={[styles.ButtonHuge]}>
-        <Image
-          style={[
-            {
-              height: HeightIcon,
-              width: WidthIcon,
-              marginTop: 10,
-              marginRight: 10,
-            },
-          ]}
-          source={Figures.CarsPendingConfirmation}
-        />
-
-        <Text style={[{ fontSize: 18, fontWeight: "600" }]}>{FirstText}</Text>
-        <Pressable onPress={() => setModalVisible(true)}>
-          <Card
-            style={[
-              styles.cardstyle,
-              {
-                height: 65,
-                width: 293,
-              },
-            ]}
-          >
-            <Portal>
-              <Modal
-                visible={modalVisible}
-                animationType="fade"
-                transparent={true}
-              >
-                <Card style={[styles.modalContainer]}>
-                  <View style={{ flexDirection: "column" }}>
-                    <Text
-                      style={{
-                        alignSelf: "center",
-                        fontWeight: "bold",
-                        fontSize: 25,
-                      }}
-                    >
-                      Invoice
-                    </Text>
-                    <Card.Actions style={{ alignSelf: "center" }}>
-                      <Button
-                        buttonColor="#E5B126"
-                        textColor="black"
-                        borderColor="#E5B126"
-                        mode="contained"
-                        style={[
-                          {
-                            borderRadius: 20,
-                          },
-                        ]}
-                      >
-                        #0014
-                      </Button>
-                    </Card.Actions>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <ClientCard client={clientInfo} />
-                    <View style={{ marginLeft: 10 }}>
-                      <CarCard car={carInfo} />
-                    </View>
-                  </View>
-                  {
-                    //en esta seccion se encuentra el boton del modal que nos da el total
-                  }
-                  <InvoiceDetailTableList invoiceItems={invoiceItems} />
-                  <Card.Actions style={{ alignSelf: "center" }}>
-                    <Button
-                      buttonColor="#A9D9C2"
-                      textColor="black"
-                      borderColor="#A9D9C2"
-                      mode="contained"
-                      style={[
-                        {
-                          borderRadius: 20,
-                        },
-                      ]}
-                    >
-                      Total: $500.36
-                    </Button>
-                  </Card.Actions>
-                  {
-                    //en esta seccion se encuentra el boton del modal que dicen cancel y confirmation
-                  }
-                  <Card.Actions>
-                    <Button
-                      title="Cancel"
-                      onPress={() => setModalVisible(false)}
-                      buttonColor="#C4E2E2"
-                      textColor="#138A8C"
-                      borderColor="#138A8C"
-                      mode="contained"
-                      style={[{ borderRadius: 10 }]}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      title="Confirmation"
-                      onPress={() => setModalVisible(false)}
-                      buttonColor="#138A8C"
-                      style={[{ borderRadius: 10 }]}
-                    >
-                      Confirmation
-                    </Button>
-                  </Card.Actions>
-                </Card>
-              </Modal>
-            </Portal>
-            {
-              //en esta seccion se encuentra el card que tiene la informacion del invoice con su ID y nombre del cliente
-            }
-            <View style={{ flexDirection: "row", width: 200 }}>
-              <Card.Content>
-                <Text style={[{ marginLeft: 11, marginTop: 5 }]}>Invoice</Text>
-                <Card
-                  style={[
-                    {
-                      width: 65,
-                      backgroundColor: "#cccccc",
-                    },
-                  ]}
-                >
-                  <Text style={[{ alignSelf: "center" }]}>#1234</Text>
-                </Card>
-              </Card.Content>
-
-              <Text style={{ marginVertical: 15 }}>
-                Cristobal Colon the Conqueror
-              </Text>
-            </View>
-          </Card>
-        </Pressable>
-        {
-          //arreglar font size y verificar los styles a ver si todo esta en orden.
-        }
-      </View>
+      <CarsPendingConfirmation />
     );
     //this choice will build two vertically alligned cards
   } else if (Choice == 4) {
