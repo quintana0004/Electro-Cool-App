@@ -270,7 +270,9 @@ function VehicleInformation({ route, navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log("Vehicle Information Values on Submit: ", values)}
+        onSubmit={(values) =>
+          console.log("Vehicle Information Values on Submit: ", values)
+        }
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/UI/MenuDropDown";
@@ -12,9 +12,7 @@ function Setting({ navigation }) {
         <MenuDropDown />
         <Appbar.Content></Appbar.Content>
       </Appbar.Header>
-      <View style={styles.body}>
-        <Text>Settings Screen!</Text>
-      </View>
+      <View style={styles.body}></View>
     </View>
   );
 }
@@ -22,6 +20,9 @@ function Setting({ navigation }) {
 const styles = StyleSheet.create({
   body: {
     zIndex: -1,
+  },
+  header: {
+    backgroundColor: Colors.darkBlack,
   },
 });
 

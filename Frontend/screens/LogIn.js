@@ -1,28 +1,54 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Button,
   ImageBackground,
   Image,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from "react-native";
 import Figures from "../constants/figures/Figures";
 import Colors from "../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
 import * as Yup from "yup";
+import { useAccountUser } from "../Store/AccountStore";
+import { Dialog, Portal, Provider, Button } from "react-native-paper";
 
 const validatorUser = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string().required("Password is required."),
+  username: Yup.string()
+    .required("Username is required")
+    .matches(
+      "^[A-Za-z0-9]{2,50}$",
+      "Username must contain letters and digits."
+    ),
+  password: Yup.string()
+    .required("Password is Required")
+    .matches(
+      "^[A-Za-z0-9@._]{8,50}$",
+      "Password must contain letters, digits and special character. Need a eight charaters or more."
+    ),
 });
 
 function LogIn({ navigation }) {
+  //Store Hooks
+  const setAccountUser = useAccountUser((state) => state.setAccountUser);
+
+  //Reference of the user info entered
   const ref = useRef(null);
+
+  //Visibility of confirm user account created
+  const [visibilityAccountConfirm, setVisibilityAccountConfirm] =
+    useState(false);
+
+  //Visibility of the modal error
+  const [visibilityUser, setVisibilityUser] = useState(false);
+
+  //Error Message of the user
+  const [errorMSG, setErrorMSG] = useState("");
 
   return (
     <View style={styles.container}>
@@ -124,22 +150,39 @@ function LogIn({ navigation }) {
           <View style={styles.recovery}>
             <Text style={styles.textRecovery}>Recovery Password</Text>
           </View>
-          <View
+          <Pressable
             style={styles.btnPlacement}
-            onPress={() => navigation.navigate("Dashboard")}
+            onPress={() => {
+              //Check Validation of the user loggin
+              const TouchedObject = Object.keys(ref.current.touched).length > 0;
+
+              if (ref.current && ref.current.isValid && TouchedObject) {
+                setAccountUser(
+                  ref.current.values.username,
+                  ref.current.values.password
+                );
+                // setVisibilityAccountConfirm(true);
+                navigation.navigate("Dashboard");
+              } else {
+                setErrorMSG(
+                  "There are missing required or need to correct information."
+                );
+                console.log("USER NOT CORRECT!");
+                setVisibilityUser(true);
+              }
+            }}
           >
             <Text
               style={{ color: Colors.white, fontSize: 20, fontWeight: "bold" }}
             >
               LOG IN
             </Text>
-          </View>
+          </Pressable>
           <View style={styles.message}>
             <Text
               style={{ color: Colors.black, fontSize: 20, fontWeight: "bold" }}
             >
-              {" "}
-              Don't have an account?{" "}
+              Don't have an account?
             </Text>
             <Text
               style={{ color: "#222831", fontSize: 20, fontWeight: "bold" }}
@@ -151,6 +194,67 @@ function LogIn({ navigation }) {
             </Text>
           </View>
         </View>
+        {visibilityUser && (
+          <Portal>
+            <Dialog
+              visible={visibilityUser}
+              onDismiss={() => setVisibilityUser(false)}
+              style={{ backgroundColor: Colors.white }}
+            >
+              <Dialog.Icon
+                icon="alert-circle-outline"
+                size={80}
+                color={Colors.darkRed}
+              />
+              <Dialog.Title style={styles.textAlert}>
+                Invalid Inputs
+              </Dialog.Title>
+              <Dialog.Content>
+                <Text style={styles.textAlert}>{errorMSG}</Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button
+                  textColor={Colors.yellowDark}
+                  onPress={() => setVisibilityUser(false)}
+                >
+                  Okay
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        )}
+        {visibilityAccountConfirm && (
+          <Portal>
+            <Dialog
+              visible={visibilityAccountConfirm}
+              onDismiss={() => setVisibilityAccountConfirm(false)}
+              style={{ backgroundColor: Colors.white }}
+            >
+              <Dialog.Icon
+                icon="check-decagram"
+                size={80}
+                color={Colors.darkGreen}
+              />
+              <Dialog.Title style={styles.textAlert}>
+                Waiting for Admin
+              </Dialog.Title>
+              <Dialog.Content>
+                <Text style={styles.textAlert}>
+                  The administrator hasn/'t confirmed your account yet, please
+                  wait to be verified and then log in to account.
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button
+                  textColor={Colors.yellowDark}
+                  onPress={() => setVisibilityAccountConfirm(false)}
+                >
+                  Cancel
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        )}
       </ImageBackground>
     </View>
   );
@@ -225,6 +329,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 50,
+  },
+  textAlert: {
+    textAlign: "center",
   },
 });
 export default LogIn;
