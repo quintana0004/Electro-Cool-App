@@ -6,9 +6,11 @@ import {
   useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
 
-import {useQuery} from "@tanstack/react-query";
-import {httpGetInvoice} from "../../api/invoices.api";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetInvoice } from "../../api/invoices.api";
 import CarsPendingConfirmation from "../Dashboard/CarsPendingConfirmation";
+import CurrentVehiclesWorkingWith from "../DashboardInvoice/CurrentVehiclesWorkingWith";
+import DashboardCurrentVehicles from "../DashboardInvoice/DashboardCurrentVehicles";
 
 function DashboardTables({
   navigation,
@@ -76,19 +78,12 @@ function DashboardTables({
 
   if (Choice == 1) {
     return (
-      <View style={[styles.Button]}>
-        <Image
-          style={[
-            styles.IconBigButton,
-            { height: HeightIcon, width: WidthIcon },
-          ]}
-          source={testfigure}
-        />
-        <Text style={styles.SmallText}>{FirstText}</Text>
-        <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
-          {SecondText}
-        </Text>
-      </View>
+      <DashboardCurrentVehicles
+        HeightIcon={HeightIcon}
+        WidthIcon={WidthIcon}
+        testfigure={testfigure}
+        SecondText={SecondText}
+      />
     );
   } else if (Choice == 2) {
     return (
@@ -131,9 +126,7 @@ function DashboardTables({
     );
     //this choice builds a huge card with a card inside (Cars Pending Confirmation)
   } else if (Choice === 3) {
-    return (
-      <CarsPendingConfirmation />
-    );
+    return <CarsPendingConfirmation />;
     //this choice will build two vertically alligned cards
   } else if (Choice == 4) {
     return (
