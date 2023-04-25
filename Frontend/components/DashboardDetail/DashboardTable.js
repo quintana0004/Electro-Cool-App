@@ -138,8 +138,7 @@ function DashboardTables({
             style={{
               flexDirection: "row",
               width: 170,
-              marginRight: 80,
-              marginBottom: 30,
+              marginTop: 8,
             }}
           >
             <Card.Cover
@@ -152,13 +151,20 @@ function DashboardTables({
                 },
               ]}
             />
-            <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
-              Total Amount of Task Today
+
+            <View style={{ width: 190 }}>
+              <Text
+                style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}
+              >
+                Total Amount of Appointments Today
+              </Text>
+            </View>
+          </View>
+          <View style={{ width: 250, height: 200, marginBottom: 0 }}>
+            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
+              2500000000000000000000
             </Text>
           </View>
-          <Card.Content>
-            <Text style={[styles.ButtonTextBig, { marginBottom: 60 }]}>25</Text>
-          </Card.Content>
         </Card>
         {
           //second button
@@ -169,7 +175,6 @@ function DashboardTables({
             {
               height: HeightBig,
               width: WidthBig,
-              marginTop: 10,
               marginRight: margin,
             },
           ]}
@@ -178,8 +183,7 @@ function DashboardTables({
             style={{
               flexDirection: "row",
               width: 170,
-              marginRight: 80,
-              marginBottom: 30,
+              marginTop: 8,
             }}
           >
             <Card.Cover
@@ -189,49 +193,24 @@ function DashboardTables({
                   height: 60,
                   width: 60,
                   backgroundColor: "white",
-                  marginVertical: 0,
                 },
               ]}
             />
-            <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
-              Total Amount of Task Today
+
+            <View>
+              <Text
+                style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}
+              >
+                Total Amount of Task Today
+              </Text>
+            </View>
+          </View>
+          <View style={{ width: 250, height: 200, marginBottom: 0 }}>
+            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
+              2500000000000000000000
             </Text>
           </View>
-          <Card.Content>
-            <Text style={[styles.ButtonTextBig, { marginBottom: 60 }]}>34</Text>
-          </Card.Content>
         </Card>
-      </View>
-    );
-  } else if (Choice == 5) {
-    return (
-      <View style={[styles.Button]}>
-        <Image
-          style={[
-            styles.IconBigButton,
-            { height: HeightIcon, width: WidthIcon },
-          ]}
-          source={testfigure}
-        />
-
-        <Text style={styles.SmallText}>{FirstText}</Text>
-        <View style={{ flexDirection: "row" }}>
-          <Text
-            style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}
-          >
-            {ThirdText}
-          </Text>
-          <Text
-            style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}
-          >
-            {FourthText}
-          </Text>
-        </View>
-        <View style={styles.quantityButtonStyle}>
-          <Text style={[styles.ButtonTextBig, { fontSize: SecondTextSize }]}>
-            {SecondText}
-          </Text>
-        </View>
       </View>
     );
   }

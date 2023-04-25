@@ -7,7 +7,12 @@ import { Appbar } from "react-native-paper";
 import DashboardTables from "../components/DashboardDetail/DashboardTable";
 import DashboardCurrentVehicles from "../components/Dashboard/DashboardCurrentVehicles";
 import DashboardVehiclesInShopAndNotStarted from "../components/Dashboard/DashboardVehiclesInShopAndNotStarted";
-
+import DashboardNewVehiclesReceived from "../components/Dashboard/DashboardNewVehiclesReceived";
+import DashboardFinishedVehiclesToday from "../components/Dashboard/DashboardFinishedVehiclesToday";
+import DashboardTotalAmountPaid from "../components/Dashboard/DashboardTotalAmountPaid";
+import DashboardTotalAmountDraft from "../components/Dashboard/DashboardTotalAmountDraft";
+import DashboardTotalAmountPending from "../components/Dashboard/DashboardTotalAmountPending";
+import DashboardTotalAmountCancelled from "../components/Dashboard/DashboardTotalAmountCancelled";
 // TODO:
 // * Create a Flat List so we can dynamically render the Invoices.
 //    - Develop a Flat List Component (DashboardInvoiceTableList)
@@ -53,99 +58,54 @@ function Dashboard({ navigation }) {
 
           <DashboardVehiclesInShopAndNotStarted />
 
-          {/*<DashboardTables*/}
-          {/*  testfigure={Figures.NewIconDashboard}*/}
-          {/*  FirstText={<Text>New Vehicles Received Today</Text>}*/}
-          {/*  SecondText={<Text>150</Text>}*/}
-          {/*  HeightIcon={52}*/}
-          {/*  WidthIcon={50}*/}
-          {/*  Choice={1}*/}
-          {/*  SecondTextSize={55}*/}
-          {/*/>*/}
-          <DashboardCurrentVehicles
-            Title={"Current Vehicles Working With"}
-            ImageIcon={Figures.Wheel}
-            HeightIcon={50}
+          <DashboardNewVehiclesReceived
+            Title={"New Vehicles Received Today"}
+            ImageIcon={Figures.NewIconDashboard}
+            HeightIcon={52}
             WidthIcon={50}
             CountFontSize={55}
           />
-          {
-            //Remember tienes que cambiar las variables de los styles to make it work correctly
-          }
+
           {
             //Fourth Button area
           }
-          {/*<DashboardTables*/}
-          {/*  testfigure={Figures.Vehicle}*/}
-          {/*  FirstText={<Text>New Vehicles Received Today</Text>}*/}
-          {/*  SecondText={<Text>150</Text>}*/}
-          {/*  HeightIcon={45}*/}
-          {/*  WidthIcon={65}*/}
-          {/*  Choice={1}*/}
-          {/*  SecondTextSize={55}*/}
-          {/*/>*/}
-          <DashboardCurrentVehicles
-            Title={"Current Vehicles Working With"}
-            ImageIcon={Figures.Wheel}
-            HeightIcon={50}
-            WidthIcon={50}
+
+          <DashboardFinishedVehiclesToday
+            Title={"Finished Vehicle of Today"}
+            ImageIcon={Figures.Vehicle}
+            HeightIcon={45}
+            WidthIcon={65}
             CountFontSize={55}
           />
           {
             //Another view in order to allow scrollview to work as pages instead of scrolling normally.
           }
-
-          <DashboardTables
-            testfigure={Figures.MoneyHand}
-            FirstText={<Text>Total Amount in Paid Today</Text>}
-            SecondText={<Text>$20,541.45</Text>}
+          <DashboardTotalAmountPaid
+            Title={"Total Amount in Paid Today"}
+            ImageIcon={Figures.MoneyHand}
             HeightIcon={82}
             WidthIcon={80}
-            Choice={5}
-            SecondTextSize={20}
-            ThirdText={<Text>AMT</Text>}
-            FourthText={<Text>48</Text>}
-          />
-          {/*<DashboardTables*/}
-          {/*  testfigure={Figures.totalDraft}*/}
-          {/*  FirstText={<Text>Total Amount in Drafts</Text>}*/}
-          {/*  SecondText={<Text>150</Text>}*/}
-          {/*  HeightIcon={52}*/}
-          {/*  WidthIcon={50}*/}
-          {/*  Choice={1}*/}
-          {/*  SecondTextSize={55}*/}
-          {/*/>*/}
-          <DashboardCurrentVehicles
-            Title={"Current Vehicles Working With"}
-            ImageIcon={Figures.Wheel}
-            HeightIcon={50}
-            WidthIcon={50}
             CountFontSize={55}
           />
-          <DashboardTables
-            testfigure={Figures.totalAmountPending}
-            FirstText={<Text>Total Amount in Pending Today</Text>}
-            SecondText={<Text>$20,541.45</Text>}
+
+          <DashboardTotalAmountDraft
+            Title={"Total Amount in Drafts"}
+            ImageIcon={Figures.totalDraft}
             HeightIcon={62}
             WidthIcon={60}
-            Choice={5}
-            SecondTextSize={20}
-            ThirdText={<Text>AMT</Text>}
-            FourthText={<Text>48</Text>}
+            CountFontSize={55}
           />
-          {/*<DashboardTables*/}
-          {/*  testfigure={Figures.totalAmountCancelled}*/}
-          {/*  FirstText={<Text>Total Amount in Cancelled</Text>}*/}
-          {/*  SecondText={<Text>150</Text>}*/}
-          {/*  HeightIcon={52}*/}
-          {/*  WidthIcon={50}*/}
-          {/*  Choice={1}*/}
-          {/*  SecondTextSize={55}*/}
-          {/*/>*/}
-          <DashboardCurrentVehicles
-            Title={"Current Vehicles Working With"}
-            ImageIcon={Figures.Wheel}
-            HeightIcon={50}
+          <DashboardTotalAmountPending
+            Title={"Total Amount in Pending Today"}
+            ImageIcon={Figures.totalAmountPending}
+            HeightIcon={62}
+            WidthIcon={60}
+            CountFontSize={55}
+          />
+          <DashboardTotalAmountCancelled
+            Title={"Total Amount in Cancelled"}
+            ImageIcon={Figures.totalAmountCancelled}
+            HeightIcon={52}
             WidthIcon={50}
             CountFontSize={55}
           />
@@ -174,7 +134,7 @@ function Dashboard({ navigation }) {
           Choice={4}
           margin={5}
           testfigure2={Figures.totalAmountTasks}
-          SecondTextSize={15}
+          SecondTextSize={20}
         />
       </View>
     </View>

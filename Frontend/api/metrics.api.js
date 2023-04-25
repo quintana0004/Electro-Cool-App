@@ -11,3 +11,27 @@ export async function httpGetVehiclesInShop() {
 export async function httpGetVehiclesNotStarted() {
   return await axios("/metrics/vehiclesNotStarted");
 }
+
+export async function httpGetNewVehiclesReceivedToday() {
+  return await axios("/metrics/newVehiclesReceivedToday");
+}
+
+export async function httpGetFinishedVehiclesToday() {
+  return await axios("/metrics/finishedVehiclesToday");
+}
+
+export async function httpGetTotalAmountPaidToday() {
+  return await axios("/metrics/totalAmountPaidToday");
+}
+
+export async function httpGetTotalAmountInDraftsToday() {
+  return await axios("/metrics/totalAmountInDraftsToday");
+}
+
+export async function httpGetTotalAmountPendingToday() {
+  return await axios("/metrics/totalAmountPendingToday");
+}
+
+export async function httpGetTotalAmountCanceledToday() {
+  return await axios("/metrics/totalAmountCanceledToday");
+}
