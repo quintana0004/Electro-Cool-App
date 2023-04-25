@@ -72,21 +72,20 @@ async function findAllPendingInvoice() {
   try {
     const invoices = await prisma.invoice.findMany({
       where: {
-        status: "Pending"
+        status: "Pending",
       },
       include: {
         customer: {
           select: {
             firstName: true,
             lastName: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     return invoices;
-  }
-  catch (error) {
+  } catch (error) {
     throw error;
   }
 }
@@ -170,6 +169,98 @@ async function findInvoiceWithChildsById(id: number) {
     }
 
     return excludeFields(invoice, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPaidInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Paid",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllInDraftInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "In Draft",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPendingInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Pending",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCanceledInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Canceled",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
   } catch (error) {
     throw error;
   }
@@ -365,6 +456,10 @@ export {
   findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
+  findAllPaidInvoicesFromToday,
+  findAllInDraftInvoicesFromToday,
+  findAllPendingInvoicesFromToday,
+  findAllCanceledInvoicesFromToday,
   updatePolicyAmount,
   upsertInvoice,
   deleteInvoice,
