@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   deleteJobOrder,
+  findAllCurrentWorkingVehicles,
   findAllJobOrders,
   findJobOrderWithChildsById,
   updateJobOrderStatus,
@@ -14,14 +15,19 @@ import {
   isValidCustomerId,
   isValidJobOrderId,
 } from "../../utils/validators.utils";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
 
 async function httpGetAllJobOrders(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
 
     const jobOrdersData = await findAllJobOrders(page, take, searchTerm);
     return res.status(200).json(jobOrdersData);

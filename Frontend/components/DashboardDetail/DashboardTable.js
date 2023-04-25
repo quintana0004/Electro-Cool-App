@@ -9,8 +9,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { httpGetInvoice } from "../../api/invoices.api";
 import CarsPendingConfirmation from "../Dashboard/CarsPendingConfirmation";
-import CurrentVehiclesWorkingWith from "../DashboardInvoice/CurrentVehiclesWorkingWith";
-import DashboardCurrentVehicles from "../DashboardInvoice/DashboardCurrentVehicles";
+import CurrentVehiclesWorkingWith from "../Dashboard/DashboardCard";
+import DashboardCurrentVehicles from "../Dashboard/DashboardCurrentVehicles";
 
 function DashboardTables({
   navigation,
@@ -76,16 +76,9 @@ function DashboardTables({
     return data.data.invoiceItems;
   }
 
-  if (Choice == 1) {
-    return (
-      <DashboardCurrentVehicles
-        HeightIcon={HeightIcon}
-        WidthIcon={WidthIcon}
-        testfigure={testfigure}
-        SecondText={SecondText}
-      />
-    );
-  } else if (Choice == 2) {
+  if (Choice === 1) {
+    return <Text>Hi</Text>;
+  } else if (Choice === 2) {
     return (
       <View>
         <Card
