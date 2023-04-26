@@ -69,12 +69,18 @@ async function findAllInvoices(
 }
 
 async function findInvoicesByCustomer(
+  page: number,
+  take: number,
   searchTerm: string | undefined,
   customerId: number
 ) {
   try {
     const invoiceStatus = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
     const clientInvoices = await prisma.invoice.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
       where: {
         AND: [
           {
@@ -87,9 +93,23 @@ async function findInvoicesByCustomer(
           },
         ],
       },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
-    return clientInvoices;
+    const clientData = {
+      data: clientInvoices.slice(0, take),
+      isLastPage: clientInvoices.length <= take,
+      currentPage: page,
+    };
+
+    return clientData;
   } catch (error) {
     throw error;
   }

@@ -41,12 +41,16 @@ async function httpGetAllInvoices(req: Request, res: Response) {
 
 async function httpGetInvoicesByCustomer(req: Request, res: Response) {
   try {
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let customerId = req.query.customerId ? +req.query.customerId : 0;
     let searchTerm = req.query.searchTerm
       ? req.query.searchTerm.toString()
       : "";
-    let customerId = req.query.customerId ? +req.query.customerId : 0;
 
     const customerInvoices = await findInvoicesByCustomer(
+      page,
+      take,
       searchTerm,
       customerId
     );
