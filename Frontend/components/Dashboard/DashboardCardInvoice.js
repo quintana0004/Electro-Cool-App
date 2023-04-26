@@ -2,12 +2,16 @@ import { View, Text, StyleSheet, Image } from "react-native";
 
 function DashboardCardInvoice({
   Title,
+  ShowCount,
   CountToDisplay,
+  AmountToDisplay,
   HeightIcon,
   WidthIcon,
   ImageIcon,
   CountFontSize,
 }) {
+  console.log("Amount To Display: ", AmountToDisplay);
+  console.log("Count To Display: ", CountToDisplay);
   return (
     <View style={[styles.Button]}>
       <Image
@@ -16,21 +20,23 @@ function DashboardCardInvoice({
       />
 
       <Text style={styles.SmallText}>{Title}</Text>
-      <View style={{ flexDirection: "row" }}>
-        <Text style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}>
-          {
-            //hay que poner aqui adentro la data de AMT
-          }
-        </Text>
-        <Text style={[styles.SmallText, { fontSize: 20, fontWeight: "bold" }]}>
-          {
-            //hay que poner aqui adentro la data de AMT
-          }
-        </Text>
-      </View>
+      {ShowCount && (
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <Text
+            style={[styles.SmallText, { fontSize: 12, fontWeight: "bold" }]}
+          >
+            AMT
+          </Text>
+          <Text
+            style={[styles.SmallText, { fontSize: 22, fontWeight: "bold" }]}
+          >
+            {" " + CountToDisplay}
+          </Text>
+        </View>
+      )}
       <View style={styles.quantityButtonStyle}>
         <Text style={[styles.ButtonTextBig, { fontSize: 20 }]}>
-          ${CountToDisplay}
+          ${AmountToDisplay}
         </Text>
       </View>
     </View>
@@ -74,5 +80,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 8,
   },
 });

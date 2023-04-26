@@ -35,3 +35,11 @@ export async function httpGetTotalAmountPendingToday() {
 export async function httpGetTotalAmountCanceledToday() {
   return await axios("/metrics/totalAmountCanceledToday");
 }
+
+export async function httpGetTotalAmountAppointmentsToday() {
+  return await axios("/metrics/totalAmountAppointmentsToday");
+}
+
+export async function httpGetTotalAmountTasksToday() {
+  return await axios("/metrics/totalAmountTasksToday");
+}

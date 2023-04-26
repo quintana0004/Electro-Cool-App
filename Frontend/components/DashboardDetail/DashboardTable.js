@@ -161,9 +161,7 @@ function DashboardTables({
             </View>
           </View>
           <View style={{ width: 250, height: 200, marginBottom: 0 }}>
-            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
-              2500000000000000000000
-            </Text>
+            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>50</Text>
           </View>
         </Card>
         {
@@ -206,9 +204,7 @@ function DashboardTables({
             </View>
           </View>
           <View style={{ width: 250, height: 200, marginBottom: 0 }}>
-            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>
-              2500000000000000000000
-            </Text>
+            <Text style={[styles.ButtonTextBig, { fontSize: 80 }]}>1820</Text>
           </View>
         </Card>
       </View>

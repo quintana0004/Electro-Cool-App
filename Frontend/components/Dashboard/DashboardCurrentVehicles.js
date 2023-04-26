@@ -2,6 +2,8 @@ import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetCurrentVehicles } from "../../api/metrics.api";
+import { useJobOrderStore } from "../../Store/JobOrderStore";
+import { useEffect } from "react";
 
 function DashboardCurrentVehicles({
   Title,
@@ -10,13 +12,23 @@ function DashboardCurrentVehicles({
   ImageIcon,
   CountFontSize,
 }) {
-  const { isLoading, isError, data } = useQuery({
+  const reloadJobOrderList = useJobOrderStore(
+    (state) => state.reloadJobOrderList
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [reloadJobOrderList]);
+
+  const { isLoading, isError, refetch, data } = useQuery({
     queryKey: ["DashboardCurrentVehiclesWorking"],
     queryFn: getCurrentWorkingVehicles,
     enabled: true,
+    staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
 
   async function getCurrentWorkingVehicles(page = 0) {
+    console.log("LOADED CURRENT WORKING VEHICLES");
     const response = await httpGetCurrentVehicles();
     return response.data;
   }

@@ -25,6 +25,28 @@ async function findAllTasks(page: number, take: number) {
   }
 }
 
+async function findTasksFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        dueDate: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return tasks;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findTaskById(id: number) {
   try {
     const task = await prisma.task.findUnique({
@@ -69,4 +91,10 @@ async function deleteTask(id: number) {
   }
 }
 
-export { findAllTasks, findTaskById, createTask, deleteTask };
+export {
+  findAllTasks,
+  findTaskById,
+  findTasksFromToday,
+  createTask,
+  deleteTask,
+};

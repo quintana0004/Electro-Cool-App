@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
-import { httpGetTotalAmountPaidToday } from "../../api/metrics.api";
+import { httpGetFinishedVehiclesToday } from "../../api/metrics.api";
+import { useJobOrderStore } from "../../Store/JobOrderStore";
 
 function DashboardFinishedVehiclesToday({
   Title,
@@ -10,14 +12,23 @@ function DashboardFinishedVehiclesToday({
   ImageIcon,
   CountFontSize,
 }) {
-  const { isLoading, isError, data } = useQuery({
+  const reloadJobOrderList = useJobOrderStore(
+    (state) => state.reloadJobOrderList
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [reloadJobOrderList]);
+
+  const { isLoading, isError, refetch, data } = useQuery({
     queryKey: ["DashboardFinishedVehiclesTodayReceived"],
     queryFn: getDashboardFinishedVehiclesToday,
     enabled: true,
+    staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
 
   async function getDashboardFinishedVehiclesToday(page = 0) {
-    const response = await httpGetTotalAmountPaidToday();
+    const response = await httpGetFinishedVehiclesToday();
     return response.data;
   }
 

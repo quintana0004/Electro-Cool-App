@@ -13,6 +13,8 @@ import {
   findAllPaidInvoicesFromToday,
   findAllPendingInvoicesFromToday,
 } from "../../models/invoices.model";
+import { findTasksFromToday } from "../../models/tasks.model";
+import { findAppointmentsFromToday } from "../../models/appointments.model";
 
 async function httpGetCurrentWorkingVehicles(req: Request, res: Response) {
   try {
@@ -112,7 +114,8 @@ async function httpGetTotalAmountInDraftsToday(req: Request, res: Response) {
     }
 
     return res.status(200).json({
-      metric: totalAmount,
+      count: invoicesInDraftFromToday.length,
+      totalAmount: totalAmount,
     });
   } catch (error) {
     return handleExceptionErrorResponse(
@@ -154,11 +157,47 @@ async function httpGetTotalAmountCanceledToday(req: Request, res: Response) {
     }
 
     return res.status(200).json({
-      metric: totalAmount,
+      count: invoicesCanceledFromToday.length,
+      totalAmount: totalAmount,
     });
   } catch (error) {
     return handleExceptionErrorResponse(
       "get total amount canceled today",
+      error,
+      res
+    );
+  }
+}
+
+async function httpGetTotalAmountAppointmentsToday(
+  req: Request,
+  res: Response
+) {
+  try {
+    const appointmentsFromToday = await findAppointmentsFromToday();
+
+    return res.status(200).json({
+      metric: appointmentsFromToday.length,
+    });
+  } catch (error) {
+    return handleExceptionErrorResponse(
+      "get total amount appointments today",
+      error,
+      res
+    );
+  }
+}
+
+async function httpGetTotalAmountTasksToday(req: Request, res: Response) {
+  try {
+    const tasksFromToday = await findTasksFromToday();
+
+    return res.status(200).json({
+      count: tasksFromToday.length,
+    });
+  } catch (error) {
+    return handleExceptionErrorResponse(
+      "get total amount tasks today",
       error,
       res
     );
@@ -175,4 +214,6 @@ export {
   httpGetTotalAmountInDraftsToday,
   httpGetTotalAmountPendingToday,
   httpGetTotalAmountCanceledToday,
+  httpGetTotalAmountAppointmentsToday,
+  httpGetTotalAmountTasksToday,
 };
