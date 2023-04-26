@@ -193,7 +193,7 @@ async function httpGetTotalAmountTasksToday(req: Request, res: Response) {
     const tasksFromToday = await findTasksFromToday();
 
     return res.status(200).json({
-      count: tasksFromToday.length,
+      metric: tasksFromToday.length,
     });
   } catch (error) {
     return handleExceptionErrorResponse(

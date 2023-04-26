@@ -15,10 +15,6 @@ function DashboardInvoiceTableList({ setSelectedInvoiceId, setModalVisible }) {
 
   async function getInvoicesData() {
     const response = await httpGetAllPendingInvoices();
-    console.log(
-      "INVOICES DATA FROM CARS PENDING CONFIRMATION: ",
-      response.data
-    );
     return response.data;
   }
 

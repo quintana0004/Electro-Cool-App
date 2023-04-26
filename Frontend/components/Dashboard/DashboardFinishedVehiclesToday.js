@@ -1,19 +1,14 @@
-import { useEffect } from "react";
-import { View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
+import {useEffect} from "react";
+import {View} from "react-native";
+import {useQuery} from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
-import { httpGetFinishedVehiclesToday } from "../../api/metrics.api";
-import { useJobOrderStore } from "../../Store/JobOrderStore";
+import {httpGetFinishedVehiclesToday} from "../../api/metrics.api";
+import {useJobOrderStore} from "../../Store/JobOrderStore";
+import Figures from "../../constants/figures/Figures";
 
-function DashboardFinishedVehiclesToday({
-  Title,
-  HeightIcon,
-  WidthIcon,
-  ImageIcon,
-  CountFontSize,
-}) {
+function DashboardFinishedVehiclesToday() {
   const reloadJobOrderList = useJobOrderStore(
-    (state) => state.reloadJobOrderList
+      (state) => state.reloadJobOrderList
   );
 
   useEffect(() => {
@@ -33,18 +28,18 @@ function DashboardFinishedVehiclesToday({
   }
 
   return (
-    <View>
-      {isLoading || (
-        <DashboardCard
-          Title={Title}
-          HeightIcon={HeightIcon}
-          WidthIcon={WidthIcon}
-          ImageIcon={ImageIcon}
-          CountToDisplay={data.metric}
-          CountFontSize={CountFontSize}
-        />
-      )}
-    </View>
+      <View>
+        {isLoading || (
+            <DashboardCard
+                Title={"Finished Vehicle of Today"}
+                ImageIcon={Figures.Vehicle}
+                HeightIcon={45}
+                WidthIcon={65}
+                CountFontSize={55}
+                CountToDisplay={data.metric}
+            />
+        )}
+      </View>
   );
 }
 

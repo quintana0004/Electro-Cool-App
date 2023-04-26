@@ -4,16 +4,11 @@ import DashboardCard from "./DashboardCard";
 import { httpGetCurrentVehicles } from "../../api/metrics.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 import { useEffect } from "react";
+import Figures from "../../constants/figures/Figures";
 
-function DashboardCurrentVehicles({
-  Title,
-  HeightIcon,
-  WidthIcon,
-  ImageIcon,
-  CountFontSize,
-}) {
+function DashboardCurrentVehicles() {
   const reloadJobOrderList = useJobOrderStore(
-    (state) => state.reloadJobOrderList
+      (state) => state.reloadJobOrderList
   );
 
   useEffect(() => {
@@ -28,24 +23,23 @@ function DashboardCurrentVehicles({
   });
 
   async function getCurrentWorkingVehicles(page = 0) {
-    console.log("LOADED CURRENT WORKING VEHICLES");
     const response = await httpGetCurrentVehicles();
     return response.data;
   }
 
   return (
-    <View>
-      {isLoading || (
-        <DashboardCard
-          Title={Title}
-          HeightIcon={HeightIcon}
-          WidthIcon={WidthIcon}
-          ImageIcon={ImageIcon}
-          CountToDisplay={data.metric}
-          CountFontSize={CountFontSize}
-        />
-      )}
-    </View>
+      <View>
+        {isLoading || (
+            <DashboardCard
+                Title={"Current Vehicles Working With"}
+                ImageIcon={Figures.Wheel}
+                HeightIcon={50}
+                WidthIcon={50}
+                CountFontSize={55}
+                CountToDisplay={data.metric}
+            />
+        )}
+      </View>
   );
 }
 

@@ -1,19 +1,14 @@
-import { View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
+import {View} from "react-native";
+import {useQuery} from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
-import { httpGetNewVehiclesReceivedToday } from "../../api/metrics.api";
-import { useJobOrderStore } from "../../Store/JobOrderStore";
-import { useEffect } from "react";
+import {httpGetNewVehiclesReceivedToday} from "../../api/metrics.api";
+import {useJobOrderStore} from "../../Store/JobOrderStore";
+import {useEffect} from "react";
+import Figures from "../../constants/figures/Figures";
 
-function DashboardNewVehiclesReceived({
-  Title,
-  HeightIcon,
-  WidthIcon,
-  ImageIcon,
-  CountFontSize,
-}) {
+function DashboardNewVehiclesReceived() {
   const reloadJobOrderList = useJobOrderStore(
-    (state) => state.reloadJobOrderList
+      (state) => state.reloadJobOrderList
   );
 
   useEffect(() => {
@@ -33,18 +28,18 @@ function DashboardNewVehiclesReceived({
   }
 
   return (
-    <View>
-      {isLoading || (
-        <DashboardCard
-          Title={Title}
-          HeightIcon={HeightIcon}
-          WidthIcon={WidthIcon}
-          ImageIcon={ImageIcon}
-          CountToDisplay={data.metric}
-          CountFontSize={CountFontSize}
-        />
-      )}
-    </View>
+      <View>
+        {isLoading || (
+            <DashboardCard
+                Title={"New Vehicles Received Today"}
+                ImageIcon={Figures.NewIconDashboard}
+                HeightIcon={52}
+                WidthIcon={50}
+                CountFontSize={55}
+                CountToDisplay={data.metric}
+            />
+        )}
+      </View>
   );
 }
 

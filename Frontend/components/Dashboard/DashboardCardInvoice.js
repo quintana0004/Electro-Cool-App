@@ -10,8 +10,6 @@ function DashboardCardInvoice({
   ImageIcon,
   CountFontSize,
 }) {
-  console.log("Amount To Display: ", AmountToDisplay);
-  console.log("Count To Display: ", CountToDisplay);
   return (
     <View style={[styles.Button]}>
       <Image

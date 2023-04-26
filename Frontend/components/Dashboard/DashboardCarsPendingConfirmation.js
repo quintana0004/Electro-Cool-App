@@ -4,7 +4,7 @@ import {useState} from "react";
 import DashboardInvoiceItemModal from "../DashboardInvoiceItem/DashboardInvoiceItemModal";
 import DashboardInvoiceTableList from "../DashboardInvoice/DashboardInvoiceTableList";
 
-function CarsPendingConfirmation() {
+function DashboardCarsPendingConfirmation() {
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -21,9 +21,9 @@ function CarsPendingConfirmation() {
                 ]}
                 source={Figures.CarsPendingConfirmation}
             />
-
-            <Text style={[{ fontSize: 18, fontWeight: "600" }]}>Cars Pending Confirmation</Text>
-            {/* Invoice Table List Item */}
+            <Text style={[{ fontSize: 18, fontWeight: "600" }]}>
+                Cars Pending Confirmation
+            </Text>
             <DashboardInvoiceTableList
               setSelectedInvoiceId={setSelectedInvoiceId}
               setModalVisible={setModalVisible}
@@ -37,7 +37,7 @@ function CarsPendingConfirmation() {
     );
 }
 
-export default CarsPendingConfirmation;
+export default DashboardCarsPendingConfirmation;
 
 const styles = StyleSheet.create({
     ButtonHuge: {

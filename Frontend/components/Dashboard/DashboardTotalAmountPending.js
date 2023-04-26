@@ -5,14 +5,9 @@ import { httpGetTotalAmountPendingToday } from "../../api/metrics.api";
 import DashboardCardInvoice from "./DashboardCardInvoice";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import { useEffect } from "react";
+import Figures from "../../constants/figures/Figures";
 
-function DashboardTotalAmountPending({
-  Title,
-  HeightIcon,
-  WidthIcon,
-  ImageIcon,
-  CountFontSize,
-}) {
+function DashboardTotalAmountPending() {
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
   useEffect(() => {
@@ -32,18 +27,18 @@ function DashboardTotalAmountPending({
   }
 
   return (
-    <View>
-      {isLoading || (
-        <DashboardCardInvoice
-          Title={Title}
-          HeightIcon={HeightIcon}
-          WidthIcon={WidthIcon}
-          ImageIcon={ImageIcon}
-          AmountToDisplay={data.metric}
-          CountFontSize={CountFontSize}
-        />
-      )}
-    </View>
+      <View>
+        {isLoading || (
+            <DashboardCardInvoice
+                Title={"Total Amount in Pending Today"}
+                ImageIcon={Figures.totalAmountPending}
+                HeightIcon={62}
+                WidthIcon={60}
+                CountFontSize={55}
+                AmountToDisplay={data.metric}
+            />
+        )}
+      </View>
   );
 }
 
