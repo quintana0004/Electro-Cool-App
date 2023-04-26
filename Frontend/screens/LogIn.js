@@ -185,7 +185,12 @@ function LogIn({ navigation }) {
               Don't have an account?
             </Text>
             <Text
-              style={{ color: "#222831", fontSize: 20, fontWeight: "bold" }}
+              style={{
+                color: "#222831",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginHorizontal: 10,
+              }}
               onPress={() => {
                 navigation.navigate("SignUp");
               }}
