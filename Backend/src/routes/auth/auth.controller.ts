@@ -3,15 +3,18 @@ import {
   createUser,
   findUserByEmailOrUserName,
   findUserByToken,
+  getUserTokens,
   isUserAuthorized,
   updateUserTokens,
 } from "../../models/users.model";
 import {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } from "../../services/auth.service";
 import { IUser } from "../../types";
 import {
+  buildErrorObject,
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
@@ -122,4 +125,36 @@ async function httpSignUp(req: Request, res: Response) {
   }
 }
 
-export { httpLogin, httpSignUp };
+async function httpRefreshToken(req: Request, res: Response) {
+  try {
+    const refreshToken = req.body.token;
+    if (!refreshToken) {
+      const error = buildErrorObject(401, "Token was not provided.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const userRefreshToken = await getUserTokens(refreshToken);
+    if (!userRefreshToken || refreshToken !== userRefreshToken.refreshToken) {
+      const error = buildErrorObject(401, "Token is not valid for this users.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const verifyTokenResponse = verifyRefreshToken(refreshToken);
+    if ("errorCode" in verifyTokenResponse) {
+      return res.status(verifyTokenResponse.errorCode).json({
+        error: verifyTokenResponse,
+      });
+    }
+
+    const [accessToken, refreshedToken] = verifyTokenResponse;
+    await updateUserTokens(userRefreshToken.id, accessToken, refreshedToken);
+
+    return res
+      .status(200)
+      .json({ accessToken: accessToken, refreshToken: refreshedToken });
+  } catch (error) {
+    return handleExceptionErrorResponse("refresh token", error, res);
+  }
+}
+
+export { httpLogin, httpSignUp, httpRefreshToken };
