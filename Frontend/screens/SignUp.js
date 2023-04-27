@@ -1,25 +1,32 @@
 import React, { useRef, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
+  Alert,
   Image,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
   Pressable,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import Figures from "../constants/figures/Figures";
 import Colors from "../constants/Colors/Colors";
-import { ErrorMessage, Formik } from "formik";
-import { TextInput, HelperText } from "react-native-paper";
+import { Formik } from "formik";
+import {
+  Avatar,
+  Button,
+  Dialog,
+  HelperText,
+  Portal,
+  TextInput,
+} from "react-native-paper";
 import * as Yup from "yup";
 import { Ionicons } from "@expo/vector-icons";
-import { Avatar } from "react-native-paper";
 import { useCustomerInfoStore } from "../Store/JobOrderStore";
 import { useAccountUser } from "../Store/AccountStore";
-import { Dialog, Portal, Provider, Button } from "react-native-paper";
+import { httpSignup } from "../api/auth.api";
+import { getTokens, storeTokens } from "../Store/secureStore";
 
 const ValidationInfo = Yup.object().shape({
   firstName: Yup.string()
@@ -57,10 +64,17 @@ const ValidationUser = Yup.object().shape({
 
 function SignUp({ navigation }) {
   //Store Hooks
+  const customerInfo = useCustomerInfoStore((state) => ({
+    email: state.email,
+    firstName: state.firstName,
+    lastName: state.lastName,
+    phone: state.phone,
+  }));
   const setCustomerInfo = useCustomerInfoStore(
     (state) => state.setCustomerInfo
   );
 
+  // TODO: Must change this to only store the tokens, not the credentials
   const setAccountUser = useAccountUser((state) => state.setAccountUser);
 
   //Get Information Reference of the user info
@@ -80,6 +94,78 @@ function SignUp({ navigation }) {
 
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
+
+  function handleAccountInformationValidation() {
+    // Start to validating there is no error on input page
+    const TouchedObject =
+      Object.keys(refInformation.current.touched).length > 0;
+
+    if (
+      refInformation.current &&
+      refInformation.current.isValid &&
+      TouchedObject
+    ) {
+      setCustomerInfo(
+        "",
+        refInformation.current.values.firstName,
+        refInformation.current.values.lastName,
+        refInformation.current.values.phoneNumber,
+        refInformation.current.values.email
+      );
+      setPage(1);
+    } else {
+      setVisibilityInfo(true);
+    }
+  }
+
+  function handleCredentialValidation() {
+    // Start to validating there is no error on input page
+    const TouchedObject = Object.keys(refAccount.current.touched).length > 0;
+
+    if (
+      refAccount.current.values.password !==
+      refAccount.current.values.passwordConfirm
+    ) {
+      setErrorMSG("Both passwords must be the same");
+      setVisibilityUser(true);
+      return false;
+    }
+    if (!refAccount.current && !refAccount.current.isValid && !TouchedObject) {
+      setErrorMSG("There are missing required or need to correct information.");
+      setVisibilityUser(true);
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleCreateAccount() {
+    const isValid = handleCredentialValidation();
+    if (isValid === false) return;
+
+    const response = await httpSignup(
+      customerInfo.email,
+      refAccount.current.values.password,
+      customerInfo.firstName,
+      customerInfo.lastName,
+      customerInfo.phone,
+      refAccount.current.values.username
+    );
+    if (response.hasError) {
+      return Alert.alert(
+        "Error",
+        "There was an error during authentication. Please try again later."
+      );
+    }
+
+    await storeTokens(response.data.accessToken, response.data.refreshToken);
+    setVisibilityAccountConfirm(true);
+  }
+
+  function handleAccountDialogConfirmation() {
+    setVisibilityAccountConfirm(false);
+    navigation.navigate("Dashboard");
+  }
 
   return (
     <View style={styles.container}>
@@ -140,14 +226,7 @@ function SignUp({ navigation }) {
               email: "",
             }}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
+            {({ handleChange, handleBlur, values, errors, touched }) => (
               <KeyboardAvoidingView
                 behavior="padding"
                 enabled
@@ -266,28 +345,7 @@ function SignUp({ navigation }) {
           </Formik>
           <View>
             <Pressable
-              onPress={() => {
-                //Start to validating there is no error on input page
-                const TouchedObject =
-                  Object.keys(refInformation.current.touched).length > 0;
-
-                if (
-                  refInformation.current &&
-                  refInformation.current.isValid &&
-                  TouchedObject
-                ) {
-                  setCustomerInfo(
-                    "",
-                    refInformation.current.values.firstName,
-                    refInformation.current.values.lastName,
-                    refInformation.current.values.phoneNumber,
-                    refInformation.current.values.email
-                  );
-                  setPage(1);
-                } else {
-                  setVisibilityInfo(true);
-                }
-              }}
+              onPress={handleAccountInformationValidation}
               style={{
                 backgroundColor: "#222831",
                 padding: 15,
@@ -379,14 +437,7 @@ function SignUp({ navigation }) {
               passwordConfirm: "",
             }}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
+            {({ handleChange, handleBlur, values, errors, touched }) => (
               <KeyboardAvoidingView
                 behavior="padding"
                 enabled
@@ -495,36 +546,7 @@ function SignUp({ navigation }) {
           </Formik>
           <View>
             <Pressable
-              onPress={() => {
-                //Start to validating there is no error on input page
-                const TouchedObject =
-                  Object.keys(refAccount.current.touched).length > 0;
-
-                if (
-                  refAccount.current.values.password !==
-                  refAccount.current.values.passwordConfirm
-                ) {
-                  setErrorMSG("Both passwords must be the same");
-                  setVisibilityUser(true);
-                } else {
-                  if (
-                    refAccount.current &&
-                    refAccount.current.isValid &&
-                    TouchedObject
-                  ) {
-                    setAccountUser(
-                      refAccount.current.values.username,
-                      refAccount.current.values.password
-                    );
-                    setVisibilityAccountConfirm(true);
-                  } else {
-                    setErrorMSG(
-                      "There are missing required or need to correct information."
-                    );
-                    setVisibilityUser(true);
-                  }
-                }
-              }}
+              onPress={handleCreateAccount}
               style={{
                 backgroundColor: "#222831",
                 padding: 15,
@@ -601,11 +623,7 @@ function SignUp({ navigation }) {
             <Dialog.Actions>
               <Button
                 textColor={Colors.darkGreen}
-                onPress={async () => {
-                  //PLACE BACKEND ENDPOINT
-                  setVisibilityAccountConfirm(false);
-                  navigation.navigate("Dashboard");
-                }}
+                onPress={handleAccountDialogConfirmation}
               >
                 Confirm
               </Button>

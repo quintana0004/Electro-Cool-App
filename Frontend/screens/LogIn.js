@@ -1,22 +1,30 @@
 import React, { useRef, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
+  Alert,
   Image,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
+  ImageBackground,
   Keyboard,
+  KeyboardAvoidingView,
   Pressable,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import Figures from "../constants/figures/Figures";
 import Colors from "../constants/Colors/Colors";
-import { ErrorMessage, Formik } from "formik";
-import { TextInput, HelperText } from "react-native-paper";
+import { Formik } from "formik";
+import {
+  Button,
+  Dialog,
+  HelperText,
+  Portal,
+  TextInput,
+} from "react-native-paper";
 import * as Yup from "yup";
 import { useAccountUser } from "../Store/AccountStore";
-import { Dialog, Portal, Provider, Button } from "react-native-paper";
+import { httpLogin } from "../api/auth.api";
+import { getTokens, storeTokens } from "../Store/secureStore";
 
 const validatorUser = Yup.object().shape({
   username: Yup.string()
@@ -35,6 +43,7 @@ const validatorUser = Yup.object().shape({
 
 function LogIn({ navigation }) {
   //Store Hooks
+  // TODO: Must change this to only store the tokens, not the credentials
   const setAccountUser = useAccountUser((state) => state.setAccountUser);
 
   //Reference of the user info entered
@@ -49,6 +58,38 @@ function LogIn({ navigation }) {
 
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
+
+  function handleInputValidation() {
+    // Check Validation of the user login
+    const TouchedObject = Object.keys(ref.current.touched).length > 0;
+
+    if (!ref.current && !ref.current.isValid && !TouchedObject) {
+      setErrorMSG("There are missing required or need to correct information.");
+      setVisibilityUser(true);
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleLogin() {
+    const isValid = handleInputValidation();
+    if (isValid === false) return;
+
+    const response = await httpLogin(
+      ref.current.values.username,
+      ref.current.values.password
+    );
+    if (response.hasError) {
+      return Alert.alert(
+        "Error",
+        "There was an error during authentication. Please try again later."
+      );
+    }
+
+    await storeTokens(response.data.accessToken, response.data.refreshToken);
+    navigation.navigate("Dashboard");
+  }
 
   return (
     <View style={styles.container}>
@@ -71,14 +112,7 @@ function LogIn({ navigation }) {
               validationSchema={validatorUser}
               innerRef={ref}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-              }) => (
+              {({ handleChange, handleBlur, values, errors, touched }) => (
                 <KeyboardAvoidingView
                   behavior="padding"
                   enabled
@@ -150,28 +184,7 @@ function LogIn({ navigation }) {
           <View style={styles.recovery}>
             <Text style={styles.textRecovery}>Recovery Password</Text>
           </View>
-          <Pressable
-            style={styles.btnPlacement}
-            onPress={() => {
-              //Check Validation of the user loggin
-              const TouchedObject = Object.keys(ref.current.touched).length > 0;
-
-              if (ref.current && ref.current.isValid && TouchedObject) {
-                setAccountUser(
-                  ref.current.values.username,
-                  ref.current.values.password
-                );
-                // setVisibilityAccountConfirm(true);
-                navigation.navigate("Dashboard");
-              } else {
-                setErrorMSG(
-                  "There are missing required or need to correct information."
-                );
-                console.log("USER NOT CORRECT!");
-                setVisibilityUser(true);
-              }
-            }}
-          >
+          <Pressable style={styles.btnPlacement} onPress={handleLogin}>
             <Text
               style={{ color: Colors.white, fontSize: 20, fontWeight: "bold" }}
             >
