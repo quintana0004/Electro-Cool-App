@@ -22,9 +22,8 @@ import {
   TextInput,
 } from "react-native-paper";
 import * as Yup from "yup";
-import { useAccountUser } from "../Store/AccountStore";
 import { httpLogin } from "../api/auth.api";
-import { getTokens, storeTokens } from "../Store/secureStore";
+import { storeTokens } from "../Store/secureStore";
 
 const validatorUser = Yup.object().shape({
   username: Yup.string()
@@ -43,9 +42,6 @@ const validatorUser = Yup.object().shape({
 
 function LogIn({ navigation }) {
   //Store Hooks
-  // TODO: Must change this to only store the tokens, not the credentials
-  const setAccountUser = useAccountUser((state) => state.setAccountUser);
-
   //Reference of the user info entered
   const ref = useRef(null);
 

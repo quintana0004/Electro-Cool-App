@@ -24,9 +24,8 @@ import {
 import * as Yup from "yup";
 import { Ionicons } from "@expo/vector-icons";
 import { useCustomerInfoStore } from "../Store/JobOrderStore";
-import { useAccountUser } from "../Store/AccountStore";
 import { httpSignup } from "../api/auth.api";
-import { getTokens, storeTokens } from "../Store/secureStore";
+import { storeTokens } from "../Store/secureStore";
 
 const ValidationInfo = Yup.object().shape({
   firstName: Yup.string()
@@ -73,9 +72,6 @@ function SignUp({ navigation }) {
   const setCustomerInfo = useCustomerInfoStore(
     (state) => state.setCustomerInfo
   );
-
-  // TODO: Must change this to only store the tokens, not the credentials
-  const setAccountUser = useAccountUser((state) => state.setAccountUser);
 
   //Get Information Reference of the user info
   const refInformation = useRef(null);
