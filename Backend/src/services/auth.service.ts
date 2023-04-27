@@ -9,7 +9,11 @@ import {
 import { findUserByToken } from "../models/users.model";
 import { IErrorResponse } from "./../types/index.d";
 
-async function authenticateJWTMiddleWare(req: Request, res: Response, next: NextFunction) {
+async function authenticateJWTMiddleWare(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -25,27 +29,46 @@ async function authenticateJWTMiddleWare(req: Request, res: Response, next: Next
       userTokens.accessState === "Pending" ||
       userTokens.accessState === "Inactive"
     ) {
-      const error = buildErrorObject(403, "Your are not authorized to access these resources.");
+      const error = buildErrorObject(
+        403,
+        "Your are not authorized to access these resources."
+      );
       return res.status(error.errorCode).json({ error: error });
     }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "", (err, user) => {
       if (err) {
-        const error = buildErrorObject(403, "Your are not authorized to access these resources.");
+        const error = buildErrorObject(
+          403,
+          "Your are not authorized to access these resources."
+        );
         return res.status(error.errorCode).json({ error: error });
       }
 
-      user = user as { id: string; companyId: string; iat: number; exp: number };
+      user = user as {
+        id: string;
+        companyId: string;
+        iat: number;
+        exp: number;
+      };
       req.userId = user.id;
       req.companyId = user.companyId;
       next();
     });
   } catch (error) {
-    return handleExceptionErrorResponse("authenticate JWT Middleware", error, res);
+    return handleExceptionErrorResponse(
+      "authenticate JWT Middleware",
+      error,
+      res
+    );
   }
 }
 
-async function verifyAdminPrivilagesMiddleware(req: Request, res: Response, next: NextFunction) {
+async function verifyAdminPrivilagesMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader?.split(" ")[1];
@@ -63,14 +86,18 @@ async function verifyAdminPrivilagesMiddleware(req: Request, res: Response, next
 
     next();
   } catch (error) {
-    return handleExceptionErrorResponse("verify admin privilage middleware", error, res);
+    return handleExceptionErrorResponse(
+      "verify admin privilage middleware",
+      error,
+      res
+    );
   }
 }
 
 function generateAccessToken(userId: string, companyId: string): string {
   const user = { id: userId, companyId: companyId };
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET || "", {
-    expiresIn: "1200s",
+    expiresIn: "2h",
   });
 }
 
@@ -79,19 +106,30 @@ function generateRefreshToken(userId: string, companyId: string): string {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET || "");
 }
 
-function verifyRefreshToken(refreshToken: string): [string, string] | IErrorResponse {
+function verifyRefreshToken(
+  refreshToken: string
+): [string, string] | IErrorResponse {
   let accessToken = "";
   let refreshedToken = "";
 
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || "", (err, user) => {
-    if (err) {
-      return buildErrorObject(403, "Token has expired.");
-    }
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET || "",
+    (err, user) => {
+      if (err) {
+        return buildErrorObject(403, "Token has expired.");
+      }
 
-    user = user as { id: string; companyId: string; iat: number; exp: number };
-    accessToken = generateAccessToken(user.id, user.companyId);
-    refreshedToken = generateRefreshToken(user.id, user.companyId);
-  });
+      user = user as {
+        id: string;
+        companyId: string;
+        iat: number;
+        exp: number;
+      };
+      accessToken = generateAccessToken(user.id, user.companyId);
+      refreshedToken = generateRefreshToken(user.id, user.companyId);
+    }
+  );
 
   return [accessToken, refreshedToken];
 }
@@ -103,7 +141,12 @@ function getUserIdFromToken(token: string): string {
     return "";
   }
 
-  const user = decodedToken.payload as { id: string; companyId: string; iat: number; exp: number };
+  const user = decodedToken.payload as {
+    id: string;
+    companyId: string;
+    iat: number;
+    exp: number;
+  };
   return user.id;
 }
 

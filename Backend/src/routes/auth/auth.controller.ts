@@ -3,12 +3,21 @@ import {
   createUser,
   findUserByEmailOrUserName,
   findUserByToken,
+  getUserTokens,
   isUserAuthorized,
   updateUserTokens,
 } from "../../models/users.model";
-import { generateAccessToken, generateRefreshToken } from "../../services/auth.service";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../../services/auth.service";
 import { IUser } from "../../types";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  buildErrorObject,
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { hasRequiredUserFields } from "../../utils/validators.utils";
 
 async function httpLogin(req: Request, res: Response) {
@@ -19,7 +28,10 @@ async function httpLogin(req: Request, res: Response) {
       username: req.body.username,
     };
 
-    if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
+    if (
+      (!userInfo.username && !userInfo.email) ||
+      (!userInfo.email && !userInfo.password)
+    ) {
       return handleBadResponse(
         400,
         "User requires username or email and a password to login into the system.",
@@ -38,7 +50,10 @@ async function httpLogin(req: Request, res: Response) {
       });
     }
 
-    const accessToken = generateAccessToken(userResponse.id, userResponse.companyId);
+    const accessToken = generateAccessToken(
+      userResponse.id,
+      userResponse.companyId
+    );
     await updateUserTokens(userResponse.id, accessToken);
 
     const user = await findUserByToken(accessToken);
@@ -75,9 +90,16 @@ async function httpSignUp(req: Request, res: Response) {
       );
     }
 
-    const doesUserAlreadyExist = await findUserByEmailOrUserName(userInfo.email, userInfo.username);
+    const doesUserAlreadyExist = await findUserByEmailOrUserName(
+      userInfo.email,
+      userInfo.username
+    );
     if (doesUserAlreadyExist) {
-      return handleBadResponse(400, "A user with this username or email already exist.", res);
+      return handleBadResponse(
+        400,
+        "A user with this username or email already exist.",
+        res
+      );
     }
 
     const user = await createUser(userInfo);
@@ -103,4 +125,36 @@ async function httpSignUp(req: Request, res: Response) {
   }
 }
 
-export { httpLogin, httpSignUp };
+async function httpRefreshToken(req: Request, res: Response) {
+  try {
+    const refreshToken = req.body.token;
+    if (!refreshToken) {
+      const error = buildErrorObject(401, "Token was not provided.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const userRefreshToken = await getUserTokens(refreshToken);
+    if (!userRefreshToken || refreshToken !== userRefreshToken.refreshToken) {
+      const error = buildErrorObject(401, "Token is not valid for this users.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const verifyTokenResponse = verifyRefreshToken(refreshToken);
+    if ("errorCode" in verifyTokenResponse) {
+      return res.status(verifyTokenResponse.errorCode).json({
+        error: verifyTokenResponse,
+      });
+    }
+
+    const [accessToken, refreshedToken] = verifyTokenResponse;
+    await updateUserTokens(userRefreshToken.id, accessToken, refreshedToken);
+
+    return res
+      .status(200)
+      .json({ accessToken: accessToken, refreshToken: refreshedToken });
+  } catch (error) {
+    return handleExceptionErrorResponse("refresh token", error, res);
+  }
+}
+
+export { httpLogin, httpSignUp, httpRefreshToken };
