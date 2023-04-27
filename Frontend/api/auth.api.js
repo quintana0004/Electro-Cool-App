@@ -33,15 +33,6 @@ export async function httpSignup(
     errorMessage: "",
   };
 
-  console.log("Signup Fields: ", {
-    email,
-    password,
-    firstName,
-    lastName,
-    phone,
-    username,
-  });
-
   try {
     const response = await axios.post("/auth/signup", {
       email,
