@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ToastAndroid,
 } from "react-native";
 import Header from "../components/UI/Header";
 import MenuDropDown from "../components/UI/MenuDropDown";
@@ -13,7 +14,13 @@ import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import ToggleBtnSetting from "../components/Setting/ToggleBtnSetting";
 import { ErrorMessage, Formik } from "formik";
-import { TextInput, HelperText } from "react-native-paper";
+import {
+  TextInput,
+  HelperText,
+  Button,
+  Dialog,
+  Portal,
+} from "react-native-paper";
 import * as Yup from "yup";
 import ErrorOverlay from "../components/UI/ErrorOverlay";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
@@ -60,6 +67,44 @@ function Setting({ navigation }) {
   const refInformation = useRef(null);
   const refAccount = useRef(null);
 
+  function DataRespondFormik() {
+    let dataPassed;
+
+    if (true) {
+      dataPassed = {
+        firstName: "Jessica",
+        lastName: "Quintana Rivera",
+        phoneNumber: "7877027103",
+        email: "jessynquintana@gmail.com",
+        username: "Jessy004",
+      };
+    } else {
+      dataPassed = {
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+      };
+    }
+
+    return dataPassed;
+  }
+
+  //Toast Message
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+  }
+
+  function showFailedMessage() {
+    ToastAndroid.show("Try Again, there was a problem!", ToastAndroid.SHORT);
+  }
+
+  //Visibility of the modal error
+  const [visibilityUser, setVisibilityUser] = useState(false);
+
+  //Error Message of the user
+  const [errorMSG, setErrorMSG] = useState("");
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -74,16 +119,22 @@ function Setting({ navigation }) {
         {activeCategory === "Profile" && (
           <View>
             <View>
-              <Text>Personal Information</Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "400",
+                  marginLeft: 20,
+                  marginBottom: 10,
+                  marginTop: 20,
+                }}
+              >
+                Personal Information
+              </Text>
               <Formik
                 validationSchema={ValidationUser}
                 innerRef={refInformation}
-                initialValues={{
-                  firstName: "",
-                  lastName: "",
-                  phoneNumber: "",
-                  email: "",
-                }}
+                initialValues={DataRespondFormik()}
+                enableReinitialize={true}
               >
                 {({
                   handleChange,
@@ -106,7 +157,13 @@ function Setting({ navigation }) {
                           marginHorizontal: 20,
                         }}
                       >
-                        <View style={styles.containerText}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginVertical: 20,
+                          }}
+                        >
                           <View style={{ width: 250 }}>
                             <TextInput
                               label="First Name"
@@ -119,6 +176,7 @@ function Setting({ navigation }) {
                               value={values.firstName}
                               error={touched.firstName && errors.firstName}
                               style={styles.textInputStyle}
+                              disabled={true}
                             />
                             <HelperText
                               type="error"
@@ -141,6 +199,7 @@ function Setting({ navigation }) {
                               value={values.lastName}
                               error={touched.lastName && errors.lastName}
                               style={styles.textInputStyle}
+                              disabled={true}
                             />
                             <HelperText
                               type="error"
@@ -150,8 +209,13 @@ function Setting({ navigation }) {
                             </HelperText>
                           </View>
                         </View>
-                        <View>
-                          <View style={{ marginVertical: 30 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ marginVertical: 30, width: 220 }}>
                             <TextInput
                               label="Phone Number"
                               mode="outlined"
@@ -169,6 +233,7 @@ function Setting({ navigation }) {
                               value={values.phoneNumber}
                               error={touched.phoneNumber && errors.phoneNumber}
                               style={styles.textInputStyle}
+                              disabled={true}
                             />
                             <HelperText
                               type="error"
@@ -179,7 +244,7 @@ function Setting({ navigation }) {
                               {errors.phoneNumber}
                             </HelperText>
                           </View>
-                          <View style={{ marginVertical: 30 }}>
+                          <View style={{ marginVertical: 30, width: 300 }}>
                             <TextInput
                               label="E-mail Address"
                               mode="outlined"
@@ -197,12 +262,42 @@ function Setting({ navigation }) {
                               value={values.email}
                               error={touched.email && errors.email}
                               style={styles.textInputStyle}
+                              disabled={true}
                             />
                             <HelperText
                               type="error"
                               visible={!!(touched.email && errors.email)}
                             >
                               {errors.email}
+                            </HelperText>
+                          </View>
+                        </View>
+                        <View>
+                          <View style={{ marginVertical: 20, width: 260 }}>
+                            <TextInput
+                              label="Username"
+                              mode="outlined"
+                              left={
+                                <TextInput.Icon
+                                  icon="account-outline"
+                                  color={Colors.lightGreyDark}
+                                />
+                              }
+                              outlineColor={Colors.darkGrey}
+                              activeOutlineColor={Colors.brightGreen}
+                              keyboardType="default"
+                              onChangeText={handleChange("username")}
+                              onBlur={handleBlur("username")}
+                              value={values.username}
+                              error={touched.username && errors.username}
+                              style={styles.textInputStyle}
+                              disabled={true}
+                            />
+                            <HelperText
+                              type="error"
+                              visible={!!(touched.username && errors.username)}
+                            >
+                              {errors.username}
                             </HelperText>
                           </View>
                         </View>
@@ -214,7 +309,17 @@ function Setting({ navigation }) {
             </View>
             <View></View>
             <View>
-              <Text>Change Password</Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "400",
+                  marginLeft: 20,
+                  marginBottom: 10,
+                  marginTop: 10,
+                }}
+              >
+                Change Password
+              </Text>
             </View>
             <View>
               <Formik
@@ -247,36 +352,13 @@ function Setting({ navigation }) {
                           marginHorizontal: 20,
                         }}
                       >
-                        <View>
-                          <View style={{ marginVertical: 30 }}>
-                            <TextInput
-                              label="Username"
-                              mode="outlined"
-                              left={
-                                <TextInput.Icon
-                                  icon="account-outline"
-                                  color={Colors.lightGreyDark}
-                                />
-                              }
-                              outlineColor={Colors.darkGrey}
-                              activeOutlineColor={Colors.brightGreen}
-                              keyboardType="default"
-                              onChangeText={handleChange("username")}
-                              onBlur={handleBlur("username")}
-                              value={values.username}
-                              error={touched.username && errors.username}
-                              style={styles.textInputStyle}
-                            />
-                            <HelperText
-                              type="error"
-                              visible={!!(touched.username && errors.username)}
-                            >
-                              {errors.username}
-                            </HelperText>
-                          </View>
-                        </View>
-                        <View>
-                          <View style={{ marginVertical: 30 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View style={{ marginVertical: 30, width: 270 }}>
                             <TextInput
                               label="Password"
                               mode="outlined"
@@ -302,7 +384,7 @@ function Setting({ navigation }) {
                               {errors.password}
                             </HelperText>
                           </View>
-                          <View style={{ marginVertical: 30 }}>
+                          <View style={{ marginVertical: 30, width: 270 }}>
                             <TextInput
                               label="Password Confirmation"
                               mode="outlined"
@@ -343,6 +425,71 @@ function Setting({ navigation }) {
                 )}
               </Formik>
             </View>
+
+            <View style={{ marginHorizontal: 100 }}>
+              <Button
+                textColor={Colors.white}
+                onPress={() => {
+                  // Start to validating there is no error on input page
+                  const TouchedObject =
+                    Object.keys(refAccount.current.touched).length > 0;
+
+                  if (
+                    refAccount.current.values.password !==
+                    refAccount.current.values.passwordConfirm
+                  ) {
+                    setErrorMSG("Both passwords must be the same");
+                    setVisibilityUser(true);
+                  }
+                  if (
+                    !refAccount.current &&
+                    !refAccount.current.isValid &&
+                    !TouchedObject
+                  ) {
+                    setErrorMSG(
+                      "There are missing required or need to correct information."
+                    );
+                    setVisibilityUser(true);
+                  }
+
+                  showSuccessMessage();
+                }}
+                mode="contained"
+                buttonColor={Colors.yellowDark}
+              >
+                Confirm Password
+              </Button>
+            </View>
+
+            {visibilityUser && (
+              <Portal>
+                <Dialog
+                  visible={visibilityUser}
+                  onDismiss={() => setVisibilityUser(false)}
+                  style={{ backgroundColor: Colors.white }}
+                >
+                  <Dialog.Icon
+                    icon="alert-circle-outline"
+                    size={80}
+                    color={Colors.darkRed}
+                  />
+                  <Dialog.Title style={styles.textAlert}>
+                    Invalid Inputs
+                  </Dialog.Title>
+                  <Dialog.Content>
+                    <Text style={styles.textAlert}>{errorMSG}</Text>
+                  </Dialog.Content>
+                  <Dialog.Actions>
+                    <Button
+                      textColor={Colors.yellowDark}
+                      onPress={() => setVisibilityUser(false)}
+                    >
+                      Okay
+                    </Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            )}
           </View>
         )}
         {activeCategory === "RBAC" && (
@@ -361,6 +508,13 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: Colors.darkBlack,
+  },
+  textAlert: {
+    textAlign: "center",
+  },
+  textInputStyle: {
+    backgroundColor: Colors.white,
+    fontSize: 16,
   },
 });
 

@@ -29,13 +29,13 @@ const validatorUser = Yup.object().shape({
   username: Yup.string()
     .required("Username is required")
     .matches(
-      "^[A-Za-z0-9]{2,50}$",
+      "^[A-Za-z0-9@.]{2,50}$",
       "Username must contain letters and digits."
     ),
   password: Yup.string()
     .required("Password is Required")
     .matches(
-      "^[A-Za-z0-9@._]{8,50}$",
+      "^[A-Za-z0-9@._]{5,50}$",
       "Password must contain letters, digits and special character. Need a eight charaters or more."
     ),
 });
