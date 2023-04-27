@@ -77,10 +77,7 @@ function LogIn({ navigation }) {
       ref.current.values.password
     );
     if (response.hasError) {
-      return Alert.alert(
-        "Error",
-        "There was an error during authentication. Please try again later."
-      );
+      return Alert.alert("Error", response.errorMessage);
     }
 
     await storeTokens(response.data.accessToken, response.data.refreshToken);
