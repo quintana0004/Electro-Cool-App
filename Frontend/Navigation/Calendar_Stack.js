@@ -8,6 +8,9 @@ import ClientInformation from "../screens/JobOrder_Screens/Client_Information";
 import ExistingClient from "../screens/SearchExisting/ExistingClient";
 import ExistingCar from "../screens/SearchExisting/ExistingCar";
 import CreateAppointments from "../screens/Calendar_Screens/CreateAppointments";
+import RequestedService from "../screens/JobOrder_Screens/Requested_Service";
+import CompanyPolicy from "../screens/JobOrder_Screens/Company_Policy";
+
 const CalendarStack = createStackNavigator();
 
 function CalendarStackOption() {
@@ -16,7 +19,7 @@ function CalendarStackOption() {
       screenOptions={{ cardStyle: { backgroundColor: "white" } }}
     >
       <CalendarStack.Screen
-        name="Calendar"
+        name="CalendarMain"
         component={Calendar}
         options={{ headerShown: false, animationEnabled: false }}
       />
@@ -43,6 +46,16 @@ function CalendarStackOption() {
       <CalendarStack.Screen
         name="CalendarSelection"
         component={CalendarSelection}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="RequestedService"
+        component={RequestedService}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="CompanyPolicy"
+        component={CompanyPolicy}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen

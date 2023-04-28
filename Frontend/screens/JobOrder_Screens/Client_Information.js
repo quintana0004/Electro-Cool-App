@@ -155,11 +155,13 @@ function ClientInformation({ route, navigation }) {
 
   //?Next
   function goNext() {
+    console.log("Go next click");
     const pageAction = StackActions.push("CarSelection");
     navigation.dispatch(pageAction);
   }
 
   function goNextOption() {
+    console.log("Got Next OPtions");
     const pageAction = StackActions.push("VehicleInformation");
     navigation.dispatch(pageAction);
   }
@@ -402,9 +404,6 @@ function ClientInformation({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "400",
     color: Colors.black,

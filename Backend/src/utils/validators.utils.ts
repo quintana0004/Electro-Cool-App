@@ -1,5 +1,13 @@
-import { IJobOrder, IUser } from "./../types/index.d";
-import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
+import { IJobOrder, IUser } from "../types";
+import {
+  IInvoice,
+  IInvoiceItem,
+  ICar,
+  IDeposit,
+  IAppointment,
+  ICustomer,
+  ITask,
+} from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
@@ -272,7 +280,6 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
 function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
   if (
     !appointmentInfo.service ||
-    !appointmentInfo.description ||
     !appointmentInfo.arrivalDateTime ||
     !appointmentInfo.model ||
     !appointmentInfo.brand ||

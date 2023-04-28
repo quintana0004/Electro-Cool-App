@@ -5,9 +5,10 @@ import Colors from "../constants/Colors/Colors";
 import Appbar from "react-native-paper/src/components/Appbar";
 import ToggleButtonsCalendar from "../components/Calendar/ToggleButtonsCalendar";
 import TableListTasks from "../components/Calendar/TableListTasks";
-import SearchBanner from "../components/UI/SearchBanner";
+import SearchBanner from "../components/UI/SeacrhBanner";
 import { StackActions } from "@react-navigation/native";
 import TableListAppointments from "../components/Calendar/TableListAppointments";
+import { useJobOrderStore } from "../Store/JobOrderStore";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
@@ -15,11 +16,13 @@ function Calendar({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const pageAction = StackActions.push("CalendarSelection");
-  //Initialize Function and set
+
+  const setJobOrder = useJobOrderStore((state) => state.setJobOrder);
 
   function updateActiveCategory(category) {
     setActiveCategory(category);
   }
+
   return (
     <View>
       <Appbar.Header style={styles.header}>
@@ -36,6 +39,7 @@ function Calendar({ navigation }) {
         <Appbar.Action
           icon="plus"
           onPress={() => {
+            setJobOrder("Create", false, false, false);
             navigation.navigate("CalendarSelection");
             //   navigation.dispatch(pageAction);
           }}
