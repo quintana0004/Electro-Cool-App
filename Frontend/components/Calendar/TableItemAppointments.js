@@ -8,7 +8,6 @@ import { httpDeleteAppointment } from "../../api/appointments.api";
 import { useCalendarStore } from "../../Store/calendarStore";
 
 function TableItemAppointments({ itemData }) {
-  console.log("ItemData:", itemData);
   const { id, customername, arrivalDateTime, service, brand, licensePlate } =
     itemData;
 
@@ -17,7 +16,7 @@ function TableItemAppointments({ itemData }) {
   );
 
   function DateText() {
-    return format(new Date(arrivalDateTime), "HH:mm");
+    return format(new Date(arrivalDateTime), "h:mm a");
   }
 
   function showSuccessMessage() {
@@ -43,34 +42,39 @@ function TableItemAppointments({ itemData }) {
       <Pressable onPress={() => console.log("PRESSED ITEM")}>
         <Card
           style={{
+            marginTop: 10,
             marginBottom: 10,
             width: 500,
-            borderColor: Colors.lightGreyDark,
-            borderWidth: 1,
+            borderColor: Colors.white,
+            borderWidth: 12,
             backgroundColor: Colors.white,
           }}
         >
           <Card.Content>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <View style={{ flexDirection: "column" }}>
-                <Text style={styles.boldText}>{customername}</Text>
-                <Text style={styles.boldText}>{DateText()}</Text>
+            <View style={styles.cardContentContainer}>
+              <View style={styles.serviceContainer}>
+                <View style={{ width: 150 }}>
+                  <Text style={styles.boldText}>{customername}</Text>
+                  <Text style={styles.boldText}>{DateText()}</Text>
+                </View>
               </View>
-              <View style={{ flexDirection: "column" }}>
-                <Text style={styles.boldText}>{service}</Text>
-                <Text style={styles.boldText}>
-                  {brand},{licensePlate}
-                </Text>
+              <View style={styles.serviceContainer}>
+                <View style={{ width: 150 }}>
+                  <Text style={styles.boldText}>{service}</Text>
+                  <Text style={styles.boldText}>
+                    {brand} {licensePlate}
+                  </Text>
+                </View>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <Appbar.Action
-                  icon="delete"
+                  color="#05C1E7"
+                  icon="check-circle"
                   onPress={async () => handleConfirmORDeleteApp()}
                 />
                 <Appbar.Action
-                  icon="check-circle"
+                  color="grey" //El Rojo no brega xd
+                  icon="delete"
                   onPress={async () => handleConfirmORDeleteApp()}
                 />
               </View>
@@ -85,20 +89,16 @@ function TableItemAppointments({ itemData }) {
 export default TableItemAppointments;
 
 const styles = StyleSheet.create({
-  container: {
+  cardContentContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    height: 50,
-    borderWidth: 1.8,
-    borderColor: "rgba(0, 0, 0, 0.3)",
-    borderRadius: 10,
-    marginHorizontal: 10,
-    marginBottom: 5,
+  },
+  serviceContainer: {
+    flexDirection: "column",
+    alignItems: "center",
   },
   boldText: {
     fontWeight: "bold",
-  },
-  Content: {
-    width: 20,
   },
 });

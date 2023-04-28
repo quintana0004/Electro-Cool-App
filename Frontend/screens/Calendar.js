@@ -8,13 +8,16 @@ import TableListTasks from "../components/Calendar/TableListTasks";
 import SearchBanner from "../components/UI/SearchBanner";
 import { StackActions } from "@react-navigation/native";
 import TableListAppointments from "../components/Calendar/TableListAppointments";
+import { useJobOrderStore } from "../Store/JobOrderStore";
 
 function Calendar({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Appointments");
+  const setPageSelection = useJobOrderStore((state) => state.setJobOrder);
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const pageAction = StackActions.push("CalendarSelection");
+
   //Initialize Function and set
 
   function updateActiveCategory(category) {
@@ -36,15 +39,8 @@ function Calendar({ navigation }) {
         <Appbar.Action
           icon="plus"
           onPress={() => {
+            setPageSelection("Create", false, false, false);
             navigation.navigate("CalendarSelection");
-            //   navigation.dispatch(pageAction);
-          }}
-        />
-        <Appbar.Action
-          icon="magnify"
-          onPress={() => {
-            setOpenBannerSearch(!openBannerSearch);
-            // Store function being called
           }}
         />
       </Appbar.Header>

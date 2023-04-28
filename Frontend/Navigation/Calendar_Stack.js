@@ -8,6 +8,7 @@ import ClientInformation from "../screens/JobOrder_Screens/Client_Information";
 import ExistingClient from "../screens/SearchExisting/ExistingClient";
 import ExistingCar from "../screens/SearchExisting/ExistingCar";
 import CreateAppointments from "../screens/Calendar_Screens/CreateAppointments";
+import RequestedService from "../screens/JobOrder_Screens/Requested_Service";
 const CalendarStack = createStackNavigator();
 
 function CalendarStackOption() {
@@ -53,6 +54,11 @@ function CalendarStackOption() {
       <CalendarStack.Screen
         name="ExistingCar"
         component={ExistingCar}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="RequestedService"
+        component={RequestedService}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen

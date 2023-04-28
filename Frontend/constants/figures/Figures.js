@@ -22,6 +22,8 @@ import Vector from "../../assets/images/Vector.png";
 import VectorWhite from "../../assets/images/VectorWhite.png";
 import AppointmentWhite from "../../assets/images/AppointmentWhite.png";
 import Appointment from "../../assets/images/Appointment.png";
+import AppointmentCardIcon from "../../assets/images/AppointmentCardIcon.png";
+import DateforAppointmentCardIcon from "../../assets/images/DateforAppointmentCardIcon.png";
 
 const Figures = {
   CalendarIcon,
@@ -48,6 +50,8 @@ const Figures = {
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  AppointmentCardIcon,
+  DateforAppointmentCardIcon,
 };
 
 export default Figures;

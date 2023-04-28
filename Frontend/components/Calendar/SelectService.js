@@ -7,18 +7,12 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
   ToastAndroid,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
-import { ErrorMessage, Formik } from "formik";
-import {
-  TextInput,
-  HelperText,
-  RadioButton,
-  Checkbox,
-} from "react-native-paper";
+import { Formik } from "formik";
+import { Checkbox } from "react-native-paper";
 import * as Yup from "yup";
 import {
   useRequestedServiceStore,
@@ -26,18 +20,15 @@ import {
   useCustomerInfoStore,
   useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
-import { StackActions } from "@react-navigation/native";
-import { Button, Dialog, Portal, Provider } from "react-native-paper";
 import { httpGetJobOrder, httpUpsertJobOrder } from "../../api/jobOrders.api";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
-import { useRouterStore } from "../../Store/routerStore";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
 });
 
-function RequestedService({ navigation }) {
+function RequestedService({ onCheck }) {
   //Store Hooks
   const setRequestedService = useRequestedServiceStore(
     (state) => state.setRequestedService
@@ -78,7 +69,6 @@ function RequestedService({ navigation }) {
   }, [editRequestedService]);
 
   //Use State Hook
-  const [dialogVisible, setDialogVisible] = useState(false);
   const [checkedOilChange, setCheckedOilChange] = useState(false);
   const [checkedTuneUp, setCheckedTuneUp] = useState(false);
   const [checkedBreaks, setCheckedBreaks] = useState(false);
@@ -95,28 +85,8 @@ function RequestedService({ navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
-  const RequestedServiceNextPage = useRouterStore(
-    (state) => state.NewRequestedServiceNextPage
-  );
 
-  //funtion for the page navigation
   //? home
-  function goHomeAction() {
-    const pageAction = StackActions.popToTop();
-    navigation.dispatch(pageAction);
-  }
-
-  //? go back
-  function goBackAction() {
-    const pageAction = StackActions.pop(1);
-    navigation.dispatch(pageAction);
-  }
-
-  //? next
-  function goNextAction() {
-    const pageAction = StackActions.push(RequestedServiceNextPage);
-    navigation.dispatch(pageAction);
-  }
 
   const ref = useRef(null);
 
@@ -124,15 +94,15 @@ function RequestedService({ navigation }) {
     let valueChecked = [];
 
     if (checkedOilChange) {
-      valueChecked.push("Oil Change");
+      valueChecked.push("OilChange");
     }
 
     if (checkedTuneUp) {
-      valueChecked.push("Tune Up");
+      valueChecked.push("TuneUp");
     }
 
     if (checkedBreaks) {
-      valueChecked.push("Brakes");
+      valueChecked.push("Breaks");
     }
 
     if (checkedMotor) {
@@ -140,15 +110,15 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedElectricSystem) {
-      valueChecked.push("Electric System");
+      valueChecked.push("ElectricSystem");
     }
 
     if (checkedCoolingSystem) {
-      valueChecked.push("Cooling System");
+      valueChecked.push("CoolingSystem");
     }
 
     if (checkedSuspencion) {
-      valueChecked.push("Suspension");
+      valueChecked.push("Suspencion");
     }
 
     if (checkedScan) {
@@ -156,10 +126,10 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedAirConditioning) {
-      valueChecked.push("Air Conditioning");
+      valueChecked.push("AirConditioning");
     }
 
-    return valueChecked.join(", ");
+    return valueChecked.join(";");
   }
 
   function CheckedServiceRequest(info) {
@@ -218,8 +188,8 @@ function RequestedService({ navigation }) {
       requestedService: val,
       serviceDetails: ref.current.values.Description,
       status: requestedData.data.status,
-      jobLoadType: checked,
-      policySignature: requestedData.data.policySignature,
+      // jobLoadType: checked,
+      // policySignature: requestedData.data.policySignature,
       carId: carId,
       customerId: customerId,
     };
@@ -262,107 +232,53 @@ function RequestedService({ navigation }) {
 
   return (
     <View>
-      <Appbar.Header style={styles.header} mode="center-aligned">
-        <Appbar.BackAction
-          onPress={() => {
-            goBackAction();
-          }}
-        />
-        {editRequestedService === true && saveData === false && (
-          <Appbar.Action
-            icon="square-edit-outline"
-            onPress={() => {
-              setSaveData(!saveData);
-              setDisableInput(false);
-            }}
-            iconColor={Colors.black}
-          />
-        )}
-        {editRequestedService === true && saveData === true && (
-          <Appbar.Action
-            icon="content-save"
-            onPress={async () => {
-              handleRequestedServiceUpdate();
-              setSaveData(!saveData);
-              setDisableInput(true);
-            }}
-            iconColor={Colors.black}
-          />
-        )}
-        <Appbar.Content title="Requested Service"></Appbar.Content>
+      {editRequestedService === true && saveData === false && (
         <Appbar.Action
-          icon="home"
-          onPress={() => goHomeAction()}
+          icon="square-edit-outline"
+          onPress={() => {
+            setSaveData(!saveData);
+            setDisableInput(false);
+          }}
           iconColor={Colors.black}
         />
-        {pageSelection === "Create" && (
-          <Appbar.Action
-            icon="arrow-right"
-            onPress={() => {
-              const validationSelection =
-                checkedOilChange ||
-                checkedTuneUp ||
-                checkedBreaks ||
-                checkedMotor ||
-                checkedElectricSystem ||
-                checkedCoolingSystem ||
-                checkedSuspencion ||
-                checkedScan ||
-                checkedAirConditioning;
+      )}
+      {editRequestedService === true && saveData === true && (
+        <Appbar.Action
+          icon="content-save"
+          onPress={async () => {
+            handleRequestedServiceUpdate();
+            setSaveData(!saveData);
+            setDisableInput(true);
+          }}
+          iconColor={Colors.black}
+        />
+      )}
 
-              if (pageSelection === "Edit" && editRequestedService) {
-                goNextAction();
-              }
+      <Appbar.Action
+        onPress={() => {
+          checkedOilChange ||
+            checkedTuneUp ||
+            checkedBreaks ||
+            checkedMotor ||
+            checkedElectricSystem ||
+            checkedCoolingSystem ||
+            checkedSuspencion ||
+            checkedScan ||
+            checkedAirConditioning;
+        }}
+        iconColor={Colors.black}
+      />
 
-              if (
-                pageSelection === "Create" &&
-                editRequestedService === false
-              ) {
-                if (validationSelection && checked) {
-                  let valueCheck = CheckedServiceRequested();
-
-                  setRequestedService(
-                    "",
-                    valueCheck,
-                    ref.current.values.Description,
-                    "New",
-                    checked,
-                    true,
-                    "",
-                    ""
-                  );
-                  goNextAction();
-                } else {
-                  setDialogVisible(true);
-                }
-              }
-            }}
-            iconColor={Colors.black}
-          />
-        )}
-      </Appbar.Header>
       <View>
-        <Text style={styles.instruction}>
-          View the select requested service for the vehicle
-        </Text>
-      </View>
-      <Formik
-        initialValues={DataRespondFormik()}
-        onSubmit={(values) =>
-          console.log("Requested Service Values on Submit:", values)
-        }
-        validationSchema={ValidationCustomer}
-        innerRef={ref}
-        enableReinitialize={initilizeData}
-      >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
+        <Formik
+          initialValues={DataRespondFormik()}
+          onSubmit={(values) =>
+            console.log("Requested Service Values on Submit:", values)
+          }
+          validationSchema={ValidationCustomer}
+          innerRef={ref}
+          enableReinitialize={initilizeData}
+        >
           <KeyboardAvoidingView
             behavior="padding"
             style={{ marginBottom: 24 }}
@@ -373,7 +289,6 @@ function RequestedService({ navigation }) {
                 <View
                   style={{
                     marginHorizontal: 20,
-                    justifyContent: "space-around",
                   }}
                 >
                   <View style={styles.containerText}>
@@ -595,151 +510,12 @@ function RequestedService({ navigation }) {
                       </View>
                     </View>
                   </View>
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      marginVertical: 15,
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          color: Colors.black,
-                          fontWeight: "bold",
-                          fontSize: 15,
-                        }}
-                      >
-                        Load of the job for this service
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: Colors.black,
-                              fontWeight: "bold",
-                              fontSize: 15,
-                            }}
-                          >
-                            Heavy
-                          </Text>
-                          <RadioButton
-                            value="Heavy"
-                            status={
-                              checked === "Heavy" ? "checked" : "unchecked"
-                            }
-                            onPress={() => setChecked("Heavy")}
-                            color={Colors.brightGreen}
-                            disabled={disableInput}
-                          />
-                        </View>
-                        <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
-                        >
-                          <Text
-                            style={{
-                              color: Colors.black,
-                              fontWeight: "bold",
-                              fontSize: 15,
-                            }}
-                          >
-                            Light
-                          </Text>
-                          <RadioButton
-                            value="Light"
-                            status={
-                              checked === "Light" ? "checked" : "unchecked"
-                            }
-                            onPress={() => {
-                              setChecked("Light");
-                            }}
-                            color={Colors.brightGreen}
-                            disabled={disableInput}
-                          />
-                        </View>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        marginVertical: 20,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: Colors.black,
-                          fontWeight: "bold",
-                          fontSize: 15,
-                        }}
-                      >
-                        Specifications & Observations
-                      </Text>
-                      <View>
-                        <TextInput
-                          mode="outlined"
-                          outlineColor={Colors.black}
-                          activeOutlineColor={Colors.darkGreen}
-                          keyboardType="default"
-                          onChangeText={handleChange("Description")}
-                          onBlur={handleBlur("Description")}
-                          value={values.Description}
-                          error={touched.Description && errors.Description}
-                          multiline={true}
-                          style={styles.textInputStyle}
-                          disabled={disableInput}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={
-                            !!(touched.Description && errors.Description)
-                          }
-                        >
-                          {errors.Description}
-                        </HelperText>
-                      </View>
-                    </View>
-                  </View>
                 </View>
               </TouchableWithoutFeedback>
             </SafeAreaView>
           </KeyboardAvoidingView>
-        )}
-      </Formik>
-      {dialogVisible && (
-        <Portal>
-          <Dialog
-            visible={dialogVisible}
-            onDismiss={() => setDialogVisible(false)}
-            style={{ backgroundColor: Colors.white }}
-          >
-            <Dialog.Icon
-              icon="alert-circle-outline"
-              size={80}
-              color={Colors.darkRed}
-            />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
-            <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setDialogVisible(false)}
-              >
-                Okay
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      )}
+        </Formik>
+      </View>
     </View>
   );
 }
@@ -748,32 +524,9 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.darkGreen,
   },
-  instruction: {
-    fontWeight: "400",
-    color: Colors.black,
-    fontSize: 20,
-    textAlign: "center",
-    marginVertical: 20,
-  },
   containerText: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 20,
-  },
-  containerKey: {
-    flex: 1,
-  },
-  navBtnsPosition: {
-    width: 540,
-    height: 10,
-    justifyContent: "flex-end",
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  navCancelBtn: { marginRight: 10 },
-  navNextBtn: { marginLeft: 10 },
-  header: {
-    backgroundColor: Colors.yellowDark,
   },
   textInputStyle: {
     backgroundColor: Colors.white,
