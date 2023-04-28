@@ -17,6 +17,10 @@ function MenuDropDown() {
   const setExistingCarNextPage = useRouterStore(
     (state) => state.setExistingCarNextPage
   );
+  const setNewCarNextPage = useRouterStore((state) => state.setNewCarNextPage);
+  const setRequestedServiceNextPage = useRouterStore(
+    (state) => state.setRequestedServiceNextPage
+  );
 
   //Set the toggle btn when closed or open
   const [toggle, setToggleBtn] = useState(false);
@@ -53,15 +57,16 @@ function MenuDropDown() {
   function navJobOrder() {
     setExistingClientNextPage("CarSelection");
     setExistingCarNextPage("RequestedService");
-
+    setNewCarNextPage("RequestedService");
+    setRequestedServiceNextPage("CompanyPolicy");
     navigation.navigate("JobOrders");
+
     setToggleBtn(false);
   }
 
   function navInvoices() {
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("InvoiceDetail");
-
     navigation.navigate("Invoices");
     setToggleBtn(false);
   }
@@ -73,7 +78,10 @@ function MenuDropDown() {
 
   function navCalendar() {
     setExistingClientNextPage("CarSelection");
-    setExistingCarNextPage("CreateAppointments");
+    setExistingCarNextPage("RequestedService");
+    setNewCarNextPage("RequestedService");
+    setRequestedServiceNextPage("CreateAppointments");
+
     navigation.navigate("Calendar");
     setToggleBtn(false);
   }

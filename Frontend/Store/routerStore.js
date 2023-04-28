@@ -5,12 +5,20 @@ export const useRouterStore = create((set) => ({
   existingCarNextPage: "",
   clientSelectionNextPage: "",
   carSelectionNextPage: "",
-  setExistingClientNextPage: (nextPage) => 
+  setExistingClientNextPage: (nextPage) =>
     set((state) => ({
-      existingClientNextPage: nextPage 
-  })),
-  setExistingCarNextPage: (nextPage) => 
+      existingClientNextPage: nextPage,
+    })),
+  setExistingCarNextPage: (nextPage) =>
     set((state) => ({
-      existingCarNextPage: nextPage 
-  })),
+      existingCarNextPage: nextPage,
+    })),
+  setNewCarNextPage: (nextPage) =>
+    set((state) => ({
+      NewCarNextPage: nextPage,
+    })),
+  setRequestedServiceNextPage: (nextPage) =>
+    set((state) => ({
+      NewRequestedServiceNextPage: nextPage,
+    })),
 }));
