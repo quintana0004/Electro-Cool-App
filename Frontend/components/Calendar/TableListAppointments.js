@@ -8,9 +8,15 @@ import { useCalendarStore } from "../../Store/calendarStore";
 
 function TableListAppointments({ activeCategory, searchTerm }) {
   // const TAKE = 15;
-  searchTerm = "2023-04-08T10:51:00.000Z"; //JESSICA COMMENT: Make sure to place the actual date that the user is, this is hard coded, change later
-  minDate1 = "2023-04-08T10:51:00.000Z";
-  maxDate1 = "2023-06-08T10:51:00.000Z";
+  const todaysDate = new Date();
+  const minDate1 = "2023-04-08T10:51:00.000Z";
+  const maxDate1 = "2023-06-08T10:51:00.000Z";
+
+  // How Mike Implemented It
+  // const searchDate = new Date(searchTerm);
+  // const EODtime = new Date(searchDate);
+  // EODtime.setMonth(EODtime.getMonth() + 2);
+  // EODtime.setHours(23, 59, 59, 999);
 
   const reloadCalendarList = useCalendarStore(
     (state) => state.reloadCalendarList
@@ -19,7 +25,9 @@ function TableListAppointments({ activeCategory, searchTerm }) {
   useEffect(() => {
     async function getAppointment() {
       try {
-        const appointmentData = await httpGetAllAppointments(searchTerm);
+        const appointmentData = await httpGetAllAppointments(
+          todaysDate.toJSON()
+        );
         console.log("DATA APPOINTMENT:  ", appointmentData.data);
         setAppData(appointmentData.data);
       } catch (error) {

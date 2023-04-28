@@ -17,7 +17,7 @@ function CalendarStackOption() {
       screenOptions={{ cardStyle: { backgroundColor: "white" } }}
     >
       <CalendarStack.Screen
-        name="Calendar"
+        name="CalendarMain"
         component={Calendar}
         options={{ headerShown: false, animationEnabled: false }}
       />

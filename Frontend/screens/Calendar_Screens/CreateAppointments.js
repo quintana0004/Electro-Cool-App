@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import ClientCard from "../../components/UI/ClientCard";
 import CarCard from "../../components/UI/CarCard";
 import Appbar from "react-native-paper/src/components/Appbar";
@@ -7,20 +7,20 @@ import Colors from "../../constants/Colors/Colors";
 import { StackActions } from "@react-navigation/native";
 import {
   useCustomerInfoStore,
-  useVehicleInfoStore,
   useRequestedServiceStore,
-  useJobOrderStore,
+  useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
-import { TimePickerModal, DatePickerModal } from "react-native-paper-dates";
+import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import AppointmentCard from "../../components/UI/AppointmentCard";
-import { Portal, Dialog, Button } from "react-native-paper";
+import { Button, Dialog, Portal } from "react-native-paper";
 import DateforAppointmentCard from "../../components/UI/DateforAppointmentCard";
 import { httpUpsertAppointments } from "../../api/appointments.api";
 import { httpUpsertClient } from "../../api/clients.api";
 import { httpUpsertCar } from "../../api/cars.api";
+import { useCalendarStore } from "../../Store/calendarStore";
 
 function CreateAppointments({ navigation }) {
   function goHomeAction() {
@@ -121,8 +121,8 @@ function CreateAppointments({ navigation }) {
   const [visibleErrorDialog, setVisibleErrorDialog] = useState(false);
   const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
 
-  const setReloadAppointmentList = useJobOrderStore(
-    (state) => state.setReloadAppointmentList
+  const setReloadCalendarList = useCalendarStore(
+    (state) => state.setReloadCalendarList
   );
 
   async function handleSaveClient(clientInfo) {
@@ -157,7 +157,7 @@ function CreateAppointments({ navigation }) {
     try {
       console.log("Gabo esta testing esto (3)", appointmentInfo); //Gabo esta testing esto
       response = await httpUpsertAppointments(appointmentInfo);
-      setReloadAppointmentList();
+      setReloadCalendarList();
     } catch (error) {
       console.log("Error at Handle Save Appointment: ", error);
     }
@@ -326,7 +326,7 @@ function CreateAppointments({ navigation }) {
           icon="check-decagram"
           onPress={() => {
             if (date && hour && min) {
-              setReloadAppointmentList;
+              setReloadCalendarList();
               setVisibleConfirmDialog(true);
             } else {
               setVisibleErrorDialog(true);
