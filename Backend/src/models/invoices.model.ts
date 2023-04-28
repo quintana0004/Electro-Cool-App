@@ -68,6 +68,53 @@ async function findAllInvoices(
   }
 }
 
+async function findInvoicesByCustomer(
+  page: number,
+  take: number,
+  searchTerm: string | undefined,
+  customerId: number
+) {
+  try {
+    const invoiceStatus = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+    const clientInvoices = await prisma.invoice.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        AND: [
+          {
+            status: {
+              in: invoiceStatus,
+            },
+          },
+          {
+            customerId: customerId,
+          },
+        ],
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const clientData = {
+      data: clientInvoices.slice(0, take),
+      isLastPage: clientInvoices.length <= take,
+      currentPage: page,
+    };
+
+    return clientData;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findInvoiceById(id: number) {
   try {
     const invoice = await prisma.invoice.findUnique({
@@ -100,6 +147,55 @@ async function findInvoiceWithChildsById(id: number) {
     }
 
     return excludeFields(invoice, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updatePolicyAmount() {
+  try {
+    const policyAmount = 10.0;
+    const date15DaysAgo = new Date();
+    date15DaysAgo.setDate(date15DaysAgo.getDate() - 15);
+
+    const invoice = await prisma.invoice.findMany({
+      where: {
+        AND: [
+          {
+            status: "Pending",
+          },
+          {
+            amountDue: {
+              gt: 0,
+            },
+          },
+          {
+            lastModified: {
+              lt: date15DaysAgo,
+            },
+          },
+        ],
+      },
+    });
+
+    const invoiceIds = invoice.map((invoice) => invoice.id);
+    const updatedinvoices = await prisma.invoice.updateMany({
+      where: {
+        id: {
+          in: invoiceIds,
+        },
+      },
+      data: {
+        amountDue: {
+          increment: policyAmount,
+        },
+        amountTotal: {
+          increment: policyAmount,
+        },
+      },
+    });
+
+    return updatedinvoices;
   } catch (error) {
     throw error;
   }
@@ -242,8 +338,10 @@ async function deleteInvoice(id: number) {
 
 export {
   findAllInvoices,
+  findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
+  updatePolicyAmount,
   upsertInvoice,
   deleteInvoice,
 };
