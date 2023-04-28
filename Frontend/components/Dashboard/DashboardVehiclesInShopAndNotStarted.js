@@ -49,7 +49,7 @@ function DashboardVehiclesInShopAndNotStarted() {
           </Card>
 
           <Card style={[styles.ButtonSmall, { marginTop: 8 }]}>
-            <Text style={[{ fontWeight: "bold" }]}>Vehicles Not Started</Text>
+            <Text>Vehicles Not Started</Text>
             <Text style={styles.ButtonTextBig}>{data.notStarted}</Text>
           </Card>
         </>
