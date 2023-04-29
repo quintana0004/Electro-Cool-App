@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, View, SafeAreaView } from "react-native";
-
+import { Dimensions, StyleSheet, View, SafeAreaView, Text } from "react-native";
+import { Modal, Button } from "react-native-paper";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
 import { Agenda } from "react-native-calendars";
@@ -9,8 +9,15 @@ import { useCalendarStore } from "../../Store/calendarStore";
 function TableListAppointments({ activeCategory, searchTerm }) {
   // const TAKE = 15;
   const todaysDate = new Date();
-  const minDate1 = "2023-04-08T10:51:00.000Z";
-  const maxDate1 = "2023-06-08T10:51:00.000Z";
+  const minDate = new Date();
+  minDate.setMonth(todaysDate.getMonth() - 3); //only present 3 months back from current day(today)
+  const maxDate = new Date();
+  maxDate.setMonth(todaysDate.getMonth() + 3); // present 3 months forward from current day(today)
+
+  const minDate1 = minDate.toISOString();
+  const maxDate1 = maxDate.toISOString();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [scrollRefresh, setScrollRefresh] = useState(true);
 
   // How Mike Implemented It
   // const searchDate = new Date(searchTerm);
@@ -30,6 +37,7 @@ function TableListAppointments({ activeCategory, searchTerm }) {
         );
         console.log("DATA APPOINTMENT:  ", appointmentData.data);
         setAppData(appointmentData.data);
+        setScrollRefresh(false);
       } catch (error) {
         console.log("ERROR APPOINTMENT: ", error);
       }
@@ -52,6 +60,49 @@ function TableListAppointments({ activeCategory, searchTerm }) {
     };
     return <TableItemAppointments itemData={itemInfo} />;
   }
+  useEffect(() => {
+    if (appData && appData.length === 0) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
+  }, [appData]);
+
+  function renderEmptyData() {
+    return (
+      <View
+        style={{
+          backgroundColor: "#fff",
+          marginTop: 100,
+          paddingTop: 200,
+          paddingBottom: 200,
+        }}
+      >
+        <View
+          style={{
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+            }}
+          >
+            No Appointments on this day.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+  function renderKnob() {
+    return (
+      <View>
+        <Text>Button</Text>
+      </View>
+    );
+  }
 
   //Verify the current Month of the Date
   return (
@@ -60,11 +111,17 @@ function TableListAppointments({ activeCategory, searchTerm }) {
         <Agenda
           items={appData}
           renderItem={renderTableItem}
+          renderEmptyData={() => {
+            return renderEmptyData();
+          }}
           minDate={minDate1}
           maxDate={maxDate1}
           hideExtraDays={true}
           theme={{ agendaKnobColor: "#fff" }}
           style={{ backgroundColor: "#fff" }}
+          renderKnob={() => renderKnob()}
+          // refreshControl={scrollRefresh}
+          selected={todaysDate.toISOString().slice(0, 10)}
         />
       </SafeAreaView>
     </View>
@@ -75,6 +132,13 @@ const styles = StyleSheet.create({
   listContainer: {
     height: 850,
     width: Dimensions.get("screen").width,
+  },
+  modalContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
   },
 });
 
