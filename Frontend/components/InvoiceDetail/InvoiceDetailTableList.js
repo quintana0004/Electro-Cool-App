@@ -5,7 +5,7 @@ import InvoiceDetailTableItem from "./InvoiceDetailTableItem";
 function InvoiceDetailTableList({invoiceItems, setInvoiceItems}) {
 
   function removeInvoiceItem(key) {
-    let filteredData = invoiceItems.filter((item) => item.key != key);
+    let filteredData = invoiceItems.filter((item) => item.key !== key);
     setInvoiceItems([...filteredData]);
   }
 
