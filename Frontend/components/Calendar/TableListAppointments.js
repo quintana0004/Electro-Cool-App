@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, View, SafeAreaView, Text } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { Modal, Button } from "react-native-paper";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
 import { Agenda } from "react-native-calendars";
 import { useCalendarStore } from "../../Store/calendarStore";
+import { useQuery } from "@tanstack/react-query";
 
-function TableListAppointments({ activeCategory, searchTerm }) {
+function TableListAppointments({ searchTerm }) {
   // const TAKE = 15;
   const todaysDate = new Date();
   const minDate = new Date();
@@ -17,36 +25,29 @@ function TableListAppointments({ activeCategory, searchTerm }) {
   const minDate1 = minDate.toISOString();
   const maxDate1 = maxDate.toISOString();
   const [modalVisible, setModalVisible] = useState(false);
-  const [scrollRefresh, setScrollRefresh] = useState(true);
-
-  // How Mike Implemented It
-  // const searchDate = new Date(searchTerm);
-  // const EODtime = new Date(searchDate);
-  // EODtime.setMonth(EODtime.getMonth() + 2);
-  // EODtime.setHours(23, 59, 59, 999);
 
   const reloadCalendarList = useCalendarStore(
     (state) => state.reloadCalendarList
   );
 
-  useEffect(() => {
-    async function getAppointment() {
-      try {
-        const appointmentData = await httpGetAllAppointments(
-          todaysDate.toJSON()
-        );
-        console.log("DATA APPOINTMENT:  ", appointmentData.data);
-        setAppData(appointmentData.data);
-        setScrollRefresh(false);
-      } catch (error) {
-        console.log("ERROR APPOINTMENT: ", error);
-      }
+  const { isLoading, data, isError, error } = useQuery({
+    queryKey: ["CalendarAppointmentsData", reloadCalendarList],
+    queryFn: getAllAppointments,
+    enabled: true,
+  });
+
+  async function getAllAppointments() {
+    const response = await httpGetAllAppointments(todaysDate.toJSON());
+    const responseData = response.data;
+
+    if (responseData && responseData.length === 0) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
     }
 
-    getAppointment();
-  }, [activeCategory, reloadCalendarList]);
-
-  const [appData, setAppData] = useState();
+    return responseData;
+  }
 
   function renderTableItem(item) {
     console.log("TABLE ITEM DATA ((HERE)): ", item);
@@ -60,13 +61,6 @@ function TableListAppointments({ activeCategory, searchTerm }) {
     };
     return <TableItemAppointments itemData={itemInfo} />;
   }
-  useEffect(() => {
-    if (appData && appData.length === 0) {
-      setModalVisible(true);
-    } else {
-      setModalVisible(false);
-    }
-  }, [appData]);
 
   function renderEmptyData() {
     return (
@@ -107,9 +101,9 @@ function TableListAppointments({ activeCategory, searchTerm }) {
   //Verify the current Month of the Date
   return (
     <View style={styles.listContainer}>
-      <SafeAreaView style={{ flex: 1 }}>
+      {isLoading || (
         <Agenda
-          items={appData}
+          items={data}
           renderItem={renderTableItem}
           renderEmptyData={() => {
             return renderEmptyData();
@@ -118,18 +112,17 @@ function TableListAppointments({ activeCategory, searchTerm }) {
           maxDate={maxDate1}
           hideExtraDays={true}
           theme={{ agendaKnobColor: "#fff" }}
-          style={{ backgroundColor: "#fff" }}
           renderKnob={() => renderKnob()}
-          // refreshControl={scrollRefresh}
           selected={todaysDate.toISOString().slice(0, 10)}
         />
-      </SafeAreaView>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   listContainer: {
+    flex: 1,
     height: 850,
     width: Dimensions.get("screen").width,
   },
