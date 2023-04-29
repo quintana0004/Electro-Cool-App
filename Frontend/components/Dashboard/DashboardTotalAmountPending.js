@@ -27,18 +27,19 @@ function DashboardTotalAmountPending() {
   }
 
   return (
-      <View>
-        {isLoading || (
-            <DashboardCardInvoice
-                Title={"Total Amount in Pending Today"}
-                ImageIcon={Figures.totalAmountPending}
-                HeightIcon={62}
-                WidthIcon={60}
-                CountFontSize={55}
-                AmountToDisplay={data.metric}
-            />
-        )}
-      </View>
+    <View>
+      {isLoading || (
+        <DashboardCardInvoice
+          Title={"Total Amount in Pending Today"}
+          ImageIcon={Figures.totalAmountPending}
+          HeightIcon={59}
+          WidthIcon={60}
+          CountFontSize={55}
+          AmountToDisplay={data.metric}
+          size={40}
+        />
+      )}
+    </View>
   );
 }
 

@@ -1,9 +1,9 @@
-import {View} from "react-native";
-import {useQuery} from "@tanstack/react-query";
-import {httpGetTotalAmountCanceledToday} from "../../api/metrics.api";
+import { View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetTotalAmountCanceledToday } from "../../api/metrics.api";
 import DashboardCardInvoice from "./DashboardCardInvoice";
-import {useInvoiceStore} from "../../Store/invoiceStore";
-import {useEffect} from "react";
+import { useInvoiceStore } from "../../Store/invoiceStore";
+import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 
 function DashboardTotalAmountCancelled() {
@@ -26,20 +26,22 @@ function DashboardTotalAmountCancelled() {
   }
 
   return (
-      <View>
-        {isLoading || (
-            <DashboardCardInvoice
-                Title={"Total Amount in Cancelled"}
-                ImageIcon={Figures.totalAmountCancelled}
-                HeightIcon={52}
-                WidthIcon={50}
-                CountFontSize={55}
-                ShowCount={true}
-                CountToDisplay={data.count}
-                AmountToDisplay={data.totalAmount}
-            />
-        )}
-      </View>
+    <View>
+      {isLoading || (
+        <DashboardCardInvoice
+          Title={"Total Amount in Cancelled"}
+          ImageIcon={Figures.totalAmountCancelled}
+          HeightIcon={56}
+          WidthIcon={50}
+          CountFontSize={55}
+          ShowCount={true}
+          CountToDisplay={data.count}
+          AmountToDisplay={data.totalAmount}
+          size={6}
+          MarginAdjuster={20}
+        />
+      )}
+    </View>
   );
 }
 

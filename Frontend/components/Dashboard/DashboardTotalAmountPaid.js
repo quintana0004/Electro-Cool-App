@@ -1,9 +1,9 @@
-import {View} from "react-native";
-import {useQuery} from "@tanstack/react-query";
-import {httpGetTotalAmountPaidToday} from "../../api/metrics.api";
+import { View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetTotalAmountPaidToday } from "../../api/metrics.api";
 import DashboardCardInvoice from "./DashboardCardInvoice";
-import {useInvoiceStore} from "../../Store/invoiceStore";
-import {useEffect} from "react";
+import { useInvoiceStore } from "../../Store/invoiceStore";
+import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 
 function DashboardTotalAmountPaid() {
@@ -26,18 +26,19 @@ function DashboardTotalAmountPaid() {
   }
 
   return (
-      <View>
-        {isLoading || (
-            <DashboardCardInvoice
-                Title={"Total Amount in Paid Today"}
-                ImageIcon={Figures.MoneyHand}
-                HeightIcon={82}
-                WidthIcon={80}
-                CountFontSize={55}
-                AmountToDisplay={data.metric}
-            />
-        )}
-      </View>
+    <View>
+      {isLoading || (
+        <DashboardCardInvoice
+          Title={"Total Amount in Paid Today"}
+          ImageIcon={Figures.MoneyHand}
+          HeightIcon={65}
+          WidthIcon={80}
+          CountFontSize={55}
+          AmountToDisplay={data.metric}
+          size={35}
+        />
+      )}
+    </View>
   );
 }
 

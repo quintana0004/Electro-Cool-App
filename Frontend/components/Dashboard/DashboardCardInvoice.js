@@ -8,7 +8,8 @@ function DashboardCardInvoice({
   HeightIcon,
   WidthIcon,
   ImageIcon,
-  CountFontSize,
+  size,
+  MarginAdjuster,
 }) {
   return (
     <View style={[styles.Button]}>
@@ -17,11 +18,14 @@ function DashboardCardInvoice({
         source={ImageIcon}
       />
 
-      <Text style={styles.SmallText}>{Title}</Text>
+      <Text style={[styles.SmallText, {}]}>{Title}</Text>
       {ShowCount && (
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <Text
-            style={[styles.SmallText, { fontSize: 12, fontWeight: "bold" }]}
+            style={[
+              styles.SmallText,
+              { fontSize: 12, fontWeight: "bold", marginTop: MarginAdjuster },
+            ]}
           >
             AMT
           </Text>
@@ -32,8 +36,13 @@ function DashboardCardInvoice({
           </Text>
         </View>
       )}
-      <View style={styles.quantityButtonStyle}>
-        <Text style={[styles.ButtonTextBig, { fontSize: 20 }]}>
+      <View style={[styles.quantityButtonStyle, { marginTop: size }]}>
+        <Text
+          style={[
+            styles.ButtonTextBig,
+            { fontSize: 20, paddingRight: 5, paddingLeft: 5 },
+          ]}
+        >
           ${AmountToDisplay}
         </Text>
       </View>
