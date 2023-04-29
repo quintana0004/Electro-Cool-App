@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
+  Button,
   StyleSheet,
   FlatList,
-  Button,
   ToastAndroid,
   Pressable,
   Dimensions,
@@ -50,7 +50,10 @@ function CreateTask() {
   //Store Hooks
   const setTask = useTaskStore((state) => state.setTask);
   const id = useTaskStore((state) => state.id);
+  const addTask = useTaskStore((state) => state.addTask);
+  const tasks = useTaskStore((state) => state.tasks);
   const setReloadTaskList = useTaskStore((state) => state.setReloadTaskList);
+  const clearAllTasks = useTaskStore((state) => state.clearAllTasks);
   const [date, setDate] = useState(undefined);
   const [open, setOpen] = useState(false);
 
@@ -67,9 +70,10 @@ function CreateTask() {
   );
 
   //Other Hooks
-  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogVisible1, setDialogVisible1] = useState(false);
+  const [dialogVisible2, setDialogVisible2] = useState(false);
   const ref = useRef(null);
-  const [taskData, setTaskData] = useState([]);
+  //const [taskData, setTaskData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
   const [saveData, setSaveData] = useState(false);
@@ -111,7 +115,7 @@ function CreateTask() {
     return `key-${randomString}`;
   }
 
-  async function handleCreateTask() {
+  function handleCreateTask() {
     const text = ref.current.values.text;
     const dueDate = date;
 
@@ -127,31 +131,35 @@ function CreateTask() {
     }
 
     const task = {
-      key: generateKey(),
+      id: generateKey(),
       text: text,
       dueDate: new Date(parsedDueDate),
     };
+    console.log("TASK DATA: ", task);
 
-    taskData.push(task);
-    setTaskData([...taskData]);
-
-    return task.key;
+    //taskData.push(task);
+    //setTaskData([...taskData]);
+    addTask(task);
+    console.log(tasks);
   }
 
-  async function popAllTasks() {
-    for (const items in taskData) {
-      console.log(taskData[items]);
-      taskData.pop();
-    }
-  }
+  // async function popAllTasks() {
+  //   for (const items in taskData) {
+  //   console.log(taskData[items]);
+  //     taskData.pop();
+  //   }
+  // }
 
   async function pushTask() {
     try {
-      for (const items in taskData) {
-        console.log(taskData[items]);
-        const beans = await httpCreateTask(taskData[items]);
+      for (const items in tasks) {
+        console.log(tasks[items]);
+        const beans = await httpCreateTask(tasks[items]);
         console.log(beans);
         showSuccessMessage();
+        setDialogVisible1(false);
+        setDialogVisible2(true);
+        clearAllTasks();
       }
     } catch (error) {
       console.log("ERROR MESSAGE CLIENT: ", error);
@@ -263,12 +271,82 @@ function CreateTask() {
           </View>
         )}
       </Formik>
+      {dialogVisible1 && (
+        <Portal>
+          <Dialog
+            visible={dialogVisible1}
+            onDismiss={() => setDialogVisible1(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="alert-circle-outline"
+              size={80}
+              color={Colors.brightGreen}
+            />
+            <Dialog.Title style={styles.textAlert}>Confirm Tasks</Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                Are you sure that you want to add the following tasks?
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+              <Button
+                title="Cancel"
+                color={Colors.yellowDark}
+                onPress={() => setDialogVisible1(false)}
+              ></Button>
+              <Button
+                title="Confirm"
+                color={Colors.darkGreen}
+                onPress={() => pushTask()}
+              ></Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+      {dialogVisible2 && (
+        <Portal>
+          <Dialog
+            visible={dialogVisible2}
+            onDismiss={() => setDialogVisible2(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon
+              icon="check-circle-outline"
+              size={80}
+              color={Colors.darkGreen}
+            />
+            <Dialog.Title style={styles.textAlert}>
+              Tasks Confirmed
+            </Dialog.Title>
+            <Dialog.Content>
+              <Text style={styles.textAlert}>
+                The tasks were added for the employees to see! You can now
+                proceed to the home page.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+              <Button
+                title="Done"
+                color={Colors.brightGreen}
+                onPress={() => {
+                  setDialogVisible2(false);
+                  navigation.navigate("Calendar");
+                }}
+              ></Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
       <TableHeaderCTasks />
       <View style={{ height: 520 }}>
         <FlatList
-          data={taskData}
+          data={tasks}
           renderItem={cTaskItem}
-          keyExtractor={(item) => item.key}
+          keyExtractor={(item) => {
+            console.log("Pollo: ", item);
+            return item.id;
+          }}
           style={{ flexGrow: 1 }}
         />
       </View>
@@ -277,17 +355,17 @@ function CreateTask() {
           style={[styles.button, { backgroundColor: Colors.darkGreyAsh }]}
           onPress={async () => {
             console.log("-w-");
-            popAllTasks();
+            clearAllTasks();
             setReloadTaskList();
           }}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>Clear All</Text>
         </Pressable>
         <Pressable
           style={[styles.button, { backgroundColor: Colors.darkGreen }]}
           onPress={async () => {
             console.log("UwU");
-            pushTask();
+            setDialogVisible1(true);
             setReloadTaskList();
           }}
         >
@@ -369,6 +447,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 18,
+  },
+  textAlert: {
+    textAlign: "center",
   },
 });
 

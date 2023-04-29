@@ -3,11 +3,14 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
+import { useTaskStore } from "../../Store/taskStore";
 
 function TableItemCTasks({ id, text, dueDate }) {
   function DateText() {
     return format(new Date(dueDate), "MM/dd/yyyy");
   }
+  const deleteTasks = useTaskStore((state) => state.deleteTasks);
+  const setReloadTaskList = useTaskStore((state) => state.setReloadTaskList);
 
   return (
     <View>
@@ -18,7 +21,12 @@ function TableItemCTasks({ id, text, dueDate }) {
         <View style={{ width: 250 }}>
           <Text style={styles.boldText}>{DateText()}</Text>
         </View>
-        <Pressable onPress={async () => {}}>
+        <Pressable
+          onPress={async () => {
+            deleteTasks(id);
+            setReloadTaskList();
+          }}
+        >
           <Avatar.Icon
             size={35}
             icon="delete"
