@@ -1,6 +1,12 @@
 import prisma from "../database/prisma";
 import { getUserIdFromToken } from "../services/auth.service";
-import { excludeFields, generateSalt, sha512 } from "../utils/db.utils";
+import {
+  excludeFields,
+  generateExpirationDate,
+  generateRandomString,
+  generateSalt,
+  sha512,
+} from "../utils/db.utils";
 import { buildErrorObject } from "../utils/errors.utils";
 import { IUser } from "./../types/index.d";
 import { findCompanyByName } from "./company.model";
@@ -134,7 +140,14 @@ async function isUserAuthorized(
     }
 
     let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
-    if (hashedPasswordFromRequest !== user.password) {
+    let hashedTemporaryPasswordFromRequest = sha512(
+      password,
+      user.temporaryPasswordSalt ?? ""
+    );
+    if (
+      hashedPasswordFromRequest !== user.password &&
+      hashedTemporaryPasswordFromRequest !== user.temporaryPassword
+    ) {
       return buildErrorObject(
         401,
         "Provided password is incorrect for this user."
@@ -328,6 +341,80 @@ async function updateTemporaryAdminsByEndDate() {
   }
 }
 
+async function updateUserTemporaryPassword(id: string) {
+  try {
+    const password = generateRandomString(12);
+    const passwordSalt = generateSalt(32);
+    const temporaryHashedPassword = sha512(password, passwordSalt);
+    const passwordExpirationDate = generateExpirationDate(24);
+
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        temporaryPassword: temporaryHashedPassword,
+        temporaryPasswordSalt: passwordSalt,
+        temporaryPasswordExpiration: passwordExpirationDate,
+      },
+    });
+
+    return { user, password };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUserCredentials(
+  id: string,
+  newPassword: string,
+  accessToken: string,
+  refreshToken: string
+) {
+  try {
+    const passwordSalt = generateSalt(32);
+    const hashedPassword = sha512(newPassword, passwordSalt);
+
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        password: hashedPassword,
+        passwordSalt: passwordSalt,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        temporaryPassword: null,
+        temporaryPasswordSalt: null,
+        temporaryPasswordExpiration: null,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUsersExpiredPasswords() {
+  try {
+    const TODAY = new Date();
+    const user = await prisma.user.updateMany({
+      where: {
+        temporaryPasswordExpiration: {
+          lt: TODAY,
+        },
+      },
+      data: {
+        temporaryPassword: null,
+        temporaryPasswordSalt: null,
+        temporaryPasswordExpiration: null,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
 async function deleteUser(id: string) {
   try {
     const user = await prisma.user.delete({
@@ -355,5 +442,8 @@ export {
   updateUserAccessState,
   updateTemporaryAdminsByStartDate,
   updateTemporaryAdminsByEndDate,
+  updateUserTemporaryPassword,
+  updateUserCredentials,
+  updateUsersExpiredPasswords,
   deleteUser,
 };

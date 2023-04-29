@@ -1,5 +1,12 @@
 import express from "express";
-import { httpLogin, httpRefreshToken, httpSignUp } from "./auth.controller";
+import { authenticateJWTMiddleWare } from "../../services/auth.service";
+import {
+  httpLogin,
+  httpRefreshToken,
+  httpRequestTemporaryPassword,
+  httpResetPassword,
+  httpSignUp,
+} from "./auth.controller";
 
 const router = express.Router();
 
@@ -8,5 +15,9 @@ router.post("/login", httpLogin);
 router.post("/signup", httpSignUp);
 
 router.post("/refreshToken", httpRefreshToken);
+
+router.post("/requestTemporaryPassword", httpRequestTemporaryPassword);
+
+router.post("/resetPassword", authenticateJWTMiddleWare, httpResetPassword);
 
 export default router;
