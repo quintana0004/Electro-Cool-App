@@ -2,10 +2,16 @@ import prisma from "../database/prisma";
 import { IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
 
-async function findAllJobOrders(page: number, take: number, searchTerm: string | undefined) {
+async function findAllJobOrders(
+  page: number,
+  take: number,
+  searchTerm: string | undefined
+) {
   try {
     const idSearch =
-      searchTerm != undefined && typeof searchTerm != "string" ? Number(searchTerm) : undefined;
+      searchTerm != undefined && typeof searchTerm != "string"
+        ? Number(searchTerm)
+        : undefined;
     const nameSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -88,6 +94,101 @@ async function findJobOrderWithChildsById(id: number) {
   }
 }
 
+async function findAllCurrentWorkingVehicles() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "Working",
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllVehiclesInShop() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        OR: [
+          {
+            status: "Working",
+          },
+          {
+            status: "New",
+          },
+        ],
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllVehiclesNotStarted() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "New",
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllNewVehiclesToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "New",
+        createdDate: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllFinishedVehiclesToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "Complete",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertJobOrder(jobInfo: IJobOrder) {
   try {
     const job = await prisma.jobOrder.upsert({
@@ -158,6 +259,11 @@ export {
   findAllJobOrders,
   findJobOrderById,
   findJobOrderWithChildsById,
+  findAllCurrentWorkingVehicles,
+  findAllVehiclesInShop,
+  findAllVehiclesNotStarted,
+  findAllNewVehiclesToday,
+  findAllFinishedVehiclesToday,
   upsertJobOrder,
   updateJobOrderStatus,
   deleteJobOrder,

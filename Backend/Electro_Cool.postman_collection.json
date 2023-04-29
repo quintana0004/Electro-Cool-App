@@ -3,7 +3,8 @@
 		"_postman_id": "4c93f32a-adad-413d-bc12-cccaf88483f3",
 		"name": "Electro Cool",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "9671978"
+		"_exporter_id": "9671978",
+		"_collection_link": "https://martian-station-963732.postman.co/workspace/Electro-Cool~b983287d-f228-43ae-8c11-c3d19e45760b/collection/9671978-4c93f32a-adad-413d-bc12-cccaf88483f3?action=share&creator=9671978&source=collection_link"
 	},
 	"item": [
 		{
@@ -119,9 +120,16 @@
 			"item": [
 				{
 					"name": "Get All Customers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "{{HOST}}/customers?take=5",
 							"host": [
@@ -162,7 +170,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Jan\",\r\n    \"lastName\": \"Montalvo\",\r\n    \"addressLine1\": \"Carolina\",\r\n    \"addressLine2\": \"San Juan\",\r\n    \"city\": \"Metropolis\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo16@cobaltopr.com\"\r\n}",
+							"raw": "\r\n  {\r\n    \"email\": \"amiller@gmail.com\",\r\n    \"firstName\": \"Alice\",\r\n    \"lastName\": \"Miller\",\r\n    \"addressLine1\": \"321 Elm St\",\r\n    \"addressLine2\": \"\",\r\n    \"city\": \"Nowhere\",\r\n    \"phone\": \"555-3456\"\r\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -234,7 +242,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{HOST}}/cars?take=3",
+							"raw": "{{HOST}}/cars?take=7",
 							"host": [
 								"{{HOST}}"
 							],
@@ -244,7 +252,7 @@
 							"query": [
 								{
 									"key": "take",
-									"value": "3"
+									"value": "7"
 								}
 							]
 						}
@@ -258,7 +266,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"JTM3Z01\",\r\n    \"model\": \"Rav4\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"vinNumber\": \"JTME38453XHS\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"customerId\": \"26\"\r\n}",
+							"raw": "{\r\n    \"brand\": \"Toyota\",\r\n    \"licensePlate\": \"RT823Z12\",\r\n    \"vinNumber\": \"RTME34212XHS\",\r\n    \"model\": \"Mercedes\",\r\n    \"year\": \"2022\",\r\n    \"mileage\": \"3450\",\r\n    \"color\": \"Lunar Rock\",\r\n    \"carHasItems\": false,\r\n    \"carItemsDescription\": \"\",\r\n    \"customerId\": \"3\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -312,6 +320,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Cars by Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/cars/customer/?customerId=2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cars",
+								"customer",
+								""
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -359,7 +392,7 @@
 									"disabled": true
 								},
 								{
-									"key": "skip",
+									"key": "page",
 									"value": "2",
 									"disabled": true
 								}
@@ -374,55 +407,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "id",
-									"value": "2",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "requestedService",
-									"value": "Test Service 11",
-									"type": "text"
-								},
-								{
-									"key": "serviceDetails",
-									"value": "Car needs new air filter",
-									"type": "text"
-								},
-								{
-									"key": "status",
-									"value": "Complete",
-									"type": "text"
-								},
-								{
-									"key": "jobLoadType",
-									"value": "Heavy",
-									"type": "text"
-								},
-								{
-									"key": "carId",
-									"value": "8",
-									"type": "text"
-								},
-								{
-									"key": "customerId",
-									"value": "25",
-									"type": "text"
-								},
-								{
-									"key": "companyId",
-									"value": "0b22c1e3-0449-45e5-9762-c2db75f80ea7",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": "/C:/Users/janmm/Pictures/Camera Roll/4.PNG"
+							"mode": "raw",
+							"raw": "{\r\n    \"requestedService\":\"Test Service 11\",\r\n    \"serviceDetails\": \"Car needs new air filter\",\r\n    \"status\": \"Complete\",\r\n    \"jobLoadType\": \"Heavy\",\r\n    \"carId\": \"1\",\r\n    \"customerId\": \"1\",\r\n    \"policySignature\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{HOST}}/job-orders",
@@ -442,13 +433,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/job-orders/22",
+							"raw": "{{HOST}}/job-orders/1",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"job-orders",
-								"22"
+								"1"
 							]
 						}
 					},
@@ -471,6 +462,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update Job Order Status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"status\": \"Complete\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/job-orders/status",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"job-orders",
+								"status"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -483,7 +501,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/invoices?take=15&page=0&searchTerm=Abneris",
+							"raw": "{{HOST}}/invoices?take=15",
 							"host": [
 								"{{HOST}}"
 							],
@@ -497,11 +515,13 @@
 								},
 								{
 									"key": "page",
-									"value": "0"
+									"value": "0",
+									"disabled": true
 								},
 								{
 									"key": "searchTerm",
-									"value": "Abneris"
+									"value": "HDD",
+									"disabled": true
 								}
 							]
 						}
@@ -515,7 +535,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"Pending\",\r\n    \"amountTotal\": \"1250.58\",\r\n    \"amountPaid\": \"1250.58\",\r\n    \"amountDue\": \"0.00\",\r\n    \"customerId\": 29,\r\n    \"carId\": 9,\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\",\r\n    \"invoiceItems\": [\r\n        {\r\n            \"description\": \"Platos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$76.94\",\r\n            \"totalPrice\": \"$153.88\",\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Labor\",\r\n            \"quantity\": \"1\",\r\n            \"unitPrice\": \"$100.00\",\r\n            \"totalPrice\": \"$100.00\",\r\n            \"warranty\": \"2 year\"\r\n        },\r\n        {\r\n            \"description\": \"Frenos\",\r\n            \"quantity\": \"2\",\r\n            \"unitPrice\": \"$60.32\",\r\n            \"totalPrice\": \"$120.64\",\r\n            \"warranty\": \"90 days\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"status\": \"Pending\",\r\n    \"amountTotal\": 1893.42,\r\n    \"amountPaid\": 1893.42,\r\n    \"amountDue\": 0.00,\r\n    \"customerId\": 1,\r\n    \"carId\": 1,\r\n    \"invoiceItems\": [\r\n        {\r\n            \"description\": \"Calipers\",\r\n            \"quantity\": 4,\r\n            \"unitPrice\": 76.94,\r\n            \"totalPrice\": 307.76,\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Pads\",\r\n            \"quantity\": 4,\r\n            \"unitPrice\": 176.94,\r\n            \"totalPrice\": 707.76,\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Labor\",\r\n            \"quantity\": 3,\r\n            \"unitPrice\": 46.94,\r\n            \"totalPrice\": 140.82,\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Tire Rotation\",\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 39.99,\r\n            \"totalPrice\": 39.99,\r\n            \"warranty\": \"6 months\"\r\n        },\r\n        {\r\n            \"description\": \"Coolant Flush\",\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 99.99,\r\n            \"totalPrice\": 99.99,\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Transmission Fluid\",\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 79.99,\r\n            \"totalPrice\": 79.99,\r\n            \"warranty\": \"1 year\"\r\n        },\r\n        {\r\n            \"description\": \"Battery\",\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 129.00,\r\n            \"totalPrice\": 129.00,\r\n            \"warranty\": \"2 years\"\r\n        }\r\n    ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -540,13 +560,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/invoices/46",
+							"raw": "{{HOST}}/invoices/1",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"invoices",
-								"46"
+								"1"
 							]
 						}
 					},
@@ -567,6 +587,39 @@
 								"46"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice by Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/invoices/customer/?customerId=1",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"invoices",
+								"customer",
+								""
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Pending Invoices",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
@@ -767,16 +820,43 @@
 			"item": [
 				{
 					"name": "Get All Appointments",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/appointments",
+							"raw": "{{HOST}}/appointments?take=5&searchTerm=2022-02-25T10:31:00.000Z",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"appointments"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "searchTerm",
+									"value": "2022-02-25T10:31:00.000Z"
+								}
 							]
 						}
 					},
@@ -789,7 +869,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"service\": \"Oil Pump\",\r\n    \"description\": \"Male sure to revise breaks and add to final fee\",\r\n    \"arrivalDateTime\": \"2021-08-10T00:00:00.000Z\",\r\n    \"model\": \"Rav4\",\r\n    \"licensePlate\": \"JTM093\",\r\n    \"customerName\": \"Jan Montalvo\",\r\n    \"phone\": \"7877101074\",\r\n    \"email\": \"jmontalvo@gmail.com\",\r\n    \"customerId\": 25,\r\n    \"carId\": 8\r\n}",
+							"raw": "{\r\n  \"service\": \"Battery Replacement\",\r\n  \"description\": \"Replace car battery\",\r\n  \"arrivalDateTime\": \"2022-07-29T18:30:00.000Z\",\r\n  \"model\": \"Mustang\",\r\n  \"brand\": \"Ford\",\r\n  \"year\": \"2016\",\r\n  \"color\": \"Black\",\r\n  \"licensePlate\": \"FOR7890\",\r\n  \"customerName\": \"Samantha Lee\",\r\n  \"phone\": \"2225678910\",\r\n  \"email\": \"samanthalee@example.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -855,12 +935,26 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/tasks",
+							"raw": "{{HOST}}/tasks?take=5&page=0&searchTerm=2022-02-25T10:31:00.000Z",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"tasks"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "searchTerm",
+									"value": "2022-02-25T10:31:00.000Z"
+								}
 							]
 						}
 					},
@@ -873,7 +967,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"This is a test task 2\",\r\n    \"dueDate\": \"09/24/2022 07:30:14\",\r\n    \"companyId\": \"0b22c1e3-0449-45e5-9762-c2db75f80ea7\"\r\n}",
+							"raw": "{\r\n  \"text\": \"This is a test task 5\",\r\n  \"dueDate\": \"2022-03-10T10:51:00.000Z\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -997,6 +1091,14 @@
 								"93"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Deposit By Invoice Id",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
@@ -1133,6 +1235,173 @@
 							"path": [
 								"users",
 								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "Get Metric Current Vechiles Working",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/currentVehiclesWorking",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"currentVehiclesWorking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehicles In Shop",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/vehiclesInShop",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"vehiclesInShop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vehicles Not Started",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/vehiclesNotStarted",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"vehiclesNotStarted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get New Vehicles Received From Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/newVehiclesReceivedToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"newVehiclesReceivedToday"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Finished Vehicles From Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/finishedVehiclesToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"finishedVehiclesToday"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Amount Paid Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/totalAmountPaidToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"totalAmountPaidToday"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Amount In Drafts Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/totalAmountInDraftsToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"totalAmountInDraftsToday"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Amount Pending Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/totalAmountPendingToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"totalAmountPendingToday"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Amount Canceled Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/metrics/totalAmountCanceledToday",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"metrics",
+								"totalAmountCanceledToday"
 							]
 						}
 					},
