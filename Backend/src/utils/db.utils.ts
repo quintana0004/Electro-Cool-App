@@ -39,8 +39,6 @@ function generateExpirationDate(hours: number) {
   return currentDate;
 }
 
-const expirationDate = generateExpirationDate(24);
-console.log(`Expiration date: ${expirationDate}`);
 // --- Temporary Dummy Data Inserts ---
 async function createDummyCompany() {
   const existingCompany = await findCompanyByName("Electro Cool");

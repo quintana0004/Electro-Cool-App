@@ -1,20 +1,9 @@
-import React, { useState, useRef } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ToastAndroid,
-} from "react-native";
-import Header from "../components/UI/Header";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import ToggleBtnSetting from "../components/Setting/ToggleBtnSetting";
-import ErrorOverlay from "../components/UI/ErrorOverlay";
-import LoadingOverlay from "../components/UI/LoadingOverlay";
 import ProfilePage from "../components/Setting/ProfilePage";
 import TableListSetting from "../components/Setting/TableListSetting";
 import SearchBanner from "../components/UI/SearchBanner";

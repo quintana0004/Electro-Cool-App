@@ -6,7 +6,6 @@ import {
   findUserByToken,
   getUserTokens,
   isUserAuthorized,
-  updateUserCredentials,
   updateUserTemporaryPassword,
   updateUserTokens,
 } from "../../models/users.model";
@@ -191,65 +190,9 @@ async function httpRequestTemporaryPassword(req: Request, res: Response) {
   }
 }
 
-async function httpResetPassword(req: Request, res: Response) {
-  try {
-    const userId = req.userId;
-    const oldPassword = req.body.oldPassword;
-    const newPassword = req.body.newPassword;
-
-    const user = await findUserById(userId);
-    if (user === null) {
-      return handleBadResponse(
-        400,
-        "A user with this access token does not exist.",
-        res
-      );
-    }
-
-    const hashedOldPassword = sha512(oldPassword, user.passwordSalt);
-    const hashedTemporaryPassword = sha512(
-      oldPassword,
-      user.temporaryPasswordSalt ?? ""
-    );
-    if (
-      hashedOldPassword !== user.password &&
-      hashedTemporaryPassword !== user.temporaryPassword
-    ) {
-      return handleBadResponse(
-        400,
-        "The old password for this user those not match the provided password.",
-        res
-      );
-    }
-
-    const accessToken = generateAccessToken(user.id, user.companyId);
-    const refreshToken = generateRefreshToken(user.id, user.companyId);
-    const updatedUser = await updateUserCredentials(
-      user.id,
-      newPassword,
-      accessToken,
-      refreshToken
-    );
-
-    return res.status(200).json({
-      fullName: updatedUser.fullName,
-      username: updatedUser.username,
-      phone: updatedUser.phone,
-      email: updatedUser.email,
-      accessToken: updatedUser.accessToken,
-      refreshToken: updatedUser.refreshToken,
-      accessState: updatedUser.accessState,
-      role: updatedUser.role,
-    });
-  } catch (error) {
-    return handleExceptionErrorResponse("reset password", error, res);
-  }
-}
-
 export {
   httpLogin,
   httpSignUp,
   httpRefreshToken,
   httpRequestTemporaryPassword,
-  httpResetPassword,
 };

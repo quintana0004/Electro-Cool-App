@@ -3,15 +3,12 @@ import axios from "axios";
 const FROM_ADDRESS = process.env.ELECTRO_COOL_EMAIL ?? "";
 const SENGRID_API_KEY = process.env.SENDGRID_API_KEY ?? "";
 const EMAIL_SEND_URL = process.env.SENDGRID_EMAIL_SEND_URL ?? "";
-console.log("EMAIL API KEY: ", SENGRID_API_KEY);
-console.log("EMAIL SEND URL: ", EMAIL_SEND_URL);
 
 async function sendTemporaryPasswordEmail(
   toEmail: string,
   temporaryPassword: string | null
 ) {
   try {
-    console.log("Email Sender: ", FROM_ADDRESS);
     const TEMPORARY_PASSWORD_TEMPLATE_ID = "d-b93007c3d5ec4969aa37328c721b183d";
     const _email = {
       from: {

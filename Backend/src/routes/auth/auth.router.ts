@@ -4,7 +4,6 @@ import {
   httpLogin,
   httpRefreshToken,
   httpRequestTemporaryPassword,
-  httpResetPassword,
   httpSignUp,
 } from "./auth.controller";
 
@@ -17,7 +16,5 @@ router.post("/signup", httpSignUp);
 router.post("/refreshToken", httpRefreshToken);
 
 router.post("/requestTemporaryPassword", httpRequestTemporaryPassword);
-
-router.post("/resetPassword", authenticateJWTMiddleWare, httpResetPassword);
 
 export default router;

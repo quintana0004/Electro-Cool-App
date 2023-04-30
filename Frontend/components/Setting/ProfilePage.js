@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ToastAndroid,
+  Pressable,
 } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { ErrorMessage, Formik } from "formik";
@@ -18,6 +19,8 @@ import {
   Portal,
 } from "react-native-paper";
 import * as Yup from "yup";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetUserProfile, httpUpdateUserProfile } from "../../api/users.api";
 
 //Validation for the users information
 const ValidationUser = Yup.object().shape({
@@ -53,17 +56,18 @@ const ValidationUser = Yup.object().shape({
 });
 
 function ProfilePage({}) {
-  const refInformation = useRef(null);
-  const refAccount = useRef(null);
+  const refAccountInformation = useRef(null);
+  const refCredentialInformation = useRef(null);
 
-  function DataRespondFormik() {
-    return {
-      firstName: "Jessica",
-      lastName: "Quintana Rivera",
-      phoneNumber: "7877027103",
-      email: "jessynquintana@gmail.com",
-      username: "Jessy004",
-    };
+  const { isLoading, data, isError, error } = useQuery({
+    queryKey: ["UserProfileData"],
+    queryFn: getUserProfile,
+    enabled: true,
+  });
+
+  async function getUserProfile() {
+    const response = await httpGetUserProfile();
+    return response.data;
   }
 
   //Toast Message
@@ -81,6 +85,55 @@ function ProfilePage({}) {
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
 
+  function isProfileFormValid() {
+    // Start to validating there is no error on input page
+    const TouchedObject =
+      Object.keys(refCredentialInformation.current.touched).length > 0;
+
+    let isValid = true;
+    if (
+      refCredentialInformation.current.values.password !==
+      refCredentialInformation.current.values.passwordConfirm
+    ) {
+      setErrorMSG("Both passwords must be the same");
+      setVisibilityUser(true);
+      isValid = false;
+    }
+    if (
+      !refCredentialInformation.current &&
+      !refCredentialInformation.current.isValid &&
+      !TouchedObject
+    ) {
+      setErrorMSG("There are missing required or need to correct information.");
+      setVisibilityUser(true);
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  async function handleProfileSubmission() {
+    const isFormValid = isProfileFormValid();
+    if (isFormValid === false) return;
+
+    const userProfileInfo = {
+      email: refAccountInformation.current.values.email,
+      firstName: refAccountInformation.current.values.firstName,
+      lastName: refAccountInformation.current.values.lastName,
+      phone: refAccountInformation.current.values.phoneNumber,
+      username: refAccountInformation.current.values.username,
+      password: refCredentialInformation.current.values.password,
+    };
+
+    const response = await httpUpdateUserProfile(userProfileInfo);
+
+    if (response.hasError) {
+      // TODO: HANDLE ERROR.
+    }
+
+    showSuccessMessage();
+  }
+
   return (
     <View>
       <View>
@@ -95,178 +148,188 @@ function ProfilePage({}) {
         >
           Personal Information
         </Text>
-        <Formik
-          validationSchema={ValidationUser}
-          innerRef={refInformation}
-          initialValues={DataRespondFormik()}
-          enableReinitialize={true}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <KeyboardAvoidingView
-              behavior="padding"
-              enabled
-              keyboardVerticalOffset={-100}
-            >
-              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View
-                  style={{
-                    justifyContent: "space-around",
-                    paddingBottom: 24,
-                    marginHorizontal: 20,
-                  }}
-                >
+        {isLoading || (
+          <Formik
+            validationSchema={ValidationUser}
+            innerRef={refAccountInformation}
+            initialValues={{
+              firstName: data.firstName,
+              lastName: data.lastName,
+              phoneNumber: data.phone,
+              email: data.email,
+              username: data.username,
+            }}
+            enableReinitialize={true}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <KeyboardAvoidingView
+                behavior="padding"
+                enabled
+                keyboardVerticalOffset={-100}
+              >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      marginVertical: 20,
+                      justifyContent: "space-around",
+                      paddingBottom: 24,
+                      marginHorizontal: 20,
                     }}
                   >
-                    <View style={{ width: 250 }}>
-                      <TextInput
-                        label="First Name"
-                        mode="outlined"
-                        outlineColor={Colors.darkGrey}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="default"
-                        onChangeText={handleChange("firstName")}
-                        onBlur={handleBlur("firstName")}
-                        value={values.firstName}
-                        error={touched.firstName && errors.firstName}
-                        style={styles.textInputStyle}
-                        disabled={true}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.firstName && errors.firstName)}
-                      >
-                        {errors.firstName}
-                      </HelperText>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginVertical: 20,
+                      }}
+                    >
+                      <View style={{ width: 250 }}>
+                        <TextInput
+                          label="First Name"
+                          mode="outlined"
+                          outlineColor={Colors.darkGrey}
+                          activeOutlineColor={Colors.brightGreen}
+                          keyboardType="default"
+                          onChangeText={handleChange("firstName")}
+                          onBlur={handleBlur("firstName")}
+                          value={values.firstName}
+                          error={touched.firstName && errors.firstName}
+                          style={styles.textInputStyle}
+                          disabled={true}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={!!(touched.firstName && errors.firstName)}
+                        >
+                          {errors.firstName}
+                        </HelperText>
+                      </View>
+                      <View style={{ width: 280 }}>
+                        <TextInput
+                          label="Last Name"
+                          mode="outlined"
+                          outlineColor={Colors.darkGrey}
+                          activeOutlineColor={Colors.brightGreen}
+                          keyboardType="default"
+                          onChangeText={handleChange("lastName")}
+                          onBlur={handleBlur("lastName")}
+                          value={values.lastName}
+                          error={touched.lastName && errors.lastName}
+                          style={styles.textInputStyle}
+                          disabled={true}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={!!(touched.lastName && errors.lastName)}
+                        >
+                          {errors.lastName}
+                        </HelperText>
+                      </View>
                     </View>
-                    <View style={{ width: 280 }}>
-                      <TextInput
-                        label="Last Name"
-                        mode="outlined"
-                        outlineColor={Colors.darkGrey}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="default"
-                        onChangeText={handleChange("lastName")}
-                        onBlur={handleBlur("lastName")}
-                        value={values.lastName}
-                        error={touched.lastName && errors.lastName}
-                        style={styles.textInputStyle}
-                        disabled={true}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.lastName && errors.lastName)}
-                      >
-                        {errors.lastName}
-                      </HelperText>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={{ marginVertical: 30, width: 220 }}>
+                        <TextInput
+                          label="Phone Number"
+                          mode="outlined"
+                          left={
+                            <TextInput.Icon
+                              icon="phone"
+                              color={Colors.lightGreyDark}
+                            />
+                          }
+                          outlineColor={Colors.darkGrey}
+                          activeOutlineColor={Colors.brightGreen}
+                          keyboardType="phone-pad"
+                          onChangeText={handleChange("phoneNumber")}
+                          onBlur={handleBlur("phoneNumber")}
+                          value={values.phoneNumber}
+                          error={touched.phoneNumber && errors.phoneNumber}
+                          style={styles.textInputStyle}
+                          disabled={true}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={
+                            !!(touched.phoneNumber && errors.phoneNumber)
+                          }
+                        >
+                          {errors.phoneNumber}
+                        </HelperText>
+                      </View>
+                      <View style={{ marginVertical: 30, width: 300 }}>
+                        <TextInput
+                          label="E-mail Address"
+                          mode="outlined"
+                          left={
+                            <TextInput.Icon
+                              icon="email"
+                              color={Colors.lightGreyDark}
+                            />
+                          }
+                          outlineColor={Colors.darkGrey}
+                          activeOutlineColor={Colors.brightGreen}
+                          keyboardType="email-address"
+                          onChangeText={handleChange("email")}
+                          onBlur={handleBlur("email")}
+                          value={values.email}
+                          error={touched.email && errors.email}
+                          style={styles.textInputStyle}
+                          disabled={true}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={!!(touched.email && errors.email)}
+                        >
+                          {errors.email}
+                        </HelperText>
+                      </View>
+                    </View>
+                    <View>
+                      <View style={{ marginVertical: 20, width: 260 }}>
+                        <TextInput
+                          label="Username"
+                          mode="outlined"
+                          left={
+                            <TextInput.Icon
+                              icon="account-outline"
+                              color={Colors.lightGreyDark}
+                            />
+                          }
+                          outlineColor={Colors.darkGrey}
+                          activeOutlineColor={Colors.brightGreen}
+                          keyboardType="default"
+                          onChangeText={handleChange("username")}
+                          onBlur={handleBlur("username")}
+                          value={values.username}
+                          error={touched.username && errors.username}
+                          style={styles.textInputStyle}
+                          disabled={true}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={!!(touched.username && errors.username)}
+                        >
+                          {errors.username}
+                        </HelperText>
+                      </View>
                     </View>
                   </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View style={{ marginVertical: 30, width: 220 }}>
-                      <TextInput
-                        label="Phone Number"
-                        mode="outlined"
-                        left={
-                          <TextInput.Icon
-                            icon="phone"
-                            color={Colors.lightGreyDark}
-                          />
-                        }
-                        outlineColor={Colors.darkGrey}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="phone-pad"
-                        onChangeText={handleChange("phoneNumber")}
-                        onBlur={handleBlur("phoneNumber")}
-                        value={values.phoneNumber}
-                        error={touched.phoneNumber && errors.phoneNumber}
-                        style={styles.textInputStyle}
-                        disabled={true}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.phoneNumber && errors.phoneNumber)}
-                      >
-                        {errors.phoneNumber}
-                      </HelperText>
-                    </View>
-                    <View style={{ marginVertical: 30, width: 300 }}>
-                      <TextInput
-                        label="E-mail Address"
-                        mode="outlined"
-                        left={
-                          <TextInput.Icon
-                            icon="email"
-                            color={Colors.lightGreyDark}
-                          />
-                        }
-                        outlineColor={Colors.darkGrey}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="email-address"
-                        onChangeText={handleChange("email")}
-                        onBlur={handleBlur("email")}
-                        value={values.email}
-                        error={touched.email && errors.email}
-                        style={styles.textInputStyle}
-                        disabled={true}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.email && errors.email)}
-                      >
-                        {errors.email}
-                      </HelperText>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={{ marginVertical: 20, width: 260 }}>
-                      <TextInput
-                        label="Username"
-                        mode="outlined"
-                        left={
-                          <TextInput.Icon
-                            icon="account-outline"
-                            color={Colors.lightGreyDark}
-                          />
-                        }
-                        outlineColor={Colors.darkGrey}
-                        activeOutlineColor={Colors.brightGreen}
-                        keyboardType="default"
-                        onChangeText={handleChange("username")}
-                        onBlur={handleBlur("username")}
-                        value={values.username}
-                        error={touched.username && errors.username}
-                        style={styles.textInputStyle}
-                        disabled={true}
-                      />
-                      <HelperText
-                        type="error"
-                        visible={!!(touched.username && errors.username)}
-                      >
-                        {errors.username}
-                      </HelperText>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-          )}
-        </Formik>
+                </TouchableWithoutFeedback>
+              </KeyboardAvoidingView>
+            )}
+          </Formik>
+        )}
       </View>
       <View></View>
       <View>
@@ -285,21 +348,14 @@ function ProfilePage({}) {
       <View>
         <Formik
           validationSchema={ValidationUser}
-          innerRef={refAccount}
+          innerRef={refCredentialInformation}
           initialValues={{
             username: "",
             password: "",
             passwordConfirm: "",
           }}
         >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
+          {({ handleChange, handleBlur, values, errors, touched }) => (
             <KeyboardAvoidingView
               behavior="padding"
               enabled
@@ -383,40 +439,11 @@ function ProfilePage({}) {
         </Formik>
       </View>
 
-      <View style={{ marginHorizontal: 100 }}>
-        <Button
-          textColor={Colors.white}
-          onPress={() => {
-            // Start to validating there is no error on input page
-            const TouchedObject =
-              Object.keys(refAccount.current.touched).length > 0;
-
-            if (
-              refAccount.current.values.password !==
-              refAccount.current.values.passwordConfirm
-            ) {
-              setErrorMSG("Both passwords must be the same");
-              setVisibilityUser(true);
-            }
-            if (
-              !refAccount.current &&
-              !refAccount.current.isValid &&
-              !TouchedObject
-            ) {
-              setErrorMSG(
-                "There are missing required or need to correct information."
-              );
-              setVisibilityUser(true);
-            }
-
-            showSuccessMessage();
-          }}
-          mode="contained"
-          buttonColor={Colors.yellowDark}
-        >
-          Confirm Password
-        </Button>
-      </View>
+      <Pressable onPress={handleProfileSubmission}>
+        <View style={styles.confirmBtn}>
+          <Text style={styles.confirmText}>Confirm Changes</Text>
+        </View>
+      </Pressable>
 
       {visibilityUser && (
         <Portal>
@@ -462,6 +489,19 @@ const styles = StyleSheet.create({
   textInputStyle: {
     backgroundColor: Colors.white,
     fontSize: 16,
+  },
+  confirmBtn: {
+    marginHorizontal: 100,
+    backgroundColor: Colors.yellowDark,
+    borderRadius: 30,
+    paddingVertical: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 24,
   },
 });
 

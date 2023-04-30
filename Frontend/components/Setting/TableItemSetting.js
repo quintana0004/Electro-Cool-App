@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
-import { httpUpsertUsers } from "../../api/users.api";
 import { useSettingStore } from "../../Store/settingStore";
 import { Entypo } from "@expo/vector-icons";
+import { httpUpdateUserAccessState } from "../../api/users.api";
 
 function TableItemSetting({ data }) {
   const setUserSetting = useSettingStore((state) => state.setUserSetting);
@@ -14,8 +14,8 @@ function TableItemSetting({ data }) {
   let colorBorder;
 
   const [pickedValue, setPickedValue] = useState(data.accessState);
-  const toggleSettingInvoiceList = useSettingStore(
-    (state) => state.toggleSettingInvoiceList
+  const toggleReloadSettingList = useSettingStore(
+    (state) => state.toggleReloadSettingList
   );
 
   switch (pickedValue) {
@@ -30,31 +30,12 @@ function TableItemSetting({ data }) {
   }
 
   async function handlePickerChange(value) {
-    console.log("VAL STATUS: ", value);
-
-    let val = {
-      accessEndDate: data.accessEndDate,
-      accessStartDate: data.accessStartDate,
-      accessState: value,
-      companyId: data.companyId,
-      createdDate: data.createdDate,
-      email: data.email,
-      firstName: data.firstName,
-      fullName: data.fullName,
-      userId: data.id,
-      lastModified: data.lastModified,
-      lastName: data.lastName,
-      phone: data.phone,
-      role: data.role,
-      username: data.username,
-    };
-
     try {
-      //   await httpUpsertUsers(val);
+      await httpUpdateUserAccessState(data.id, value);
       setPickedValue(value);
-      toggleSettingInvoiceList();
+      toggleReloadSettingList();
     } catch (error) {
-      console.log("Error at Job Order Picker Change: ", error);
+      console.log("Error at Settings Role Picker Picker Change: ", error);
     }
   }
 

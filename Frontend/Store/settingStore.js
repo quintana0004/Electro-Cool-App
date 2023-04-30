@@ -8,7 +8,7 @@ export const useSettingStore = create((set) => ({
   startDate: "",
   lastDate: "",
   reloadSettingList: false,
-  toggleSettingInvoiceList: () =>
+  toggleReloadSettingList: () =>
     set((state) => ({
       reloadSettingList: !state.reloadSettingList,
     })),

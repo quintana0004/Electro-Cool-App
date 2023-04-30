@@ -7,13 +7,12 @@ import { useSettingStore } from "../../Store/settingStore";
 import TableItemSetting from "./TableItemSetting";
 
 function settingRender(itemData) {
-  console.log("DATA USERS: ", itemData);
   return <TableItemSetting data={itemData.item} />;
 }
 
 function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   const toggleSettingList = useSettingStore(
-    (state) => state.toggleSettingInvoiceList
+    (state) => state.toggleReloadSettingList
   );
 
   const { isLoading, data } = useQuery({
@@ -23,10 +22,7 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   });
 
   async function getSettingScreenData() {
-    console.log("SEARCH TERM: ", searchTerm);
     let response = await httpGetAllUsers(searchTerm);
-
-    console.log("DATA (1)", response.data);
 
     if (searchLoading) {
       setSearchLoading(false);
