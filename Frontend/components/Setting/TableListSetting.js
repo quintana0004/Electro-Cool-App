@@ -11,12 +11,10 @@ function settingRender(itemData) {
 }
 
 function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
-  const toggleSettingList = useSettingStore(
-    (state) => state.toggleReloadSettingList
-  );
+  const reloadSettingList = useSettingStore((state) => state.reloadSettingList);
 
   const { isLoading, data } = useQuery({
-    queryKey: ["RBACHomePage", searchTerm, toggleSettingList],
+    queryKey: ["RBACHomePage", searchTerm, reloadSettingList],
     queryFn: getSettingScreenData,
     enabled: true,
   });

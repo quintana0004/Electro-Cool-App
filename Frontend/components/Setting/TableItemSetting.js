@@ -4,7 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import Colors from "../../constants/Colors/Colors";
 import { useSettingStore } from "../../Store/settingStore";
 import { Entypo } from "@expo/vector-icons";
-import { httpUpdateUserAccessState } from "../../api/users.api";
+import { httpDeleteUser, httpUpdateUserAccessState } from "../../api/users.api";
 
 function TableItemSetting({ data }) {
   const setUserSetting = useSettingStore((state) => state.setUserSetting);
@@ -37,6 +37,18 @@ function TableItemSetting({ data }) {
     } catch (error) {
       console.log("Error at Settings Role Picker Picker Change: ", error);
     }
+  }
+
+  async function handleUserDeletion() {
+    const response = await httpDeleteUser(data.id);
+
+    if (response.hasError) {
+      console.log("Error");
+      // TODO: HANDLE ERROR
+    }
+
+    console.log("DELETION RESPONSE: ", response.data);
+    toggleReloadSettingList();
   }
 
   return (
@@ -101,6 +113,7 @@ function TableItemSetting({ data }) {
         )}
       </View>
       <Pressable
+        onPress={handleUserDeletion}
         style={{
           borderRadius: 50,
           marginRight: 20,

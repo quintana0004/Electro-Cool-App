@@ -42,7 +42,22 @@ async function httpUpdateUserAccessState(userId, accessState) {
 }
 
 async function httpDeleteUser(id) {
-  return await axios.delete("/users/" + id);
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
+
+  try {
+    const response = await axios.delete("/users/" + id);
+    responseToReturn.data = response.data;
+  } catch (error) {
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error.errorMessage;
+  }
+
+  return responseToReturn;
 }
 
 export {
