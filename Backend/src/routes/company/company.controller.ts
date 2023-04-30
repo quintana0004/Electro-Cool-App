@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { createCompany, findCompanyById } from "../../models/company.model";
 import { ICompany } from "../../types";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
+import { formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetCompany(req: Request, res: Response) {
   try {
@@ -34,7 +38,7 @@ async function httpCreateCompany(req: Request, res: Response) {
       city: req.body.city,
       zipcode: req.body.zipcode,
       email: req.body.email,
-      phone: req.body.phone,
+      phone: formatPhoneNumber(req.body.phone),
     };
 
     if (

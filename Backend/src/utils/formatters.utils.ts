@@ -13,10 +13,14 @@ function titleCase(str: string): string {
 }
 
 function formatPhoneNumber(phoneNumberString: string): string {
-  var cleaned = ("" + phoneNumberString).replace(/\D/g, "");
-  var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return "(" + match[1] + ") " + match[2] + "-" + match[3];
+  //checks if empty, null, or undefined
+  if (phoneNumberString && phoneNumberString.trim() !== "") {
+    var cleaned = phoneNumberString.replace(/\D/g, "");
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+    if (match) {
+      return match[1] + match[2] + match[3];
+    }
   }
   return "";
 }
