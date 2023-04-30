@@ -203,7 +203,6 @@ function InvoiceDetail({ route, navigation }) {
       amountTotal: totalAmount / 100,
       amountPaid: amountPaid / 100,
       amountDue: amountDue / 100,
-      invoiceItems: invoiceItems,
       customerId: clientInfo.id,
       carId: carInfo.id,
       invoiceItems: invoiceItems,
