@@ -168,7 +168,7 @@ async function isValidTaskId(id: number | string) {
   return true;
 }
 
-async function isValidPhoneNumber(phone: string | undefined) {
+function isValidPhoneNumber(phone: string | undefined) {
   if (phone === "NaPN") {
     return false;
   }
