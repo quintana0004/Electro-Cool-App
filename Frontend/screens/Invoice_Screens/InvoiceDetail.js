@@ -1,8 +1,15 @@
 import { useMemo, useState } from "react";
-import { ToastAndroid, Alert, ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ToastAndroid,
+  Alert,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Appbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
-import { MaskedText} from "react-native-mask-text";
+import { MaskedText } from "react-native-mask-text";
 
 import { httpGetInvoice, httpUpsertInvoice } from "../../api/invoices.api";
 
@@ -28,6 +35,7 @@ import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
+  const isInvoiceRevocable = !!invoiceId;
 
   // --- Store Variables
   const client = useCustomerInfoStore((state) => {
@@ -59,10 +67,18 @@ function InvoiceDetail({ route, navigation }) {
     };
   });
   const setInvoice = useInvoiceStore((state) => state.setInvoice);
-  const toggleReloadInvoiceList = useInvoiceStore((state) => state.toggleReloadInvoiceList);
-  const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
-  const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
-  const resetSelectedDeposits = useDepositStore((state) => state.resetSelectedDeposits);
+  const toggleReloadInvoiceList = useInvoiceStore(
+    (state) => state.toggleReloadInvoiceList
+  );
+  const clientSelectedDeposits = useDepositStore(
+    (state) => state.clientSelectedDeposits
+  );
+  const serverSelectedDeposits = useDepositStore(
+    (state) => state.serverSelectedDeposits
+  );
+  const resetSelectedDeposits = useDepositStore(
+    (state) => state.resetSelectedDeposits
+  );
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   // --- State Variables
@@ -100,7 +116,6 @@ function InvoiceDetail({ route, navigation }) {
     return totalAmount - amountPaid;
   }, [totalAmount, amountPaid]);
 
-
   // --- Data Fetching
   const { isLoading, isError, error } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId],
@@ -109,7 +124,7 @@ function InvoiceDetail({ route, navigation }) {
   });
 
   function getHeaderTitle() {
-   return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
+    return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
   }
 
   function navigateToPayment() {
@@ -144,7 +159,7 @@ function InvoiceDetail({ route, navigation }) {
       totalPrice: 0,
     };
     invoiceItems.push(newItem);
-    
+
     setInvoiceItems([...invoiceItems]);
   }
 
@@ -154,7 +169,10 @@ function InvoiceDetail({ route, navigation }) {
     setCarInfo(data.car);
 
     // Set a unique key for every invoice.
-    const items = data.invoiceItems.map((item) => ({key: generateKey(), ...item}));
+    const items = data.invoiceItems.map((item) => ({
+      key: generateKey(),
+      ...item,
+    }));
     setInvoiceItems(items);
   }
 
@@ -179,14 +197,13 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function onSaveUpdateInvoice(option) {
-
     setInvoiceStatus(option);
 
     // Request user confirmation for payment
     if (option === "Paid") {
       return setIsDialogVisible(true);
     }
-    
+
     // Save Deposit if payment was not selected
     await saveInvoice(option);
 
@@ -215,7 +232,10 @@ function InvoiceDetail({ route, navigation }) {
     const response = await httpUpsertInvoice(invoiceInfo);
     if (response.hasError) {
       console.log("Error message on upsert invoice: ", response.errorMessage);
-      return Alert.alert("Error", "There was an error saving the invoice. Please try again later.");
+      return Alert.alert(
+        "Error",
+        "There was an error saving the invoice. Please try again later."
+      );
     }
 
     // Store Invoice Information In the Store
@@ -223,7 +243,6 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function handleInvoicePayment() {
-
     await saveInvoice(invoiceStatus);
 
     // Refresh Invoice List and Navigate to Payment
@@ -240,7 +259,10 @@ function InvoiceDetail({ route, navigation }) {
 
   if (isError) {
     console.log("Error Fetching Invoice Detail: ", error);
-    Alert.alert("Error", "There was an error fetching the invoice detail data. Please try again later.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching the invoice detail data. Please try again later."
+    );
   }
 
   return (
@@ -260,17 +282,23 @@ function InvoiceDetail({ route, navigation }) {
                 <CarCard car={carInfo} />
               </View>
               <View style={styles.buttonGroup}>
-                <InvoiceDetailAddItem onPress={onAddItem}/>
+                <InvoiceDetailAddItem onPress={onAddItem} />
                 <InvoiceDetailSelectDeposit invoiceId={invoiceId} />
               </View>
               <InvoiceDetailTableHeader />
-              <InvoiceDetailTableList invoiceItems={invoiceItems} setInvoiceItems={setInvoiceItems} />
+              <InvoiceDetailTableList
+                invoiceItems={invoiceItems}
+                setInvoiceItems={setInvoiceItems}
+              />
             </View>
             <View style={styles.invoiceSummary}>
-              <ImageBackground source={Figures.InvoiceSummaryImage} style={styles.imageBackgroundContainer}>
+              <ImageBackground
+                source={Figures.InvoiceSummaryImage}
+                style={styles.imageBackgroundContainer}
+              >
                 <View>
-                  <Text style={[ styles.amountsText, styles.totalAmountText ]}>
-                    Total:{' '} 
+                  <Text style={[styles.amountsText, styles.totalAmountText]}>
+                    Total:{" "}
                     <MaskedText
                       type="currency"
                       options={{
@@ -279,12 +307,12 @@ function InvoiceDetail({ route, navigation }) {
                         groupSeparator: ",",
                         precision: 2,
                       }}
-                    > 
+                    >
                       {totalAmount}
                     </MaskedText>
                   </Text>
-                  <Text style={styles.amountsText}>Amount 
-                    Paid: {' '}
+                  <Text style={styles.amountsText}>
+                    Amount Paid:{" "}
                     <MaskedText
                       type="currency"
                       options={{
@@ -293,12 +321,12 @@ function InvoiceDetail({ route, navigation }) {
                         groupSeparator: ",",
                         precision: 2,
                       }}
-                    > 
+                    >
                       {amountPaid}
                     </MaskedText>
                   </Text>
                   <Text style={styles.amountsText}>
-                    Amount Due: {' '}
+                    Amount Due:{" "}
                     <MaskedText
                       type="currency"
                       options={{
@@ -307,7 +335,7 @@ function InvoiceDetail({ route, navigation }) {
                         groupSeparator: ",",
                         precision: 2,
                       }}
-                    > 
+                    >
                       {amountDue}
                     </MaskedText>
                   </Text>
@@ -326,22 +354,26 @@ function InvoiceDetail({ route, navigation }) {
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navigateCancel} />
           </View>
-          <SaveMenu onSelection={onSaveUpdateInvoice} />
+          <SaveMenu
+            onSelection={onSaveUpdateInvoice}
+            isRevokeActive={isInvoiceRevocable}
+          />
         </View>
       </View>
 
       {/* Dialogs */}
       {isDialogVisible && (
-        <PaymentConfirmationDialog 
+        <PaymentConfirmationDialog
           title={"Realize Invoice Payment"}
-          body={"Once a payment is made, this invoice cannot be modified again."}
-          isDialogVisible={isDialogVisible} 
-          setIsDialogVisible={setIsDialogVisible} 
+          body={
+            "Once a payment is made, this invoice cannot be modified again."
+          }
+          isDialogVisible={isDialogVisible}
+          setIsDialogVisible={setIsDialogVisible}
           onCancel={() => setIsDialogVisible(false)}
           onConfirm={handleInvoicePayment}
         />
       )}
-
     </View>
   );
 }
@@ -357,7 +389,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.yellowDark
+    backgroundColor: Colors.yellowDark,
   },
   headerTitle: {
     fontSize: 40,
@@ -384,7 +416,7 @@ const styles = StyleSheet.create({
   imageBackgroundContainer: {
     height: 150,
     width: 500,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     flexDirection: "row",
     justifyContent: "center",
     padding: 10,
@@ -393,11 +425,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 50,
     borderRadius: 25,
-    backgroundColor: 'rgba(40, 160, 103, 0.4);',
+    backgroundColor: "rgba(40, 160, 103, 0.4);",
   },
   amountsText: {
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 5,
   },
   footer: {
