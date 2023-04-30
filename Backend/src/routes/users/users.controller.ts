@@ -11,7 +11,11 @@ import {
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
-import { isIsoDate, isValidUserId } from "../../utils/validators.utils";
+import {
+  isIsoDate,
+  isValidPhoneNumber,
+  isValidUserId,
+} from "../../utils/validators.utils";
 import { formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetAllUsers(req: Request, res: Response) {
@@ -70,6 +74,15 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "Another user with this username already exist.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(userInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }

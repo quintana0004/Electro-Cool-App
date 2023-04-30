@@ -9,6 +9,7 @@ import {
   isValidAppointmentId,
   isValidCompanyId,
   isIsoDate,
+  isValidPhoneNumber,
 } from "../../utils/validators.utils";
 import {
   findAllAppointments,
@@ -127,6 +128,15 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       return handleBadResponse(
         400,
         `The date provided for the Arrival Date Time is not valid. The correct format must be in ISO as the following: "YYYY-MM-DDTHH:MN:SS.MSSZ".`,
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(appointmentInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }

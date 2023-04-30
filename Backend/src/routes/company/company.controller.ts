@@ -6,6 +6,7 @@ import {
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
 import { formatPhoneNumber } from "../../utils/formatters.utils";
+import { isValidPhoneNumber } from "../../utils/validators.utils";
 
 async function httpGetCompany(req: Request, res: Response) {
   try {
@@ -51,6 +52,15 @@ async function httpCreateCompany(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "Missing required fields to create company. Please assure you provide the following field: name, businessType, addressLine1, country and zipcode.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(companyInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }

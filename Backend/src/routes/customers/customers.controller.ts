@@ -16,6 +16,7 @@ import {
   hasRequiredCustomerFields,
   isValidCompanyId,
   isValidCustomerId,
+  isValidPhoneNumber,
 } from "../../utils/validators.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
 import { formatPhoneNumber } from "../../utils/formatters.utils";
@@ -98,6 +99,15 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(customerInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }

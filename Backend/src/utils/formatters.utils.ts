@@ -22,7 +22,7 @@ function formatPhoneNumber(phoneNumberString: string): string {
       return match[1] + match[2] + match[3];
     }
   }
-  return "";
+  return "NaPN";
 }
 
 export { titleCase, formatPhoneNumber };
