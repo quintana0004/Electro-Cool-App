@@ -70,22 +70,24 @@ function TableItemSetting({ data }) {
         }}
       >
         {(pickedValue === "Active" || pickedValue === "Inactive") && (
-          <Picker
-            selectedValue={pickedValue}
-            onValueChange={(itemValue) => handlePickerChange(itemValue)}
-            dropdownIconColor={colorBorder}
-          >
-            <Picker.Item
-              label="Active"
-              value="Active"
-              style={{ color: Colors.lightGreenDark }}
-            />
-            <Picker.Item
-              label="Inactive"
-              value="Inactive"
-              style={{ color: Colors.lightRedDark }}
-            />
-          </Picker>
+          <View style={{ paddingLeft: 20 }}>
+            <Picker
+              selectedValue={pickedValue}
+              onValueChange={(itemValue) => handlePickerChange(itemValue)}
+              dropdownIconColor={colorBorder}
+            >
+              <Picker.Item
+                label="Active"
+                value="Active"
+                style={{ color: Colors.lightGreenDark }}
+              />
+              <Picker.Item
+                label="Inactive"
+                value="Inactive"
+                style={{ color: Colors.lightRedDark }}
+              />
+            </Picker>
+          </View>
         )}
         {pickedValue === "Pending" && (
           <Pressable
@@ -103,7 +105,7 @@ function TableItemSetting({ data }) {
               style={{
                 fontSize: 15,
                 fontWeight: "bold",
-                textAlign: "center",
+                paddingLeft: 25,
                 color: Colors.lightBlueDark,
               }}
             >
