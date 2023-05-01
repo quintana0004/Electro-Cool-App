@@ -60,6 +60,28 @@ async function findAppointmentWithChildsById(id: number) {
   }
 }
 
+async function findAppointmentsFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        arrivalDateTime: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return appointments;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertAppointment(appointmentInfo: IAppointment) {
   try {
     const appointment = await prisma.appointment.upsert({
@@ -124,6 +146,7 @@ export {
   findAllAppointments,
   findAppointmentById,
   findAppointmentWithChildsById,
+  findAppointmentsFromToday,
   upsertAppointment,
   deleteAppointment,
 };

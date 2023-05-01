@@ -6,13 +6,16 @@ export async function httpGetAllInvoices(take, page, searchTerm) {
   return response;
 }
 
+export async function httpGetAllPendingInvoices() {
+  return await axios("/invoices/pending");
+}
+
 export async function httpGetInvoice(id) {
   const response = await axios(`/invoices/${id}`);
   return response;
 }
 
 export async function httpUpsertInvoice(invoiceInfo) {
-  
   let responseToReturn = {
     hasError: false,
     data: null,
@@ -30,5 +33,4 @@ export async function httpUpsertInvoice(invoiceInfo) {
   }
 
   return responseToReturn;
-
 }

@@ -30,7 +30,7 @@ function AccountConfirmationDialog({
             textColor={Colors.darkGreen}
             onPress={() => {
               setVisibilityAccountConfirm(false);
-              navigation.navigate("Dashboard");
+              navigation.navigate("LogIn");
             }}
           >
             Confirm

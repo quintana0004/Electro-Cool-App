@@ -7,26 +7,20 @@ import { useSettingStore } from "../../Store/settingStore";
 import TableItemSetting from "./TableItemSetting";
 
 function settingRender(itemData) {
-  console.log("DATA USERS: ", itemData);
   return <TableItemSetting data={itemData.item} />;
 }
 
 function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
-  const toggleSettingList = useSettingStore(
-    (state) => state.toggleSettingInvoiceList
-  );
+  const reloadSettingList = useSettingStore((state) => state.reloadSettingList);
 
   const { isLoading, data } = useQuery({
-    queryKey: ["RBACHomePage", searchTerm, toggleSettingList],
+    queryKey: ["RBACHomePage", searchTerm, reloadSettingList],
     queryFn: getSettingScreenData,
     enabled: true,
   });
 
   async function getSettingScreenData() {
-    console.log("SEARCH TERM: ", searchTerm);
     let response = await httpGetAllUsers(searchTerm);
-
-    console.log("DATA (1)", response.data);
 
     if (searchLoading) {
       setSearchLoading(false);

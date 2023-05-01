@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import {
   createUser,
   findUserByEmailOrUserName,
+  findUserById,
   findUserByToken,
   getUserTokens,
   isUserAuthorized,
+  updateUserTemporaryPassword,
   updateUserTokens,
 } from "../../models/users.model";
 import {
@@ -12,7 +14,9 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../../services/auth.service";
+import { sendTemporaryPasswordEmail } from "../../services/mail.service";
 import { IUser } from "../../types";
+import { sha512 } from "../../utils/db.utils";
 import {
   buildErrorObject,
   handleBadResponse,
@@ -157,4 +161,38 @@ async function httpRefreshToken(req: Request, res: Response) {
   }
 }
 
-export { httpLogin, httpSignUp, httpRefreshToken };
+async function httpRequestTemporaryPassword(req: Request, res: Response) {
+  try {
+    const username = req.body.username;
+    const email = req.body.username; // Username could be the email when coming from the frontend
+
+    const user = await findUserByEmailOrUserName(username, email);
+    if (user === null) {
+      return handleBadResponse(
+        400,
+        "A user with this username or email does not exist.",
+        res
+      );
+    }
+
+    const { user: updatedUser, password } = await updateUserTemporaryPassword(
+      user.id
+    );
+    await sendTemporaryPasswordEmail(updatedUser.email, password);
+
+    return res.status(200).json("Temporary password has been sent");
+  } catch (error) {
+    return handleExceptionErrorResponse(
+      "request temporary password",
+      error,
+      res
+    );
+  }
+}
+
+export {
+  httpLogin,
+  httpSignUp,
+  httpRefreshToken,
+  httpRequestTemporaryPassword,
+};

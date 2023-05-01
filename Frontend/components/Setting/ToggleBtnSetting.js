@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 
 import Figures from "../../constants/figures/Figures";
+import Colors from "../../constants/Colors/Colors";
 
 function ToggleBtnSetting({ toggleActiveCategory, activeCategory }) {
   const [isProfileActive, setIsProfileActive] = useState(
@@ -65,9 +65,10 @@ export default ToggleBtnSetting;
 
 const styles = StyleSheet.create({
   toggleButtonsContainer: {
+    backgroundColor: Colors.white,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    // marginTop: 25,
     marginLeft: 90,
   },
   toggleButtonGroup: {
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 380,
-    borderWidth: 2,
     borderColor: "rgba(0, 0, 0, 0.25)",
     borderRadius: 10,
   },

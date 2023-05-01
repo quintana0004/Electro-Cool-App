@@ -6,13 +6,22 @@ import {
 import {
   httpDeleteUser,
   httpGetAllUsers,
+  httpGetUserById,
   httpUpdateUserAccess,
   httpUpdateUserProfile,
+  httpUpdateUserState,
 } from "./users.controller";
 
 const router = express.Router();
 
-router.get("/", authenticateJWTMiddleWare, verifyAdminPrivilagesMiddleware, httpGetAllUsers);
+router.get(
+  "/",
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+  httpGetAllUsers
+);
+
+router.get("/profile", authenticateJWTMiddleWare, httpGetUserById);
 
 router.post("/profile", authenticateJWTMiddleWare, httpUpdateUserProfile);
 
@@ -23,6 +32,13 @@ router.post(
   httpUpdateUserAccess
 );
 
-router.delete("/:id", authenticateJWTMiddleWare, verifyAdminPrivilagesMiddleware, httpDeleteUser);
+router.post("/updateState", authenticateJWTMiddleWare, httpUpdateUserState);
+
+router.delete(
+  "/:id",
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+  httpDeleteUser
+);
 
 export default router;
