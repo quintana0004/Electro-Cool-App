@@ -323,7 +323,7 @@ function RequestedService({ navigation }) {
                     ref.current.values.Description,
                     "New",
                     checked,
-                    true, 
+                    true,
                     "",
                     ""
                   );
@@ -344,7 +344,9 @@ function RequestedService({ navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log("Requested Service Values on Submit:", values)}
+        onSubmit={(values) =>
+          console.log("Requested Service Values on Submit:", values)
+        }
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}
@@ -739,9 +741,6 @@ function RequestedService({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "400",
     color: Colors.black,
