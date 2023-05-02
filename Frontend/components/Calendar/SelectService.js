@@ -188,8 +188,6 @@ function RequestedService({ onCheck }) {
       requestedService: val,
       serviceDetails: ref.current.values.Description,
       status: requestedData.data.status,
-      // jobLoadType: checked,
-      // policySignature: requestedData.data.policySignature,
       carId: carId,
       customerId: customerId,
     };

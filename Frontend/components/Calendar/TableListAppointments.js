@@ -11,8 +11,6 @@ import ErrorOverlayAppointment from "../UI/ErrorOverlayAppointment";
 import LoadingOverlay from "../UI/LoadingOverlay";
 
 function TableListAppointments({ searchTerm }) {
-  // const TAKE = 15;
-  // ONLY SHOW DAYS FORWARD AND THE MIN DATE SEA HOY
   const [errorMessage, setErrorMessage] = useState("");
   const todaysDate = new Date();
   const minDate = new Date(
@@ -118,11 +116,6 @@ function TableListAppointments({ searchTerm }) {
     );
   }
 
-  const markedDates = {};
-  for (let d = new Date(minDate); d <= todaysDate; d.setDate(d.getDate() + 1)) {
-    markedDates[d.toISOString().slice(0, 10)] = { disabled: true };
-  }
-
   //Verify the current Month of the Date
   return (
     <View style={styles.listContainer}>
@@ -135,19 +128,20 @@ function TableListAppointments({ searchTerm }) {
           }}
           minDate={minDate1}
           maxDate={maxDate1}
-          hideExtraDays={true}
+          // hideExtraDays={true}
+          markingType="custom"
           theme={{
             backgroundColor: Colors.white,
             calendarBackground: Colors.white,
             selectedDayBackgroundColor: Colors.brightGreen,
-            agendaDayTextColor: Colors.white,
-            agendaDayNumColor: Colors.white,
+            agendaDayTextColor: Colors.black,
+            agendaDayNumColor: Colors.black,
             agendaTodayColor: Colors.black,
             selectedDayTextColor: Colors.white,
+            dotColor: Colors.brightGreen,
+            todayTextColor: Colors.brightGreen,
           }}
           renderKnob={() => renderKnob()}
-          selected={todaysDate.toISOString().slice(0, 10)}
-          markedDates={markedDates}
         />
       )}
     </View>

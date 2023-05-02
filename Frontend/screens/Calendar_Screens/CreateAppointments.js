@@ -255,7 +255,7 @@ function CreateAppointments({ navigation }) {
         hour: "numeric",
         minute: "numeric",
       });
-      console.log(formattedTime);
+
       setHour(hours);
       setMin(minutes);
     },
@@ -269,7 +269,6 @@ function CreateAppointments({ navigation }) {
       hour: "numeric",
       minute: "numeric",
     });
-    console.log(formattedTime);
   }, [setOpen]);
 
   const onDismissSingle = useCallback(() => {
