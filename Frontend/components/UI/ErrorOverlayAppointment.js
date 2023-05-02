@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { Button } from "react-native-paper";
 
-function ErrorOverlay({ message, onConfirm }) {
+function ErrorOverlayAppointment({ message, onConfirm }) {
   return (
     <View style={styles.container}>
       <Image
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ErrorOverlay;
+export default ErrorOverlayAppointment;
