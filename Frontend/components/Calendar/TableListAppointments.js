@@ -1,27 +1,30 @@
-import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Text,
-  RefreshControl,
-} from "react-native";
-import { Modal, Button } from "react-native-paper";
+import React, { useState } from "react";
+import { Dimensions, StyleSheet, View, Text, Alert } from "react-native";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
 import { Agenda } from "react-native-calendars";
 import { useCalendarStore } from "../../Store/calendarStore";
 import { useQuery } from "@tanstack/react-query";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Colors from "../../constants/Colors/Colors";
+import ErrorOverlay_Shelly from "../UI/ErrorOVerlay_Shelly";
+import LoadingOverlay from "../UI/LoadingOverlay";
 
 function TableListAppointments({ searchTerm }) {
   // const TAKE = 15;
+  // ONLY SHOW DAYS FORWARD AND THE MIN DATE SEA HOY
+  const [errorMessage, setErrorMessage] = useState("");
   const todaysDate = new Date();
-  const minDate = new Date();
-  minDate.setMonth(todaysDate.getMonth() - 3); //only present 3 months back from current day(today)
-  const maxDate = new Date();
-  maxDate.setMonth(todaysDate.getMonth() + 3); // present 3 months forward from current day(today)
-
+  const minDate = new Date(
+    todaysDate.getFullYear(),
+    todaysDate.getMonth(),
+    todaysDate.getDate()
+  );
+  const maxDate = new Date(
+    todaysDate.getFullYear(),
+    todaysDate.getMonth() + 3,
+    todaysDate.getDate()
+  );
   const minDate1 = minDate.toISOString();
   const maxDate1 = maxDate.toISOString();
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +40,10 @@ function TableListAppointments({ searchTerm }) {
   });
 
   async function getAllAppointments() {
-    const response = await httpGetAllAppointments(todaysDate.toJSON());
+    setErrorMessage("Error loading Appointments. Please try again later.");
+
+    //  const response = await httpGetAllAppointments(todaysDate.toJSON());
+    const response = await httpGetAllAppointments("Saludos");
     const responseData = response.data;
 
     if (responseData && responseData.length === 0) {
@@ -48,8 +54,20 @@ function TableListAppointments({ searchTerm }) {
 
     return responseData;
   }
+  function errorHandler() {
+    setErrorMessage(null);
+  }
+  if (isError) {
+    return (
+      <ErrorOverlay_Shelly message={errorMessage} onConfirm={errorHandler} />
+    );
+  }
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
 
   function renderTableItem(item) {
+    //Function to render data onto agenda
     console.log("TABLE ITEM DATA ((HERE)): ", item);
     const itemInfo = {
       id: item.id,
@@ -63,27 +81,27 @@ function TableListAppointments({ searchTerm }) {
   }
 
   function renderEmptyData() {
+    // If there are no appointments on the day, show this message
     return (
       <View
         style={{
-          backgroundColor: "#fff",
-          marginTop: 100,
-          paddingTop: 200,
-          paddingBottom: 200,
+          justifyContent: "center",
+          alignItems: "center",
+          height: 600,
         }}
       >
         <View
           style={{
-            justifyContent: "center",
-            alignSelf: "center",
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 10,
           }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              textAlign: "center",
-            }}
-          >
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
             No Appointments on this day.
           </Text>
         </View>
@@ -91,11 +109,17 @@ function TableListAppointments({ searchTerm }) {
     );
   }
   function renderKnob() {
+    //Icon for the Agenda Dropdown
     return (
       <View>
-        <Text>Button</Text>
+        <Icon name="chevron-down" size={20} color="black" />
       </View>
     );
+  }
+
+  const markedDates = {};
+  for (let d = new Date(minDate); d <= todaysDate; d.setDate(d.getDate() + 1)) {
+    markedDates[d.toISOString().slice(0, 10)] = { disabled: true };
   }
 
   //Verify the current Month of the Date
@@ -111,9 +135,18 @@ function TableListAppointments({ searchTerm }) {
           minDate={minDate1}
           maxDate={maxDate1}
           hideExtraDays={true}
-          theme={{ agendaKnobColor: "#fff" }}
+          theme={{
+            backgroundColor: Colors.white,
+            calendarBackground: Colors.white,
+            selectedDayBackgroundColor: Colors.brightGreen,
+            agendaDayTextColor: Colors.white,
+            agendaDayNumColor: Colors.white,
+            agendaTodayColor: Colors.black,
+            selectedDayTextColor: Colors.white,
+          }}
           renderKnob={() => renderKnob()}
           selected={todaysDate.toISOString().slice(0, 10)}
+          markedDates={markedDates}
         />
       )}
     </View>

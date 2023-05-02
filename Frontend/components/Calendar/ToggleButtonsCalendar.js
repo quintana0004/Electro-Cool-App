@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
     width: 380,
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.25)",
-    borderRadius: 10,
-    left: 30,
+    borderRadius: 9,
+    left: 8,
     backgroundColor: "white",
-    height: 40,
+    height: 43,
   },
   toggleButton: {
     flexDirection: "row",
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
   toggleButtonText: {
     fontSize: 22,
     fontWeight: "bold",
-    marginLeft: 10,
+    marginTop: -2,
   },
   activeButton: {
     backgroundColor: "rgba(248, 217, 134, 0.65)",
-    borderRadius: 10,
+    borderRadius: 7,
   },
 });

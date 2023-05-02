@@ -12,9 +12,8 @@ function TableListTasks({
   searchLoading,
   setSearchLoading,
 }) {
-  console.log("List");
   const TAKE = 15;
-  searchTerm = "2023-06-12T00:00:00.000Z";
+  searchTerm = new Date().toISOString();
 
   const queryClient = useQueryClient();
 
@@ -32,7 +31,6 @@ function TableListTasks({
   async function getTasksHomeScreenData({ pageParam = 0 }) {
     let data = null;
     data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    console.log("Gabo es cool", data);
 
     if (searchLoading) setSearchLoading(false);
 
@@ -48,7 +46,6 @@ function TableListTasks({
   }
 
   function getTableData() {
-    console.log("GetData", data);
     let tableData = [];
 
     for (const items of data.pages.map((p) => p.data).flat()) {
@@ -65,7 +62,6 @@ function TableListTasks({
   }
 
   function renderTableItem({ item }) {
-    console.log("Loading", item);
     const itemInfo = {
       id: item.id,
       title: item.text,

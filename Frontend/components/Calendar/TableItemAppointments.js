@@ -1,12 +1,11 @@
 import { Text, View, StyleSheet, ToastAndroid } from "react-native";
 import { format } from "date-fns";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable"; //Left this here if in the future, the cards will be pressable
 import { Card } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import { httpDeleteAppointment } from "../../api/appointments.api";
 import { useCalendarStore } from "../../Store/calendarStore";
-import { useState } from "react";
 
 function TableItemAppointments({ itemData }) {
   const { id, customername, arrivalDateTime, service, brand, licensePlate } =
@@ -43,9 +42,9 @@ function TableItemAppointments({ itemData }) {
       {/* <Pressable onPress={() => console.log("PRESSED ITEM")}> */}
       <Card
         style={{
-          marginTop: 10,
+          marginTop: 15,
           marginBottom: 10,
-          width: 500,
+          width: 515,
           borderColor: Colors.white,
           borderWidth: 12,
           backgroundColor: Colors.white,
@@ -54,13 +53,13 @@ function TableItemAppointments({ itemData }) {
         <Card.Content>
           <View style={styles.cardContentContainer}>
             <View style={styles.serviceContainer}>
-              <View style={{ width: 150 }}>
+              <View style={{ width: 130 }}>
                 <Text style={styles.boldText}>{customername}</Text>
                 <Text style={styles.boldText}>{DateText()}</Text>
               </View>
             </View>
             <View style={styles.serviceContainer}>
-              <View style={{ width: 150 }}>
+              <View style={{ width: 160 }}>
                 <Text style={styles.boldText}>{service}</Text>
                 <Text style={styles.boldText}>
                   {brand} {licensePlate}
@@ -69,7 +68,7 @@ function TableItemAppointments({ itemData }) {
             </View>
             <View style={{ flexDirection: "row" }}>
               <Appbar.Action
-                color="#05C1E7"
+                color="#138A8C"
                 icon="check-circle"
                 onPress={async () => handleConfirmORDeleteApp()}
               />
