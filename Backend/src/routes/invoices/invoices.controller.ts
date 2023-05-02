@@ -17,7 +17,7 @@ import {
   deleteInvoice,
   findInvoiceWithChildsById,
   findInvoicesByCustomer,
-  upsertInvoice,
+  upsertInvoice, findAllPendingInvoice,
 } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
@@ -33,6 +33,15 @@ async function httpGetAllInvoices(req: Request, res: Response) {
       : "";
     const invoicesData = await findAllInvoices(page, take, searchTerm);
 
+    return res.status(200).json(invoicesData);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all invoices", error, res);
+  }
+}
+
+async function httpGetAllPendingInvoices(req: Request, res: Response) {
+  try {
+    const invoicesData = await findAllPendingInvoice();
     return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
@@ -190,6 +199,7 @@ async function httpDeleteInvoice(req: Request, res: Response) {
 
 export {
   httpGetAllInvoices,
+  httpGetAllPendingInvoices,
   httpGetInvoice,
   httpUpsertInvoice,
   httpDeleteInvoice,

@@ -1,4 +1,5 @@
 import { IJobOrder, IUser } from "../types";
+
 import {
   IInvoice,
   IInvoiceItem,
@@ -168,6 +169,13 @@ async function isValidTaskId(id: number | string) {
   return true;
 }
 
+function isValidPhoneNumber(phone: string | undefined) {
+  if (phone === "NaPN") {
+    return false;
+  }
+  return true;
+}
+
 // --- Required Fields Validators ---
 function hasRequiredUserFields(userInfo: IUser) {
   if (
@@ -318,6 +326,7 @@ export {
   isValidDepositId,
   isValidAppointmentId,
   isValidTaskId,
+  isValidPhoneNumber,
   hasRequiredUserFields,
   hasRequiredCustomerFields,
   hasRequiredCarFields,
