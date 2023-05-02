@@ -26,7 +26,17 @@ import Vector from "../../assets/images/Vector.png";
 import VectorWhite from "../../assets/images/VectorWhite.png";
 import AppointmentWhite from "../../assets/images/AppointmentWhite.png";
 import Appointment from "../../assets/images/Appointment.png";
-
+import Wheel from "../../assets/images/Wheel.png";
+import NewIconDashboard from "../../assets/images/NewIconDashboard.png";
+import CarsPendingConfirmation from "../../assets/images/CarsPendingConfirmation.png";
+import Vehicle from "../../assets/images/Vehicle.png";
+import MoneyHand from "../../assets/images/MoneyHand.png";
+import totalDraft from "../../assets/images/totalDraft.png";
+import totalAmountPending from "../../assets/images/totalAmountPending.png";
+import totalAmountCancelled from "../../assets/images/totalAmountCancelled.png";
+import VehicleInShop from "../../assets/images/VehicleInShop.png";
+import totalAmountAppointments from "../../assets/images/totalAmountAppointments.png";
+import totalAmountTasks from "../../assets/images/totalAmountTasks.png";
 const Figures = {
   CalendarIcon,
   ClientBookIcon,
@@ -56,6 +66,17 @@ const Figures = {
   ClientInvoicesIcon,
   ClientCarsIcon,
   InvoiceSummaryImage,
+  Wheel,
+  NewIconDashboard,
+  CarsPendingConfirmation,
+  Vehicle,
+  MoneyHand,
+  totalDraft,
+  totalAmountPending,
+  totalAmountCancelled,
+  VehicleInShop,
+  totalAmountAppointments,
+  totalAmountTasks,
 };
 
 export default Figures;

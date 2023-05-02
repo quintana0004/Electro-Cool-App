@@ -7,12 +7,22 @@ import {
   updateUserAccessState,
 } from "../../models/users.model";
 import { IUser } from "../../types";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
-import { isIsoDate, isValidUserId } from "../../utils/validators.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
+import {
+  isIsoDate,
+  isValidPhoneNumber,
+  isValidUserId,
+} from "../../utils/validators.utils";
+import { formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetAllUsers(req: Request, res: Response) {
   try {
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : undefined;
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : undefined;
 
     const users = await findUserByName(searchTerm);
     return res.json(users);
@@ -27,7 +37,7 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       id: req.userId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      phone: req.body.phone,
+      phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
@@ -42,14 +52,39 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       );
     }
 
-    const doesEmailAlreadyExist = await findUserByEmailOrUserName(userInfo.email);
+    const doesEmailAlreadyExist = await findUserByEmailOrUserName(
+      userInfo.email
+    );
     if (doesEmailAlreadyExist && doesEmailAlreadyExist.id != userInfo.id) {
-      return handleBadResponse(400, "Another user with this email already exist.", res);
+      return handleBadResponse(
+        400,
+        "Another user with this email already exist.",
+        res
+      );
     }
 
-    const doesUserNameAlreadyExist = await findUserByEmailOrUserName(undefined, userInfo.username);
-    if (doesUserNameAlreadyExist && doesUserNameAlreadyExist.id != userInfo.id) {
-      return handleBadResponse(400, "Another user with this username already exist.", res);
+    const doesUserNameAlreadyExist = await findUserByEmailOrUserName(
+      undefined,
+      userInfo.username
+    );
+    if (
+      doesUserNameAlreadyExist &&
+      doesUserNameAlreadyExist.id != userInfo.id
+    ) {
+      return handleBadResponse(
+        400,
+        "Another user with this username already exist.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(userInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
+        res
+      );
     }
 
     const user = await updateUser(userInfo);
@@ -138,4 +173,9 @@ async function httpDeleteUser(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllUsers, httpUpdateUserProfile, httpUpdateUserAccess, httpDeleteUser };
+export {
+  httpGetAllUsers,
+  httpUpdateUserProfile,
+  httpUpdateUserAccess,
+  httpDeleteUser,
+};
