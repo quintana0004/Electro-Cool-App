@@ -129,7 +129,6 @@ function CreateAppointments({ navigation }) {
     let response;
 
     try {
-      console.log("Gabo esta testing esto", clientInfo); //Gabo esta testing esto
       response = await httpUpsertClient(clientInfo);
     } catch (error) {
       console.log("Error at Handle Save Client: ", error);
@@ -142,7 +141,6 @@ function CreateAppointments({ navigation }) {
     let response;
 
     try {
-      console.log("Gabo esta testing esto (2)", carInfo); //Gabo esta testing esto
       response = await httpUpsertCar(carInfo);
     } catch (error) {
       console.log("Error at Handle Save Car: ", error);
@@ -155,7 +153,6 @@ function CreateAppointments({ navigation }) {
     let response;
 
     try {
-      console.log("Gabo esta testing esto (3)", appointmentInfo); //Gabo esta testing esto
       response = await httpUpsertAppointments(appointmentInfo);
       setReloadCalendarList();
     } catch (error) {
@@ -222,13 +219,11 @@ function CreateAppointments({ navigation }) {
         };
       }
       carInfoResponse = await handleSaveCar(carInfoResponse);
-      console.log("Gabo esta testing esto (4)", appointmentInfo); //Gabo esta testing esto
 
-      //?When customer and car has been sent then need to create the jobOrder
+      //?When customer and car has been sent then need to create the Appointment
       const dateTime = new Date(date);
       dateTime.setHours(hour);
       dateTime.setMinutes(min);
-      console.log("Gabo es gay", dateTime);
 
       appointmentResponse = {
         service: appointmentInfo.requestedService,
@@ -243,7 +238,6 @@ function CreateAppointments({ navigation }) {
         email: clientInfo.email,
         arrivalDateTime: dateTime,
       };
-      console.log("Mike Testing", appointmentResponse); //Gabo esta testing esto
 
       appointmentResponse = await handleSaveAppointment(appointmentResponse);
     } catch (error) {
