@@ -113,7 +113,7 @@ function CompanyPolicy({ navigation }) {
     try {
       response = await httpUpsertCar(carInfo);
     } catch (error) {
-      console.log("Error at Handle Save Car: ", error);
+      console.log("Error at Handle Save Car: ", error.response.data);
     }
 
     return response;
@@ -172,7 +172,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", 
+          carHasItems: vehicleInformation.carHasItems === "Yes",
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -186,7 +186,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", 
+          carHasItems: vehicleInformation.carHasItems === "Yes",
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -206,7 +206,7 @@ function CompanyPolicy({ navigation }) {
 
       response = await handleSaveJobOrder(jobOrderResponse);
     } catch (error) {
-      console.log("Error at Handle Save: ", error);
+      console.log("Error at Handle Save: ", error.response.data);
     }
   }
 

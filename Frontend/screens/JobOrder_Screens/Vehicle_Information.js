@@ -25,6 +25,7 @@ import { Button, Dialog, Portal, Provider } from "react-native-paper";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import { httpGetCar, httpUpsertCar } from "../../api/cars.api";
+import { useRouterStore } from "../../Store/routerStore";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
@@ -55,6 +56,7 @@ function VehicleInformation({ route, navigation }) {
   const editVehicleInformation = useJobOrderStore(
     (state) => state.editVehicleInformation
   );
+  const NewCarNextPage = useRouterStore((state) => state.NewCarNextPage);
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
@@ -190,7 +192,7 @@ function VehicleInformation({ route, navigation }) {
 
   //?Next
   function goNextPageAction() {
-    const pageGoNext = StackActions.push("RequestedService");
+    const pageGoNext = StackActions.push(NewCarNextPage);
     navigation.dispatch(pageGoNext);
   }
 
@@ -270,7 +272,9 @@ function VehicleInformation({ route, navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log("Vehicle Information Values on Submit: ", values)}
+        onSubmit={(values) =>
+          console.log("Vehicle Information Values on Submit: ", values)
+        }
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}
