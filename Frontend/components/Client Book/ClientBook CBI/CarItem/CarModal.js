@@ -26,27 +26,32 @@ import { httpGetCar, httpUpsertCar } from "../../../../api/cars.api";
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
     .required("Brand is required.")
-    .matches("^[A-Za-z ]{2,50}$", "Brand can't contain digits."),
+    .matches("^[A-Za-z ]{2,50}$", "Must Contain Only Letters."),
   LicensePlate: Yup.string()
     .required("License Plate is required.")
-    .matches("^[A-Z0-9]{2,8}$", "License Plate can't contain symbols."),
+    .min(6, "Must be 6 to 8 Characters Long")
+    .max(8, "Must be 6 to 8 Characters Long")
+    .matches("^[A-Z0-9]{6,8}$", "Only Upper Case Letters and Numbers."),
   Model: Yup.string().required("Model is required."),
   Year: Yup.string()
     .required("Year is required.")
+    .length(4, "Must be 4 Digits")
     .matches("^[12][0-9]{3}$", "Year is incorrect."),
   ColorVehicle: Yup.string()
     .required("Color is required.")
-    .matches("^[A-Za-z ]{2,50}$", "Color can't contain digits."),
+    .matches("^[A-Za-z ]{2,50}$", "Color can't contain Numbers."),
   Milage: Yup.string()
     .required("Milage is required.")
-    .matches("^[0-9]{1,6}$", "Can't contain symbols, space or comma."),
+    .min(2, "Musto contain more than 2 Digits")
+    .matches("^[0-9]{1,6}$", "Must Contain Only Numbers."),
   VinNumber: Yup.string()
     .required("Vin Number is required.")
-    .matches("^[A-HJ-NPR-Z0-9]{17}$", "Must contain 17 characters."),
+    .length(17, "Must Contain 17 Characters")
+    .matches("^[A-HJ-NPR-Z0-9]{17}$", "Only Upper Case Letters and Numbers."),
   Description: Yup.string(),
 });
 
-function CarModal({ activateModal }) {
+function CarModal({ activateModal, setSearchIcon }) {
   //Store Hooks
   const id = useVehicleInfoStore((state) => state.id);
   const customerId = CBCustomerInfoStore((state) => state.id);
@@ -164,6 +169,7 @@ function CarModal({ activateModal }) {
   }
 
   function goBackPageAction() {
+    setSearchIcon(true);
     activateModal(false);
   }
   function savePress() {

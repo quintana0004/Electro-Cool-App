@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Appbar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
@@ -29,6 +29,7 @@ function ClientBookCustomer({ navigation }) {
 
   const cutomerId = client.id;
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchIcon, setSearchIcon] = useState(true);
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
   const [openBannerFilter, setOpenBannerFilter] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -62,6 +63,7 @@ function ClientBookCustomer({ navigation }) {
           setSearchLoading={setSearchLoading}
           searchTerm={searchTerm}
           customerId={cutomerId}
+          setSearchIcon={setSearchIcon}
         />
       );
     } else {
@@ -118,7 +120,7 @@ function ClientBookCustomer({ navigation }) {
         <View
           style={{ justifyContent: "flex-end", flexDirection: "row", flex: 1 }}
         >
-          {activeCategory == "Vehicles" && (
+          {activeCategory == "Vehicles" && searchIcon && (
             <Appbar.Action
               icon="magnify"
               onPress={() => {
@@ -159,6 +161,7 @@ function ClientBookCustomer({ navigation }) {
           activeCategory={activeCategory}
         />
       </View>
+
       <View>{ToggleScreens(activeCategory)}</View>
     </View>
   );

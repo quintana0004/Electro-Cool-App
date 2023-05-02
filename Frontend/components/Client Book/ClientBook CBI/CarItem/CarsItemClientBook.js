@@ -4,7 +4,7 @@ import { Avatar } from "react-native-paper";
 import Figures from "../../../../constants/figures/Figures";
 import { useVehicleInfoStore } from "../../../../Store/JobOrderStore";
 
-function CarItemCB({ itemData, activateModal }) {
+function CarItemCB({ itemData, activateModal, setSearchIcon }) {
   const {
     id,
     brand,
@@ -18,6 +18,7 @@ function CarItemCB({ itemData, activateModal }) {
   } = itemData;
 
   function showCarInfo() {
+    setSearchIcon(false);
     activateModal(true);
   }
   const setVehicleInfo = useVehicleInfoStore(

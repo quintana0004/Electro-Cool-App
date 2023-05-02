@@ -21,11 +21,16 @@ import { httpUpsertClient } from "../../../../api/clients.api";
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
     .required("First Name is required.")
-    .matches("^[A-Za-z ]{2,50}$", "First name can't have digits."),
+    .matches("^[A-Za-z ]{2,50}$", "Must contain only letters."),
   lastName: Yup.string()
     .required("Last Name is required.")
-    .matches("^[A-Za-z ]{2,50}$", "Last name can't have digits."),
-  phoneNumber: Yup.string().required("Phone Number  is required."),
+    .matches("^[A-Za-z ]{2,50}$", "Must contain only letters."),
+  phoneNumber: Yup.string()
+    .required("Phone Number  is required.")
+    .matches(
+      "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
+      "Most contain only Numbers Ex. 123-456-7890 "
+    ),
   email: Yup.string()
     .required("Email is required.")
     .email("Invalid Email Address."),
@@ -51,6 +56,7 @@ function CustomerItemCB({ onUpdateFullName }) {
   const ref = useRef(null);
   const [saveData, setSaveData] = useState(false);
   const [disableInput, setDisableInput] = useState(true);
+  const [emailTouched, setEmailTouched] = useState(false);
 
   function DataRespondFormik() {
     let dataPassed;
@@ -155,7 +161,7 @@ function CustomerItemCB({ onUpdateFullName }) {
                 }}
               >
                 <View style={styles.containerText}>
-                  <View style={{ width: 200 }}>
+                  <View style={{ width: 220 }}>
                     <TextInput
                       label="First Name"
                       mode="outlined"
@@ -176,7 +182,7 @@ function CustomerItemCB({ onUpdateFullName }) {
                       {errors.firstName}
                     </HelperText>
                   </View>
-                  <View style={{ width: 280 }}>
+                  <View style={{ width: 260 }}>
                     <TextInput
                       label="Last Name"
                       mode="outlined"
@@ -226,7 +232,12 @@ function CustomerItemCB({ onUpdateFullName }) {
                       {errors.phoneNumber}
                     </HelperText>
                   </View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View
+                    style={{
+                      marginVertical: 30,
+                      //height: emailTouched ? 500 : 20,
+                    }}
+                  >
                     <TextInput
                       label="E-mail Address"
                       mode="outlined"
@@ -245,6 +256,8 @@ function CustomerItemCB({ onUpdateFullName }) {
                       error={touched.email && errors.email}
                       style={styles.textInputStyle}
                       disabled={disableInput}
+                      onPressIn={() => setEmailTouched(true)}
+                      onPressOut={() => setEmailTouched(false)}
                     />
                     <HelperText
                       type="error"

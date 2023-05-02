@@ -13,7 +13,7 @@ async function httpGetCar(id) {
   return response;
 }
 
-async function httpGetCarsByCustomerId(customerId, searchTerm) {
+async function httpGetCarsByCustomerId(searchTerm, customerId) {
   const queryParams = `?customerId=${customerId}&searchTerm=${searchTerm}`;
   const response = await axios("/cars/customer" + queryParams);
   return response;

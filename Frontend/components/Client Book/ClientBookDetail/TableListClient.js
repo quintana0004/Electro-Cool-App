@@ -4,22 +4,24 @@ import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllClients } from "../../../api/clients.api";
 import { CBCustomerInfoStore } from "../../../Store/JobOrderStore";
+import ErrorOverlay from "../../UI/ErrorOverlay";
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
   const reloadClientBookList = CBCustomerInfoStore(
     (state) => state.reloadClientBookList
   );
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["ClientBookHomePage", searchTerm, reloadClientBookList],
-    queryFn: getClientBookScreenData,
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.isLastPage
-        ? undefined
-        : lastPage.data.currentPage + 1;
-    },
-    enabled: true,
-  });
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
+    useInfiniteQuery({
+      queryKey: ["ClientBookHomePage", searchTerm, reloadClientBookList],
+      queryFn: getClientBookScreenData,
+      getNextPageParam: (lastPage) => {
+        return lastPage.data.isLastPage
+          ? undefined
+          : lastPage.data.currentPage + 1;
+      },
+      enabled: true,
+    });
 
   async function getClientBookScreenData({ pageParam = 0 }) {
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
@@ -57,6 +59,12 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
       />
     );
   }
+
+  if (isError) {
+    console.log("LaPuta", error.response.data);
+    return <ErrorOverlay />;
+  }
+
   return (
     <View
       style={{

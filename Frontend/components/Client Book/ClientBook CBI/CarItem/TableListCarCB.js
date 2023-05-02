@@ -17,7 +17,13 @@ import { useState } from "react";
 import { Modal } from "react-native-paper";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
 
-function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
+function CarList({
+  searchLoading,
+  setSearchLoading,
+  searchTerm,
+  customerId,
+  setSearchIcon,
+}) {
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -26,7 +32,12 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
   );
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useQuery({
-    queryKey: ["ClientBookHomeData", customerId, reloadClientBookCarList],
+    queryKey: [
+      "ClientBookHomeData",
+      customerId,
+      searchTerm,
+      reloadClientBookCarList,
+    ],
     queryFn: getClientBookHomeScreenData,
     enabled: true,
   });
@@ -60,7 +71,17 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
       date: item.createdDate,
     };
 
-    return <CarItemCB itemData={itemInfo} activateModal={setModalVisible} />;
+    return (
+      <CarItemCB
+        itemData={itemInfo}
+        activateModal={setModalVisible}
+        setSearchIcon={SearchIcon}
+      />
+    );
+  }
+
+  function SearchIcon(icon) {
+    setSearchIcon(icon);
   }
 
   return (
@@ -77,7 +98,7 @@ function CarList({ searchLoading, setSearchLoading, searchTerm, customerId }) {
       </View>
 
       <Modal visible={modalVisible} style={styles.ModalScreen}>
-        <CarModal activateModal={setModalVisible} />
+        <CarModal activateModal={setModalVisible} setSearchIcon={SearchIcon} />
       </Modal>
     </View>
   );
