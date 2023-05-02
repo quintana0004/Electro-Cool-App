@@ -7,7 +7,7 @@ import { useCalendarStore } from "../../Store/calendarStore";
 import { useQuery } from "@tanstack/react-query";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../../constants/Colors/Colors";
-import ErrorOverlay_Shelly from "../UI/ErrorOVerlay_Shelly";
+import ErrorOverlayAppointment from "../UI/ErrorOverlayAppointment";
 import LoadingOverlay from "../UI/LoadingOverlay";
 
 function TableListAppointments({ searchTerm }) {
@@ -42,8 +42,7 @@ function TableListAppointments({ searchTerm }) {
   async function getAllAppointments() {
     setErrorMessage("Error loading Appointments. Please try again later.");
 
-    //  const response = await httpGetAllAppointments(todaysDate.toJSON());
-    const response = await httpGetAllAppointments("Saludos");
+    const response = await httpGetAllAppointments(todaysDate.toJSON());
     const responseData = response.data;
 
     if (responseData && responseData.length === 0) {
@@ -59,7 +58,10 @@ function TableListAppointments({ searchTerm }) {
   }
   if (isError) {
     return (
-      <ErrorOverlay_Shelly message={errorMessage} onConfirm={errorHandler} />
+      <ErrorOverlayAppointment
+        message={errorMessage}
+        onConfirm={errorHandler}
+      />
     );
   }
   if (isLoading) {
@@ -68,7 +70,6 @@ function TableListAppointments({ searchTerm }) {
 
   function renderTableItem(item) {
     //Function to render data onto agenda
-    console.log("TABLE ITEM DATA ((HERE)): ", item);
     const itemInfo = {
       id: item.id,
       customername: item.customerName,

@@ -1,9 +1,7 @@
-import { Text, View, StyleSheet, ToastAndroid } from "react-native";
+import { StyleSheet, Text, ToastAndroid, View } from "react-native";
 import { format } from "date-fns";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable"; //Left this here if in the future, the cards will be pressable
-import { Card } from "react-native-paper";
+import { Appbar, Card } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
-import { Appbar } from "react-native-paper";
 import { httpDeleteAppointment } from "../../api/appointments.api";
 import { useCalendarStore } from "../../Store/calendarStore";
 

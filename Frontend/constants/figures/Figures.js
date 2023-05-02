@@ -35,6 +35,7 @@ import totalAmountCancelled from "../../assets/images/totalAmountCancelled.png";
 import VehicleInShop from "../../assets/images/VehicleInShop.png";
 import totalAmountAppointments from "../../assets/images/totalAmountAppointments.png";
 import totalAmountTasks from "../../assets/images/totalAmountTasks.png";
+
 const Figures = {
   CalendarIcon,
   ClientBookIcon,
@@ -60,6 +61,19 @@ const Figures = {
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  AppointmentCardIcon,
+  DateforAppointmentCardIcon,
+  Wheel,
+  NewIconDashboard,
+  CarsPendingConfirmation,
+  Vehicle,
+  MoneyHand,
+  totalDraft,
+  totalAmountPending,
+  totalAmountCancelled,
+  VehicleInShop,
+  totalAmountAppointments,
+  totalAmountTasks,
 };
 
 export default Figures;
