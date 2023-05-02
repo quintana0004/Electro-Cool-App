@@ -21,6 +21,7 @@ import {
 import * as Yup from "yup";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetUserProfile, httpUpdateUserProfile } from "../../api/users.api";
+import ErrorDialog from "../UI/ErrorDialog";
 
 //Validation for the users information
 const ValidationUser = Yup.object().shape({
@@ -67,6 +68,13 @@ function ProfilePage({}) {
 
   async function getUserProfile() {
     const response = await httpGetUserProfile();
+
+    if (response.hasError) {
+      setErrorMSG(response.errorMessage);
+      setErrorDialogVisible(true);
+      return;
+    }
+
     return response.data;
   }
 
@@ -84,6 +92,7 @@ function ProfilePage({}) {
 
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
+  const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
   function isProfileFormValid() {
     // Start to validating there is no error on input page
@@ -128,7 +137,9 @@ function ProfilePage({}) {
     const response = await httpUpdateUserProfile(userProfileInfo);
 
     if (response.hasError) {
-      // TODO: HANDLE ERROR.
+      setErrorMSG(response.errorMessage);
+      setErrorDialogVisible(true);
+      return;
     }
 
     showSuccessMessage();
@@ -472,6 +483,11 @@ function ProfilePage({}) {
           </Dialog>
         </Portal>
       )}
+      <ErrorDialog
+        dialogVisible={errorDialogVisible}
+        setDialogVisible={setErrorDialogVisible}
+        errorMSG={errorMSG}
+      />
     </View>
   );
 }

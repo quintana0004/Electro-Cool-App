@@ -24,6 +24,9 @@ import {
 import * as Yup from "yup";
 import { httpLogin } from "../api/auth.api";
 import { storeTokens } from "../Store/secureStore";
+import RecoveryPasswordModal from "../components/LogIn/RecoveryPasswordModal";
+import ErrorDialog from "../components/UI/ErrorDialog";
+import SuccessDialog from "../components/UI/SuccessDialog";
 
 const validatorUser = Yup.object().shape({
   username: Yup.string()
@@ -51,6 +54,16 @@ function LogIn({ navigation }) {
 
   //Visibility of the modal error
   const [visibilityUser, setVisibilityUser] = useState(false);
+
+  // Visibility of the modal of Recovery Password
+  const [recoveryPasswordModalVisible, setRecoveryPasswordModalVisible] =
+    useState(false);
+
+  // Visibility of the Success Confirmation Dialog for Recovery Password
+  const [successDialogVisible, setSuccessDialogVisible] = useState(false);
+
+  // Visibility of the Error Dialog
+  const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
@@ -174,9 +187,11 @@ function LogIn({ navigation }) {
           </View>
         </View>
         <View style={styles.direction}>
-          <View style={styles.recovery}>
-            <Text style={styles.textRecovery}>Recovery Password</Text>
-          </View>
+          <Pressable onPress={() => setRecoveryPasswordModalVisible(true)}>
+            <View style={styles.recovery}>
+              <Text style={styles.textRecovery}>Recovery Password</Text>
+            </View>
+          </Pressable>
           <Pressable style={styles.btnPlacement} onPress={handleLogin}>
             <Text
               style={{ color: Colors.white, fontSize: 20, fontWeight: "bold" }}
@@ -266,6 +281,26 @@ function LogIn({ navigation }) {
             </Dialog>
           </Portal>
         )}
+        <RecoveryPasswordModal
+          visible={recoveryPasswordModalVisible}
+          setVisible={setRecoveryPasswordModalVisible}
+          setSuccessDialogVisible={setSuccessDialogVisible}
+          setErrorDialogVisible={setErrorDialogVisible}
+          setErrorMSG={setErrorMSG}
+        />
+        <SuccessDialog
+          dialogVisible={successDialogVisible}
+          setDialogVisible={setSuccessDialogVisible}
+          headerText={"Password Recover Email Sent."}
+          subHeaderText={
+            "Please check your inbox to gain access to your account."
+          }
+        />
+        <ErrorDialog
+          dialogVisible={errorDialogVisible}
+          setDialogVisible={setErrorDialogVisible}
+          errorMSG={errorMSG}
+        />
       </ImageBackground>
     </View>
   );

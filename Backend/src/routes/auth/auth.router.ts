@@ -15,6 +15,6 @@ router.post("/signup", httpSignUp);
 
 router.post("/refreshToken", httpRefreshToken);
 
-router.post("/requestTemporaryPassword", httpRequestTemporaryPassword);
+router.post("/recoveryPassword", httpRequestTemporaryPassword);
 
 export default router;

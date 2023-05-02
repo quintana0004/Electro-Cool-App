@@ -5,19 +5,21 @@ import Colors from "../../constants/Colors/Colors";
 import { useSettingStore } from "../../Store/settingStore";
 import { Entypo } from "@expo/vector-icons";
 import { httpDeleteUser, httpUpdateUserAccessState } from "../../api/users.api";
+import ErrorDialog from "../UI/ErrorDialog";
 
 function TableItemSetting({ data }) {
   const setUserSetting = useSettingStore((state) => state.setUserSetting);
-
-  //Change colors of the picker
-  let colorPicked;
-  let colorBorder;
-
-  const [pickedValue, setPickedValue] = useState(data.accessState);
   const toggleReloadSettingList = useSettingStore(
     (state) => state.toggleReloadSettingList
   );
 
+  const [pickedValue, setPickedValue] = useState(data.accessState);
+  const [errorDialogVisible, setErrorDialogVisible] = useState(false);
+  const [errorMSG, setErrorMSG] = useState("");
+
+  //Change colors of the picker
+  let colorPicked;
+  let colorBorder;
   switch (pickedValue) {
     case "Active":
       colorPicked = Colors.lightGreen;
@@ -43,11 +45,11 @@ function TableItemSetting({ data }) {
     const response = await httpDeleteUser(data.id);
 
     if (response.hasError) {
-      console.log("Error");
-      // TODO: HANDLE ERROR
+      setErrorMSG(response.errorMessage);
+      setErrorDialogVisible(true);
+      return;
     }
 
-    console.log("DELETION RESPONSE: ", response.data);
     toggleReloadSettingList();
   }
 
@@ -123,6 +125,11 @@ function TableItemSetting({ data }) {
       >
         <Entypo name="trash" size={24} color="black" />
       </Pressable>
+      <ErrorDialog
+        dialogVisible={errorDialogVisible}
+        setDialogVisible={setErrorDialogVisible}
+        errorMSG={errorMSG}
+      />
     </View>
   );
 }
