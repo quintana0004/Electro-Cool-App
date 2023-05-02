@@ -38,6 +38,7 @@
     "react-native-paper-dates": "^0.15.1",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
+    "yarn": "^1.22.19",
     "yup": "^1.0.2",
     "zustand": "^4.3.6"
   },

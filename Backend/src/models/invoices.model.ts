@@ -2,7 +2,7 @@ import { Invoice_Item } from "@prisma/client";
 import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
 import { isNumeric } from "../utils/validators.utils";
-import { IInvoice, IInvoiceItem } from "./../types/index.d";
+import { IInvoice, IInvoiceItem } from "../types";
 import { updateDepositsParentInvoice } from "./deposits.model";
 
 async function findAllInvoices(
@@ -63,6 +63,28 @@ async function findAllInvoices(
       currentPage: page,
     };
     return invoicesData;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPendingInvoice() {
+  try {
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Pending",
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    return invoices;
   } catch (error) {
     throw error;
   }
@@ -147,6 +169,98 @@ async function findInvoiceWithChildsById(id: number) {
     }
 
     return excludeFields(invoice, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPaidInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Paid",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllInDraftInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "In Draft",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPendingInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Pending",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCanceledInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Canceled",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
   } catch (error) {
     throw error;
   }
@@ -338,9 +452,14 @@ async function deleteInvoice(id: number) {
 
 export {
   findAllInvoices,
+  findAllPendingInvoice,
   findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
+  findAllPaidInvoicesFromToday,
+  findAllInDraftInvoicesFromToday,
+  findAllPendingInvoicesFromToday,
+  findAllCanceledInvoicesFromToday,
   updatePolicyAmount,
   upsertInvoice,
   deleteInvoice,
