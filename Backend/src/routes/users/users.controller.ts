@@ -9,16 +9,12 @@ import {
   updateUserState,
 } from "../../models/users.model";
 import { IUser } from "../../types";
+import { excludeFields } from "../../utils/db.utils";
 import {
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
-import {
-  isIsoDate,
-  isValidPhoneNumber,
-  isValidUserId,
-} from "../../utils/validators.utils";
-import { formatPhoneNumber } from "../../utils/formatters.utils";
+import { isIsoDate, isValidUserId } from "../../utils/validators.utils";
 
 async function httpGetAllUsers(req: Request, res: Response) {
   try {
@@ -70,22 +66,11 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       id: req.userId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      phone: formatPhoneNumber(req.body.phone),
+      phone: req.body.phone,
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
     };
-
-    const doesEmailAlreadyExist = await findUserByEmailOrUserName(
-      userInfo.email
-    );
-    if (doesEmailAlreadyExist && doesEmailAlreadyExist.id != userInfo.id) {
-      return handleBadResponse(
-        400,
-        "Another user with this email already exist.",
-        res
-      );
-    }
 
     const doesEmailAlreadyExist = await findUserByEmailOrUserName(
       userInfo.email
@@ -109,15 +94,6 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "Another user with this username already exist.",
-        res
-      );
-    }
-
-    const isPhoneNumberFormatValid = isValidPhoneNumber(userInfo.phone);
-    if (!isPhoneNumberFormatValid) {
-      return handleBadResponse(
-        400,
-        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }
@@ -240,7 +216,9 @@ async function httpDeleteUser(req: Request, res: Response) {
 
 export {
   httpGetAllUsers,
+  httpGetUserById,
   httpUpdateUserProfile,
   httpUpdateUserAccess,
+  httpUpdateUserState,
   httpDeleteUser,
 };
