@@ -1,14 +1,43 @@
 import axios from "./axios";
 
 async function httpGetAllUsers(searchTerm) {
-  const searchVal = searchTerm ?? "";
-  const queryParams = `?searchTerm=${searchVal}`;
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
 
-  return await axios("/users" + queryParams);
+  try {
+    const searchVal = searchTerm ?? "";
+    const queryParams = `?searchTerm=${searchVal}`;
+    const response = await axios("/users" + queryParams);
+    responseToReturn.data = response.data;
+  } catch (error) {
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error.errorMessage;
+  }
+
+  return responseToReturn;
 }
 
 async function httpGetUserProfile() {
-  return await axios("/users/profile");
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
+
+  try {
+    const response = await axios("/users/profile");
+    responseToReturn.data = response.data;
+  } catch (error) {
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error.errorMessage;
+  }
+
+  return responseToReturn;
 }
 
 async function httpUpsertUsers(usersInfo) {
