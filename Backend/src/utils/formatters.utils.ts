@@ -25,4 +25,29 @@ function formatPhoneNumber(phoneNumberString: string): string {
   return "NaPN";
 }
 
-export { titleCase, formatPhoneNumber };
+function formatName(fullName: string): string {
+  if (!fullName) {
+    return "";
+  }
+
+  return fullName
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/(^|[\s.])\S/g, (match: string) => match.toUpperCase())
+    .replace(/[\s.](\S)/g, (match: string) => match.toLowerCase());
+}
+
+function formatLicensePlate(licensePlate: string): string {
+  const validCharacters = /[^A-Za-z0-9]/g;
+  const formattedString = licensePlate
+    .toUpperCase()
+    .replace(validCharacters, "");
+
+  if (formattedString.length === 0) {
+    return "";
+  }
+
+  return formattedString;
+}
+
+export { titleCase, formatPhoneNumber, formatName, formatLicensePlate };

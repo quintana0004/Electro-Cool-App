@@ -1,11 +1,17 @@
 import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
+import { formatName } from "../utils/formatters.utils";
 import { isNumeric } from "../utils/validators.utils";
 import { IDeposit } from "./../types/index.d";
 
-async function findAllDeposits(page: number, take: number, searchTerm: string | undefined) {
+async function findAllDeposits(
+  page: number,
+  take: number,
+  searchTerm: string | undefined
+) {
   try {
     const term = searchTerm ?? "";
+    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
     const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -18,7 +24,7 @@ async function findAllDeposits(page: number, take: number, searchTerm: string | 
           {
             customer: {
               fullName: {
-                contains: term,
+                contains: nameSearch,
               },
             },
           },
@@ -96,7 +102,7 @@ async function findDepositsByInvoiceId(invoiceId: number) {
         customer: {
           select: {
             fullName: true,
-          }
+          },
         },
       },
     });
@@ -141,7 +147,10 @@ async function upsertDeposit(depositInfo: IDeposit) {
   }
 }
 
-async function updateDepositsParentInvoice(depositIds: number[], invoiceId: number) {
+async function updateDepositsParentInvoice(
+  depositIds: number[],
+  invoiceId: number
+) {
   try {
     let deposits = await prisma.deposit.updateMany({
       where: {

@@ -1,6 +1,8 @@
 import prisma from "../database/prisma";
 import { IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
+import { formatName } from "../utils/formatters.utils";
+import { isNumeric } from "../utils/validators.utils";
 
 async function findAllJobOrders(
   page: number,
@@ -9,13 +11,12 @@ async function findAllJobOrders(
 ) {
   try {
     const idSearch =
-      searchTerm != undefined && typeof searchTerm != "string"
+      searchTerm != undefined && isNumeric(searchTerm)
         ? Number(searchTerm)
         : undefined;
-    const nameSearch = searchTerm ? searchTerm : undefined;
+    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
-
     const jobOrders = await prisma.jobOrder.findMany({
       skip: skipAmount,
       take: overFetchAmount,

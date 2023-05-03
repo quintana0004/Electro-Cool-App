@@ -2,6 +2,7 @@ import prisma from "../database/prisma";
 import { getUserIdFromToken } from "../services/auth.service";
 import { excludeFields, generateSalt, sha512 } from "../utils/db.utils";
 import { buildErrorObject } from "../utils/errors.utils";
+import { formatName } from "../utils/formatters.utils";
 import { IUser } from "./../types/index.d";
 import { findCompanyByName } from "./company.model";
 
@@ -62,16 +63,25 @@ async function findUserByEmailOrUserName(email?: string, username?: string) {
 
 async function findUserByName(name?: string) {
   try {
+    const term = name ?? "";
+    const nameSearch = term ? formatName(term) : undefined;
+
     const users = await prisma.user.findMany({
       where: {
         fullName: {
-          contains: name,
+          contains: nameSearch,
         },
       },
     });
 
     const usersFiltered = users.map((user) =>
-      excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken")
+      excludeFields(
+        user,
+        "password",
+        "passwordSalt",
+        "accessToken",
+        "refreshToken"
+      )
     );
     return usersFiltered;
   } catch (error) {
@@ -95,20 +105,33 @@ async function findUserByToken(token: string) {
   }
 }
 
-async function isUserAuthorized(email: string, username: string, password: string) {
+async function isUserAuthorized(
+  email: string,
+  username: string,
+  password: string
+) {
   try {
     const user = await findUserByEmailOrUserName(email, username);
     if (!user) {
-      return buildErrorObject(401, "A user doesn't exist with this email nor username.");
+      return buildErrorObject(
+        401,
+        "A user doesn't exist with this email nor username."
+      );
     }
 
     let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
     if (hashedPasswordFromRequest !== user.password) {
-      return buildErrorObject(401, "Provided password is incorrect for this user.");
+      return buildErrorObject(
+        401,
+        "Provided password is incorrect for this user."
+      );
     }
 
     if (user.accessState != "Active") {
-      return buildErrorObject(400, "User does not have approval to access the system.");
+      return buildErrorObject(
+        400,
+        "User does not have approval to access the system."
+      );
     }
 
     const userWithoutPassord = excludeFields(user, "password", "passwordSalt");
@@ -148,13 +171,23 @@ async function updateUser(userInfo: IUser) {
       },
     });
 
-    return excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken");
+    return excludeFields(
+      user,
+      "password",
+      "passwordSalt",
+      "accessToken",
+      "refreshToken"
+    );
   } catch (error) {
     throw error;
   }
 }
 
-async function updateUserTokens(userId: string, accessToken: string, refreshToken?: string) {
+async function updateUserTokens(
+  userId: string,
+  accessToken: string,
+  refreshToken?: string
+) {
   try {
     const user = await prisma.user.update({
       where: {
@@ -193,7 +226,13 @@ async function updateUserAccessState(
       },
     });
 
-    return excludeFields(user, "password", "passwordSalt", "accessToken", "refreshToken");
+    return excludeFields(
+      user,
+      "password",
+      "passwordSalt",
+      "accessToken",
+      "refreshToken"
+    );
   } catch (error) {
     throw error;
   }

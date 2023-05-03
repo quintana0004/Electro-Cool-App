@@ -16,7 +16,7 @@ import {
   isValidPhoneNumber,
   isValidUserId,
 } from "../../utils/validators.utils";
-import { formatPhoneNumber } from "../../utils/formatters.utils";
+import { formatName, formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetAllUsers(req: Request, res: Response) {
   try {
@@ -35,8 +35,8 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
   try {
     const userInfo: IUser = {
       id: req.userId,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstName: formatName(req.body.firstName),
+      lastName: formatName(req.body.lastName),
       phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
       username: req.body.username,
