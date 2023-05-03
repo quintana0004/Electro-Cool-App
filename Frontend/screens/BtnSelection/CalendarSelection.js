@@ -21,8 +21,13 @@ function CalendarSelection({ navigation, route }) {
   }
   //?Next
   function goNext() {
-    const pageAction = StackActions.push("CarSelection");
-    navigation.dispatch(pageAction);
+    if (toggleTasks) {
+      const pageAction = StackActions.push(""); // BRYAN ADD YOUR PAGINA HERE :)
+      navigation.dispatch(pageAction);
+    } else if (toggleAppointment) {
+      const pageAction = StackActions.push("ClientSelection");
+      navigation.dispatch(pageAction);
+    }
   }
 
   const [toggleTasks, setToggleBtn1] = useState(false);
@@ -125,12 +130,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.yellowDark,
   },
   title: {
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
   },
   Container: {
     alignItems: "center",
-    margin: 130,
+    margin: 60,
   },
   Button: {
     borderColor: "#cccccc",

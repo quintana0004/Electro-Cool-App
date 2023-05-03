@@ -31,6 +31,7 @@ import { Button, Dialog, Portal, Provider } from "react-native-paper";
 import { httpGetJobOrder, httpUpsertJobOrder } from "../../api/jobOrders.api";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import { useRouterStore } from "../../Store/routerStore";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
@@ -94,6 +95,9 @@ function RequestedService({ navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const RequestedServiceNextPage = useRouterStore(
+    (state) => state.NewRequestedServiceNextPage
+  );
 
   //funtion for the page navigation
   //? home
@@ -110,7 +114,7 @@ function RequestedService({ navigation }) {
 
   //? next
   function goNextAction() {
-    const pageAction = StackActions.push("CompanyPolicy");
+    const pageAction = StackActions.push(RequestedServiceNextPage);
     navigation.dispatch(pageAction);
   }
 
@@ -120,15 +124,15 @@ function RequestedService({ navigation }) {
     let valueChecked = [];
 
     if (checkedOilChange) {
-      valueChecked.push("OilChange");
+      valueChecked.push("Oil Change");
     }
 
     if (checkedTuneUp) {
-      valueChecked.push("TuneUp");
+      valueChecked.push("Tune Up");
     }
 
     if (checkedBreaks) {
-      valueChecked.push("Breaks");
+      valueChecked.push("Brakes");
     }
 
     if (checkedMotor) {
@@ -136,15 +140,15 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedElectricSystem) {
-      valueChecked.push("ElectricSystem");
+      valueChecked.push("Electric System");
     }
 
     if (checkedCoolingSystem) {
-      valueChecked.push("CoolingSystem");
+      valueChecked.push("Cooling System");
     }
 
     if (checkedSuspencion) {
-      valueChecked.push("Suspencion");
+      valueChecked.push("Suspension");
     }
 
     if (checkedScan) {
@@ -152,10 +156,10 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedAirConditioning) {
-      valueChecked.push("AirConditioning");
+      valueChecked.push("Air Conditioning");
     }
 
-    return valueChecked.join(";");
+    return valueChecked.join(", ");
   }
 
   function CheckedServiceRequest(info) {
@@ -323,7 +327,7 @@ function RequestedService({ navigation }) {
                     ref.current.values.Description,
                     "New",
                     checked,
-                    true, 
+                    true,
                     "",
                     ""
                   );
@@ -344,7 +348,9 @@ function RequestedService({ navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log("Requested Service Values on Submit:", values)}
+        onSubmit={(values) =>
+          console.log("Requested Service Values on Submit:", values)
+        }
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}
@@ -672,7 +678,7 @@ function RequestedService({ navigation }) {
                           fontSize: 15,
                         }}
                       >
-                        Especification & Observations
+                        Specifications & Observations
                       </Text>
                       <View>
                         <TextInput
@@ -739,9 +745,6 @@ function RequestedService({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "400",
     color: Colors.black,

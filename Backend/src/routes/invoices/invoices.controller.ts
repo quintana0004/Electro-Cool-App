@@ -1,6 +1,9 @@
 import { IInvoice } from "./../../types/index.d";
 import { Request, Response } from "express";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   isValidCarId,
   isValidCompanyId,
@@ -13,7 +16,8 @@ import {
 import {
   deleteInvoice,
   findInvoiceWithChildsById,
-  upsertInvoice,
+  findInvoicesByCustomer,
+  upsertInvoice, findAllPendingInvoice,
 } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
@@ -22,12 +26,47 @@ async function httpGetAllInvoices(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
+
     //this variable will work with both full name and phone number to convert it to string.
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
     const invoicesData = await findAllInvoices(page, take, searchTerm);
+
     return res.status(200).json(invoicesData);
   } catch (error) {
     return handleExceptionErrorResponse("get all invoices", error, res);
+  }
+}
+
+async function httpGetAllPendingInvoices(req: Request, res: Response) {
+  try {
+    const invoicesData = await findAllPendingInvoice();
+    return res.status(200).json(invoicesData);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all invoices", error, res);
+  }
+}
+
+async function httpGetInvoicesByCustomer(req: Request, res: Response) {
+  try {
+    let page = req.query.page ? +req.query.page : 0;
+    let take = req.query.take ? +req.query.take : 0;
+    let customerId = req.query.customerId ? +req.query.customerId : 0;
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
+
+    const customerInvoices = await findInvoicesByCustomer(
+      page,
+      take,
+      searchTerm,
+      customerId
+    );
+
+    return res.status(200).json(customerInvoices);
+  } catch (error) {
+    return handleExceptionErrorResponse("get invoices by customer", error, res);
   }
 }
 
@@ -158,4 +197,11 @@ async function httpDeleteInvoice(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllInvoices, httpGetInvoice, httpUpsertInvoice, httpDeleteInvoice };
+export {
+  httpGetAllInvoices,
+  httpGetAllPendingInvoices,
+  httpGetInvoice,
+  httpUpsertInvoice,
+  httpDeleteInvoice,
+  httpGetInvoicesByCustomer,
+};

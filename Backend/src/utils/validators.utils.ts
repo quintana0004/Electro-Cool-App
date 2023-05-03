@@ -1,5 +1,13 @@
-import { IJobOrder, IUser } from "./../types/index.d";
-import { IInvoice, IInvoiceItem, ICar, IDeposit, IAppointment, ICustomer, ITask } from "../types";
+import { IJobOrder, IUser } from "../types";
+import {
+  IInvoice,
+  IInvoiceItem,
+  ICar,
+  IDeposit,
+  IAppointment,
+  ICustomer,
+  ITask,
+} from "../types";
 import { findCarById } from "../models/cars.model";
 import { findCompanyById } from "../models/company.model";
 import { findCustomerById } from "../models/customers.model";
@@ -160,6 +168,13 @@ async function isValidTaskId(id: number | string) {
   return true;
 }
 
+function isValidPhoneNumber(phone: string | undefined) {
+  if (phone === "NaPN") {
+    return false;
+  }
+  return true;
+}
+
 // --- Required Fields Validators ---
 function hasRequiredUserFields(userInfo: IUser) {
   if (
@@ -272,7 +287,6 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
 function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
   if (
     !appointmentInfo.service ||
-    !appointmentInfo.description ||
     !appointmentInfo.arrivalDateTime ||
     !appointmentInfo.model ||
     !appointmentInfo.brand ||
@@ -311,6 +325,7 @@ export {
   isValidDepositId,
   isValidAppointmentId,
   isValidTaskId,
+  isValidPhoneNumber,
   hasRequiredUserFields,
   hasRequiredCustomerFields,
   hasRequiredCarFields,

@@ -2,7 +2,10 @@ import { Dimensions, FlatList, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { httpGetAllClients } from "../../../api/clients.api";
-import { getFlattenedData, transformData } from "../../../utils/reactQuery.utils";
+import {
+  getFlattenedData,
+  transformData,
+} from "../../../utils/reactQuery.utils";
 import ExistingClientTableHeader from "./ExistingClientTableHeader";
 import ExistingClientTableItem from "./ExistingClientTableItem";
 
@@ -16,18 +19,21 @@ function ExistingClientTableList({
   const TAKE = 15;
   const queryClient = useQueryClient();
 
-  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
-    queryKey: ["ExistingClientData", searchTerm],
-    queryFn: getExistingClientData,
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
-    },
-    select: (data) => {
-      return transformData(data, setDefaultSelectedField);
-    },
-    enabled: true,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-  });
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
+    useInfiniteQuery({
+      queryKey: ["ExistingClientData", searchTerm],
+      queryFn: getExistingClientData,
+      getNextPageParam: (lastPage) => {
+        return lastPage.data.isLastPage
+          ? undefined
+          : lastPage.data.currentPage + 1;
+      },
+      select: (data) => {
+        return transformData(data, setDefaultSelectedField);
+      },
+      enabled: true,
+      staleTime: 1000 * 60 * 30, // 30 minutes
+    });
 
   function setDefaultSelectedField(client) {
     return {
@@ -82,12 +88,20 @@ function ExistingClientTableList({
       selected: item.selected,
     };
 
-    return <ExistingClientTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
+    return (
+      <ExistingClientTableItem
+        itemData={itemInfo}
+        onSelected={updateSelectedItem}
+      />
+    );
   }
 
   if (isError) {
     console.log("Error Fetching Existing Clients: ", error);
-    Alert.alert("Error", "There was an error fetching existing clients. Please try again later.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching existing clients. Please try again later."
+    );
   }
 
   return (

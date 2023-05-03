@@ -2,7 +2,7 @@ import { Invoice_Item } from "@prisma/client";
 import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
 import { isNumeric } from "../utils/validators.utils";
-import { IInvoice, IInvoiceItem } from "./../types/index.d";
+import { IInvoice, IInvoiceItem } from "../types";
 import { updateDepositsParentInvoice } from "./deposits.model";
 
 async function findAllInvoices(
@@ -68,6 +68,75 @@ async function findAllInvoices(
   }
 }
 
+async function findAllPendingInvoice() {
+  try {
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Pending",
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findInvoicesByCustomer(
+  page: number,
+  take: number,
+  searchTerm: string | undefined,
+  customerId: number
+) {
+  try {
+    const invoiceStatus = searchTerm ? searchTerm : undefined;
+    const overFetchAmount = take * 2;
+    const skipAmount = page * take;
+    const clientInvoices = await prisma.invoice.findMany({
+      skip: skipAmount,
+      take: overFetchAmount,
+      where: {
+        AND: [
+          {
+            status: {
+              in: invoiceStatus,
+            },
+          },
+          {
+            customerId: customerId,
+          },
+        ],
+      },
+      include: {
+        customer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const clientData = {
+      data: clientInvoices.slice(0, take),
+      isLastPage: clientInvoices.length <= take,
+      currentPage: page,
+    };
+
+    return clientData;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function findInvoiceById(id: number) {
   try {
     const invoice = await prisma.invoice.findUnique({
@@ -100,6 +169,147 @@ async function findInvoiceWithChildsById(id: number) {
     }
 
     return excludeFields(invoice, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPaidInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Paid",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllInDraftInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "In Draft",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllPendingInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Pending",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCanceledInvoicesFromToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        status: "Canceled",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return invoices;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updatePolicyAmount() {
+  try {
+    const policyAmount = 10.0;
+    const date15DaysAgo = new Date();
+    date15DaysAgo.setDate(date15DaysAgo.getDate() - 15);
+
+    const invoice = await prisma.invoice.findMany({
+      where: {
+        AND: [
+          {
+            status: "Pending",
+          },
+          {
+            amountDue: {
+              gt: 0,
+            },
+          },
+          {
+            lastModified: {
+              lt: date15DaysAgo,
+            },
+          },
+        ],
+      },
+    });
+
+    const invoiceIds = invoice.map((invoice) => invoice.id);
+    const updatedinvoices = await prisma.invoice.updateMany({
+      where: {
+        id: {
+          in: invoiceIds,
+        },
+      },
+      data: {
+        amountDue: {
+          increment: policyAmount,
+        },
+        amountTotal: {
+          increment: policyAmount,
+        },
+      },
+    });
+
+    return updatedinvoices;
   } catch (error) {
     throw error;
   }
@@ -242,8 +452,15 @@ async function deleteInvoice(id: number) {
 
 export {
   findAllInvoices,
+  findAllPendingInvoice,
+  findInvoicesByCustomer,
   findInvoiceById,
   findInvoiceWithChildsById,
+  findAllPaidInvoicesFromToday,
+  findAllInDraftInvoicesFromToday,
+  findAllPendingInvoicesFromToday,
+  findAllCanceledInvoicesFromToday,
+  updatePolicyAmount,
   upsertInvoice,
   deleteInvoice,
 };

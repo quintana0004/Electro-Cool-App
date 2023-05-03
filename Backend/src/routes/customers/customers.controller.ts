@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 
 import { ICustomer } from "./../../types/index.d";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import {
   upsertCustomer,
   findAllCustomers,
@@ -13,19 +16,27 @@ import {
   hasRequiredCustomerFields,
   isValidCompanyId,
   isValidCustomerId,
+  isValidPhoneNumber,
 } from "../../utils/validators.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
+import { formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
     let isActiveJobs = req.query.isActiveJobs;
 
     let customers = null;
     if (!!isActiveJobs) {
-      customers = await findAllCustomersWithActiveJobOrders(page, take, searchTerm);
+      customers = await findAllCustomersWithActiveJobOrders(
+        page,
+        take,
+        searchTerm
+      );
     } else {
       customers = await findAllCustomers(page, take, searchTerm);
     }
@@ -69,7 +80,7 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       addressLine2: req.body.addressLine2,
       state: req.body.state,
       city: req.body.city,
-      phone: req.body.phone,
+      phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
       companyId: companyId,
     };
@@ -88,6 +99,15 @@ async function httpUpsertCustomer(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(customerInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }
@@ -119,4 +139,9 @@ async function httpDeleteCustomer(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllCustomers, httpGetCustomerById, httpUpsertCustomer, httpDeleteCustomer };
+export {
+  httpGetAllCustomers,
+  httpGetCustomerById,
+  httpUpsertCustomer,
+  httpDeleteCustomer,
+};
