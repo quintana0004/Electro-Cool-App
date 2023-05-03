@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
   },
   Container: {
     alignItems: "center",
-    margin: 130,
+    margin: 60,
   },
   Button: {
     borderColor: "#cccccc",

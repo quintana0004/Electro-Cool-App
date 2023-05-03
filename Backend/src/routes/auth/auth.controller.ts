@@ -6,9 +6,15 @@ import {
   isUserAuthorized,
   updateUserTokens,
 } from "../../models/users.model";
-import { generateAccessToken, generateRefreshToken } from "../../services/auth.service";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../services/auth.service";
 import { IUser } from "../../types";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { hasRequiredUserFields } from "../../utils/validators.utils";
 
 async function httpLogin(req: Request, res: Response) {
@@ -19,7 +25,10 @@ async function httpLogin(req: Request, res: Response) {
       username: req.body.username,
     };
 
-    if ((!userInfo.username && !userInfo.password) || (!userInfo.email && !userInfo.password)) {
+    if (
+      (!userInfo.username && !userInfo.password) ||
+      (!userInfo.email && !userInfo.password)
+    ) {
       return handleBadResponse(
         400,
         "User requires username or email and a password to login into the system.",
@@ -38,7 +47,10 @@ async function httpLogin(req: Request, res: Response) {
       });
     }
 
-    const accessToken = generateAccessToken(userResponse.id, userResponse.companyId);
+    const accessToken = generateAccessToken(
+      userResponse.id,
+      userResponse.companyId
+    );
     await updateUserTokens(userResponse.id, accessToken);
 
     const user = await findUserByToken(accessToken);
@@ -75,9 +87,16 @@ async function httpSignUp(req: Request, res: Response) {
       );
     }
 
-    const doesUserAlreadyExist = await findUserByEmailOrUserName(userInfo.email, userInfo.username);
+    const doesUserAlreadyExist = await findUserByEmailOrUserName(
+      userInfo.email,
+      userInfo.username
+    );
     if (doesUserAlreadyExist) {
-      return handleBadResponse(400, "A user with this username or email already exist.", res);
+      return handleBadResponse(
+        400,
+        "A user with this username or email already exist.",
+        res
+      );
     }
 
     const user = await createUser(userInfo);

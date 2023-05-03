@@ -1,4 +1,4 @@
-import { IJobOrder, IUser } from "./../types/index.d";
+import { IJobOrder, IUser } from "../types";
 import {
   IInvoice,
   IInvoiceItem,
@@ -287,7 +287,6 @@ function hasRequiredDepositFields(depositInfo: IDeposit) {
 function hasRequiredAppointmentFields(appointmentInfo: IAppointment) {
   if (
     !appointmentInfo.service ||
-    !appointmentInfo.description ||
     !appointmentInfo.arrivalDateTime ||
     !appointmentInfo.model ||
     !appointmentInfo.brand ||

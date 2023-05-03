@@ -3,6 +3,7 @@ import axios from "./axios";
 async function httpGetAllClients(take, page, searchTerm = "") {
   const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
   const response = await axios("/customers" + queryParams);
+  console.log("cambiaron esto", response.data);
   return response;
 }
 
