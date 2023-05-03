@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dimensions, StyleSheet, View, Text, Alert } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  Alert,
+  ScrollView,
+} from "react-native";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
 import { Agenda } from "react-native-calendars";
@@ -40,7 +47,7 @@ function TableListAppointments({ searchTerm }) {
   async function getAllAppointments() {
     setErrorMessage("Error loading Appointments. Please try again later.");
 
-    const response = await httpGetAllAppointments(todaysDate.toJSON());
+    const response = await httpGetAllAppointments(minDate.toJSON());
     const responseData = response.data;
 
     if (responseData && responseData.length === 0) {
@@ -128,8 +135,10 @@ function TableListAppointments({ searchTerm }) {
           }}
           minDate={minDate1}
           maxDate={maxDate1}
-          // hideExtraDays={true}
-          markingType="custom"
+          selected={minDate1}
+          futureScrollRange={3}
+          pastScrollRange={3}
+          showOnlySelectedDayItems={true}
           theme={{
             backgroundColor: Colors.white,
             calendarBackground: Colors.white,
