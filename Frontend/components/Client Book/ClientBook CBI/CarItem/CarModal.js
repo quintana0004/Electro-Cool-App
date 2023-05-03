@@ -193,7 +193,7 @@ function CarModal({ activateModal, setSearchIcon }) {
     }
   }
   return (
-    <View>
+    <View style={styles.modalContainer}>
       <View>
         <Appbar.Header style={styles.header} mode="center-aligned">
           <Appbar.BackAction
@@ -237,14 +237,12 @@ function CarModal({ activateModal, setSearchIcon }) {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled
-            keyboardVerticalOffset={-100}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View
                 style={{
                   justifyContent: "space-around",
                   margin: 10,
-                  marginTop: 42,
                 }}
               >
                 <View style={[styles.containerText]}>
@@ -362,7 +360,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                   </View>
                 </View>
                 <View style={[styles.containerText]}>
-                  <View style={{ width: 250 }}>
+                  <View style={{ width: 200 }}>
                     <TextInput
                       label="Milage"
                       mode="outlined"
@@ -460,6 +458,13 @@ const styles = StyleSheet.create({
   },
   textAlert: {
     textAlign: "center",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    borderColor: "#cccccc",
+    borderWidth: 2,
+    width: 550,
+    alignSelf: "center",
   },
 });
 

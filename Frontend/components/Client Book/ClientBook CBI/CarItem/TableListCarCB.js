@@ -14,7 +14,7 @@ import CarModal from "./CarModal";
 import { httpGetAllOfCustomer } from "../../../../api/cars.api";
 import CarItemCB from "./CarsItemClientBook";
 import { useState } from "react";
-import { Modal } from "react-native-paper";
+import { Card, Modal, Portal } from "react-native-paper";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
 
 function CarList({
@@ -26,7 +26,7 @@ function CarList({
 }) {
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
-
+  const hideModal = () => setModalVisible(false);
   const reloadClientBookCarList = CBCustomerInfoStore(
     (state) => state.reloadClientBookCarList
   );
@@ -96,10 +96,14 @@ function CarList({
           />
         )}
       </View>
-
-      <Modal visible={modalVisible} style={styles.ModalScreen}>
-        <CarModal activateModal={setModalVisible} setSearchIcon={SearchIcon} />
-      </Modal>
+      <Portal>
+        <Modal visible={modalVisible} onDismiss={hideModal}>
+          <CarModal
+            activateModal={setModalVisible}
+            setSearchIcon={SearchIcon}
+          />
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -113,7 +117,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F7F7F7",
     borderColor: "#e3e1e1",
     borderWidth: 2,
-    height: 440,
   },
 });
 

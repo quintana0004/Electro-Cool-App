@@ -108,7 +108,7 @@ function CustomerItemCB({ onUpdateFullName }) {
         margin: 20,
         backgroundColor: "#F7F7F7",
         borderColor: "#e3e1e1",
-        borderWidth: 4,
+        borderWidth: 2,
       }}
     >
       <Appbar.Header style={styles.header} mode="center-aligned">
@@ -148,15 +148,14 @@ function CustomerItemCB({ onUpdateFullName }) {
       >
         {({ handleChange, handleBlur, values, errors, touched }) => (
           <KeyboardAvoidingView
-            behavior="padding"
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled
-            keyboardVerticalOffset={-100}
+            keyboardVerticalOffset={200}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View
                 style={{
                   justifyContent: "space-around",
-                  paddingBottom: 24,
                   marginHorizontal: 20,
                 }}
               >
@@ -205,7 +204,7 @@ function CustomerItemCB({ onUpdateFullName }) {
                   </View>
                 </View>
                 <View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 15 }}>
                     <TextInput
                       label="Phone Number"
                       mode="outlined"
@@ -232,12 +231,7 @@ function CustomerItemCB({ onUpdateFullName }) {
                       {errors.phoneNumber}
                     </HelperText>
                   </View>
-                  <View
-                    style={{
-                      marginVertical: 30,
-                      //height: emailTouched ? 500 : 20,
-                    }}
-                  >
+                  <View style={{ marginVertical: 15 }}>
                     <TextInput
                       label="E-mail Address"
                       mode="outlined"
@@ -256,8 +250,6 @@ function CustomerItemCB({ onUpdateFullName }) {
                       error={touched.email && errors.email}
                       style={styles.textInputStyle}
                       disabled={disableInput}
-                      onPressIn={() => setEmailTouched(true)}
-                      onPressOut={() => setEmailTouched(false)}
                     />
                     <HelperText
                       type="error"
@@ -312,7 +304,8 @@ const styles = StyleSheet.create({
   containerText: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 30,
+    marginTop: 15,
+    marginVertical: 15,
   },
   textAlert: {
     textAlign: "center",
