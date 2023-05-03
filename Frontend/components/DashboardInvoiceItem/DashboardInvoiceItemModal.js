@@ -41,11 +41,7 @@ function DashboardInvoiceItemModal({
 
   return (
     <Portal>
-      <Modal
-        visible={!isLoading && modalVisible}
-        animationType="fade"
-        transparent={true}
-      >
+      <Modal visible={!isLoading && modalVisible} animationType="fade">
         <Card style={[styles.modalContainer]}>
           <View style={styles.headerContainer}>
             <Card.Actions style={{ alignSelf: "center" }}>
