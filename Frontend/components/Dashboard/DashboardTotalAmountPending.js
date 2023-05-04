@@ -7,7 +7,7 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 
-function DashboardTotalAmountPending() {
+function DashboardTotalAmountPending({ setLoadingTotalAmountPending }) {
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
   useEffect(() => {
@@ -20,7 +20,11 @@ function DashboardTotalAmountPending() {
     enabled: true,
     staleTime: 1000 * 60 * 30, // Stale time of 30 minutes
   });
-
+  if (isLoading) {
+    setLoadingTotalAmountPending(true);
+  } else {
+    setLoadingTotalAmountPending(false);
+  }
   async function getDashboardTotalAmountPending(page = 0) {
     const response = await httpGetTotalAmountPendingToday();
     return response.data;

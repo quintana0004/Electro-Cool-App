@@ -9,7 +9,9 @@ import Figures from "../../constants/figures/Figures";
 import { useEffect } from "react";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 
-function DashboardVehiclesInShopAndNotStarted() {
+function DashboardVehiclesInShopAndNotStarted({
+  setLoadingVehiclesInShopAndNotStarted,
+}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
   );
@@ -24,7 +26,11 @@ function DashboardVehiclesInShopAndNotStarted() {
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-
+  if (isLoading) {
+    setLoadingVehiclesInShopAndNotStarted(true);
+  } else {
+    setLoadingVehiclesInShopAndNotStarted(false);
+  }
   async function getVehiclesInShopAndNotStarted() {
     const vehiclesInShopResponse = await httpGetVehiclesInShop();
     const vehiclesNotStartedResponse = await httpGetVehiclesNotStarted();

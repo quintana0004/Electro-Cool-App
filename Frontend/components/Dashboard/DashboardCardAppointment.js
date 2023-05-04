@@ -6,7 +6,7 @@ import { httpGetTotalAmountAppointmentsToday } from "../../api/metrics.api";
 import { useCalendarStore } from "../../Store/calendarStore";
 import { useEffect } from "react";
 
-function DashboardCardAppointment() {
+function DashboardCardAppointment({ setLoadingCardAppointment }) {
   const reloadAppointments = useCalendarStore(
     (state) => state.reloadCalendarList
   );
@@ -21,7 +21,11 @@ function DashboardCardAppointment() {
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-
+  if (isLoading) {
+    setLoadingCardAppointment(true);
+  } else {
+    setLoadingCardAppointment(false);
+  }
   async function getDashboardTotalAppointmentsToday(page = 0) {
     const response = await httpGetTotalAmountAppointmentsToday();
     return response.data;

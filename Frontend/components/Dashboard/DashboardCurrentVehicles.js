@@ -6,9 +6,9 @@ import { useJobOrderStore } from "../../Store/JobOrderStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 
-function DashboardCurrentVehicles() {
+function DashboardCurrentVehicles({ setLoadingCurrentVehicles }) {
   const reloadJobOrderList = useJobOrderStore(
-      (state) => state.reloadJobOrderList
+    (state) => state.reloadJobOrderList
   );
 
   useEffect(() => {
@@ -21,25 +21,30 @@ function DashboardCurrentVehicles() {
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-
+  console.log("TEST", isLoading);
+  if (isLoading) {
+    setLoadingCurrentVehicles(true);
+  } else {
+    setLoadingCurrentVehicles(false);
+  }
   async function getCurrentWorkingVehicles(page = 0) {
     const response = await httpGetCurrentVehicles();
     return response.data;
   }
 
   return (
-      <View>
-        {isLoading || (
-            <DashboardCard
-                Title={"Current Vehicles Working With"}
-                ImageIcon={Figures.Wheel}
-                HeightIcon={50}
-                WidthIcon={50}
-                CountFontSize={55}
-                CountToDisplay={data.metric}
-            />
-        )}
-      </View>
+    <View>
+      {isLoading || (
+        <DashboardCard
+          Title={"Current Vehicles Working With"}
+          ImageIcon={Figures.Wheel}
+          HeightIcon={50}
+          WidthIcon={50}
+          CountFontSize={55}
+          CountToDisplay={data.metric}
+        />
+      )}
+    </View>
   );
 }
 

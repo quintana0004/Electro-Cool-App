@@ -6,7 +6,7 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 
-function DashboardTotalAmountDraft() {
+function DashboardTotalAmountDraft({ setLoadingTotalAmountDraft }) {
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
   useEffect(() => {
@@ -19,7 +19,11 @@ function DashboardTotalAmountDraft() {
     enabled: true,
     staleTime: 1000 * 60 * 30, // Stale time of 30 minutes
   });
-
+  if (isLoading) {
+    setLoadingTotalAmountDraft(true);
+  } else {
+    setLoadingTotalAmountDraft(false);
+  }
   async function getDashboardTotalAmountDraft(page = 0) {
     const response = await httpGetTotalAmountInDraftsToday();
     return response.data;
