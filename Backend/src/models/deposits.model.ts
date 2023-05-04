@@ -1,6 +1,5 @@
 import prisma from "../database/prisma";
 import { excludeFields } from "../utils/db.utils";
-import { formatName } from "../utils/formatters.utils";
 import { isNumeric } from "../utils/validators.utils";
 import { IDeposit } from "./../types/index.d";
 
@@ -11,7 +10,7 @@ async function findAllDeposits(
 ) {
   try {
     const term = searchTerm ?? "";
-    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
+    const nameSearch = searchTerm ? searchTerm : undefined;
     const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -25,6 +24,7 @@ async function findAllDeposits(
             customer: {
               fullName: {
                 contains: nameSearch,
+                mode: "insensitive",
               },
             },
           },

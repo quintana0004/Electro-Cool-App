@@ -2,7 +2,6 @@ import prisma from "../database/prisma";
 import { getUserIdFromToken } from "../services/auth.service";
 import { excludeFields, generateSalt, sha512 } from "../utils/db.utils";
 import { buildErrorObject } from "../utils/errors.utils";
-import { formatName } from "../utils/formatters.utils";
 import { IUser } from "./../types/index.d";
 import { findCompanyByName } from "./company.model";
 
@@ -51,7 +50,14 @@ async function findUserByEmailOrUserName(email?: string, username?: string) {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: email }, { username: username }],
+        OR: [
+          {
+            email: email,
+          },
+          {
+            username: username,
+          },
+        ],
       },
     });
 
@@ -64,12 +70,13 @@ async function findUserByEmailOrUserName(email?: string, username?: string) {
 async function findUserByName(name?: string) {
   try {
     const term = name ?? "";
-    const nameSearch = term ? formatName(term) : undefined;
+    const nameSearch = term ? term : undefined;
 
     const users = await prisma.user.findMany({
       where: {
         fullName: {
           contains: nameSearch,
+          mode: "insensitive",
         },
       },
     });

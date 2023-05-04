@@ -4,7 +4,6 @@ import { excludeFields } from "../utils/db.utils";
 import { isNumeric } from "../utils/validators.utils";
 import { IInvoice, IInvoiceItem } from "../types";
 import { updateDepositsParentInvoice } from "./deposits.model";
-import { formatLicensePlate, formatName } from "../utils/formatters.utils";
 
 async function findAllInvoices(
   page: number,
@@ -13,8 +12,8 @@ async function findAllInvoices(
 ) {
   try {
     const term = searchTerm ?? "";
-    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
-    const plateSearch = searchTerm ? formatLicensePlate(searchTerm) : undefined;
+    const nameSearch = searchTerm ? searchTerm : undefined;
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -28,6 +27,7 @@ async function findAllInvoices(
             customer: {
               fullName: {
                 contains: nameSearch,
+                mode: "insensitive",
               },
             },
           },
@@ -40,6 +40,7 @@ async function findAllInvoices(
             car: {
               licensePlate: {
                 contains: plateSearch,
+                mode: "insensitive",
               },
             },
           },
@@ -100,9 +101,10 @@ async function findInvoicesByCustomer(
   customerId: number
 ) {
   try {
-    const invoiceStatus = searchTerm ? formatName(searchTerm) : undefined;
+    const invoiceStatus = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
+
     const clientInvoices = await prisma.invoice.findMany({
       skip: skipAmount,
       take: overFetchAmount,
@@ -111,6 +113,7 @@ async function findInvoicesByCustomer(
           {
             status: {
               in: invoiceStatus,
+              mode: "insensitive",
             },
           },
           {

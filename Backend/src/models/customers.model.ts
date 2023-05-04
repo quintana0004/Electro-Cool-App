@@ -1,5 +1,4 @@
 import prisma from "../database/prisma";
-import { formatName } from "../utils/formatters.utils";
 import { ICustomer } from "./../types/index.d";
 
 async function findAllCustomers(
@@ -8,7 +7,7 @@ async function findAllCustomers(
   searchTerm: string | undefined
 ) {
   try {
-    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
+    const nameSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
@@ -25,6 +24,7 @@ async function findAllCustomers(
           {
             fullName: {
               contains: nameSearch,
+              mode: "insensitive",
             },
           },
         ],
@@ -48,7 +48,7 @@ async function findAllCustomersWithActiveJobOrders(
   searchTerm: string | undefined
 ) {
   try {
-    const nameSearch = searchTerm ? formatName(searchTerm) : undefined;
+    const nameSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
@@ -65,6 +65,7 @@ async function findAllCustomersWithActiveJobOrders(
           {
             fullName: {
               contains: nameSearch,
+              mode: "insensitive",
             },
           },
           {

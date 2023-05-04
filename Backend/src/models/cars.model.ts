@@ -53,7 +53,7 @@ async function findAllCars(
   searchTerm: string | undefined
 ) {
   try {
-    const plateSearch = searchTerm ? formatLicensePlate(searchTerm) : undefined;
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
@@ -63,6 +63,7 @@ async function findAllCars(
       where: {
         licensePlate: {
           contains: plateSearch,
+          mode: "insensitive",
         },
       },
     });
@@ -83,13 +84,14 @@ async function findCarsByCustomer(
   customerId: number
 ) {
   try {
-    const plateSearch = searchTerm ? formatLicensePlate(searchTerm) : undefined;
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const clientCars = await prisma.car.findMany({
       where: {
         AND: [
           {
             licensePlate: {
               contains: plateSearch,
+              mode: "insensitive",
             },
           },
           {
