@@ -19,7 +19,7 @@ import {
   isValidPhoneNumber,
 } from "../../utils/validators.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
-import { formatPhoneNumber } from "../../utils/formatters.utils";
+import { formatName, formatPhoneNumber } from "../../utils/formatters.utils";
 
 async function httpGetAllCustomers(req: Request, res: Response) {
   try {
@@ -74,8 +74,8 @@ async function httpUpsertCustomer(req: Request, res: Response) {
 
     const customerInfo: ICustomer = {
       id: req.body.id,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstName: formatName(req.body.firstName),
+      lastName: formatName(req.body.lastName),
       addressLine1: req.body.addressLine1,
       addressLine2: req.body.addressLine2,
       state: req.body.state,

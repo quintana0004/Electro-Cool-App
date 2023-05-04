@@ -14,14 +14,20 @@ import {
   isValidCompanyId,
   isValidCustomerId,
 } from "../../utils/validators.utils";
-import { handleBadResponse, handleExceptionErrorResponse } from "../../utils/errors.utils";
+import {
+  handleBadResponse,
+  handleExceptionErrorResponse,
+} from "../../utils/errors.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
+import { formatLicensePlate } from "../../utils/formatters.utils";
 
 async function httpGetAllCars(req: Request, res: Response) {
   try {
     let page = req.query.page ? +req.query.page : 0;
     let take = req.query.take ? +req.query.take : 0;
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
 
     const cars = await findAllCars(page, take, searchTerm);
     return res.status(200).json(cars);
@@ -33,7 +39,9 @@ async function httpGetAllCars(req: Request, res: Response) {
 async function httpGetCarsByCustomer(req: Request, res: Response) {
   try {
     let customerId = req.query.customerId ? +req.query.customerId : 0;
-    let searchTerm = req.query.searchTerm ? req.query.searchTerm.toString() : "";
+    let searchTerm = req.query.searchTerm
+      ? req.query.searchTerm.toString()
+      : "";
     const cars = await findCarsByCustomer(searchTerm, customerId);
     return res.status(200).json(cars);
   } catch (error) {
@@ -69,12 +77,12 @@ async function httpUpsertCar(req: Request, res: Response) {
     const carInfo: ICar = {
       id: req.body.id,
       brand: req.body.brand,
-      licensePlate: req.body.licensePlate,
+      licensePlate: formatLicensePlate(req.body.licensePlate),
       model: req.body.model,
       year: req.body.year,
       mileage: req.body.mileage,
       color: req.body.color,
-      vinNumber: req.body.vinNumber,
+      vinNumber: formatLicensePlate(req.body.vinNumber),
       carHasItems: req.body.carHasItems,
       carItemsDescription: req.body.carItemsDescription,
       companyId: companyId,
@@ -108,7 +116,11 @@ async function httpUpsertCar(req: Request, res: Response) {
       );
     }
 
-    const isCarUnique = await isUniqueCar(carInfo.licensePlate, carInfo.vinNumber, carInfo.id);
+    const isCarUnique = await isUniqueCar(
+      carInfo.licensePlate,
+      carInfo.vinNumber,
+      carInfo.id
+    );
     if (!isCarUnique) {
       return handleBadResponse(
         400,
@@ -144,4 +156,10 @@ async function httpDeleteCar(req: Request, res: Response) {
   }
 }
 
-export { httpGetAllCars, httpGetCarById, httpGetCarsByCustomer, httpUpsertCar, httpDeleteCar };
+export {
+  httpGetAllCars,
+  httpGetCarById,
+  httpGetCarsByCustomer,
+  httpUpsertCar,
+  httpDeleteCar,
+};
