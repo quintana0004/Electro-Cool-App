@@ -29,6 +29,7 @@ function Setting({ navigation }) {
           toggleActiveCategory={updateActiveCategory}
           activeCategory={activeCategory}
         />
+        <Appbar.Content></Appbar.Content>
         {activeCategory === "RBAC" && (
           <Appbar.Action
             icon="magnify"

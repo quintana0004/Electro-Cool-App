@@ -37,6 +37,8 @@ import BackGroundLogIn from "../../assets/images/backgroundLogIn.png";
 import logoCompany from "../../assets/images/LOGO.png";
 import Arrow from "../../assets/images/arrow.png";
 import SignUpLogo from "../../assets/images/SignUpLogo.png";
+import UserRole from "../../assets/images/user-card-id_svgrepo.com.png";
+import User from "../../assets/images/user_svgrepo.com.png";
 
 const Figures = {
   CalendarIcon,
@@ -78,6 +80,8 @@ const Figures = {
   logoCompany,
   Arrow,
   SignUpLogo,
+  UserRole,
+  User,
 };
 
 export default Figures;
