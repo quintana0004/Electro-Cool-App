@@ -1,18 +1,27 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+import { StyleSheet, View } from "react-native";
+import {
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 import SaveBtn from "./SaveBtn";
 import Colors from "../../constants/Colors/Colors";
 import NavBtn from "./NavBtns";
 
-function SaveMenu({ onSelection, isRevokeActive }) {
-  const [isMenuVisibile, setIsMenuVisibile] = useState(false);
+function SaveMenu({ onSelection, activeState }) {
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const isPendingVisible = activeState !== "Pending" && activeState !== "Paid";
+  const isDraftVisible = activeState !== "In Draft" && activeState !== "Paid";
+  const isPaidVisible = activeState !== "Paid";
+  const isRevokeVisible =
+    activeState !== "Paid" && activeState !== "" && activeState !== "Canceled";
+  const isPDFVisible = activeState === "Paid";
 
   function onMenuPress() {
-    setIsMenuVisibile((prev) => !prev);
+    setIsMenuVisible((prev) => !prev);
   }
 
   function onButtonPress(option) {
@@ -22,20 +31,48 @@ function SaveMenu({ onSelection, isRevokeActive }) {
   return (
     <View style={styles.container}>
       <View style={styles.menu}>
-        {isMenuVisibile && (
+        {isMenuVisible && (
           <View style={styles.boxOption}>
-            <SaveBtn label={"Done"} onPress={onButtonPress.bind(this, "Pending")}>
-              <Ionicons name="checkmark-done-sharp" size={24} color="black" />
-            </SaveBtn>
-            <SaveBtn label={"Draft"} onPress={onButtonPress.bind(this, "In Draft")}>
-              <MaterialCommunityIcons name="pencil-circle" size={24} color="black" />
-            </SaveBtn>
-            <SaveBtn label={"Pay"} onPress={onButtonPress.bind(this, "Paid")}>
-              <AntDesign name="wallet" size={24} color="black" />
-            </SaveBtn>
-            {isRevokeActive && (
-              <SaveBtn label={"Revoke"} onPress={onButtonPress.bind(this, "Canceled")}>
-                <MaterialCommunityIcons name="file-cancel-outline" size={24} color="black" />
+            {isPendingVisible && (
+              <SaveBtn
+                label={"Done"}
+                onPress={onButtonPress.bind(this, "Pending")}
+              >
+                <Ionicons name="checkmark-done-sharp" size={24} color="black" />
+              </SaveBtn>
+            )}
+            {isDraftVisible && (
+              <SaveBtn
+                label={"Draft"}
+                onPress={onButtonPress.bind(this, "In Draft")}
+              >
+                <MaterialCommunityIcons
+                  name="pencil-circle"
+                  size={24}
+                  color="black"
+                />
+              </SaveBtn>
+            )}
+            {isPaidVisible && (
+              <SaveBtn label={"Pay"} onPress={onButtonPress.bind(this, "Paid")}>
+                <AntDesign name="wallet" size={24} color="black" />
+              </SaveBtn>
+            )}
+            {isPDFVisible && (
+              <SaveBtn label={"PDF"} onPress={onButtonPress.bind(this, "PDF")}>
+                <Feather name="download" size={24} color="black" />
+              </SaveBtn>
+            )}
+            {isRevokeVisible && (
+              <SaveBtn
+                label={"Revoke"}
+                onPress={onButtonPress.bind(this, "Canceled")}
+              >
+                <MaterialCommunityIcons
+                  name="file-cancel-outline"
+                  size={24}
+                  color="black"
+                />
               </SaveBtn>
             )}
           </View>
