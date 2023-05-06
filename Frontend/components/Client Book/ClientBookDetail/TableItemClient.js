@@ -29,7 +29,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
         <View style={styles.groups}>
           <View>
             <Avatar.Text
-              size={65}
+              size={40}
               label={Array.from(firstName)[0] + Array.from(lastName)[0]}
               style={styles.circle}
             />
