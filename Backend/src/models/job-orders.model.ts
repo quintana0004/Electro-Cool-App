@@ -1,6 +1,7 @@
 import prisma from "../database/prisma";
 import { IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
+import { isNumeric } from "../utils/validators.utils";
 
 async function findAllJobOrders(
   page: number,
@@ -9,7 +10,7 @@ async function findAllJobOrders(
 ) {
   try {
     const idSearch =
-      searchTerm != undefined && typeof searchTerm != "string"
+      searchTerm != undefined && isNumeric(searchTerm)
         ? Number(searchTerm)
         : undefined;
     const nameSearch = searchTerm ? searchTerm : undefined;
@@ -28,6 +29,7 @@ async function findAllJobOrders(
             customer: {
               fullName: {
                 contains: nameSearch,
+                mode: "insensitive",
               },
             },
           },

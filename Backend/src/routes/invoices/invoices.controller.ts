@@ -17,7 +17,8 @@ import {
   deleteInvoice,
   findInvoiceWithChildsById,
   findInvoicesByCustomer,
-  upsertInvoice, findAllPendingInvoice,
+  upsertInvoice,
+  findAllPendingInvoice,
 } from "../../models/invoices.model";
 import { findAllInvoices } from "../../models/invoices.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
