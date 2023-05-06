@@ -34,6 +34,7 @@ import format from "date-fns/format";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import TableItemCTasks from "../../components/CalendarDetail/TableItemCTasks";
 import TableHeaderCTasks from "../../components/CalendarDetail/TableHeaderCTasks";
+import { useCalendarStore } from "../../Store/calendarStore";
 
 function cTaskItem(itemData) {
   //console.log("ITEAM DATA: ", itemData);
@@ -54,6 +55,9 @@ function CreateTask() {
   const tasks = useTaskStore((state) => state.tasks);
   const setReloadTaskList = useTaskStore((state) => state.setReloadTaskList);
   const clearAllTasks = useTaskStore((state) => state.clearAllTasks);
+  const setReloadCalendarList = useCalendarStore(
+    (state) => state.setReloadCalendarList
+  );
   const [date, setDate] = useState(undefined);
   const [open, setOpen] = useState(false);
 
@@ -331,7 +335,8 @@ function CreateTask() {
                 color={Colors.brightGreen}
                 onPress={() => {
                   setDialogVisible2(false);
-                  navigation.navigate("Calendar");
+                  navigation.navigate("CalendarMain");
+                  setReloadCalendarList();
                 }}
               ></Button>
             </Dialog.Actions>

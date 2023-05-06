@@ -22,7 +22,7 @@ function CalendarSelection({ navigation, route }) {
   //?Next
   function goNext() {
     if (toggleTasks) {
-      const pageAction = StackActions.push(""); // BRYAN ADD YOUR PAGINA HERE :)
+      const pageAction = StackActions.push("CreateTask"); // BRYAN ADD YOUR PAGINA HERE :)
       navigation.dispatch(pageAction);
     } else if (toggleAppointment) {
       const pageAction = StackActions.push("ClientSelection");
@@ -102,7 +102,6 @@ function CalendarSelection({ navigation, route }) {
               TasksView(),
               setToggleBtn1(!toggleTasks),
               setToggleBtn2(false),
-              navigation.navigate("CreateTask"),
             ]}
           >
             <View>{TasksView(toggleTasks)}</View>
