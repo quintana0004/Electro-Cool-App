@@ -20,6 +20,9 @@ async function findAllJobOrders(
     const jobOrders = await prisma.jobOrder.findMany({
       skip: skipAmount,
       take: overFetchAmount,
+      orderBy: {
+        id: "desc",
+      },
       where: {
         OR: [
           {

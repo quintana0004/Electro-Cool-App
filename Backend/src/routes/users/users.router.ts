@@ -20,8 +20,11 @@ router.get(
   verifyAdminPrivilagesMiddleware,
   httpGetAllUsers
 );
+<<<<<<< HEAD
 
 router.get("/profile", authenticateJWTMiddleWare, httpGetUserById);
+=======
+>>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
 
 router.post("/profile", authenticateJWTMiddleWare, httpUpdateUserProfile);
 
@@ -32,8 +35,11 @@ router.post(
   httpUpdateUserAccess
 );
 
+<<<<<<< HEAD
 router.post("/updateState", authenticateJWTMiddleWare, httpUpdateUserState);
 
+=======
+>>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
 router.delete(
   "/:id",
   authenticateJWTMiddleWare,
