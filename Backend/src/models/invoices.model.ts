@@ -12,6 +12,8 @@ async function findAllInvoices(
 ) {
   try {
     const term = searchTerm ?? "";
+    const nameSearch = searchTerm ? searchTerm : undefined;
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const idSearchTerm = isNumeric(term) ? Number(term) : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -24,7 +26,8 @@ async function findAllInvoices(
           {
             customer: {
               fullName: {
-                contains: term,
+                contains: nameSearch,
+                mode: "insensitive",
               },
             },
           },
@@ -36,7 +39,8 @@ async function findAllInvoices(
           {
             car: {
               licensePlate: {
-                contains: term,
+                contains: plateSearch,
+                mode: "insensitive",
               },
             },
           },
@@ -100,6 +104,7 @@ async function findInvoicesByCustomer(
     const invoiceStatus = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
+
     const clientInvoices = await prisma.invoice.findMany({
       skip: skipAmount,
       take: overFetchAmount,
@@ -108,6 +113,7 @@ async function findInvoicesByCustomer(
           {
             status: {
               in: invoiceStatus,
+              mode: "insensitive",
             },
           },
           {
