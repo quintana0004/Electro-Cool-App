@@ -7,16 +7,11 @@ import { useSettingStore } from "../../Store/settingStore";
 import TableItemSetting from "./TableItemSetting";
 import { useState } from "react";
 import ErrorDialog from "../UI/ErrorDialog";
-<<<<<<< HEAD
 import ErrorOverlay from "../UI/ErrorOverlay";
 import LoadingOverlay from "../UI/LoadingOverlay";
 
 function settingRender(itemData) {
   console.log(itemData.item);
-=======
-
-function settingRender(itemData) {
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   return <TableItemSetting data={itemData.item} />;
 }
 
@@ -25,7 +20,6 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [errorMSG, setErrorMSG] = useState("");
 
-<<<<<<< HEAD
   const [errorMessage, setErrorMessage] = useState(
     "The server has a little issue, try refeshing again."
   );
@@ -35,9 +29,6 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   );
 
   const { isLoading, data, isError, error } = useQuery({
-=======
-  const { isLoading, data } = useQuery({
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
     queryKey: ["RBACHomePage", searchTerm, reloadSettingList],
     queryFn: getSettingScreenData,
     enabled: true,
@@ -59,7 +50,6 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
     return response.data;
   }
 
-<<<<<<< HEAD
   if (isLoading) {
     return (
       <View style={{ marginTop: 400 }}>
@@ -80,8 +70,6 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
     );
   }
 
-=======
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   return (
     <View
       style={{

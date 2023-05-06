@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-<<<<<<< HEAD
 import { StyleSheet, View, Text, ToastAndroid } from "react-native";
-=======
-import { StyleSheet, View, Text } from "react-native";
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
 import {
   TextInput,
   HelperText,
@@ -12,7 +8,6 @@ import {
   Portal,
 } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
-<<<<<<< HEAD
 import ModalDropdown from "react-native-modal-dropdown";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { httpUpsertUsers } from "../../api/users.api";
@@ -100,10 +95,6 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
     ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
   }
 
-=======
-
-function ModalPicker({ visible, setVisible }) {
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   return (
     <View>
       <Portal>
@@ -112,7 +103,6 @@ function ModalPicker({ visible, setVisible }) {
           onDismiss={() => setVisible(false)}
           style={{ backgroundColor: Colors.white }}
         >
-<<<<<<< HEAD
           <View
             style={{
               backgroundColor: Colors.lightGreenMoney,
@@ -355,38 +345,22 @@ function ModalPicker({ visible, setVisible }) {
             )}
             <Button
               textColor={Colors.darkGreen}
-=======
-          <View style={{ backgroundColor: Colors.lightGreenMoney }}></View>
-          <Dialog.Actions>
-            <Button
-              textColor={Colors.yellowDark}
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
               onPress={() => setVisible(false)}
             >
               Cancel
             </Button>
-<<<<<<< HEAD
 
             <Button textColor={Colors.darkGreen} onPress={assignRoleUser}>
-=======
-            <Button
-              textColor={Colors.yellowDark}
-              onPress={() => setVisible(false)}
-            >
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
               Submit
             </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
-<<<<<<< HEAD
       <ErrorDialog
         dialogVisible={errorDialogVisible}
         setDialogVisible={setErrorDialogVisible}
         errorMSG={errorMSG}
       />
-=======
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
     </View>
   );
 }

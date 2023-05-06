@@ -22,12 +22,9 @@ import * as Yup from "yup";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetUserProfile, httpUpdateUserProfile } from "../../api/users.api";
 import ErrorDialog from "../UI/ErrorDialog";
-<<<<<<< HEAD
 import LoadingOverlay from "../UI/LoadingOverlay";
 import { useSettingStore } from "../../Store/settingStore";
 import ErrorOverlay from "../UI/ErrorOverlay";
-=======
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
 
 //Validation for the users information
 const ValidationUser = Yup.object().shape({
@@ -37,13 +34,9 @@ const ValidationUser = Yup.object().shape({
   lastName: Yup.string()
     .required("Last Name is required.")
     .matches("^[A-Za-z ]{2,50}$", "Last name can't have digits."),
-<<<<<<< HEAD
   phoneNumber: Yup.string()
     .required("Phone Number  is required.")
     .matches("^[0-9]{10}$", ""),
-=======
-  phoneNumber: Yup.string().required("Phone Number  is required."),
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   email: Yup.string()
     .required("Email is required.")
     .email("Invalid Email Address."),
@@ -72,7 +65,6 @@ function ProfilePage({}) {
   const refAccountInformation = useRef(null);
   const refCredentialInformation = useRef(null);
 
-<<<<<<< HEAD
   const toggleReloadSettingList = useSettingStore(
     (state) => state.toggleReloadSettingList
   );
@@ -80,10 +72,6 @@ function ProfilePage({}) {
 
   const { isLoading, data, isError, error } = useQuery({
     queryKey: ["UserProfileData", reloadSettingList],
-=======
-  const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["UserProfileData"],
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
     queryFn: getUserProfile,
     enabled: true,
   });
@@ -115,13 +103,10 @@ function ProfilePage({}) {
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
-<<<<<<< HEAD
   const [disableInputs, setDisableInputs] = useState(true);
   const [errorMessage, setErrorMessage] = useState(
     "The server has a little issue, try refeshing again."
   );
-=======
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
 
   function isProfileFormValid() {
     // Start to validating there is no error on input page
@@ -150,7 +135,6 @@ function ProfilePage({}) {
     return isValid;
   }
 
-<<<<<<< HEAD
   function isUserProfileValidation() {
     // Start to validating there is no error on input page
     const TouchedObject =
@@ -205,9 +189,6 @@ function ProfilePage({}) {
       return;
     }
 
-=======
-  async function handleProfileSubmission() {
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
     const isFormValid = isProfileFormValid();
     if (isFormValid === false) return;
 
@@ -231,7 +212,6 @@ function ProfilePage({}) {
     showSuccessMessage();
   }
 
-<<<<<<< HEAD
   if (isLoading) {
     return (
       <View style={{ marginTop: 400 }}>
@@ -252,8 +232,6 @@ function ProfilePage({}) {
     );
   }
 
-=======
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   return (
     <View>
       <View>
@@ -268,7 +246,6 @@ function ProfilePage({}) {
         >
           Personal Information
         </Text>
-<<<<<<< HEAD
 
         <Formik
           validationSchema={ValidationUser}
@@ -467,192 +444,6 @@ function ProfilePage({}) {
         )}
       </View>
 
-=======
-        {isLoading || (
-          <Formik
-            validationSchema={ValidationUser}
-            innerRef={refAccountInformation}
-            initialValues={{
-              firstName: data.firstName,
-              lastName: data.lastName,
-              phoneNumber: data.phone,
-              email: data.email,
-              username: data.username,
-            }}
-            enableReinitialize={true}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
-              <KeyboardAvoidingView
-                behavior="padding"
-                enabled
-                keyboardVerticalOffset={-100}
-              >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                  <View
-                    style={{
-                      justifyContent: "space-around",
-                      paddingBottom: 24,
-                      marginHorizontal: 20,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        marginVertical: 20,
-                      }}
-                    >
-                      <View style={{ width: 250 }}>
-                        <TextInput
-                          label="First Name"
-                          mode="outlined"
-                          outlineColor={Colors.darkGrey}
-                          activeOutlineColor={Colors.brightGreen}
-                          keyboardType="default"
-                          onChangeText={handleChange("firstName")}
-                          onBlur={handleBlur("firstName")}
-                          value={values.firstName}
-                          error={touched.firstName && errors.firstName}
-                          style={styles.textInputStyle}
-                          disabled={true}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={!!(touched.firstName && errors.firstName)}
-                        >
-                          {errors.firstName}
-                        </HelperText>
-                      </View>
-                      <View style={{ width: 280 }}>
-                        <TextInput
-                          label="Last Name"
-                          mode="outlined"
-                          outlineColor={Colors.darkGrey}
-                          activeOutlineColor={Colors.brightGreen}
-                          keyboardType="default"
-                          onChangeText={handleChange("lastName")}
-                          onBlur={handleBlur("lastName")}
-                          value={values.lastName}
-                          error={touched.lastName && errors.lastName}
-                          style={styles.textInputStyle}
-                          disabled={true}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={!!(touched.lastName && errors.lastName)}
-                        >
-                          {errors.lastName}
-                        </HelperText>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <View style={{ marginVertical: 30, width: 220 }}>
-                        <TextInput
-                          label="Phone Number"
-                          mode="outlined"
-                          left={
-                            <TextInput.Icon
-                              icon="phone"
-                              color={Colors.lightGreyDark}
-                            />
-                          }
-                          outlineColor={Colors.darkGrey}
-                          activeOutlineColor={Colors.brightGreen}
-                          keyboardType="phone-pad"
-                          onChangeText={handleChange("phoneNumber")}
-                          onBlur={handleBlur("phoneNumber")}
-                          value={values.phoneNumber}
-                          error={touched.phoneNumber && errors.phoneNumber}
-                          style={styles.textInputStyle}
-                          disabled={true}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={
-                            !!(touched.phoneNumber && errors.phoneNumber)
-                          }
-                        >
-                          {errors.phoneNumber}
-                        </HelperText>
-                      </View>
-                      <View style={{ marginVertical: 30, width: 300 }}>
-                        <TextInput
-                          label="E-mail Address"
-                          mode="outlined"
-                          left={
-                            <TextInput.Icon
-                              icon="email"
-                              color={Colors.lightGreyDark}
-                            />
-                          }
-                          outlineColor={Colors.darkGrey}
-                          activeOutlineColor={Colors.brightGreen}
-                          keyboardType="email-address"
-                          onChangeText={handleChange("email")}
-                          onBlur={handleBlur("email")}
-                          value={values.email}
-                          error={touched.email && errors.email}
-                          style={styles.textInputStyle}
-                          disabled={true}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={!!(touched.email && errors.email)}
-                        >
-                          {errors.email}
-                        </HelperText>
-                      </View>
-                    </View>
-                    <View>
-                      <View style={{ marginVertical: 20, width: 260 }}>
-                        <TextInput
-                          label="Username"
-                          mode="outlined"
-                          left={
-                            <TextInput.Icon
-                              icon="account-outline"
-                              color={Colors.lightGreyDark}
-                            />
-                          }
-                          outlineColor={Colors.darkGrey}
-                          activeOutlineColor={Colors.brightGreen}
-                          keyboardType="default"
-                          onChangeText={handleChange("username")}
-                          onBlur={handleBlur("username")}
-                          value={values.username}
-                          error={touched.username && errors.username}
-                          style={styles.textInputStyle}
-                          disabled={true}
-                        />
-                        <HelperText
-                          type="error"
-                          visible={!!(touched.username && errors.username)}
-                        >
-                          {errors.username}
-                        </HelperText>
-                      </View>
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </KeyboardAvoidingView>
-            )}
-          </Formik>
-        )}
-      </View>
-      <View></View>
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
       <View>
         <Text
           style={{
@@ -660,11 +451,7 @@ function ProfilePage({}) {
             fontWeight: "400",
             marginLeft: 20,
             marginBottom: 10,
-<<<<<<< HEAD
             marginTop: 30,
-=======
-            marginTop: 10,
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
           }}
         >
           Change Password
@@ -690,11 +477,6 @@ function ProfilePage({}) {
                 <View
                   style={{
                     justifyContent: "space-around",
-<<<<<<< HEAD
-
-=======
-                    paddingBottom: 24,
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
                     marginHorizontal: 20,
                   }}
                 >
@@ -704,11 +486,7 @@ function ProfilePage({}) {
                       justifyContent: "space-between",
                     }}
                   >
-<<<<<<< HEAD
                     <View style={{ marginVertical: 10, width: 270 }}>
-=======
-                    <View style={{ marginVertical: 30, width: 270 }}>
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
                       <TextInput
                         label="Password"
                         mode="outlined"
@@ -734,11 +512,7 @@ function ProfilePage({}) {
                         {errors.password}
                       </HelperText>
                     </View>
-<<<<<<< HEAD
                     <View style={{ marginVertical: 10, width: 270 }}>
-=======
-                    <View style={{ marginVertical: 30, width: 270 }}>
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
                       <TextInput
                         label="Password Confirmation"
                         mode="outlined"
@@ -833,28 +607,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   confirmBtn: {
-<<<<<<< HEAD
     marginHorizontal: 150,
     backgroundColor: Colors.yellowDark,
     borderRadius: 30,
     paddingVertical: 6,
-=======
-    marginHorizontal: 100,
-    backgroundColor: Colors.yellowDark,
-    borderRadius: 30,
-    paddingVertical: 8,
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
     justifyContent: "center",
     alignItems: "center",
   },
   confirmText: {
     color: Colors.white,
     fontWeight: "bold",
-<<<<<<< HEAD
     fontSize: 20,
-=======
-    fontSize: 24,
->>>>>>> 573a2fa58d74b15b80739a980ceacf6b881c9740
   },
 });
 
