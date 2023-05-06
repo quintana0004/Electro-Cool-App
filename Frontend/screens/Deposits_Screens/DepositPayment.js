@@ -4,21 +4,17 @@ import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Appbar } from "react-native-paper";
+import * as Print from "expo-print";
 
 import Colors from "../../constants/Colors/Colors";
 import { useDepositStore } from "../../Store/depositStore";
 import PaymentInput from "../../components/UI/PaymentInput";
 import DepositPaymentPDF from "../../components/DepositPayment/DepositPaymentPDF";
-
-// TODO:
-// * Need to research how to utilize the pdf library from the React Native package
-// * Need to develop ability to download generated pdf to device.
-// * Need to develop how to preview the pdf on the deposit screen.
-// * Need to develop hwo to use the share bottom with react native to send a pdf.
-// * Need to see how to generate a unique QR Code to share the pdf through scan. - (NOT TOP PRIORITY LIKE THE OTHER 2)
+import { useState } from "react";
 
 function DepositPayment({ navigation }) {
   const depositId = useDepositStore((state) => state.id);
+  const [pdfHtmlContent, setPdfHtmlContent] = useState("");
 
   function navigateBack() {
     const pageAction = StackActions.pop(1);
@@ -28,10 +24,6 @@ function DepositPayment({ navigation }) {
   function navigateToHome() {
     const pageGoHomeAction = StackActions.popToTop();
     navigation.dispatch(pageGoHomeAction);
-  }
-
-  function handleDownload() {
-    console.log("Handle Download");
   }
 
   function handleShare() {
@@ -44,6 +36,10 @@ function DepositPayment({ navigation }) {
 
   function handlePayment() {
     console.log("Handle Payment");
+  }
+
+  async function handleDownload() {
+    await Print.printAsync({ html: pdfHtmlContent });
   }
 
   return (
@@ -64,19 +60,19 @@ function DepositPayment({ navigation }) {
         <View style={styles.buttonGroup}>
           <Pressable onPress={handleDownload}>
             <View style={styles.btn}>
-              <Feather name="download" size={28} color="white" />
+              <Feather name="download" size={50} color="white" />
               <Text style={styles.btnText}>Download</Text>
             </View>
           </Pressable>
           <Pressable onPress={handleShare}>
             <View style={styles.btn}>
-              <Entypo name="share" size={28} color="white" />
+              <Entypo name="share" size={50} color="white" />
               <Text style={styles.btnText}>Share</Text>
             </View>
           </Pressable>
           <Pressable onPress={handleQRCode}>
             <View style={styles.btn}>
-              <MaterialCommunityIcons name="qrcode" size={28} color="white" />
+              <MaterialCommunityIcons name="qrcode" size={50} color="white" />
               <Text style={styles.btnText}>QR Code</Text>
             </View>
           </Pressable>
@@ -84,7 +80,10 @@ function DepositPayment({ navigation }) {
 
         {/* Main Content */}
         <View style={styles.contentContainer}>
-          <DepositPaymentPDF depositId={depositId} />
+          <DepositPaymentPDF
+            depositId={depositId}
+            setPdfHtmlContent={setPdfHtmlContent}
+          />
         </View>
 
         {/* Footer Container */}
@@ -112,26 +111,25 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   buttonGroup: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginTop: 15,
-  },
-  btn: {
-    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: 150,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    marginTop: 50,
+  },
+  btn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 320,
+    paddingVertical: 30,
+    paddingHorizontal: 20,
     marginLeft: 15,
     backgroundColor: Colors.brightGreen,
     borderRadius: 15,
+    marginBottom: 15,
   },
   btnText: {
     color: Colors.white,
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 40,
     marginLeft: 8,
   },
   contentContainer: {

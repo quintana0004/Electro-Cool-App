@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ToastAndroid, Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, ToastAndroid, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useQuery } from "@tanstack/react-query";
 import { Appbar } from "react-native-paper";
@@ -14,7 +14,10 @@ import SectionDivider from "../../components/UI/SectionDivider";
 import AmountInput from "../../components/UI/AmountInput";
 import SaveMenu from "../../components/UI/SaveMenu";
 import { useDepositStore } from "../../Store/depositStore";
-import { useCustomerInfoStore, useVehicleInfoStore } from "../../Store/JobOrderStore";
+import {
+  useCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import PaymentConfirmationDialog from "../../components/UI/PaymentConfirmationDialog";
 
@@ -51,7 +54,9 @@ function DepositDetail({ route, navigation }) {
     };
   });
   const setDeposit = useDepositStore((state) => state.setDeposit);
-  const toggleReloadDepositList = useDepositStore((state) => state.toggleReloadDepositList);
+  const toggleReloadDepositList = useDepositStore(
+    (state) => state.toggleReloadDepositList
+  );
 
   // State Variables
   const [clientInfo, setClientInfo] = useState(client);
@@ -59,9 +64,9 @@ function DepositDetail({ route, navigation }) {
   const [depositDescription, setDepositDescription] = useState("");
   const [depositAmount, setDepositAmount] = useState(0);
   const [depositStatus, setDepositStatus] = useState("");
-  const isDepositRevocable = !!depositId;
+  const [isDepositEditable, setIsDepositEditable] = useState(true);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  
+
   const { isLoading, isError, error } = useQuery({
     queryKey: ["DepositDetailData", depositId],
     queryFn: fetchDepositData,
@@ -88,6 +93,8 @@ function DepositDetail({ route, navigation }) {
     setCarInfo(data.car);
     setDepositDescription(data.description);
     setDepositAmount(data.amountTotal);
+    setDepositStatus(data.status);
+    setIsDepositEditable(data.status !== "Paid");
   }
 
   async function fetchDepositData() {
@@ -97,16 +104,17 @@ function DepositDetail({ route, navigation }) {
   }
 
   async function onSaveUpdateDeposit(option) {
-
-    setDepositStatus(option);
-
-    // Request user confirmation for payment
     if (option === "Paid") {
       return setIsDialogVisible(true);
     }
-    
+    if (option === "PDF") {
+      setDeposit(depositId, depositDescription, depositAmount, "");
+      return navigateToPayment();
+    }
+
     // Save Deposit if payment was not selected
     await saveDeposit(option);
+    setDepositStatus(option);
 
     // After Save refresh deposit list and return to main page
     toggleReloadDepositList();
@@ -116,7 +124,6 @@ function DepositDetail({ route, navigation }) {
   }
 
   async function saveDeposit(status) {
-
     const depositInfo = {
       customerId: clientInfo.id,
       carId: carInfo.id,
@@ -131,15 +138,19 @@ function DepositDetail({ route, navigation }) {
     const response = await httpUpsertDeposit(depositInfo);
     if (response.hasError) {
       console.log("Error message on upsert deposit: ", response.errorMessage);
-      return Alert.alert("Error", "There was an error saving the deposit. Please try again later.");
+      return Alert.alert(
+        "Error",
+        "There was an error saving the deposit. Please try again later."
+      );
     }
 
     storeDepositOnSave(response.data);
   }
 
   async function handleDepositPayment() {
-
     await saveDeposit(depositStatus);
+    setDepositStatus("Paid");
+    setIsDepositEditable(false);
 
     // Refresh Deposit List and Navigate to Payment
     toggleReloadDepositList();
@@ -150,17 +161,24 @@ function DepositDetail({ route, navigation }) {
   }
 
   function storeDepositOnSave(deposit) {
-    setDeposit(deposit.id, deposit.description, deposit.amountTotal, deposit.createdDate);
+    setDeposit(
+      deposit.id,
+      deposit.description,
+      deposit.amountTotal,
+      deposit.createdDate
+    );
   }
 
   function showSuccessMessage() {
     ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
   }
 
-
   if (isError) {
     console.log("Error Fetching Deposit Detail: ", error);
-    Alert.alert("Error", "There was an error fetching the deposit detail data. Please try again later.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching the deposit detail data. Please try again later."
+    );
   }
 
   return (
@@ -191,11 +209,16 @@ function DepositDetail({ route, navigation }) {
               multiline
               numberOfLines={8}
               onChangeText={setDepositDescription}
+              editable={isDepositEditable}
             />
 
             <SectionDivider title={"Deposit Amount"} />
 
-            <AmountInput value={depositAmount} onChange={setDepositAmount} />
+            <AmountInput
+              value={depositAmount}
+              onChange={setDepositAmount}
+              isEditable={isDepositEditable}
+            />
           </View>
         )}
       </View>
@@ -207,17 +230,22 @@ function DepositDetail({ route, navigation }) {
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navigateCancel} />
           </View>
-          <SaveMenu onSelection={onSaveUpdateDeposit} isRevokeActive={isDepositRevocable} />
+          <SaveMenu
+            onSelection={onSaveUpdateDeposit}
+            activeState={depositStatus}
+          />
         </View>
       </View>
 
       {/* Dialogs */}
       {isDialogVisible && (
-        <PaymentConfirmationDialog 
+        <PaymentConfirmationDialog
           title={"Realize Deposit Payment"}
-          body={"Once a payment is made, this deposit cannot be modified again."}
-          isDialogVisible={isDialogVisible} 
-          setIsDialogVisible={setIsDialogVisible} 
+          body={
+            "Once a payment is made, this deposit cannot be modified again."
+          }
+          isDialogVisible={isDialogVisible}
+          setIsDialogVisible={setIsDialogVisible}
           onCancel={() => setIsDialogVisible(false)}
           onConfirm={handleDepositPayment}
         />

@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, KeyboardAvoidingView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  KeyboardAvoidingView,
+} from "react-native";
 import { MaskedTextInput } from "react-native-mask-text";
 import Colors from "../../constants/Colors/Colors";
 
-function AmountInput({ onChange, value }) {
+function AmountInput({ onChange, value, isEditable }) {
   const [amount, setAmount] = useState(0);
 
   useEffect(() => {
@@ -46,6 +52,7 @@ function AmountInput({ onChange, value }) {
           onChangeText={handleTextChange}
           onEndEditing={handleEndEditing}
           keyboardType="decimal-pad"
+          editable={isEditable}
         />
 
         <View style={styles.button}>

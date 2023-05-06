@@ -9,7 +9,7 @@
     <div style="margin: 24px; border: 1px solid rgba(0, 0, 0, 0.25); padding-bottom: 10px;">
         <div style="position:relative; height: 120px; background-color: #000000; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
             <div style="position: relative; margin-left: 3rem;">
-                <img style="position: absolute; top: -55px; left: 0;" src="../assets/images/ElectroCoolGearIcon.png"/>
+                <img style="position: absolute; top: -55px; left: 0;" src="http://cdn.mcauto-images-production.sendgrid.net/73d9683bbd473107/5b749620-ac65-4c89-8a48-ca2186226c6a/106x110.png"/>
                 <h1 style="position: absolute; top: -35px; left: 35px; width: 50px; white-space: nowrap;">
                     ELECTRO COOL
                 </h1>
@@ -81,17 +81,55 @@
 
         <hr style="width: 95%; margin: 15px;"/>
 
-        <div style="background-color: #F5E1AB; border-radius: 10px; text-align: center; width: 90%; margin: auto;">
-            <h2 style="padding-top: 10px; padding-bottom: 10px;">
-                <strong>
-                    Description
-                </strong>
-            </h2>
-        </div>
-        <div style="border: 1.89px solid rgba(0, 0, 0, 0.3); border-radius: 15px; width: 90%; margin: auto;">
-            <p style="padding-left: 10px; padding-right: 10px;">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <!-- Header -->
+            <h3 style="text-align: center; font-size: 20px; grid-column: 1;"><strong>Description</strong></h3>
+            <h3 style="text-align: center; font-size: 20px; grid-column: 2;"><strong>Quantity</strong></h3>
+            <h3 style="text-align: center; font-size: 20px; grid-column: 3;"><strong>Price</strong></h3>
+            <h3 style="text-align: center; font-size: 20px; grid-column: 4;"><strong>Amount</strong></h3>
+
+            <!-- Body -->
+            <!-- Invoice Item Row -->
+            <div style="grid-column: 1 / span 4; background-color: rgba(235, 194, 86, 0.5); border-radius: 15px; padding: 5px; width: 95%; margin: auto;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <div style="grid-column: 1; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 3px 3px 3px 10px;">
+                        <p style="margin: 0;">Botellas</p>
+                        <div style="background-color: #ffffff; border-radius: 15px; border: 1.89px solid #000000; padding: 10px 15px;">
+                            <p style="margin: 0;">1 year</p>
+                        </div>
+                    </div>
+                    <div style="grid-column: 2; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">2</p>
+                    </div>
+                    <div style="grid-column: 3; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">$88.24</p>
+                    </div>
+                    <div style="grid-column: 4; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">$1288.24</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Item Row -->
+            <div style="grid-column: 1 / span 4; background-color: rgba(235, 194, 86, 0.5); border-radius: 15px; padding: 5px; width: 95%; margin: auto;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <div style="grid-column: 1; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 3px 3px 3px 10px;">
+                        <p style="margin: 0;">Botellas</p>
+                        <div style="background-color: #ffffff; border-radius: 15px; border: 1.89px solid #000000; padding: 10px 15px;">
+                            <p style="margin: 0;">1 year</p>
+                        </div>
+                    </div>
+                    <div style="grid-column: 2; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">2</p>
+                    </div>
+                    <div style="grid-column: 3; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">$88.24</p>
+                    </div>
+                    <div style="grid-column: 4; display: flex; justify-content: center; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 10px;">
+                        <p style="margin: 0;">$1288.24</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <hr style="width: 95%; margin: 15px;"/>
