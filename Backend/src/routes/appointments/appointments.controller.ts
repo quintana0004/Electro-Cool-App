@@ -18,7 +18,11 @@ import {
   upsertAppointment,
 } from "../../models/appointments.model";
 import { getDummyCompanyId } from "../../utils/db.utils";
-import { formatPhoneNumber } from "../../utils/formatters.utils";
+import {
+  formatLicensePlate,
+  formatName,
+  formatPhoneNumber,
+} from "../../utils/formatters.utils";
 
 async function httpGetAllAppointments(req: Request, res: Response) {
   try {
@@ -96,8 +100,8 @@ async function httpUpsertAppointment(req: Request, res: Response) {
       brand: req.body.brand,
       year: req.body.year,
       color: req.body.color,
-      licensePlate: req.body.licensePlate,
-      customerName: req.body.customerName,
+      licensePlate: formatLicensePlate(req.body.licensePlate),
+      customerName: formatName(req.body.customerName),
       phone: formatPhoneNumber(req.body.phone),
       email: req.body.email,
       customerId: req.body.customerId,

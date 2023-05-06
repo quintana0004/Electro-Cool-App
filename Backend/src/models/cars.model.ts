@@ -1,5 +1,6 @@
 import { ICar } from "./../types/index.d";
 import prisma from "../database/prisma";
+import { formatLicensePlate } from "../utils/formatters.utils";
 
 async function isUniqueCar(
   licensePlate: string,
@@ -46,8 +47,13 @@ async function findCarById(id: number) {
   }
 }
 
-async function findAllCars(page: number, take: number, searchTerm: string | undefined) {
+async function findAllCars(
+  page: number,
+  take: number,
+  searchTerm: string | undefined
+) {
   try {
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
 
@@ -56,7 +62,8 @@ async function findAllCars(page: number, take: number, searchTerm: string | unde
       take: overFetchAmount,
       where: {
         licensePlate: {
-          contains: searchTerm,
+          contains: plateSearch,
+          mode: "insensitive",
         },
       },
     });
@@ -72,18 +79,24 @@ async function findAllCars(page: number, take: number, searchTerm: string | unde
   }
 }
 
-async function findCarsByCustomer(searchTerm: string | undefined, customerId: number) {
+async function findCarsByCustomer(
+  searchTerm: string | undefined,
+  customerId: number
+) {
   try {
-    const licensePlate = searchTerm ? searchTerm : undefined;
+    const plateSearch = searchTerm ? searchTerm : undefined;
     const clientCars = await prisma.car.findMany({
       where: {
         AND: [
           {
             licensePlate: {
-              contains: licensePlate,
+              contains: plateSearch,
+              mode: "insensitive",
             },
           },
-          { customerId: customerId },
+          {
+            customerId: customerId,
+          },
         ],
       },
     });
@@ -148,4 +161,11 @@ async function deleteCar(id: number) {
   }
 }
 
-export { findCarById, upsertCar, isUniqueCar, findAllCars, findCarsByCustomer, deleteCar };
+export {
+  findCarById,
+  upsertCar,
+  isUniqueCar,
+  findAllCars,
+  findCarsByCustomer,
+  deleteCar,
+};

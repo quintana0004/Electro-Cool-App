@@ -111,7 +111,7 @@ function CreateAppointments({ navigation }) {
     customerId: useCustomerInfoStore((state) => state.id),
   });
   const [serviceInfo] = useState(service);
-  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [visibleTimePicker, setVisibleTimePicker] = React.useState(false);
   const [date, setDate] = useState(undefined);
   const [open, setOpen] = useState(false);
   const [day, setDay] = useState();
@@ -263,6 +263,7 @@ function CreateAppointments({ navigation }) {
   );
 
   const onDismiss = useCallback(() => {
+    setVisibleTimePicker(false);
     setOpen(false);
     const date = new Date();
     const formattedTime = date.toLocaleTimeString([], {
@@ -283,6 +284,7 @@ function CreateAppointments({ navigation }) {
     },
     [setOpen, setDate]
   );
+
   const DateTimeFormatter = () => {
     if (hour === undefined || min === undefined || date === undefined) {
       return "";
@@ -459,7 +461,7 @@ function CreateAppointments({ navigation }) {
               visible={visibleTimePicker}
               onDismiss={onDismiss}
               onConfirm={onConfirm}
-              onCancel={() => setVisibleTimePicker(false)}
+              onCancel={onDismiss}
               is24Hour={false}
               mode="time"
             />
