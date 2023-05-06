@@ -22,7 +22,7 @@ function CalendarSelection({ navigation, route }) {
   //?Next
   function goNext() {
     if (toggleTasks) {
-      const pageAction = StackActions.push(""); // BRYAN ADD YOUR PAGINA HERE :)
+      const pageAction = StackActions.push("CreateTask"); // BRYAN ADD YOUR PAGINA HERE :)
       navigation.dispatch(pageAction);
     } else if (toggleAppointment) {
       const pageAction = StackActions.push("ClientSelection");
@@ -166,7 +166,22 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
   },
-
+  naviBtnsPosition: {
+    width: 540,
+    height: 150,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
+  navBackBtn: {
+    marginRight: 130,
+  },
+  navCancelBtn: {
+    marginRight: 10,
+  },
+  navNextBtn: {
+    marginLeft: 10,
+  },
   header: {
     backgroundColor: Colors.yellowDark,
   },
