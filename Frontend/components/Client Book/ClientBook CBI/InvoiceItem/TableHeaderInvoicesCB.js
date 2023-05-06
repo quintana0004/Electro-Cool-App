@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import Colors from "../../../../constants/Colors/Colors";
 
-function TableHeaderClient() {
+function TableHeaderCB() {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.headerGroupLeft}>
-        <Text style={[styles.headerText, { marginLeft: 60 }]}>Client Name</Text>
+        <Text style={styles.headerText}>No.</Text>
+        <Text style={[styles.headerText, { marginLeft: 25 }]}>Client</Text>
       </View>
 
       <View style={styles.headerGroupRight}>
-        <Text style={[styles.headerText, { marginRight: 80 }]}>
-          Client Information
-        </Text>
+        <Text style={styles.headerText}>Date</Text>
+        <Text style={styles.headerText}>Amount</Text>
+        <Text style={styles.headerText}>Status</Text>
       </View>
     </View>
   );
@@ -27,7 +28,6 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingLeft: 20,
     margin: 15,
-    zIndex: -1,
   },
   headerText: {
     fontSize: 18,
@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
   headerGroupLeft: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    flex: 2,
+    flex: 1,
   },
   headerGroupRight: {
     flexDirection: "row",
-    justifyContent: "flex-end",
-    flex: 3,
+    justifyContent: "space-around",
+    flex: 2,
   },
 });
 
-export default TableHeaderClient;
+export default TableHeaderCB;

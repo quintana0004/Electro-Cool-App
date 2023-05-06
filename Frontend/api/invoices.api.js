@@ -15,6 +15,12 @@ export async function httpGetInvoice(id) {
   return response;
 }
 
+export async function httpGetInvoiceByCustomerId(take, page, customerId) {
+  const queryParams = `?take=${take}&page=${page}&customerId=${customerId}`;
+  const response = await axios("/invoices/customer" + queryParams);
+  return response;
+}
+
 export async function httpUpsertInvoice(invoiceInfo) {
   let responseToReturn = {
     hasError: false,
@@ -25,8 +31,7 @@ export async function httpUpsertInvoice(invoiceInfo) {
   try {
     const response = await axios.post("/invoices", invoiceInfo);
     responseToReturn.data = response.data;
-  }
-  catch (error) {
+  } catch (error) {
     const errorResponse = error.response.data;
     responseToReturn.hasError = true;
     responseToReturn.errorMessage = errorResponse.error.errorMessage;
