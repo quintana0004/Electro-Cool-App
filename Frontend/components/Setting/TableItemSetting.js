@@ -6,6 +6,7 @@ import { useSettingStore } from "../../Store/settingStore";
 import { Entypo } from "@expo/vector-icons";
 import { httpDeleteUser, httpUpdateUserAccessState } from "../../api/users.api";
 import ErrorDialog from "../UI/ErrorDialog";
+import ModalConfirmTemp from "./modalActivateTemp";
 
 //Modals
 import ModalPicker from "./modalPicker";
@@ -20,6 +21,7 @@ function TableItemSetting({ data }) {
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [errorMSG, setErrorMSG] = useState("");
   const [visibilityPendingUser, setVisibilityPendingUser] = useState(false);
+  const [visibleInactiveUser, setVisibilityInactiveUser] = useState(false);
 
   //Change colors of the picker
   let colorPicked;
@@ -36,12 +38,31 @@ function TableItemSetting({ data }) {
   }
 
   async function handlePickerChange(value) {
-    try {
-      await httpUpdateUserAccessState(data.id, value);
-      setPickedValue(value);
-      toggleReloadSettingList();
-    } catch (error) {
-      console.log("Error at Settings Role Picker Picker Change: ", error);
+    //Check if it is the user is admin or temp admin
+    if (data.role === "Admin") {
+      try {
+        await httpUpdateUserAccessState(data.id, value);
+        setPickedValue(value);
+        toggleReloadSettingList();
+      } catch (error) {
+        console.log("Error at Settings Role Picker Picker Change: ", error);
+      }
+    }
+
+    if (data.role === "Temp. Admin") {
+      if (value === "Active") {
+        setVisibilityInactiveUser(!visibleInactiveUser);
+      }
+
+      if (value === "Inactive") {
+        try {
+          await httpUpdateUserAccessState(data.id, value);
+          setPickedValue(value);
+          toggleReloadSettingList();
+        } catch (error) {
+          console.log("Error at Settings Role Picker Picker Change: ", error);
+        }
+      }
     }
   }
 
@@ -77,7 +98,7 @@ function TableItemSetting({ data }) {
           }}
         >
           {(pickedValue === "Active" || pickedValue === "Inactive") && (
-            <View style={{ paddingLeft: 20 }}>
+            <View style={{ paddingLeft: 10 }}>
               <Picker
                 selectedValue={pickedValue}
                 onValueChange={(itemValue) => handlePickerChange(itemValue)}
@@ -112,7 +133,7 @@ function TableItemSetting({ data }) {
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: "bold",
+
                   paddingLeft: 25,
                   color: Colors.lightBlueDark,
                 }}
@@ -145,6 +166,19 @@ function TableItemSetting({ data }) {
         lastName={data.lastName}
         ID={data.id}
       />
+      {data.role === "Temp. Admin" && (
+        <ModalConfirmTemp
+          visible={visibleInactiveUser}
+          setVisible={setVisibilityInactiveUser}
+          lastName={data.lastName}
+          firstName={data.firstName}
+          ID={data.id}
+          username={data.username}
+          phoneNumber={data.phone}
+          email={data.email}
+          role={data.role}
+        />
+      )}
     </View>
   );
 }

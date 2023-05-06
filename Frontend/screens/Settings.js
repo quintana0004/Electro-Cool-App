@@ -50,7 +50,13 @@ function Setting({ navigation }) {
       )}
       <View style={styles.body}>
         {activeCategory === "Profile" && <ProfilePage />}
-        {activeCategory === "RBAC" && <TableListSetting />}
+        {activeCategory === "RBAC" && (
+          <TableListSetting
+            searchLoading={searchLoading}
+            searchTerm={searchTerm}
+            setSearchLoading={setSearchLoading}
+          />
+        )}
       </View>
     </View>
   );

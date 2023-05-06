@@ -15,6 +15,9 @@ import ErrorDialog from "../UI/ErrorDialog";
 import { useSettingStore } from "../../Store/settingStore";
 
 function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
+  const toggleReloadSettingList = useSettingStore(
+    (state) => state.toggleReloadSettingList
+  );
   const [pickedRole, setPickedRole] = useState(0);
   const [errorMSG, setErrorMSG] = useState("");
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
@@ -29,8 +32,6 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
     todaysDate.getDate()
   );
   const minDate1 = minDate.toISOString();
-
-  const val = "left";
 
   function dateSelectedUser(date) {
     let count = counter + 1;
@@ -72,7 +73,7 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
       dataUser = {
         userId: ID,
         role: "Temp. Admin",
-        accessState: "Active",
+        accessState: "Inactive",
         startDate: new Date(dateSelectedFirst),
         endDate: new Date(dateSelectedSecond),
       };
@@ -85,6 +86,7 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
       return;
     }
     setVisible(false);
+    toggleReloadSettingList();
     showSuccessMessage();
   }
 
