@@ -60,7 +60,14 @@ async function findUserByEmailOrUserName(email?: string, username?: string) {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: email }, { username: username }],
+        OR: [
+          {
+            email: email,
+          },
+          {
+            username: username,
+          },
+        ],
       },
     });
 
@@ -72,10 +79,14 @@ async function findUserByEmailOrUserName(email?: string, username?: string) {
 
 async function findUserByName(name?: string) {
   try {
+    const term = name ?? "";
+    const nameSearch = term ? term : undefined;
+
     const users = await prisma.user.findMany({
       where: {
         fullName: {
-          contains: name,
+          contains: nameSearch,
+          mode: "insensitive",
         },
       },
     });
@@ -129,6 +140,7 @@ async function getUserTokens(token: string) {
   }
 }
 
+
 async function isUserAuthorized(
   email: string,
   username: string,
@@ -144,6 +156,7 @@ async function isUserAuthorized(
     }
 
     let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
+
     let hashedTemporaryPasswordFromRequest = sha512(
       password,
       user.temporaryPasswordSalt ?? ""
@@ -152,6 +165,7 @@ async function isUserAuthorized(
       hashedPasswordFromRequest !== user.password &&
       hashedTemporaryPasswordFromRequest !== user.temporaryPassword
     ) {
+
       return buildErrorObject(
         401,
         "Provided password is incorrect for this user."
@@ -202,12 +216,14 @@ async function updateUser(userInfo: IUser) {
       },
     });
 
+
     const mergedUserUpdate = {
       ...user,
       accessToken: updatedUserCredentials?.accessToken,
       refreshToken: updatedUserCredentials?.refreshToken,
     };
     return excludeFields(mergedUserUpdate, "id", "password", "passwordSalt");
+
   } catch (error) {
     throw error;
   }
@@ -263,6 +279,7 @@ async function updateUserAccess(
       "accessToken",
       "refreshToken"
     );
+
   } catch (error) {
     throw error;
   }
@@ -278,6 +295,7 @@ async function updateUserState(id: string, accessState: string) {
         accessState: accessState,
       },
     });
+
   } catch (error) {
     throw error;
   }

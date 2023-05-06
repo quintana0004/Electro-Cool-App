@@ -233,6 +233,18 @@ function InvoiceDetail({ route, navigation }) {
         <Appbar.BackAction onPress={navigateBack} />
         <Appbar.Content title={getHeaderTitle()}></Appbar.Content>
       </Appbar.Header>
+      <Header
+        divideH={7}
+        divideW={1}
+        colorHeader={Colors.yellowDark}
+        headerStyles={styles.header}
+      >
+        <View>
+          <Text style={styles.headerTitle}>
+            Invoice {invoiceId && `#${invoiceId}`}
+          </Text>
+        </View>
+      </Header>
       <View style={styles.body}>
         {(isLoading && !!invoiceId) || (
           <View>
@@ -304,6 +316,17 @@ function InvoiceDetail({ route, navigation }) {
                 </View>
               </ImageBackground>
             </View>
+            <InvoiceDetailTableHeader />
+            <InvoiceDetailTableItem
+              description={"Botellas Pruebas"}
+              price={23}
+              quantity={2}
+            />
+            <InvoiceDetailTableItem
+              description={"Botellas Pruebas"}
+              price={23}
+              quantity={2}
+            />
           </View>
         )}
       </View>

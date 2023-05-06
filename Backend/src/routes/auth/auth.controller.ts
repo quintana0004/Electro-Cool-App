@@ -12,6 +12,7 @@ import {
 import {
   generateAccessToken,
   generateRefreshToken,
+
   verifyRefreshToken,
 } from "../../services/auth.service";
 import { sendTemporaryPasswordEmail } from "../../services/mail.service";
@@ -33,7 +34,7 @@ async function httpLogin(req: Request, res: Response) {
     };
 
     if (
-      (!userInfo.username && !userInfo.email) ||
+      (!userInfo.username && !userInfo.password) ||
       (!userInfo.email && !userInfo.password)
     ) {
       return handleBadResponse(

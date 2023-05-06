@@ -113,7 +113,7 @@ function CompanyPolicy({ navigation }) {
     try {
       response = await httpUpsertCar(carInfo);
     } catch (error) {
-      console.log("Error at Handle Save Car: ", error);
+      console.log("Error at Handle Save Car: ", error.response.data);
     }
 
     return response;
@@ -206,7 +206,7 @@ function CompanyPolicy({ navigation }) {
 
       await handleSaveJobOrder(jobOrderResponse);
     } catch (error) {
-      console.log("Error at Handle Save: ", error);
+      console.log("Error at Handle Save: ", error.response.data);
     }
   }
 
