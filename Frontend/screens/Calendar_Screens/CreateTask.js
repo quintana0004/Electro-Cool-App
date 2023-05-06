@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   View,
   Text,
@@ -8,6 +14,7 @@ import {
   ToastAndroid,
   Pressable,
   Dimensions,
+  Keyboard,
 } from "react-native";
 import {
   Appbar,
@@ -25,16 +32,12 @@ import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import { httpCreateTask } from "../../api/tasks.api";
 import * as Yup from "yup";
-import { DatePickerModal } from "react-native-paper-dates";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import "intl";
-import "intl/locale-data/jsonp/en";
-import intlFormat from "date-fns/intlFormat";
 import format from "date-fns/format";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import TableItemCTasks from "../../components/CalendarDetail/TableItemCTasks";
 import TableHeaderCTasks from "../../components/CalendarDetail/TableHeaderCTasks";
 import { useCalendarStore } from "../../Store/calendarStore";
+import { Calendar, CalendarUtils } from "react-native-calendars";
 
 function cTaskItem(itemData) {
   //console.log("ITEAM DATA: ", itemData);
@@ -59,28 +62,15 @@ function CreateTask() {
     (state) => state.setReloadCalendarList
   );
   const [date, setDate] = useState(undefined);
-  const [open, setOpen] = useState(false);
-
-  const onDismissSingle = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const onConfirmSingle = useCallback(
-    (params) => {
-      setOpen(false);
-      setDate(params.date);
-    },
-    [setOpen, setDate]
-  );
 
   //Other Hooks
+  const [selected, setSelected] = useState(Date());
   const [dialogVisible1, setDialogVisible1] = useState(false);
   const [dialogVisible2, setDialogVisible2] = useState(false);
+  const [dialogVisible3, setDialogVisible3] = useState(false);
   const ref = useRef(null);
-  //const [taskData, setTaskData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isFetching, setIsFetching] = useState(true);
-  const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
 
@@ -188,9 +178,9 @@ function CreateTask() {
 
   //Formats date
   function selectedDate() {
-    let dateObj;
+    let dateObj; //typeof date === "string" && date instanceof Date
     while (dateObj === undefined) {
-      if (typeof date === "object" && date instanceof Date) {
+      if (typeof date === "string") {
         dateObj = date;
       } else {
         return "";
@@ -198,6 +188,44 @@ function CreateTask() {
     }
     return format(new Date(dateObj), "MM/dd/yyyy");
   }
+
+  //Calendar stuff
+
+  const getDate = (count) => {
+    const day = new Date();
+    const newDate = day.setDate(day.getDate() + count);
+    return CalendarUtils.getCalendarDateString(newDate);
+  };
+
+  const marked = useMemo(() => {
+    return {
+      [getDate(0)]: {
+        marked: true,
+      },
+      [selected]: {
+        selected: true,
+        disableTouchEvent: true,
+        selectedColor: Colors.darkGreen,
+        selectedTextColor: "white",
+      },
+    };
+  }, [selected]);
+
+  const onDayPress = useCallback((dateObj) => {
+    setSelected(dateObj.dateString);
+    const newDateObj = dateObj.dateString + "T04:00:00.000Z";
+    console.log("owO ?1: ", newDateObj);
+    setDate(newDateObj);
+    console.log("owO ?2: ", typeof date);
+  }, []);
+
+  const todaysDate = new Date();
+  const minDate = new Date(
+    todaysDate.getFullYear(),
+    todaysDate.getMonth(),
+    todaysDate.getDate()
+  );
+  const minDate1 = minDate.toISOString();
 
   return (
     <View>
@@ -209,19 +237,6 @@ function CreateTask() {
         />
         <Appbar.Content></Appbar.Content>
       </Appbar.Header>
-      <SafeAreaProvider>
-        <View
-          style={{ justifyContent: "center", flex: 1, alignItems: "center" }}
-        >
-          <DatePickerModal
-            mode="single"
-            visible={open}
-            onDismiss={onDismissSingle}
-            date={date}
-            onConfirm={onConfirmSingle}
-          />
-        </View>
-      </SafeAreaProvider>
       <Formik
         initialValues={DataRespondFormik()}
         onSubmit={(values) => console.log(values)}
@@ -255,7 +270,10 @@ function CreateTask() {
             <View style={styles.container2}>
               <Button
                 title="Set Due Date"
-                onPress={() => setOpen(true)}
+                onPress={() => {
+                  setDialogVisible3(true);
+                  Keyboard.dismiss();
+                }}
                 color={Colors.darkGreyAsh}
               />
               <Text>Date selected: {selectedDate()}</Text>
@@ -337,6 +355,40 @@ function CreateTask() {
                   setDialogVisible2(false);
                   navigation.navigate("CalendarMain");
                   setReloadCalendarList();
+                }}
+              ></Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+      {dialogVisible3 && (
+        <Portal>
+          <Dialog
+            visible={dialogVisible3}
+            onDismiss={() => setDialogVisible3(false)}
+            style={{ backgroundColor: Colors.white }}
+          >
+            <Dialog.Icon icon="calendar" size={80} color={Colors.darkGreen} />
+            <Dialog.Title style={styles.textAlert}>
+              Select Task Due Date:
+            </Dialog.Title>
+            <Dialog.Content>
+              <Calendar
+                enableSwipeMonths
+                minDate={minDate1}
+                current={Date()}
+                style={styles.calendar}
+                onDayPress={onDayPress}
+                disableArrowLeft={true}
+                markedDates={marked}
+              />
+            </Dialog.Content>
+            <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+              <Button
+                title="Done"
+                color={Colors.brightGreen}
+                onPress={() => {
+                  setDialogVisible3(false);
                 }}
               ></Button>
             </Dialog.Actions>
@@ -455,6 +507,9 @@ const styles = StyleSheet.create({
   },
   textAlert: {
     textAlign: "center",
+  },
+  calendar: {
+    marginBottom: 10,
   },
 });
 
