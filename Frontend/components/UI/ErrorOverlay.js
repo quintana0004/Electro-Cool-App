@@ -9,7 +9,7 @@ function ErrorOverlay({ message, onConfirm }) {
         source={require("../../assets/images/94992-error-404.gif")}
         style={{ width: 300, height: 300 }}
       />
-      <Text style={styles.messageText}>{{ message }}</Text>
+      <Text style={styles.messageText}>{message}</Text>
       <Button mode="contained" buttonColor={Colors.black} onPress={onConfirm}>
         Try Again
       </Button>

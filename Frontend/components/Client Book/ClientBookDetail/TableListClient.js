@@ -5,11 +5,17 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllClients } from "../../../api/clients.api";
 import { CBCustomerInfoStore } from "../../../Store/JobOrderStore";
 import ErrorOverlay from "../../UI/ErrorOverlay";
+import LoadingOverlay from "../../UI/LoadingOverlay";
+import { useState } from "react";
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
+  const [errorMessage, setErrorMessage] = useState("");
   const reloadClientBookList = CBCustomerInfoStore(
     (state) => state.reloadClientBookList
+  );
+  const setReloadClientBookList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookList
   );
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
@@ -24,6 +30,7 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     });
 
   async function getClientBookScreenData({ pageParam = 0 }) {
+    setErrorMessage("Error loading Appointments. Please try again later.");
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
     if (searchLoading) {
       setSearchLoading(false);
@@ -60,9 +67,21 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     );
   }
 
+  function errorHandler() {
+    setErrorMessage(null);
+    setReloadClientBookList();
+  }
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
   if (isError) {
-    console.log("LaPuta", error.response.data);
-    return <ErrorOverlay />;
+    console.log("Error Message:", error.response.data.error.erroMessage);
+
+    return (
+      <View style={{}}>
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   return (
