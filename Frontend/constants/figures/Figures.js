@@ -17,6 +17,10 @@ import NewCarIcon from "../../assets/images/NewCarIcon.png";
 import NewCarSelectedIcon from "../../assets/images/NewCarSelectedIcon.png";
 import ExistingCarIcon from "../../assets/images/ExistingCarIcon.png";
 import ExistingCarSelectedIcon from "../../assets/images/ExistingCarSelectedIcon.png";
+import UserIcon from "../../assets/images/UserIcon.png";
+import ClientInvoicesIcon from "../../assets/images/ClientInvoicesIcon.png";
+import ClientCarsIcon from "../../assets/images/ClientCarsIcon.png";
+import ClientBookEachCar from "../../assets/images/ClientCarsIcon.png";
 import InvoiceSummaryImage from "../../assets/images/Invoice-Summary.png";
 import Vector from "../../assets/images/Vector.png";
 import VectorWhite from "../../assets/images/VectorWhite.png";
@@ -63,11 +67,15 @@ const Figures = {
   NewCarSelectedIcon,
   ExistingCarIcon,
   ExistingCarSelectedIcon,
-  InvoiceSummaryImage,
   Vector,
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  ClientBookEachCar,
+  UserIcon,
+  ClientInvoicesIcon,
+  ClientCarsIcon,
+  InvoiceSummaryImage,
   AppointmentCardIcon,
   DateforAppointmentCardIcon,
   Wheel,

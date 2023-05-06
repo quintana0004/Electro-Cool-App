@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import Colors from "../../constants/Colors/Colors";
+import Colors from "../../../constants/Colors/Colors";
 import { format } from "date-fns";
 import { Avatar } from "react-native-paper";
-import { useCustomerInfoStore } from "../../Store/JobOrderStore";
+import { CBCustomerInfoStore } from "../../../Store/JobOrderStore";
 import { StackActions, useNavigation } from "@react-navigation/native";
 
 function TableItemClient({ id, firstName, lastName, date, phone, email }) {
@@ -11,8 +11,8 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
     return format(new Date(date), "MM/dd/yyyy");
   }
 
-  const setCustomerInfo = useCustomerInfoStore(
-    (state) => state.setCustomerInfo
+  const setCBCustomerInfo = CBCustomerInfoStore(
+    (state) => state.setCBCustomerInfo
   );
 
   const navigation = useNavigation();
@@ -20,9 +20,9 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
   return (
     <Pressable
       onPress={() => {
-        const pageAction = StackActions.push("CustomerInformation");
+        const pageAction = StackActions.push("ClientBookCustomer");
         navigation.dispatch(pageAction);
-        setCustomerInfo(id, firstName, lastName, date, phone, email);
+        setCBCustomerInfo(id, firstName, lastName, phone, email, date);
       }}
     >
       <View style={styles.content}>
