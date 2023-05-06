@@ -19,9 +19,9 @@ export const useInvoiceStore = create((set) => ({
     set((state) => ({
       id: invoice.id,
       status: invoice.status,
-      amountTotal: invoice.amountTotal0,
-      amountPaid: invoice.amountPaid0,
-      amountDue: invoice.amountDue0,
+      amountTotal: invoice.amountTotal,
+      amountPaid: invoice.amountPaid,
+      amountDue: invoice.amountDue,
       customerId: invoice.customerId,
       carId: invoice.carId,
       invoiceItems: invoice.invoiceItems,

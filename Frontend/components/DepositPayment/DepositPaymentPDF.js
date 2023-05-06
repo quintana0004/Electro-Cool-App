@@ -74,33 +74,31 @@ function DepositPaymentPDF({ setPdfHtmlContent, depositId }) {
               <hr style="width: 95%; margin: 15px;"/>
 
               <!-- Dynamically Generated Header for Car Information -->
-              <div style="line-height: 3px;">
-                  <table style="border-collapse: collapse; width: 90%; margin: 30px auto;">
-                      <thead>
-                      <tr>
-                          <th style="text-align: center; padding: 10px;">Brand</th>
-                          <th style="text-align: center; padding: 10px;">Model</th>
-                          <th style="text-align: center; padding: 10px;">Year</th>
-                          <th style="text-align: center; padding: 10px;">License Plate</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr style="background-color: #E9E9E9;border-radius: 20px; overflow: hidden; ">
-                          <td style="text-align: center; padding: 10px;">
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 90%; margin: auto;">
+                  <!-- Header -->
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Brand</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Model</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Year</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>License Plate</strong></h3>
+
+                  <!-- Body -->
+                  <div style="grid-column: 1 / span 4; background-color: #E9E9E9; border-radius: 20px; padding: 10px;">
+                      <!-- Row -->
+                      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                          <div style="grid-column: 1; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.brand}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 2; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.model}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 3; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.year}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 4; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.licensePlate}</div>
-                          </td>
-                      </tr>
-                      </tbody>
-                  </table>
+                          </div>
+                      </div>
+                  </div>
               </div>
 
               <hr style="width: 95%; margin: 15px;"/>

@@ -9,7 +9,7 @@ import {
 import { MaskedTextInput } from "react-native-mask-text";
 import Colors from "../../constants/Colors/Colors";
 
-function AmountInput({ onChange, value, isEditable }) {
+function AmountInput({ onChange, value, isEditable, inputContainerStyles }) {
   const [amount, setAmount] = useState(0);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function AmountInput({ onChange, value, isEditable }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={"height"}>
-      <View style={styles.container}>
+      <View style={[styles.container, inputContainerStyles]}>
         <MaskedTextInput
           type="currency"
           style={styles.textInput}

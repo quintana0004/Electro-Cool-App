@@ -5,7 +5,7 @@ import { httpGetInvoice } from "../../api/invoices.api";
 
 function InvoicePaymentPDF({ setPdfHtmlContent, invoiceId }) {
   const { isLoading } = useQuery({
-    queryKey: ["InvoiceDetailData", invoiceId],
+    queryKey: ["InvoicePaymentPDF", invoiceId],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
   });
@@ -55,19 +55,19 @@ function InvoicePaymentPDF({ setPdfHtmlContent, invoiceId }) {
                   <!-- Dynamically Generated Customer Information -->
                   <div style="line-height: 5px;">
                       <p>
-                          <strong>Bill To: </strong>${invoiceData.data.customer.fullName}
+                          <strong>Bill To: </strong>${invoiceData.customer.fullName}
                       </p>
                       <p>
-                          <strong>Invoice Number: </strong>#${invoiceData.data.id}
+                          <strong>Invoice Number: </strong>#${invoiceData.id}
                       </p>
                       <p>
                           <strong>Invoice Date: </strong>${formattedDate}
                       </p>
                       <p>
-                          <strong>Phone Number: </strong>${invoiceData.data.customer.phone}
+                          <strong>Phone Number: </strong>${invoiceData.customer.phone}
                       </p>
                       <p>
-                          <strong>Email: </strong>${invoiceData.data.customer.email}
+                          <strong>Email: </strong>${invoiceData.customer.email}
                       </p>
                   </div>
               </div>
@@ -75,43 +75,41 @@ function InvoicePaymentPDF({ setPdfHtmlContent, invoiceId }) {
               <hr style="width: 95%; margin: 15px;"/>
 
               <!-- Dynamically Generated Header for Car Information -->
-              <div style="line-height: 3px;">
-                  <table style="border-collapse: collapse; width: 90%; margin: 30px auto;">
-                      <thead>
-                      <tr>
-                          <th style="text-align: center; padding: 10px;">Brand</th>
-                          <th style="text-align: center; padding: 10px;">Model</th>
-                          <th style="text-align: center; padding: 10px;">Year</th>
-                          <th style="text-align: center; padding: 10px;">License Plate</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr style="background-color: #E9E9E9;border-radius: 20px; overflow: hidden; ">
-                          <td style="text-align: center; padding: 10px;">
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 90%; margin: auto;">
+                  <!-- Header -->
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Brand</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Model</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>Year</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; padding: 10px;"><strong>License Plate</strong></h3>
+
+                  <!-- Body -->
+                  <div style="grid-column: 1 / span 4; background-color: #E9E9E9; border-radius: 20px; padding: 10px;">
+                      <!-- Row -->
+                      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                          <div style="grid-column: 1; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.brand}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 2; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.model}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 3; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.year}</div>
-                          </td>
-                          <td style="text-align: center; padding: 10px;">
+                          </div>
+                          <div style="grid-column: 4; text-align: center;">
                               <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.licensePlate}</div>
-                          </td>
-                      </tr>
-                      </tbody>
-                  </table>
+                          </div>
+                      </div>
+                  </div>
               </div>
 
               <hr style="width: 95%; margin: 15px;"/>
 
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+              <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px;">
                   <!-- Header -->
-                  <h3 style="text-align: center; font-size: 20px; grid-column: 1;"><strong>Description</strong></h3>
-                  <h3 style="text-align: center; font-size: 20px; grid-column: 2;"><strong>Quantity</strong></h3>
-                  <h3 style="text-align: center; font-size: 20px; grid-column: 3;"><strong>Price</strong></h3>
-                  <h3 style="text-align: center; font-size: 20px; grid-column: 4;"><strong>Amount</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; font-size: 20px; grid-column: 1;"><strong>Description</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; font-size: 20px; grid-column: 2;"><strong>Quantity</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; font-size: 20px; grid-column: 3;"><strong>Price</strong></h3>
+                  <h3 style="margin-bottom: 0; text-align: center; font-size: 20px; grid-column: 4;"><strong>Amount</strong></h3>
 
                   <!-- Body -->
                   <!-- Invoice Item Row -->
@@ -145,15 +143,13 @@ function InvoicePaymentPDF({ setPdfHtmlContent, invoiceId }) {
   }
 
   function buildInvoiceItemsHtml(invoiceItems) {
-    console.log("Invoice Items Data: ", invoiceItems);
-
     let invoiceItemsHTML = [];
     for (let item of invoiceItems) {
       invoiceItemsHTML.push(`
         <div style="grid-column: 1 / span 4; background-color: rgba(235, 194, 86, 0.5); border-radius: 15px; padding: 5px; width: 95%; margin: auto;">
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px;">
                 <div style="grid-column: 1; display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 15px; border: 1.89px solid rgba(0, 0, 0, 0.15); padding: 3px 3px 3px 10px;">
-                    <p style="margin: 0;">${item.description}</p>
+                    <p style="margin: 0; width: 80px; text-align: center;">${item.description}</p>
                     <div style="background-color: #ffffff; border-radius: 15px; border: 1.89px solid #000000; padding: 10px 15px;">
                         <p style="margin: 0;">${item.warranty}</p>
                     </div>

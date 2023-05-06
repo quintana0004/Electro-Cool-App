@@ -35,7 +35,6 @@ import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
-  const isInvoiceRevocable = !!invoiceId;
 
   // --- Store Variables
   const client = useCustomerInfoStore((state) => {
@@ -70,6 +69,7 @@ function InvoiceDetail({ route, navigation }) {
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
+  const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
   const clientSelectedDeposits = useDepositStore(
     (state) => state.clientSelectedDeposits
   );
@@ -86,6 +86,7 @@ function InvoiceDetail({ route, navigation }) {
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceStatus, setInvoiceStatus] = useState("");
+  const [isInvoiceEditable, setIsInvoiceEditable] = useState(true);
 
   // --- Calculated Variables
   const totalAmount = useMemo(() => {
@@ -118,7 +119,7 @@ function InvoiceDetail({ route, navigation }) {
 
   // --- Data Fetching
   const { isLoading, isError, error } = useQuery({
-    queryKey: ["InvoiceDetailData", invoiceId],
+    queryKey: ["InvoiceDetailData", invoiceId, reloadInvoiceList],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
   });
@@ -128,6 +129,19 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   function navigateToPayment() {
+    const invoiceInfo = {
+      id: invoiceId,
+      status: invoiceStatus,
+      amountTotal: totalAmount / 100,
+      amountPaid: amountPaid / 100,
+      amountDue: amountDue / 100,
+      customerId: clientInfo.id,
+      carId: carInfo.id,
+      invoiceItems: invoiceItems,
+      depositIds: getDepositIds(),
+    };
+    setInvoice(invoiceInfo);
+
     const pageAction = StackActions.push("InvoicePayment");
     navigation.dispatch(pageAction);
   }
@@ -174,6 +188,8 @@ function InvoiceDetail({ route, navigation }) {
       ...item,
     }));
     setInvoiceItems(items);
+    setInvoiceStatus(data.status);
+    setIsInvoiceEditable(data.status !== "Paid");
   }
 
   function getDepositIds() {
@@ -191,21 +207,23 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function fetchInvoiceData() {
-    const data = await httpGetInvoice(invoiceId);
-    setInvoiceInfo(data.data);
-    return data.data;
+    const response = await httpGetInvoice(invoiceId);
+    setInvoiceInfo(response.data);
+    return response.data;
   }
 
   async function onSaveUpdateInvoice(option) {
-    setInvoiceStatus(option);
-
     // Request user confirmation for payment
     if (option === "Paid") {
       return setIsDialogVisible(true);
     }
+    if (option === "PDF") {
+      return navigateToPayment();
+    }
 
     // Save Deposit if payment was not selected
     await saveInvoice(option);
+    setInvoiceStatus(option);
 
     // After Save refresh invoice list and return to main page
     toggleReloadInvoiceList();
@@ -243,13 +261,7 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function handleInvoicePayment() {
-    await saveInvoice(invoiceStatus);
-
-    // Refresh Invoice List and Navigate to Payment
-    toggleReloadInvoiceList();
-    showSuccessMessage();
     setIsDialogVisible(false);
-
     return navigateToPayment();
   }
 
@@ -356,7 +368,7 @@ function InvoiceDetail({ route, navigation }) {
           </View>
           <SaveMenu
             onSelection={onSaveUpdateInvoice}
-            isRevokeActive={isInvoiceRevocable}
+            activeState={invoiceStatus}
           />
         </View>
       </View>

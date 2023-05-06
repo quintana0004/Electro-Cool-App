@@ -34,10 +34,6 @@ function DepositPayment({ navigation }) {
     console.log("Handle QR Code");
   }
 
-  function handlePayment() {
-    console.log("Handle Payment");
-  }
-
   async function handleDownload() {
     await Print.printAsync({ html: pdfHtmlContent });
   }
@@ -89,12 +85,6 @@ function DepositPayment({ navigation }) {
         {/* Footer Container */}
         <View style={styles.footerContainer}>
           <PaymentInput value={120.64} />
-
-          <Pressable onPress={handlePayment}>
-            <View style={styles.paymentBtn}>
-              <Text style={styles.paymentBtnText}>Full Payment</Text>
-            </View>
-          </Pressable>
         </View>
       </View>
     </View>
