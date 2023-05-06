@@ -50,7 +50,7 @@ function DepositPaymentPDF({ depositId }) {
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 24px;">
             <!--  Address information dynamically generated -->
-            <div style="line-height: 5px;">
+            
                 <p>C-15 Calle Jazmin</p>
                 <p>Urb. Reparto Valencia</p>
                 <p>Bayamon, P.R.</p>
