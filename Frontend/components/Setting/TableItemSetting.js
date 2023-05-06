@@ -143,6 +143,7 @@ function TableItemSetting({ data }) {
         setVisible={setVisibilityPendingUser}
         firstName={data.firstName}
         lastName={data.lastName}
+        ID={data.id}
       />
     </View>
   );

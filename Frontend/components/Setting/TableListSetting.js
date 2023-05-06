@@ -17,7 +17,7 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [errorMSG, setErrorMSG] = useState("");
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, data, isError, error } = useQuery({
     queryKey: ["RBACHomePage", searchTerm, reloadSettingList],
     queryFn: getSettingScreenData,
     enabled: true,

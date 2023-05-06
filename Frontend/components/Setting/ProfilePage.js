@@ -23,6 +23,8 @@ import { useQuery } from "@tanstack/react-query";
 import { httpGetUserProfile, httpUpdateUserProfile } from "../../api/users.api";
 import ErrorDialog from "../UI/ErrorDialog";
 import LoadingOverlay from "../UI/LoadingOverlay";
+import { useSettingStore } from "../../Store/settingStore";
+import ErrorOverlay from "../UI/ErrorOverlay";
 
 //Validation for the users information
 const ValidationUser = Yup.object().shape({
@@ -32,7 +34,9 @@ const ValidationUser = Yup.object().shape({
   lastName: Yup.string()
     .required("Last Name is required.")
     .matches("^[A-Za-z ]{2,50}$", "Last name can't have digits."),
-  phoneNumber: Yup.string().required("Phone Number  is required."),
+  phoneNumber: Yup.string()
+    .required("Phone Number  is required.")
+    .matches("^[0-9]{10}$", ""),
   email: Yup.string()
     .required("Email is required.")
     .email("Invalid Email Address."),
@@ -61,8 +65,13 @@ function ProfilePage({}) {
   const refAccountInformation = useRef(null);
   const refCredentialInformation = useRef(null);
 
+  const toggleReloadSettingList = useSettingStore(
+    (state) => state.toggleReloadSettingList
+  );
+  const reloadSettingList = useSettingStore((state) => state.reloadSettingList);
+
   const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["UserProfileData"],
+    queryKey: ["UserProfileData", reloadSettingList],
     queryFn: getUserProfile,
     enabled: true,
   });
@@ -94,6 +103,10 @@ function ProfilePage({}) {
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
+  const [disableInputs, setDisableInputs] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(
+    "The server has a little issue, try refeshing again."
+  );
 
   function isProfileFormValid() {
     // Start to validating there is no error on input page
@@ -122,7 +135,60 @@ function ProfilePage({}) {
     return isValid;
   }
 
+  function isUserProfileValidation() {
+    // Start to validating there is no error on input page
+    const TouchedObject =
+      Object.keys(refAccountInformation.current.touched).length > 0;
+
+    let Valid = true;
+    if (
+      refAccountInformation.current &&
+      refAccountInformation.current.isValid
+    ) {
+      Valid = true;
+    } else {
+      Valid = false;
+    }
+
+    return Valid;
+  }
+
+  async function UserProfileInformationEdit() {
+    //Check Validation of the inputs
+    const validation = isUserProfileValidation();
+    if (validation === false) {
+      setErrorMSG("Personal Information incomplete or invalid.");
+      setErrorDialogVisible(true);
+      return;
+    }
+
+    const userPersonalInfo = {
+      email: refAccountInformation.current.values.email,
+      firstName: refAccountInformation.current.values.firstName,
+      lastName: refAccountInformation.current.values.lastName,
+      phone: refAccountInformation.current.values.phoneNumber,
+      username: refAccountInformation.current.values.username,
+    };
+
+    const response = await httpGetUserProfile(userPersonalInfo);
+
+    if (response.hasError) {
+      setErrorMSG(response.errorMessage);
+      setErrorDialogVisible(true);
+      return;
+    }
+
+    setDisableInputs(!disableInputs);
+    showSuccessMessage();
+  }
+
   async function handleProfileSubmission() {
+    //Verify that personal user information is not being
+    if (disableInputs === false) {
+      console.log("ENTERED HERE");
+      return;
+    }
+
     const isFormValid = isProfileFormValid();
     if (isFormValid === false) return;
 
@@ -147,7 +213,23 @@ function ProfilePage({}) {
   }
 
   if (isLoading) {
-    return <LoadingOverlay />;
+    return (
+      <View style={{ marginTop: 400 }}>
+        <LoadingOverlay />
+      </View>
+    );
+  }
+
+  function errorHandler() {
+    toggleReloadSettingList();
+  }
+
+  if (isError) {
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay onConfirm={errorHandler} message={errorMessage} />
+      </View>
+    );
   }
 
   return (
@@ -216,7 +298,7 @@ function ProfilePage({}) {
                         value={values.firstName}
                         error={touched.firstName && errors.firstName}
                         style={styles.textInputStyle}
-                        disabled={true}
+                        disabled={disableInputs}
                       />
                       <HelperText
                         type="error"
@@ -237,7 +319,7 @@ function ProfilePage({}) {
                         value={values.lastName}
                         error={touched.lastName && errors.lastName}
                         style={styles.textInputStyle}
-                        disabled={true}
+                        disabled={disableInputs}
                       />
                       <HelperText
                         type="error"
@@ -271,7 +353,7 @@ function ProfilePage({}) {
                         value={values.phoneNumber}
                         error={touched.phoneNumber && errors.phoneNumber}
                         style={styles.textInputStyle}
-                        disabled={true}
+                        disabled={disableInputs}
                       />
                       <HelperText
                         type="error"
@@ -298,7 +380,7 @@ function ProfilePage({}) {
                         value={values.email}
                         error={touched.email && errors.email}
                         style={styles.textInputStyle}
-                        disabled={true}
+                        disabled={disableInputs}
                       />
                       <HelperText
                         type="error"
@@ -327,7 +409,7 @@ function ProfilePage({}) {
                         value={values.username}
                         error={touched.username && errors.username}
                         style={styles.textInputStyle}
-                        disabled={true}
+                        disabled={disableInputs}
                       />
                       <HelperText
                         type="error"
@@ -342,11 +424,24 @@ function ProfilePage({}) {
             </KeyboardAvoidingView>
           )}
         </Formik>
-        <Pressable onPress={handleProfileSubmission}>
-          <View style={styles.confirmBtn}>
-            <Text style={styles.confirmText}>Edit Information</Text>
-          </View>
-        </Pressable>
+        {disableInputs === true && (
+          <Pressable
+            onPress={() => {
+              setDisableInputs(!disableInputs);
+            }}
+          >
+            <View style={styles.confirmBtn}>
+              <Text style={styles.confirmText}>Edit Information</Text>
+            </View>
+          </Pressable>
+        )}
+        {disableInputs === false && (
+          <Pressable onPress={UserProfileInformationEdit}>
+            <View style={styles.confirmBtn}>
+              <Text style={styles.confirmText}>Save Information</Text>
+            </View>
+          </Pressable>
+        )}
       </View>
 
       <View>

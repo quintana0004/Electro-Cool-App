@@ -39,13 +39,15 @@ function Setting({ navigation }) {
           />
         )}
       </Appbar.Header>
-      <SearchBanner
-        visible={openBannerSearch}
-        loading={searchLoading}
-        placeholder={"Search by ID or Name"}
-        setLoading={setSearchLoading}
-        setSearchTerm={setSearchTerm}
-      />
+      {activeCategory === "RBAC" && (
+        <SearchBanner
+          visible={openBannerSearch}
+          loading={searchLoading}
+          placeholder={"Search by ID or Name"}
+          setLoading={setSearchLoading}
+          setSearchTerm={setSearchTerm}
+        />
+      )}
       <View style={styles.body}>
         {activeCategory === "Profile" && <ProfilePage />}
         {activeCategory === "RBAC" && <TableListSetting />}
