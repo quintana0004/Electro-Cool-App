@@ -1,5 +1,12 @@
 import { useMemo, useState } from "react";
-import { Alert, ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ToastAndroid,
+  Alert,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Appbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { MaskedText } from "react-native-mask-text";
@@ -10,6 +17,7 @@ import InvoiceDetailAddItem from "../../components/InvoiceDetail/InvoiceDetailAd
 import InvoiceDetailSelectDeposit from "../../components/InvoiceDetail/InvoiceDetailSelectDeposit";
 import InvoiceDetailTableHeader from "../../components/InvoiceDetail/InvoiceDetailTableHeader";
 import InvoiceDetailTableList from "../../components/InvoiceDetail/InvoiceDetailTableList";
+import PaymentConfirmationDialog from "../../components/UI/PaymentConfirmationDialog";
 import CarCard from "../../components/UI/CarCard";
 import ClientCard from "../../components/UI/ClientCard";
 import NavBtn from "../../components/UI/NavBtns";
@@ -57,9 +65,11 @@ function InvoiceDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
+  const setInvoice = useInvoiceStore((state) => state.setInvoice);
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
+  const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
   const clientSelectedDeposits = useDepositStore(
     (state) => state.clientSelectedDeposits
   );
@@ -69,11 +79,14 @@ function InvoiceDetail({ route, navigation }) {
   const resetSelectedDeposits = useDepositStore(
     (state) => state.resetSelectedDeposits
   );
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   // --- State Variables
   const [clientInfo, setClientInfo] = useState(client);
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
+  const [invoiceStatus, setInvoiceStatus] = useState("");
+  const [isInvoiceEditable, setIsInvoiceEditable] = useState(true);
 
   // --- Calculated Variables
   const totalAmount = useMemo(() => {
@@ -106,7 +119,7 @@ function InvoiceDetail({ route, navigation }) {
 
   // --- Data Fetching
   const { isLoading, isError, error } = useQuery({
-    queryKey: ["InvoiceDetailData", invoiceId],
+    queryKey: ["InvoiceDetailData", invoiceId, reloadInvoiceList],
     queryFn: fetchInvoiceData,
     enabled: !!invoiceId,
   });
@@ -115,9 +128,24 @@ function InvoiceDetail({ route, navigation }) {
     return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
   }
 
-  function navigateNext() {}
+  function navigateToPayment() {
+    const invoiceInfo = {
+      id: invoiceId,
+      status: invoiceStatus,
+      amountTotal: totalAmount / 100,
+      amountPaid: amountPaid / 100,
+      amountDue: amountDue / 100,
+      customerId: clientInfo.id,
+      carId: carInfo.id,
+      invoiceItems: invoiceItems,
+      depositIds: getDepositIds(),
+    };
+    setInvoice(invoiceInfo);
 
-  // TODO: Fix Navigations for new implementation
+    const pageAction = StackActions.push("InvoicePayment");
+    navigation.dispatch(pageAction);
+  }
+
   function navigateBack() {
     const pageAction = StackActions.pop(1);
     navigation.dispatch(pageAction);
@@ -160,6 +188,8 @@ function InvoiceDetail({ route, navigation }) {
       ...item,
     }));
     setInvoiceItems(items);
+    setInvoiceStatus(data.status);
+    setIsInvoiceEditable(data.status !== "Paid");
   }
 
   function getDepositIds() {
@@ -177,14 +207,34 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   async function fetchInvoiceData() {
-    const data = await httpGetInvoice(invoiceId);
-    setInvoiceInfo(data.data);
-    return data.data;
+    const response = await httpGetInvoice(invoiceId);
+    setInvoiceInfo(response.data);
+    return response.data;
   }
 
   async function onSaveUpdateInvoice(option) {
+    // Request user confirmation for payment
+    if (option === "Paid") {
+      return setIsDialogVisible(true);
+    }
+    if (option === "PDF") {
+      return navigateToPayment();
+    }
+
+    // Save Deposit if payment was not selected
+    await saveInvoice(option);
+    setInvoiceStatus(option);
+
+    // After Save refresh invoice list and return to main page
+    toggleReloadInvoiceList();
+    showSuccessMessage();
+
+    return navigation.navigate("InvoiceMain");
+  }
+
+  async function saveInvoice(status) {
     const invoiceInfo = {
-      status: option,
+      status: status,
       amountTotal: totalAmount / 100,
       amountPaid: amountPaid / 100,
       amountDue: amountDue / 100,
@@ -199,24 +249,24 @@ function InvoiceDetail({ route, navigation }) {
 
     const response = await httpUpsertInvoice(invoiceInfo);
     if (response.hasError) {
+      console.log("Error message on upsert invoice: ", response.errorMessage);
       return Alert.alert(
         "Error",
         "There was an error saving the invoice. Please try again later."
       );
     }
 
-    onSaveNavigation(option);
+    // Store Invoice Information In the Store
+    setInvoice(invoiceInfo);
   }
 
-  function onSaveNavigation(option) {
-    toggleReloadInvoiceList();
-    Alert.alert("Success", "The invoice was saved successfully.");
+  async function handleInvoicePayment() {
+    setIsDialogVisible(false);
+    return navigateToPayment();
+  }
 
-    if (option === "Pay") {
-      return console.log("Pay Button Clicked");
-    }
-
-    return navigation.navigate("InvoiceMain");
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
   }
 
   if (isError) {
@@ -233,18 +283,6 @@ function InvoiceDetail({ route, navigation }) {
         <Appbar.BackAction onPress={navigateBack} />
         <Appbar.Content title={getHeaderTitle()}></Appbar.Content>
       </Appbar.Header>
-      <Header
-        divideH={7}
-        divideW={1}
-        colorHeader={Colors.yellowDark}
-        headerStyles={styles.header}
-      >
-        <View>
-          <Text style={styles.headerTitle}>
-            Invoice {invoiceId && `#${invoiceId}`}
-          </Text>
-        </View>
-      </Header>
       <View style={styles.body}>
         {(isLoading && !!invoiceId) || (
           <View>
@@ -316,17 +354,6 @@ function InvoiceDetail({ route, navigation }) {
                 </View>
               </ImageBackground>
             </View>
-            <InvoiceDetailTableHeader />
-            <InvoiceDetailTableItem
-              description={"Botellas Pruebas"}
-              price={23}
-              quantity={2}
-            />
-            <InvoiceDetailTableItem
-              description={"Botellas Pruebas"}
-              price={23}
-              quantity={2}
-            />
           </View>
         )}
       </View>
@@ -339,9 +366,26 @@ function InvoiceDetail({ route, navigation }) {
           <View style={styles.navCancelBtn}>
             <NavBtn choice={"Cancel"} nav={navigateCancel} />
           </View>
-          <SaveMenu onSelection={onSaveUpdateInvoice} />
+          <SaveMenu
+            onSelection={onSaveUpdateInvoice}
+            activeState={invoiceStatus}
+          />
         </View>
       </View>
+
+      {/* Dialogs */}
+      {isDialogVisible && (
+        <PaymentConfirmationDialog
+          title={"Realize Invoice Payment"}
+          body={
+            "Once a payment is made, this invoice cannot be modified again."
+          }
+          isDialogVisible={isDialogVisible}
+          setIsDialogVisible={setIsDialogVisible}
+          onCancel={() => setIsDialogVisible(false)}
+          onConfirm={handleInvoicePayment}
+        />
+      )}
     </View>
   );
 }

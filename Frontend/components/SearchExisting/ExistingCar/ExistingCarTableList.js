@@ -19,10 +19,7 @@ function ExistingCarTableList({
     queryKey: ["ExistingCarData", searchTerm],
     queryFn: getExistingCarData,
     select: (data) => {
-      console.log("Data being received for Car: ", data);
-      let modifiedCarData = data.map((car) => setDefaultSelectedField(car));
-      console.log("Data Modified for Car: ", modifiedCarData);
-      return modifiedCarData;
+      return data.map((car) => setDefaultSelectedField(car));
     },
     enabled: true,
   });
@@ -70,12 +67,20 @@ function ExistingCarTableList({
       selected: item.selected,
     };
 
-    return <ExistingCarItemTableItem itemData={itemInfo} onSelected={updateSelectedItem} />;
+    return (
+      <ExistingCarItemTableItem
+        itemData={itemInfo}
+        onSelected={updateSelectedItem}
+      />
+    );
   }
 
   if (isError) {
     console.log("Error Fetching Existing Cars: ", error);
-    Alert.alert("Error", "There was an error fetching existing cars. Please try again later.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching existing cars. Please try again later."
+    );
   }
 
   return (
