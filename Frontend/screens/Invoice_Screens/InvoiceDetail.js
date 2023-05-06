@@ -86,6 +86,7 @@ function InvoiceDetail({ route, navigation }) {
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceStatus, setInvoiceStatus] = useState("");
+  const [invoiceAmountPaid, setInvoiceAmountPaid] = useState(0);
   const [isInvoiceEditable, setIsInvoiceEditable] = useState(true);
 
   // --- Calculated Variables
@@ -100,18 +101,14 @@ function InvoiceDetail({ route, navigation }) {
   }, [invoiceItems]);
 
   const amountPaid = useMemo(() => {
-    let amount = 0;
+    let amount = invoiceAmountPaid;
 
     for (let deposit of clientSelectedDeposits) {
       amount += Number(deposit.amountTotal);
     }
 
-    for (let deposit of serverSelectedDeposits) {
-      amount += Number(deposit.amountTotal);
-    }
-
     return amount * 100;
-  }, [clientSelectedDeposits, serverSelectedDeposits]);
+  }, [clientSelectedDeposits, serverSelectedDeposits, invoiceAmountPaid]);
 
   const amountDue = useMemo(() => {
     return totalAmount - amountPaid;
@@ -189,6 +186,7 @@ function InvoiceDetail({ route, navigation }) {
     }));
     setInvoiceItems(items);
     setInvoiceStatus(data.status);
+    setInvoiceAmountPaid(data.amountPaid);
     setIsInvoiceEditable(data.status !== "Paid");
   }
 

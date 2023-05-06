@@ -47,7 +47,7 @@ function InvoicePayment({ navigation }) {
       id: invoiceId,
       status: status,
       amountTotal: +amountTotal,
-      amountPaid: +amountToPay,
+      amountPaid: Number(amountPaid) + Number(amountToPay),
       amountDue: amountTotal - amountPaid - amountToPay,
       customerId: customerId,
       carId: carId,
@@ -69,7 +69,9 @@ function InvoicePayment({ navigation }) {
 
     // After Save refresh invoice list and return to main page
     toggleReloadInvoiceList();
+    // TODO: Switch for the success overlay developed in Jessicas branch when she pushes the changes.
     showSuccessMessage();
+    setAmountToPay(0);
     setIsInvoiceEditable(status !== "Paid");
     setInvoice(invoiceInfo);
   }
@@ -97,7 +99,7 @@ function InvoicePayment({ navigation }) {
   }
 
   function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Payment Received Successfully!", ToastAndroid.LONG);
   }
 
   return (
