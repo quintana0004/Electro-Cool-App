@@ -86,16 +86,16 @@ function DepositPaymentPDF({ setPdfHtmlContent, depositId }) {
                       <!-- Row -->
                       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                           <div style="grid-column: 1; text-align: center;">
-                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.brand}</div>
+                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.brand}</div>
                           </div>
                           <div style="grid-column: 2; text-align: center;">
-                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.model}</div>
+                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.model}</div>
                           </div>
                           <div style="grid-column: 3; text-align: center;">
-                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.year}</div>
+                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.year}</div>
                           </div>
                           <div style="grid-column: 4; text-align: center;">
-                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${depositData.car.licensePlate}</div>
+                              <div style="background-color: #ffffff; border-radius: 20px; padding: 20px; margin: 5px;">${invoiceData.car.licensePlate}</div>
                           </div>
                       </div>
                   </div>

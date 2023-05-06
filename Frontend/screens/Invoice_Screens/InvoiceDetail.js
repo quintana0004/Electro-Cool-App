@@ -292,19 +292,27 @@ function InvoiceDetail({ route, navigation }) {
                 <CarCard car={carInfo} />
               </View>
               <View style={styles.buttonGroup}>
-                <InvoiceDetailAddItem onPress={onAddItem} />
-                <InvoiceDetailSelectDeposit invoiceId={invoiceId} />
+                <InvoiceDetailAddItem
+                  onPress={onAddItem}
+                  isInvoiceEditable={isInvoiceEditable}
+                />
+                <InvoiceDetailSelectDeposit
+                  invoiceId={invoiceId}
+                  isInvoiceEditable={isInvoiceEditable}
+                />
               </View>
               <InvoiceDetailTableHeader />
               <InvoiceDetailTableList
                 invoiceItems={invoiceItems}
                 setInvoiceItems={setInvoiceItems}
+                isInvoiceEditable={isInvoiceEditable}
               />
             </View>
             <View style={styles.invoiceSummary}>
               <ImageBackground
                 source={Figures.InvoiceSummaryImage}
                 style={styles.imageBackgroundContainer}
+                resizeMode="stretch"
               >
                 <View>
                   <Text style={[styles.amountsText, styles.totalAmountText]}>
@@ -426,7 +434,6 @@ const styles = StyleSheet.create({
   imageBackgroundContainer: {
     height: 150,
     width: 500,
-    resizeMode: "contain",
     flexDirection: "row",
     justifyContent: "center",
     padding: 10,

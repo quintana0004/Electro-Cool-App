@@ -6,12 +6,18 @@ import { useEffect, useState } from "react";
 import InvoiceDetailModal from "./InvoiceDetailModal";
 import { useDepositStore } from "../../Store/depositStore";
 
-function InvoiceDetailSelectDeposit({ invoiceId }) {
+function InvoiceDetailSelectDeposit({ isInvoiceEditable, invoiceId }) {
   const [depositsCount, setDepositsCount] = useState(0);
   const [visible, setVisible] = useState(false);
-  const clientSelectedDeposits = useDepositStore((state) => state.clientSelectedDeposits);
-  const serverSelectedDeposits = useDepositStore((state) => state.serverSelectedDeposits);
-  const setServerSelectedDeposits = useDepositStore((state) => state.setServerSelectedDeposits);
+  const clientSelectedDeposits = useDepositStore(
+    (state) => state.clientSelectedDeposits
+  );
+  const serverSelectedDeposits = useDepositStore(
+    (state) => state.serverSelectedDeposits
+  );
+  const setServerSelectedDeposits = useDepositStore(
+    (state) => state.setServerSelectedDeposits
+  );
 
   const { isError, error } = useQuery({
     queryKey: ["SelectedDeposits", invoiceId],
@@ -40,12 +46,15 @@ function InvoiceDetailSelectDeposit({ invoiceId }) {
 
   if (isError) {
     console.log("Error Fetching Deposit Count: ", error);
-    Alert.alert("Error", "There was an error fetching the deposits for this invoice. Please reload app.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching the deposits for this invoice. Please reload app."
+    );
   }
 
   return (
     <View>
-      <Pressable onPress={showDepositModal}>
+      <Pressable onPress={showDepositModal} disabled={!isInvoiceEditable}>
         <View style={styles.container}>
           <View style={styles.countContainer}>
             <Text style={styles.countText}>{depositsCount}</Text>
@@ -55,7 +64,7 @@ function InvoiceDetailSelectDeposit({ invoiceId }) {
           </View>
         </View>
       </Pressable>
-      <InvoiceDetailModal visible={visible} setVisibile={setVisible}/>
+      <InvoiceDetailModal visible={visible} setVisibile={setVisible} />
     </View>
   );
 }

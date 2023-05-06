@@ -148,7 +148,7 @@ function DepositDetail({ route, navigation }) {
   }
 
   async function handleDepositPayment() {
-    await saveDeposit(depositStatus);
+    await saveDeposit("Paid");
     setDepositStatus("Paid");
     setIsDepositEditable(false);
 

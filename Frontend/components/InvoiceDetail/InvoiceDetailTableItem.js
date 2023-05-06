@@ -6,7 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 import InvoiceDetailSelect from "./InvoiceDetailSelect";
 
-function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
+function InvoiceDetailTableItem({
+  isInvoiceEditable,
+  invoiceItemInfo,
+  removeItem,
+  updateItem,
+}) {
   const [invoiceItem, setInvoiceItem] = useState({
     key: invoiceItemInfo.key,
     description: invoiceItemInfo.description,
@@ -75,6 +80,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
             value={invoiceItem.description}
             onChangeText={handleDescriptionChange}
             onBlur={onBlurUpdateInvoiceItem}
+            editable={isInvoiceEditable}
           />
         </View>
       </View>
@@ -82,6 +88,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
         <InvoiceDetailSelect
           value={invoiceItem.warranty}
           onSelect={handleWarrantyChange}
+          isInvoiceEditable={isInvoiceEditable}
         />
       </View>
       <View style={styles.quantityContainer}>
@@ -91,6 +98,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
           keyboardType="decimal-pad"
           onChangeText={handleQuantityChange}
           onBlur={onBlurUpdateInvoiceItem}
+          editable={isInvoiceEditable}
         />
       </View>
       <View style={styles.priceContainer}>
@@ -107,6 +115,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
           onChangeText={handlePriceChange}
           onBlur={onBlurUpdateInvoiceItem}
           keyboardType="decimal-pad"
+          editable={isInvoiceEditable}
         />
       </View>
       <View style={styles.totalContainer}>
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
   selectContainer: {
     position: "absolute",
     top: 10,
-    left: 130,
+    left: 115,
     elevation: 99999,
     zIndex: 99999,
   },
