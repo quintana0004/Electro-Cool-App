@@ -29,7 +29,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
         <View style={styles.groups}>
           <View>
             <Avatar.Text
-              size={40}
+              size={45}
               label={Array.from(firstName)[0] + Array.from(lastName)[0]}
               style={styles.circle}
             />
@@ -130,12 +130,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   boldText: {
-    fontWeight: "bold",
-    fontSize: 15,
+    fontWeight: "500",
+    fontSize: 12,
   },
   circle: {
     backgroundColor: "#EFE2BF",
-    marginTop: 5,
+    marginTop: 10,
     marginHorizontal: 8,
     borderWidth: 0.5,
     borderColor: "#EFE2BF",
@@ -146,8 +146,8 @@ const styles = StyleSheet.create({
   nameRec: {
     flexDirection: "column",
     marginTop: 15,
-    height: 45,
-    borderTopRightRadius: 15,
+    height: 35,
+    borderTopRightRadius: 10,
     borderBottomRightRadius: 15,
     backgroundColor: Colors.black,
     justifyContent: "space-evenly",
@@ -155,9 +155,9 @@ const styles = StyleSheet.create({
   },
   boldWhite: {
     fontWeight: "500",
-    fontSize: 18,
+    fontSize: 12,
     color: Colors.white,
-    marginLeft: 80,
+    marginLeft: 60,
   },
   groups: {
     flex: 1,

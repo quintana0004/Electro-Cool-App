@@ -183,4 +183,8 @@ export const CBCustomerInfoStore = create((set) => ({
     set((state) => ({
       reloadClientBookCarList: !state.reloadClientBookCarList,
     })),
+  setReloadClientBookCarInfo: () =>
+    set((state) => ({
+      reloadClientBookCarInfo: !state.reloadClientBookCarInfo,
+    })),
 }));

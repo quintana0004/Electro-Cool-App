@@ -9,7 +9,7 @@ import {
   Platform,
   ToastAndroid,
 } from "react-native";
-import { Appbar } from "react-native-paper";
+import { Appbar, ActivityIndicator } from "react-native-paper";
 import Colors from "../../../../constants/Colors/Colors";
 import { Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
@@ -61,6 +61,12 @@ function CarModal({ activateModal, setSearchIcon }) {
   const setReloadClientBookCarList = CBCustomerInfoStore(
     (state) => state.setReloadClientBookCarList
   );
+  const setReloadClientBookCarInfo = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookCarInfo
+  );
+  const reloadClientBookCarInfo = CBCustomerInfoStore(
+    (state) => state.reloadClientBookCarInfo
+  );
 
   //Use Effect Hook to get the data
   useEffect(() => {
@@ -82,7 +88,7 @@ function CarModal({ activateModal, setSearchIcon }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [dataFetched]);
+  }, [dataFetched, reloadClientBookCarInfo]);
   //Other Hooks
 
   const [dataFetched, setDataFetched] = useState(false);
@@ -96,15 +102,29 @@ function CarModal({ activateModal, setSearchIcon }) {
   const [disableInput, setDisableInput] = useState(false);
 
   function errorHandler() {
+    setReloadClientBookCarInfo();
     setErrorMessage(null);
   }
 
   if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+    return (
+      <View
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          backgroundColor: "white",
+          marginVertical: 250,
+          borderRadius: 50,
+        }}
+      >
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
-    return <LoadingOverlay />;
+    return <ActivityIndicator size={"large"} color={Colors.brightYellow} />;
   }
   //Update the data of the Client
   async function handleUpdateCar() {

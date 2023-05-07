@@ -14,8 +14,10 @@ import CarModal from "./CarModal";
 import { httpGetAllOfCustomer } from "../../../../api/cars.api";
 import CarItemCB from "./CarsItemClientBook";
 import { useState } from "react";
-import { Card, Modal, Portal } from "react-native-paper";
+import { Card, Modal, Portal, ActivityIndicator } from "react-native-paper";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
+import ErrorOverlay from "../../../UI/ErrorOverlay";
+import Colors from "../../../../constants/Colors/Colors";
 
 function CarList({
   searchLoading,
@@ -26,23 +28,28 @@ function CarList({
 }) {
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
   const hideModal = () => setModalVisible(false);
   const reloadClientBookCarList = CBCustomerInfoStore(
     (state) => state.reloadClientBookCarList
   );
-
-  const { isLoading, data, hasNextPage, fetchNextPage } = useQuery({
-    queryKey: [
-      "ClientBookHomeData",
-      customerId,
-      searchTerm,
-      reloadClientBookCarList,
-    ],
-    queryFn: getClientBookHomeScreenData,
-    enabled: true,
-  });
+  const setReloadClientBookCarList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookCarList
+  );
+  const { isLoading, data, hasNextPage, fetchNextPage, error, isError } =
+    useQuery({
+      queryKey: [
+        "ClientBookHomeData",
+        customerId,
+        searchTerm,
+        reloadClientBookCarList,
+      ],
+      queryFn: getClientBookHomeScreenData,
+      enabled: true,
+    });
   async function getClientBookHomeScreenData() {
     let data = null;
+    setErrorMessage("Error Occurred while Loading Data.");
     data = await httpGetAllOfCustomer(searchTerm, customerId);
     setVehicleData(data.data);
     if (searchLoading) {
@@ -84,6 +91,29 @@ function CarList({
     setSearchIcon(icon);
   }
 
+  function errorHandler() {
+    setReloadClientBookCarList();
+    setErrorMessage(null);
+  }
+
+  if (isLoading)
+    return (
+      <View style={{ top: 200 }}>
+        <ActivityIndicator size={100} color={Colors.brightYellow} />
+      </View>
+    );
+  console.log("isError", isError);
+  if (isError)
+    return (
+      <View
+        style={{
+          alignSelf: "center",
+          bottom: 300,
+        }}
+      >
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   return (
     <View style={[modalVisible ? styles.ModalContiner : styles.itemsContainer]}>
       <View style={{ alignItems: "center" }}>
@@ -97,7 +127,13 @@ function CarList({
         )}
       </View>
       <Portal>
-        <Modal visible={modalVisible} onDismiss={hideModal}>
+        <Modal
+          visible={modalVisible}
+          onDismiss={() => {
+            hideModal();
+            setSearchIcon(true);
+          }}
+        >
           <CarModal
             activateModal={setModalVisible}
             setSearchIcon={SearchIcon}

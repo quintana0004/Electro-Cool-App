@@ -56,7 +56,6 @@ function CustomerItemCB({ onUpdateFullName }) {
   const ref = useRef(null);
   const [saveData, setSaveData] = useState(false);
   const [disableInput, setDisableInput] = useState(true);
-  const [emailTouched, setEmailTouched] = useState(false);
 
   function DataRespondFormik() {
     let dataPassed;
