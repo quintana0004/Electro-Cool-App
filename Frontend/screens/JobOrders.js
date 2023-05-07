@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   btnCreate: {},
   header: {
-    backgroundColor: Colors.Yellow,
+    backgroundColor: Colors.darkBlack,
   },
 });
 

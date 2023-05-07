@@ -45,7 +45,7 @@ function ToggleBtnSetting({ toggleActiveCategory, activeCategory }) {
           style={toggleInvoiceButtonStyles()}
           onPress={toggleButtonState.bind(this, "Profile")}
         >
-          <Image source={Figures.InvoiceDollarIcon} />
+          <Image source={Figures.User} style={{ width: 30, height: 30 }} />
           <Text style={styles.toggleButtonText}>Profile</Text>
         </Pressable>
 
@@ -53,7 +53,7 @@ function ToggleBtnSetting({ toggleActiveCategory, activeCategory }) {
           style={toggleDepositButtonStyles()}
           onPress={toggleButtonState.bind(this, "RBAC")}
         >
-          <Image source={Figures.DepositDollarIcon} />
+          <Image source={Figures.UserRole} style={{ width: 30, height: 30 }} />
           <Text style={styles.toggleButtonText}>Role</Text>
         </Pressable>
       </View>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 90,
+    marginLeft: 70,
   },
   toggleButtonGroup: {
     flexDirection: "row",
