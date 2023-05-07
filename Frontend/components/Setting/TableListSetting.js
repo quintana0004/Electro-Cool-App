@@ -7,8 +7,11 @@ import { useSettingStore } from "../../Store/settingStore";
 import TableItemSetting from "./TableItemSetting";
 import { useState } from "react";
 import ErrorDialog from "../UI/ErrorDialog";
+import ErrorOverlay from "../UI/ErrorOverlay";
+import LoadingOverlay from "../UI/LoadingOverlay";
 
 function settingRender(itemData) {
+  console.log(itemData.item);
   return <TableItemSetting data={itemData.item} />;
 }
 
@@ -17,7 +20,15 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [errorMSG, setErrorMSG] = useState("");
 
-  const { isLoading, data } = useQuery({
+  const [errorMessage, setErrorMessage] = useState(
+    "The server has a little issue, try refeshing again."
+  );
+
+  const toggleReloadSettingList = useSettingStore(
+    (state) => state.toggleReloadSettingList
+  );
+
+  const { isLoading, data, isError, error } = useQuery({
     queryKey: ["RBACHomePage", searchTerm, reloadSettingList],
     queryFn: getSettingScreenData,
     enabled: true,
@@ -37,6 +48,26 @@ function TableListSetting({ setSearchLoading, searchTerm, searchLoading }) {
     }
 
     return response.data;
+  }
+
+  if (isLoading) {
+    return (
+      <View style={{ marginTop: 400 }}>
+        <LoadingOverlay />
+      </View>
+    );
+  }
+
+  function errorHandler() {
+    toggleReloadSettingList();
+  }
+
+  if (isError) {
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay onConfirm={errorHandler} message={errorMessage} />
+      </View>
+    );
   }
 
   return (

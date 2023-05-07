@@ -2,7 +2,6 @@ const Colors = {
   darkBlack: "#19191B",
   darkGreen: "#4F8A8B",
   lightGreenHeader: "#99C1C1",
-  lightGreen: "#99C1C1",
   yellowDark: "#E5B126",
   amountGreen: "#A9D9C2",
   selectGreen: "#C4E2E2",

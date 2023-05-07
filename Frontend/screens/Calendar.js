@@ -90,6 +90,9 @@ const styles = StyleSheet.create({
     height: "100%",
     zIndex: -1,
   },
+  header: {
+    backgroundColor: Colors.darkBlack,
+  },
 });
 
 export default Calendar;

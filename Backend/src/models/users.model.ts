@@ -1,6 +1,16 @@
 import prisma from "../database/prisma";
-import { getUserIdFromToken } from "../services/auth.service";
-import { excludeFields, generateSalt, sha512 } from "../utils/db.utils";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  getUserIdFromToken,
+} from "../services/auth.service";
+import {
+  excludeFields,
+  generateExpirationDate,
+  generateRandomString,
+  generateSalt,
+  sha512,
+} from "../utils/db.utils";
 import { buildErrorObject } from "../utils/errors.utils";
 import { IUser } from "./../types/index.d";
 import { findCompanyByName } from "./company.model";
@@ -112,6 +122,25 @@ async function findUserByToken(token: string) {
   }
 }
 
+async function getUserTokens(token: string) {
+  try {
+    const userId = getUserIdFromToken(token);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) return null;
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 async function isUserAuthorized(
   email: string,
   username: string,
@@ -127,7 +156,16 @@ async function isUserAuthorized(
     }
 
     let hashedPasswordFromRequest = sha512(password, user.passwordSalt);
-    if (hashedPasswordFromRequest !== user.password) {
+
+    let hashedTemporaryPasswordFromRequest = sha512(
+      password,
+      user.temporaryPasswordSalt ?? ""
+    );
+    if (
+      hashedPasswordFromRequest !== user.password &&
+      hashedTemporaryPasswordFromRequest !== user.temporaryPassword
+    ) {
+
       return buildErrorObject(
         401,
         "Provided password is incorrect for this user."
@@ -155,11 +193,13 @@ async function updateUser(userInfo: IUser) {
       fullName = userInfo.firstName + " " + userInfo.lastName;
     }
 
-    let salt = undefined;
-    let hashedPassword = undefined;
+    let updatedUserCredentials = undefined;
     if (!!userInfo.password) {
-      salt = generateSalt(32);
-      hashedPassword = sha512(userInfo.password, salt);
+      updatedUserCredentials = await updateUserCredentials(
+        userInfo.id ?? "",
+        userInfo.companyId ?? "",
+        userInfo.password
+      );
     }
 
     const user = await prisma.user.update({
@@ -168,23 +208,22 @@ async function updateUser(userInfo: IUser) {
       },
       data: {
         fullName: fullName,
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        phone: userInfo.phone,
-        email: userInfo.email,
-        username: userInfo.username,
-        password: hashedPassword,
-        passwordSalt: salt,
+        firstName: !!userInfo.firstName ? userInfo.firstName : undefined,
+        lastName: !!userInfo.lastName ? userInfo.lastName : undefined,
+        phone: !!userInfo.phone ? userInfo.phone : undefined,
+        email: !!userInfo.email ? userInfo.email : undefined,
+        username: !!userInfo.username ? userInfo.username : undefined,
       },
     });
 
-    return excludeFields(
-      user,
-      "password",
-      "passwordSalt",
-      "accessToken",
-      "refreshToken"
-    );
+
+    const mergedUserUpdate = {
+      ...user,
+      accessToken: updatedUserCredentials?.accessToken,
+      refreshToken: updatedUserCredentials?.refreshToken,
+    };
+    return excludeFields(mergedUserUpdate, "id", "password", "passwordSalt");
+
   } catch (error) {
     throw error;
   }
@@ -213,7 +252,7 @@ async function updateUserTokens(
   }
 }
 
-async function updateUserAccessState(
+async function updateUserAccess(
   userId: string,
   role: string,
   approval: string,
@@ -240,6 +279,23 @@ async function updateUserAccessState(
       "accessToken",
       "refreshToken"
     );
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUserState(id: string, accessState: string) {
+  try {
+    return await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        accessState: accessState,
+      },
+    });
+
   } catch (error) {
     throw error;
   }
@@ -321,6 +377,79 @@ async function updateTemporaryAdminsByEndDate() {
   }
 }
 
+async function updateUserTemporaryPassword(id: string) {
+  try {
+    const password = generateRandomString(12);
+    const passwordSalt = generateSalt(32);
+    const temporaryHashedPassword = sha512(password, passwordSalt);
+    const passwordExpirationDate = generateExpirationDate(24);
+
+    const user = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        temporaryPassword: temporaryHashedPassword,
+        temporaryPasswordSalt: passwordSalt,
+        temporaryPasswordExpiration: passwordExpirationDate,
+      },
+    });
+
+    return { user, password };
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUserCredentials(
+  id: string,
+  companyId: string,
+  newPassword: string
+) {
+  try {
+    const passwordSalt = generateSalt(32);
+    const hashedPassword = sha512(newPassword, passwordSalt);
+    const accessToken = generateAccessToken(id, companyId);
+    const refreshToken = generateRefreshToken(id, companyId);
+
+    return await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        password: hashedPassword,
+        passwordSalt: passwordSalt,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        temporaryPassword: null,
+        temporaryPasswordSalt: null,
+        temporaryPasswordExpiration: null,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateUsersExpiredPasswords() {
+  try {
+    const TODAY = new Date();
+    const user = await prisma.user.updateMany({
+      where: {
+        temporaryPasswordExpiration: {
+          lt: TODAY,
+        },
+      },
+      data: {
+        temporaryPassword: null,
+        temporaryPasswordSalt: null,
+        temporaryPasswordExpiration: null,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
 async function deleteUser(id: string) {
   try {
     const user = await prisma.user.delete({
@@ -341,11 +470,15 @@ export {
   findUserByEmailOrUserName,
   findUserByName,
   findUserByToken,
+  getUserTokens,
   isUserAuthorized,
   updateUser,
   updateUserTokens,
-  updateUserAccessState,
+  updateUserAccess,
+  updateUserState,
   updateTemporaryAdminsByStartDate,
   updateTemporaryAdminsByEndDate,
+  updateUserTemporaryPassword,
+  updateUsersExpiredPasswords,
   deleteUser,
 };

@@ -6,17 +6,16 @@ import { httpGetAllJobOrders } from "../../api/jobOrders.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 
 function jobOrderItem(itemData) {
-
+  const item = itemData.item;
   return (
     <TableItemOrder
-      ID={itemData.item.id}
-      date={itemData.item.createdDate}
-      firstName={itemData.item.customer.firstName}
-      lastName={itemData.item.customer.lastName}
-      status={itemData.item.status}
-      carId={itemData.item.carId}
-      customerId={itemData.item.customerId}
-      requestedId={itemData.item.id}
+      ID={item.id}
+      firstName={item.customer.firstName}
+      lastName={item.customer.lastName}
+      date={item.createdDate}
+      status={item.status}
+      carId={item.carId}
+      customerId={item.customerId}
     />
   );
 }

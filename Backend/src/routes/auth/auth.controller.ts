@@ -2,16 +2,24 @@ import { Request, Response } from "express";
 import {
   createUser,
   findUserByEmailOrUserName,
+  findUserById,
   findUserByToken,
+  getUserTokens,
   isUserAuthorized,
+  updateUserTemporaryPassword,
   updateUserTokens,
 } from "../../models/users.model";
 import {
   generateAccessToken,
   generateRefreshToken,
+
+  verifyRefreshToken,
 } from "../../services/auth.service";
+import { sendTemporaryPasswordEmail } from "../../services/mail.service";
 import { IUser } from "../../types";
+import { sha512 } from "../../utils/db.utils";
 import {
+  buildErrorObject,
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
@@ -122,4 +130,70 @@ async function httpSignUp(req: Request, res: Response) {
   }
 }
 
-export { httpLogin, httpSignUp };
+async function httpRefreshToken(req: Request, res: Response) {
+  try {
+    const refreshToken = req.body.token;
+    if (!refreshToken) {
+      const error = buildErrorObject(401, "Token was not provided.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const userRefreshToken = await getUserTokens(refreshToken);
+    if (!userRefreshToken || refreshToken !== userRefreshToken.refreshToken) {
+      const error = buildErrorObject(401, "Token is not valid for this users.");
+      return res.status(error.errorCode).json({ error: error });
+    }
+
+    const verifyTokenResponse = verifyRefreshToken(refreshToken);
+    if ("errorCode" in verifyTokenResponse) {
+      return res.status(verifyTokenResponse.errorCode).json({
+        error: verifyTokenResponse,
+      });
+    }
+
+    const [accessToken, refreshedToken] = verifyTokenResponse;
+    await updateUserTokens(userRefreshToken.id, accessToken, refreshedToken);
+
+    return res
+      .status(200)
+      .json({ accessToken: accessToken, refreshToken: refreshedToken });
+  } catch (error) {
+    return handleExceptionErrorResponse("refresh token", error, res);
+  }
+}
+
+async function httpRequestTemporaryPassword(req: Request, res: Response) {
+  try {
+    const username = req.body.username;
+    const email = req.body.username; // Username could be the email when coming from the frontend
+
+    const user = await findUserByEmailOrUserName(username, email);
+    if (user === null) {
+      return handleBadResponse(
+        400,
+        "A user with this username or email does not exist.",
+        res
+      );
+    }
+
+    const { user: updatedUser, password } = await updateUserTemporaryPassword(
+      user.id
+    );
+    await sendTemporaryPasswordEmail(updatedUser.email, password);
+
+    return res.status(200).json("Temporary password has been sent");
+  } catch (error) {
+    return handleExceptionErrorResponse(
+      "request temporary password",
+      error,
+      res
+    );
+  }
+}
+
+export {
+  httpLogin,
+  httpSignUp,
+  httpRefreshToken,
+  httpRequestTemporaryPassword,
+};

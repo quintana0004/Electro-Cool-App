@@ -6,8 +6,10 @@ import {
 import {
   httpDeleteUser,
   httpGetAllUsers,
+  httpGetUserById,
   httpUpdateUserAccess,
   httpUpdateUserProfile,
+  httpUpdateUserState,
 } from "./users.controller";
 
 const router = express.Router();
@@ -19,6 +21,8 @@ router.get(
   httpGetAllUsers
 );
 
+router.get("/profile", authenticateJWTMiddleWare, httpGetUserById);
+
 router.post("/profile", authenticateJWTMiddleWare, httpUpdateUserProfile);
 
 router.post(
@@ -27,6 +31,8 @@ router.post(
   verifyAdminPrivilagesMiddleware,
   httpUpdateUserAccess
 );
+
+router.post("/updateState", authenticateJWTMiddleWare, httpUpdateUserState);
 
 router.delete(
   "/:id",
