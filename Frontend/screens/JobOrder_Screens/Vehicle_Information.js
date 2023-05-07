@@ -560,10 +560,6 @@ function VehicleInformation({ route, navigation }) {
                         disabled={checked === "No" || disableInput === true}
                         numberOfLines={3}
                         style={[styles.textInputStyle]}
-                        onPressIn={() => setTouchedDescription(true)}
-                        onPressOut={() => {
-                          setTouchedDescription(false);
-                        }}
                       />
                       <HelperText
                         type="error"

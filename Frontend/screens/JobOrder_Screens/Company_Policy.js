@@ -204,7 +204,7 @@ function CompanyPolicy({ navigation }) {
         customerId: customerInfoResponse.data.id,
       };
 
-      response = await handleSaveJobOrder(jobOrderResponse);
+      await handleSaveJobOrder(jobOrderResponse);
     } catch (error) {
       console.log("Error at Handle Save: ", error.response.data);
     }
@@ -342,9 +342,6 @@ function CompanyPolicy({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "800",
     color: Colors.black,

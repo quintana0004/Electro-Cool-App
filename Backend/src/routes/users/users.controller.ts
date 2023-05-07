@@ -2,11 +2,14 @@ import { Request, Response } from "express";
 import {
   deleteUser,
   findUserByEmailOrUserName,
+  findUserById,
   findUserByName,
   updateUser,
-  updateUserAccessState,
+  updateUserAccess,
+  updateUserState,
 } from "../../models/users.model";
 import { IUser } from "../../types";
+import { excludeFields } from "../../utils/db.utils";
 import {
   handleBadResponse,
   handleExceptionErrorResponse,
@@ -25,7 +28,38 @@ async function httpGetAllUsers(req: Request, res: Response) {
       : undefined;
 
     const users = await findUserByName(searchTerm);
-    return res.json(users);
+    return res.status(200).json(users);
+  } catch (error) {
+    return handleExceptionErrorResponse("get all users", error, res);
+  }
+}
+
+async function httpGetUserById(req: Request, res: Response) {
+  try {
+    const userId = req.userId;
+
+    const user = await findUserById(userId);
+    if (user === null) {
+      return handleBadResponse(
+        400,
+        "A user with this id does not exist in the system.",
+        res
+      );
+    }
+
+    const userFiltered = excludeFields(
+      user,
+      "id",
+      "companyId",
+      "password",
+      "passwordSalt",
+      "temporaryPassword",
+      "temporaryPasswordSalt",
+      "temporaryPasswordExpiration",
+      "accessToken",
+      "refreshToken"
+    );
+    return res.status(200).json(userFiltered);
   } catch (error) {
     return handleExceptionErrorResponse("get all users", error, res);
   }
@@ -42,15 +76,6 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       username: req.body.username,
       password: req.body.password,
     };
-
-    const isUserIdValid = await isValidUserId(req.userId);
-    if (!isUserIdValid) {
-      return handleBadResponse(
-        400,
-        "The user Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
-        res
-      );
-    }
 
     const doesEmailAlreadyExist = await findUserByEmailOrUserName(
       userInfo.email
@@ -74,15 +99,6 @@ async function httpUpdateUserProfile(req: Request, res: Response) {
       return handleBadResponse(
         400,
         "Another user with this username already exist.",
-        res
-      );
-    }
-
-    const isPhoneNumberFormatValid = isValidPhoneNumber(userInfo.phone);
-    if (!isPhoneNumberFormatValid) {
-      return handleBadResponse(
-        400,
-        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
         res
       );
     }
@@ -139,7 +155,7 @@ async function httpUpdateUserAccess(req: Request, res: Response) {
       );
     }
 
-    const user = await updateUserAccessState(
+    const user = await updateUserAccess(
       userInfo.userId,
       userInfo.role,
       userInfo.accessState,
@@ -150,6 +166,36 @@ async function httpUpdateUserAccess(req: Request, res: Response) {
     return res.json(user);
   } catch (error) {
     return handleExceptionErrorResponse("update user approval", error, res);
+  }
+}
+
+async function httpUpdateUserState(req: Request, res: Response) {
+  try {
+    const userId = req.body.userId;
+    const accessState = req.body.accessState;
+
+    const isValid = await isValidUserId(userId);
+    if (isValid === false) {
+      return handleBadResponse(
+        400,
+        "The provided Id is not in the correct format.",
+        res
+      );
+    }
+
+    const user = await findUserById(userId);
+    if (user === null) {
+      return handleBadResponse(
+        400,
+        "A user with this id does not exist in the system.",
+        res
+      );
+    }
+
+    await updateUserState(userId, accessState);
+    return res.status(200).json("User has been updated.");
+  } catch (error) {
+    return handleExceptionErrorResponse("update user status", error, res);
   }
 }
 
@@ -175,7 +221,9 @@ async function httpDeleteUser(req: Request, res: Response) {
 
 export {
   httpGetAllUsers,
+  httpGetUserById,
   httpUpdateUserProfile,
   httpUpdateUserAccess,
+  httpUpdateUserState,
   httpDeleteUser,
-};
+}; 
