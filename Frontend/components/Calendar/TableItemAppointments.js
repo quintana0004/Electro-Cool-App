@@ -51,7 +51,7 @@ function TableItemAppointments({ itemData }) {
         <Card.Content>
           <View style={styles.cardContentContainer}>
             <View style={styles.serviceContainer}>
-              <View style={{ width: 130 }}>
+              <View style={{ width: 160 }}>
                 <Text style={styles.boldText}>{customername}</Text>
                 <Text style={styles.boldText}>{DateText()}</Text>
               </View>
