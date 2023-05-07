@@ -3,6 +3,7 @@ import axios from "./axios";
 async function httpGetAllCars(take, page, searchTerm) {
   const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
   const response = await axios("/cars" + queryParams);
+  console.log("API", response);
   return response;
 }
 
@@ -14,13 +15,18 @@ async function httpGetCar(id) {
 
 async function httpGetCarsByCustomerId(customerId, searchTerm) {
   const queryParams = `?customerId=${customerId}&searchTerm=${searchTerm}`;
-  const response = await axios("/cars/customer" + queryParams);
-  return response;
+  return await axios("/cars/customer" + queryParams);
 }
 
 //?Car Information has to be an object
 async function httpCreateCar(carInfo) {
   const response = await axios.post("/cars", carInfo);
+  return response;
+}
+
+export async function httpGetAllOfCustomer(searchTerm = "", customerId) {
+  const queryParams = `?searchTerm=${searchTerm}&customerId=${customerId}`;
+  const response = await axios("/cars/customer/" + queryParams);
   return response;
 }
 
@@ -30,5 +36,10 @@ async function httpUpsertCar(carInfo) {
   return response;
 }
 
-
-export { httpGetAllCars, httpCreateCar, httpUpsertCar, httpGetCar, httpGetCarsByCustomerId };
+export {
+  httpGetAllCars,
+  httpCreateCar,
+  httpUpsertCar,
+  httpGetCar,
+  httpGetCarsByCustomerId,
+};

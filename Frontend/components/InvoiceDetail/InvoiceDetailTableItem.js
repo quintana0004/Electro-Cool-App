@@ -16,7 +16,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   });
 
   const formattedTotalAmount = useMemo(() => {
-    return invoiceItem.unitPrice * invoiceItem.quantity * 100;  
+    return invoiceItem.unitPrice * invoiceItem.quantity * 100;
   }, [invoiceItem.unitPrice, invoiceItem.quantity]);
 
   const formattedPrice = useMemo(() => {
@@ -28,27 +28,27 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   }
 
   function handleDescriptionChange(value) {
-    setInvoiceItem({...invoiceItem, description: value});
+    setInvoiceItem({ ...invoiceItem, description: value });
   }
 
   function handleQuantityChange(value) {
-    setInvoiceItem({...invoiceItem, quantity: Number(value)});
+    setInvoiceItem({ ...invoiceItem, quantity: Number(value) });
   }
 
   function handlePriceChange(value) {
     const decimalValue = currencyStringToDecimal(value);
-    setInvoiceItem({...invoiceItem, unitPrice: decimalValue});
+    setInvoiceItem({ ...invoiceItem, unitPrice: decimalValue });
   }
 
   function handleWarrantyChange(value) {
-    setInvoiceItem({...invoiceItem, warranty: value});
+    setInvoiceItem({ ...invoiceItem, warranty: value });
 
     // When warranty is selected send update to parent
     onBlurUpdateInvoiceItem();
   }
 
   function handleTotalAmountUpdate(item) {
-    return (item.unitPrice * invoiceItem.quantity);
+    return item.unitPrice * invoiceItem.quantity;
   }
 
   function onBlurUpdateInvoiceItem() {
@@ -57,14 +57,14 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
   }
 
   function currencyStringToDecimal(currencyString) {
-  // Remove any non-digit characters except for the decimal point
-  const cleanedString = currencyString.replace(/[^0-9.]+/g, '');
+    // Remove any non-digit characters except for the decimal point
+    const cleanedString = currencyString.replace(/[^0-9.]+/g, "");
 
-  // Parse the cleaned string as a floating-point number
-  const decimalNumber = parseFloat(cleanedString);
+    // Parse the cleaned string as a floating-point number
+    const decimalNumber = parseFloat(cleanedString);
 
-  return decimalNumber;
-}
+    return decimalNumber;
+  }
 
   return (
     <View style={styles.container}>
@@ -79,10 +79,13 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
         </View>
       </View>
       <View style={styles.selectContainer}>
-        <InvoiceDetailSelect value={invoiceItem.warranty} onSelect={handleWarrantyChange}/>
+        <InvoiceDetailSelect
+          value={invoiceItem.warranty}
+          onSelect={handleWarrantyChange}
+        />
       </View>
       <View style={styles.quantityContainer}>
-        <TextInput 
+        <TextInput
           style={styles.quantityText}
           value={invoiceItem.quantity.toString()}
           keyboardType="decimal-pad"
@@ -120,7 +123,7 @@ function InvoiceDetailTableItem({ invoiceItemInfo, removeItem, updateItem }) {
         </MaskedText>
       </View>
       <View>
-        <Pressable onPress={handleRemoveItem}> 
+        <Pressable onPress={handleRemoveItem}>
           <Ionicons name="remove-circle-sharp" size={30} color="black" />
         </Pressable>
       </View>
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   descText: {
+    maxWidth: 100,
     minWidth: 100,
   },
   selectContainer: {
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
     top: 10,
     left: 130,
     elevation: 99999,
-    zIndex: 99999
+    zIndex: 99999,
   },
   quantityContainer: {
     flexDirection: "row",
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   quantityText: {
-    textAlign: "center"
+    textAlign: "center",
   },
   priceContainer: {
     flexDirection: "row",

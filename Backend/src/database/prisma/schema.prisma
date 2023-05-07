@@ -44,6 +44,9 @@ model User {
   username        String    @unique @db.VarChar(255)
   password        String    @unique @db.VarChar(65)
   passwordSalt    String    @db.VarChar(65)
+  temporaryPassword        String?    @db.VarChar(65)
+  temporaryPasswordSalt    String?    @db.VarChar(65)
+  temporaryPasswordExpiration    DateTime?
   accessToken     String?
   refreshToken    String?
   accessState     String    @default("Pending") @db.VarChar(25)

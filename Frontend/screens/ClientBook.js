@@ -4,10 +4,10 @@ import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
-import TableListClient from "../components/ClientBookDetail/TableListClient";
-// import { useCustomerInfoStore } from "../Store/JobOrderStore";
+import TableListClient from "../components/Client Book/ClientBookDetail/TableListClient";
+//import { useCustomerInfoStore } from "../Store/store";
 
-function ClientBook() {
+function ClientBook({ navigation }) {
   // call the store function
   //const setClientBook = useCustomerInfoStore((state) => state.setClientBook);
 
