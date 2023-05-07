@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Keyboard } from "react-native";
 import ClientCard from "../../components/UI/ClientCard";
 import CarCard from "../../components/UI/CarCard";
 import Appbar from "react-native-paper/src/components/Appbar";
@@ -189,7 +189,6 @@ function CreateAppointments({ navigation }) {
 
     try {
       // Make the call for the API
-      //Take into consideration there are two routes one is the new info and existing info
       customerInfoResponse = await handleSaveClient(customerInfoResponse);
 
       //?When customer passes the value need their ID
@@ -285,8 +284,9 @@ function CreateAppointments({ navigation }) {
 
   const marked = useMemo(() => {
     return {
-      [getDate(0)]: {
+      [getDate(-1)]: {
         marked: true,
+        dotColor: Colors.darkGreen,
       },
       [selected]: {
         selected: true,
@@ -300,9 +300,8 @@ function CreateAppointments({ navigation }) {
   const onDayPress = useCallback((dateObj) => {
     setSelected(dateObj.dateString);
     const newDateObj = dateObj.dateString + "T04:00:00.000Z";
-    console.log("owO ?1: ", newDateObj);
+
     setDate(newDateObj);
-    console.log("owO ?2: ", typeof date);
   }, []);
 
   const todaysDate = new Date();
@@ -447,44 +446,55 @@ function CreateAppointments({ navigation }) {
             marginVertical: 30,
           }}
         >
-          {dialogVisible3 && (
-            <Portal>
-              <Dialog
-                visible={dialogVisible3}
-                onDismiss={() => setDialogVisible3(false)}
-                style={{ backgroundColor: Colors.white }}
+          <View style={styles.container}>
+            <View style={{ marginBottom: 20, width: 220 }}>
+              <Button
+                onPress={() => setDialogVisible3(true)}
+                textColor="black"
+                buttonColor="#99C1C1"
               >
-                <Dialog.Icon
-                  icon="calendar"
-                  size={80}
-                  color={Colors.darkGreen}
-                />
-                <Dialog.Title style={styles.textAlert}>
-                  Select Task Due Date:
-                </Dialog.Title>
-                <Dialog.Content>
-                  <Calendar
-                    enableSwipeMonths
-                    minDate={minDate1}
-                    current={Date()}
-                    style={styles.calendar}
-                    onDayPress={onDayPress}
-                    disableArrowLeft={true}
-                    markedDates={marked}
+                Select Date
+              </Button>
+            </View>
+            {dialogVisible3 && (
+              <Portal>
+                <Dialog
+                  visible={dialogVisible3}
+                  onDismiss={() => setDialogVisible3(false)}
+                  style={{ backgroundColor: Colors.white }}
+                >
+                  <Dialog.Icon
+                    icon="calendar"
+                    size={80}
+                    color={Colors.darkGreen}
                   />
-                </Dialog.Content>
-                <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                  <Button
-                    title="Done"
-                    color={Colors.brightGreen}
-                    onPress={() => {
-                      setDialogVisible3(false);
-                    }}
-                  ></Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
-          )}
+                  <Dialog.Title style={styles.textAlert}>
+                    Select Date
+                  </Dialog.Title>
+                  <Dialog.Content>
+                    <Calendar
+                      enableSwipeMonths
+                      minDate={minDate1}
+                      current={Date()}
+                      style={styles.calendar}
+                      onDayPress={onDayPress}
+                      markedDates={marked}
+                    />
+                  </Dialog.Content>
+                  <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+                    <Button
+                      onPress={() => setDialogVisible3(false)}
+                      textColor="white"
+                      buttonColor="#99C1C1"
+                      width="30%"
+                    >
+                      Select Date
+                    </Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            )}
+          </View>
           <View style={{ marginBottom: 20, width: 220 }}>
             <Button
               onPress={() => setVisibleTimePicker(true)}
@@ -506,14 +516,6 @@ function CreateAppointments({ navigation }) {
               alignItems: "center",
             }}
           >
-            {/* <DatePickerModal
-              locale="en"
-              mode="single"
-              visible={open}
-              onDismiss={onDismissSingle}
-              date={date}
-              onConfirm={onConfirmSingle}
-            /> */}
             <TimePickerModal
               visible={visibleTimePicker}
               onDismiss={onDismiss}
@@ -546,5 +548,10 @@ const styles = StyleSheet.create({
   },
   textAlert: {
     textAlign: "center",
+  },
+  container: {
+    textColor: "black",
+    buttonColor: "#99C1C1",
+    borderRadius: 10,
   },
 });

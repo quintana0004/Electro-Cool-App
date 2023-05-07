@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Text,
-  Alert,
-  ScrollView,
-} from "react-native";
+import { Dimensions, StyleSheet, View, Text } from "react-native";
 import { httpGetAllAppointments } from "../../api/appointments.api";
 import TableItemAppointments from "./TableItemAppointments";
 import { Agenda } from "react-native-calendars";
@@ -47,7 +40,7 @@ function TableListAppointments({ searchTerm }) {
   async function getAllAppointments() {
     setErrorMessage("Error loading Appointments. Please try again later.");
 
-    const response = await httpGetAllAppointments(minDate.toJSON());
+    //const response = await httpGetAllAppointments(minDate.toJSON());
     const responseData = response.data;
 
     if (responseData && responseData.length === 0) {
@@ -63,14 +56,20 @@ function TableListAppointments({ searchTerm }) {
   }
   if (isError) {
     return (
-      <ErrorOverlayAppointment
-        message={errorMessage}
-        onConfirm={errorHandler}
-      />
+      <View style={{ paddingVertical: 370 }}>
+        <ErrorOverlayAppointment
+          message={errorMessage}
+          onConfirm={errorHandler}
+        />
+      </View>
     );
   }
-  if (isLoading) {
-    return <LoadingOverlay />;
+  if (true) {
+    return (
+      <View style={{ paddingVertical: 370 }}>
+        <LoadingOverlay />
+      </View>
+    );
   }
 
   function renderTableItem(item) {
