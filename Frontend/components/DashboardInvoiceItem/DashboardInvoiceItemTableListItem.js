@@ -14,7 +14,7 @@ function DashboardInvoiceItemTableListItem({ invoiceItemInfo }) {
   return (
     <View style={styles.container}>
       <View style={styles.descContainer}>
-        <View>
+        <View style={{ overflow: "scroll", width: 105 }}>
           <Text style={styles.descText}>{invoiceItemInfo.description}</Text>
         </View>
         <View style={styles.warrantyContainer}>

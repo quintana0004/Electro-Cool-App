@@ -4,23 +4,21 @@ import Figures from "../../constants/figures/Figures";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetTotalAmountTasksToday } from "../../api/metrics.api";
 
-function DashboardCardTask({ setLoadingCardTask }) {
+function DashboardCardTask({}) {
   const { isLoading, isError, refetch, data } = useQuery({
     queryKey: ["DashboardTotalTasksToday"],
     queryFn: getDashboardTotalTasksToday,
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-  if (isLoading) {
-    setLoadingCardTask(true);
-  } else {
-    setLoadingCardTask(false);
-  }
+
   async function getDashboardTotalTasksToday(page = 0) {
     const response = await httpGetTotalAmountTasksToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <Card style={styles.ButtonSmall}>
       <View

@@ -8,10 +8,9 @@ import { Card } from "react-native-paper";
 import Figures from "../../constants/figures/Figures";
 import { useEffect } from "react";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
-
-function DashboardVehiclesInShopAndNotStarted({
-  setLoadingVehiclesInShopAndNotStarted,
-}) {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
+function DashboardVehiclesInShopAndNotStarted({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
   );
@@ -26,11 +25,7 @@ function DashboardVehiclesInShopAndNotStarted({
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-  if (isLoading) {
-    setLoadingVehiclesInShopAndNotStarted(true);
-  } else {
-    setLoadingVehiclesInShopAndNotStarted(false);
-  }
+
   async function getVehiclesInShopAndNotStarted() {
     const vehiclesInShopResponse = await httpGetVehiclesInShop();
     const vehiclesNotStartedResponse = await httpGetVehiclesNotStarted();
@@ -40,10 +35,38 @@ function DashboardVehiclesInShopAndNotStarted({
       notStarted: vehiclesNotStartedResponse.data.metric,
     };
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <View>
-      {isLoading || (
+      {isLoading ? (
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <LoadingOverlay />
+        </View>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <ErrorOverlay />
+        </View>
+      ) : (
         <>
           <Card style={styles.ButtonSmall}>
             <Card.Cover

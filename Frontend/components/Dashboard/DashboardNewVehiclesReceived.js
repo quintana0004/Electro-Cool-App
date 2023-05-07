@@ -5,8 +5,9 @@ import { httpGetNewVehiclesReceivedToday } from "../../api/metrics.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
-
-function DashboardNewVehiclesReceived({ setLoadingNewVehiclesReceived }) {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
+function DashboardNewVehiclesReceived({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
   );
@@ -21,19 +22,43 @@ function DashboardNewVehiclesReceived({ setLoadingNewVehiclesReceived }) {
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-  if (isLoading) {
-    setLoadingNewVehiclesReceived(true);
-  } else {
-    setLoadingNewVehiclesReceived(false);
-  }
+
   async function getNewVehiclesReceivedToday(page = 0) {
     const response = await httpGetNewVehiclesReceivedToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <View>
-      {isLoading || (
+      {isLoading ? (
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <LoadingOverlay />
+        </View>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <ErrorOverlay />
+        </View>
+      ) : (
         <DashboardCard
           Title={"New Vehicles Received Today"}
           ImageIcon={Figures.NewIconDashboard}

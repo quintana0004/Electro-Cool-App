@@ -5,8 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { httpGetTotalAmountAppointmentsToday } from "../../api/metrics.api";
 import { useCalendarStore } from "../../Store/calendarStore";
 import { useEffect } from "react";
-
-function DashboardCardAppointment({ setLoadingCardAppointment }) {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
+function DashboardCardAppointment({}) {
   const reloadAppointments = useCalendarStore(
     (state) => state.reloadCalendarList
   );
@@ -21,19 +22,43 @@ function DashboardCardAppointment({ setLoadingCardAppointment }) {
     enabled: true,
     staleTime: 1000 * 60 * 30, // 30 Minutes Stale Time
   });
-  if (isLoading) {
-    setLoadingCardAppointment(true);
-  } else {
-    setLoadingCardAppointment(false);
-  }
+
   async function getDashboardTotalAppointmentsToday(page = 0) {
     const response = await httpGetTotalAmountAppointmentsToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <View>
-      {isLoading || (
+      {isLoading ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <LoadingOverlay />
+        </View>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            height: 900,
+            width: 610,
+            backgroundColor: "#fff",
+          }}
+        >
+          <ErrorOverlay />
+        </View>
+      ) : (
         <Card style={styles.ButtonSmall}>
           <View
             style={{
