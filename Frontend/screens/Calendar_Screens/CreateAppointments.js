@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useState, useMemo } from "react";
+import { StyleSheet, Text, View, Keyboard } from "react-native";
 import ClientCard from "../../components/UI/ClientCard";
 import CarCard from "../../components/UI/CarCard";
 import Appbar from "react-native-paper/src/components/Appbar";
@@ -10,7 +10,7 @@ import {
   useRequestedServiceStore,
   useVehicleInfoStore,
 } from "../../Store/JobOrderStore";
-import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
+import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "intl";
 import "intl/locale-data/jsonp/en";
@@ -21,6 +21,7 @@ import { httpUpsertAppointments } from "../../api/appointments.api";
 import { httpUpsertClient } from "../../api/clients.api";
 import { httpUpsertCar } from "../../api/cars.api";
 import { useCalendarStore } from "../../Store/calendarStore";
+import { Calendar, CalendarUtils } from "react-native-calendars";
 
 function CreateAppointments({ navigation }) {
   function goHomeAction() {
@@ -111,6 +112,8 @@ function CreateAppointments({ navigation }) {
     customerId: useCustomerInfoStore((state) => state.id),
   });
   const [serviceInfo] = useState(service);
+  const [selected, setSelected] = useState(Date());
+  const [dialogVisible3, setDialogVisible3] = useState(false);
   const [visibleTimePicker, setVisibleTimePicker] = React.useState(false);
   const [date, setDate] = useState(undefined);
   const [open, setOpen] = useState(false);
@@ -186,7 +189,6 @@ function CreateAppointments({ navigation }) {
 
     try {
       // Make the call for the API
-      //Take into consideration there are two routes one is the new info and existing info
       customerInfoResponse = await handleSaveClient(customerInfoResponse);
 
       //?When customer passes the value need their ID
@@ -272,18 +274,43 @@ function CreateAppointments({ navigation }) {
     });
   }, [setOpen]);
 
-  const onDismissSingle = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+  //Bryan Calendar's Stuff thing
 
-  const onConfirmSingle = useCallback(
-    (params) => {
-      setOpen(false);
-      setDate(params.date);
-      setYear(params.date);
-    },
-    [setOpen, setDate]
+  const getDate = (count) => {
+    const day = new Date();
+    const newDate = day.setDate(day.getDate() + count);
+    return CalendarUtils.getCalendarDateString(newDate);
+  };
+
+  const marked = useMemo(() => {
+    return {
+      [getDate(-1)]: {
+        marked: true,
+        dotColor: Colors.darkGreen,
+      },
+      [selected]: {
+        selected: true,
+        disableTouchEvent: true,
+        selectedColor: Colors.darkGreen,
+        selectedTextColor: "white",
+      },
+    };
+  }, [selected]);
+
+  const onDayPress = useCallback((dateObj) => {
+    setSelected(dateObj.dateString);
+    const newDateObj = dateObj.dateString + "T04:00:00.000Z";
+
+    setDate(newDateObj);
+  }, []);
+
+  const todaysDate = new Date();
+  const minDate = new Date(
+    todaysDate.getFullYear(),
+    todaysDate.getMonth(),
+    todaysDate.getDate()
   );
+  const minDate1 = minDate.toISOString();
 
   const DateTimeFormatter = () => {
     if (hour === undefined || min === undefined || date === undefined) {
@@ -419,14 +446,54 @@ function CreateAppointments({ navigation }) {
             marginVertical: 30,
           }}
         >
-          <View style={{ marginBottom: 20, width: 220 }}>
-            <Button
-              onPress={() => setOpen(true)}
-              textColor="black"
-              buttonColor="#99C1C1"
-            >
-              Select Date
-            </Button>
+          <View style={styles.container}>
+            <View style={{ marginBottom: 20, width: 220 }}>
+              <Button
+                onPress={() => setDialogVisible3(true)}
+                textColor="black"
+                buttonColor="#99C1C1"
+              >
+                Select Date
+              </Button>
+            </View>
+            {dialogVisible3 && (
+              <Portal>
+                <Dialog
+                  visible={dialogVisible3}
+                  onDismiss={() => setDialogVisible3(false)}
+                  style={{ backgroundColor: Colors.white }}
+                >
+                  <Dialog.Icon
+                    icon="calendar"
+                    size={80}
+                    color={Colors.darkGreen}
+                  />
+                  <Dialog.Title style={styles.textAlert}>
+                    Select Date
+                  </Dialog.Title>
+                  <Dialog.Content>
+                    <Calendar
+                      enableSwipeMonths
+                      minDate={minDate1}
+                      current={Date()}
+                      style={styles.calendar}
+                      onDayPress={onDayPress}
+                      markedDates={marked}
+                    />
+                  </Dialog.Content>
+                  <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
+                    <Button
+                      onPress={() => setDialogVisible3(false)}
+                      textColor="white"
+                      buttonColor="#99C1C1"
+                      width="30%"
+                    >
+                      Select Date
+                    </Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            )}
           </View>
           <View style={{ marginBottom: 20, width: 220 }}>
             <Button
@@ -449,14 +516,6 @@ function CreateAppointments({ navigation }) {
               alignItems: "center",
             }}
           >
-            <DatePickerModal
-              locale="en"
-              mode="single"
-              visible={open}
-              onDismiss={onDismissSingle}
-              date={date}
-              onConfirm={onConfirmSingle}
-            />
             <TimePickerModal
               visible={visibleTimePicker}
               onDismiss={onDismiss}
@@ -489,5 +548,10 @@ const styles = StyleSheet.create({
   },
   textAlert: {
     textAlign: "center",
+  },
+  container: {
+    textColor: "black",
+    buttonColor: "#99C1C1",
+    borderRadius: 10,
   },
 });

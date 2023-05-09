@@ -214,9 +214,8 @@ function CreateTask() {
   const onDayPress = useCallback((dateObj) => {
     setSelected(dateObj.dateString);
     const newDateObj = dateObj.dateString + "T04:00:00.000Z";
-    console.log("owO ?1: ", newDateObj);
+
     setDate(newDateObj);
-    console.log("owO ?2: ", typeof date);
   }, []);
 
   const todaysDate = new Date();
@@ -379,8 +378,8 @@ function CreateTask() {
                 current={Date()}
                 style={styles.calendar}
                 onDayPress={onDayPress}
-                disableArrowLeft={true}
-                markedDates={marked}
+
+                // markedDates={marked}
               />
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -401,7 +400,6 @@ function CreateTask() {
           data={tasks}
           renderItem={cTaskItem}
           keyExtractor={(item) => {
-            console.log("Pollo: ", item);
             return item.id;
           }}
           style={{ flexGrow: 1 }}
@@ -411,7 +409,6 @@ function CreateTask() {
         <Pressable
           style={[styles.button, { backgroundColor: Colors.darkGreyAsh }]}
           onPress={async () => {
-            console.log("-w-");
             clearAllTasks();
             setReloadTaskList();
           }}
@@ -421,7 +418,6 @@ function CreateTask() {
         <Pressable
           style={[styles.button, { backgroundColor: Colors.darkGreen }]}
           onPress={async () => {
-            console.log("UwU");
             setDialogVisible1(true);
             setReloadTaskList();
           }}
