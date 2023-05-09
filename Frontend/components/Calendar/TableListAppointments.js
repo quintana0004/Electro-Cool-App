@@ -40,7 +40,7 @@ function TableListAppointments({ searchTerm }) {
   async function getAllAppointments() {
     setErrorMessage("Error loading Appointments. Please try again later.");
 
-    //const response = await httpGetAllAppointments(minDate.toJSON());
+    const response = await httpGetAllAppointments(minDate.toJSON());
     const responseData = response.data;
 
     if (responseData && responseData.length === 0) {
@@ -64,7 +64,7 @@ function TableListAppointments({ searchTerm }) {
       </View>
     );
   }
-  if (true) {
+  if (isLoading) {
     return (
       <View style={{ paddingVertical: 370 }}>
         <LoadingOverlay />

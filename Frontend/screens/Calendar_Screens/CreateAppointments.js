@@ -347,7 +347,7 @@ function CreateAppointments({ navigation }) {
         <Appbar.Action
           icon="check-decagram"
           onPress={() => {
-            if (date && hour && min) {
+            if (date && hour) {
               setReloadCalendarList();
               setVisibleConfirmDialog(true);
             } else {
