@@ -1,8 +1,8 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { format } from "date-fns";
-import { Appbar } from "react-native-paper";
 import { httpDeleteTask } from "../../api/tasks.api";
 import Colors from "../../constants/Colors/Colors";
+import { Entypo } from "@expo/vector-icons";
 
 function TableItemTasks({ itemData, onDelete }) {
   const { id, title, date } = itemData;
@@ -25,9 +25,17 @@ function TableItemTasks({ itemData, onDelete }) {
         <View style={{ width: 100, marginRight: 60 }}>
           <Text>{DateText()}</Text>
         </View>
-        <View style={{ width: 80 }}>
-          <Appbar.Action icon="delete" onPress={handleDelete} />
-        </View>
+        <Pressable
+          onPress={handleDelete}
+          style={{
+            borderRadius: 50,
+            marginRight: 20,
+          }}
+        >
+          <View style={{ top: 1 }}>
+            <Entypo name="trash" size={24} color="black" />
+          </View>
+        </Pressable>
       </View>
     </View>
   );

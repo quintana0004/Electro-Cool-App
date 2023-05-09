@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { format } from "date-fns";
-import { Avatar } from "react-native-paper";
+import { Entypo } from "@expo/vector-icons";
 import { useTaskStore } from "../../Store/taskStore";
 
 function TableItemCTasks({ id, text, dueDate }) {
@@ -27,16 +27,9 @@ function TableItemCTasks({ id, text, dueDate }) {
             setReloadTaskList();
           }}
         >
-          <Avatar.Icon
-            size={35}
-            icon="delete"
-            style={{
-              backgroundColor: "#D9D9D9",
-              color: Colors.darkGrey,
-              alignItems: "center",
-              marginRight: 40,
-            }}
-          />
+          <View style={{ right: 25 }}>
+            <Entypo name="trash" size={24} color="black" />
+          </View>
         </Pressable>
       </View>
     </View>

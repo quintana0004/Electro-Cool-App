@@ -479,6 +479,10 @@ function CreateAppointments({ navigation }) {
                       style={styles.calendar}
                       onDayPress={onDayPress}
                       markedDates={marked}
+                      theme={{
+                        todayTextColor: Colors.darkBlack,
+                        arrowColor: Colors.darkGreen,
+                      }}
                     />
                   </Dialog.Content>
                   <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -553,5 +557,8 @@ const styles = StyleSheet.create({
     textColor: "black",
     buttonColor: "#99C1C1",
     borderRadius: 10,
+  },
+  calendar: {
+    marginBottom: 10,
   },
 });
