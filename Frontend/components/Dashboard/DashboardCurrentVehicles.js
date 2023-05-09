@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Modal } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetCurrentVehicles } from "../../api/metrics.api";
@@ -6,7 +6,7 @@ import { useJobOrderStore } from "../../Store/JobOrderStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 import LoadingOverlay from "../UI/LoadingOverlay";
-import ErrorOverlay from "../UI/ErrorOverlay";
+import DashboardErrorOverlay from "./DashboardErrorOverlay";
 function DashboardCurrentVehicles({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
@@ -33,33 +33,19 @@ function DashboardCurrentVehicles({}) {
   return (
     <View>
       {isLoading ? (
-        <View
-          style={{
-            zIndex: 10,
-            margin: 0,
-            position: "relative",
-            height: 900,
-            width: 610,
-            backgroundColor: "#fff",
-          }}
-        >
+        <Modal visible={isLoading} animationType="fade">
           <LoadingOverlay />
-        </View>
+        </Modal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{
             zIndex: 10,
             margin: 0,
             position: "relative",
-            height: 900,
-            width: 610,
             backgroundColor: "#fff",
           }}
         >
-          <ErrorOverlay
-            message={"Error"}
-            onConfirm={DashboardCurrentVehicles}
-          />
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
         </View>
       ) : (
         <DashboardCard

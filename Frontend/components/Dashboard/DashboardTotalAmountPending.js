@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Modal } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetTotalAmountPendingToday } from "../../api/metrics.api";
@@ -32,30 +32,20 @@ function DashboardTotalAmountPending({}) {
   return (
     <View>
       {isLoading ? (
-        <View
-          style={{
-            zIndex: 10,
-            margin: 0,
-            position: "relative",
-            height: 900,
-            width: 610,
-            backgroundColor: "#fff",
-          }}
-        >
+        <Modal visible={isLoading} animationType="fade">
           <LoadingOverlay />
-        </View>
+        </Modal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{
             zIndex: 10,
             margin: 0,
             position: "relative",
-            height: 900,
-            width: 610,
+
             backgroundColor: "#fff",
           }}
         >
-          <ErrorOverlay />
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
         </View>
       ) : (
         <DashboardCardInvoice
