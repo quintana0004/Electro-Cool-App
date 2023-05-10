@@ -106,7 +106,11 @@ function VehicleInformation({ route, navigation }) {
   }
 
   if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
