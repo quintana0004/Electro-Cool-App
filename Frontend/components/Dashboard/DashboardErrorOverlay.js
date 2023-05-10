@@ -11,10 +11,15 @@ function DashboardErrorOverlay({ message, onConfirm }) {
       />
       <Text style={styles.messageText}>{message}</Text>
       <Button
-        mode="contained"
+        mode="elevated"
         buttonColor={Colors.black}
         onPress={onConfirm}
-        labelStyle={{ fontSize: 13 }}
+        labelStyle={{
+          fontSize: 11,
+          color: "white",
+          marginLeft: 13,
+          marginRight: 13,
+        }}
         compact={true}
       >
         Try Again
