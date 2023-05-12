@@ -53,6 +53,8 @@ function ClientInformation({ route, navigation }) {
     (state) => state.setReloadJobOrderList
   );
 
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     async function handleGetClientInfo() {
       try {
@@ -72,7 +74,7 @@ function ClientInformation({ route, navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editClientInformation]);
+  }, [editClientInformation, refresh]);
 
   //Other Hooks
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -89,6 +91,7 @@ function ClientInformation({ route, navigation }) {
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
@@ -400,7 +403,7 @@ function ClientInformation({ route, navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
               <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>

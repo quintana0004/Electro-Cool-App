@@ -37,7 +37,10 @@ const ValidationCustomer = Yup.object().shape({
   Model: Yup.string().required("Model is required."),
   Year: Yup.string()
     .required("Year is required.")
-    .matches("^[12][0-9]{3}$", "Year is incorrect."),
+    .matches(
+      "^(1[9][5-9][0-9]|20[0-9]{2}|21[0-9]{2}|2[2-9][0-9]{2}|[3-9][0-9]{3})$",
+      "Year is incorrect."
+    ),
   ColorVehicle: Yup.string()
     .required("Color is required.")
     .matches("^[A-Za-z ]{2,50}$", "Color can't contain digits."),
@@ -65,6 +68,7 @@ function VehicleInformation({ route, navigation }) {
     (state) => state.setReloadJobOrderList
   );
   const customerId = useCustomerInfoStore((state) => state.id);
+  const [refresh, setRefresh] = useState(false);
 
   // Use Effect Hook that get the data
   useEffect(() => {
@@ -87,7 +91,7 @@ function VehicleInformation({ route, navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editVehicleInformation]);
+  }, [editVehicleInformation, refresh]);
 
   //Other Hooks
   const [checked, setChecked] = useState("No");
@@ -100,9 +104,13 @@ function VehicleInformation({ route, navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(
+    "There are missing required or need to correct information."
+  );
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
@@ -241,7 +249,13 @@ function VehicleInformation({ route, navigation }) {
             const TouchedObject = Object.keys(ref.current.touched).length > 0;
 
             if (pageSelection === "Edit" && editVehicleInformation) {
-              goNextPageAction();
+              if (saveData === true) {
+                setMessageDialog(
+                  "Can't continue to next page until save changed data."
+                );
+              } else {
+                goNextPageAction();
+              }
             }
 
             if (
@@ -264,6 +278,9 @@ function VehicleInformation({ route, navigation }) {
                 );
                 goNextPageAction();
               } else {
+                setMessageDialog(
+                  "There are missing required or need to correct information."
+                );
                 setDialogVisible(true);
               }
             }
@@ -591,11 +608,9 @@ function VehicleInformation({ route, navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
+              <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button

@@ -52,6 +52,7 @@ function RequestedService({ navigation }) {
   const carId = useVehicleInfoStore((state) => state.id);
   const customerId = useCustomerInfoStore((state) => state.id);
   const id = useRequestedServiceStore((state) => state.id);
+  const [refresh, setRefresh] = useState(false);
 
   // Use Effect Hook that get the data
   useEffect(() => {
@@ -75,7 +76,7 @@ function RequestedService({ navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editRequestedService]);
+  }, [editRequestedService, refresh]);
 
   //Use State Hook
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -95,6 +96,9 @@ function RequestedService({ navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(
+    "There are missing required or need to correct information."
+  );
   const RequestedServiceNextPage = useRouterStore(
     (state) => state.NewRequestedServiceNextPage
   );
@@ -199,6 +203,7 @@ function RequestedService({ navigation }) {
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
@@ -296,7 +301,22 @@ function RequestedService({ navigation }) {
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => goHomeAction()}
+          onPress={() => {
+            if (pageSelection === "Edit" && editRequestedService) {
+              if (saveData === true) {
+                setMessageDialog(
+                  "Can't continue to next page until save changed data."
+                );
+                setDialogVisible(true);
+              } else {
+                goHomeAction();
+              }
+            }
+
+            if (pageSelection === "Create" && editRequestedService === false) {
+              goHomeAction();
+            }
+          }}
           iconColor={Colors.black}
         />
         {pageSelection === "Create" && (
@@ -727,11 +747,9 @@ function RequestedService({ navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
+              <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button
