@@ -162,7 +162,7 @@ function CreateTask() {
   }
 
   function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Task(s) created Successfully!", ToastAndroid.SHORT);
   }
 
   function showFailedMessage() {
@@ -199,8 +199,9 @@ function CreateTask() {
 
   const marked = useMemo(() => {
     return {
-      [getDate(0)]: {
+      [getDate(-1)]: {
         marked: true,
+        dotColor: Colors.darkGreen,
       },
       [selected]: {
         selected: true,
@@ -342,8 +343,7 @@ function CreateTask() {
             </Dialog.Title>
             <Dialog.Content>
               <Text style={styles.textAlert}>
-                The tasks were added for the employees to see! You can now
-                proceed to the home page.
+                The tasks were added! You can now proceed to the home page.
               </Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -378,8 +378,11 @@ function CreateTask() {
                 current={Date()}
                 style={styles.calendar}
                 onDayPress={onDayPress}
-
-                // markedDates={marked}
+                markedDates={marked}
+                theme={{
+                  todayTextColor: Colors.darkBlack,
+                  arrowColor: Colors.darkGreen,
+                }}
               />
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>

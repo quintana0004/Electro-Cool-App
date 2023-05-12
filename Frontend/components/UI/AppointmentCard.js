@@ -7,9 +7,13 @@ function AppointmentCard({ service }) {
     <View style={styles.card}>
       <Image style={styles.cardIcon} source={Figures.AppointmentCardIcon} />
       <Text style={styles.title}>Appointment Information</Text>
-      <View style={styles.labelContainer}>
-        <Text style={styles.label}>Service: </Text>
-        <Text>{requestedService}</Text>
+      <View>
+        <View style={styles.labelContainer}>
+          <Text style={{ textAlign: "center" }}>
+            <Text style={styles.label}>Service: </Text>
+            <Text style={{ textAlign: "center" }}>{requestedService}</Text>
+          </Text>
+        </View>
       </View>
       <View style={styles.labelContainer}>
         <Text style={styles.label}>Load of the Job: </Text>
