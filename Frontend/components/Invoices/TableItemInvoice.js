@@ -3,10 +3,12 @@ import { format } from "date-fns";
 import Status from "./Status";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useNavigation } from "@react-navigation/core";
+import { useInvoiceStore } from "../../Store/invoiceStore";
 
 function TableItemInvoice({ itemData, category }) {
   const { id, firstName, lastName, date, amountTotal, status } = itemData;
   const navigation = useNavigation();
+  const setInvoiceId = useInvoiceStore((state) => state.setInvoiceId);
 
   function DateText() {
     return format(new Date(date), "MM/dd/yyyy");
@@ -14,7 +16,8 @@ function TableItemInvoice({ itemData, category }) {
 
   function navigateToDetailScreen() {
     if (category === "Invoices") {
-      navigation.navigate("InvoiceDetail", { invoiceId: id });
+      setInvoiceId(id);
+      navigation.navigate("InvoiceDetail");
     } else {
       navigation.navigate("DepositDetail", { depositId: id });
     }

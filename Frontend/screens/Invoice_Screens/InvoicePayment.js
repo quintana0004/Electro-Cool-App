@@ -35,6 +35,7 @@ function InvoicePayment({ navigation }) {
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
+  const setInvoiceId = useInvoiceStore((state) => state.setInvoiceId);
   const firstName = useCustomerInfoStore((state) => state.firstName);
   const lastName = useCustomerInfoStore((state) => state.lastName);
 
@@ -51,7 +52,6 @@ function InvoicePayment({ navigation }) {
 
   async function saveInvoice(status) {
     const invoiceInfo = {
-      id: invoiceId,
       status: status,
       amountTotal: +amountTotal,
       amountPaid: Number(amountPaid) + Number(amountToPay),
@@ -62,23 +62,24 @@ function InvoicePayment({ navigation }) {
       depositIds: depositIds,
     };
 
+    if (!!invoiceId) invoiceInfo.id = invoiceId;
+
     const response = await httpUpsertInvoice(invoiceInfo);
     if (response.hasError) {
-      console.log(
-        "Error message on invoice payment save: ",
-        response.errorMessage
-      );
       return Alert.alert(
         "Error",
         "There was an error saving the invoice. Please try again later."
       );
     }
 
+    console.log("Invoice Response: ", response.data.id);
+
     // After Save refresh invoice list and return to main page
     toggleReloadInvoiceList();
     setSuccessDialogVisible(true);
     setAmountToPay(0);
     setIsInvoiceEditable(status !== "Paid");
+    setInvoiceId(response.data.id);
     setInvoice(invoiceInfo);
   }
 
@@ -126,7 +127,22 @@ function InvoicePayment({ navigation }) {
           onPress={navigateToHome}
         />
       </Appbar.Header>
+
       <View style={styles.container}>
+        <View style={styles.footerContainer}>
+          <AmountInput
+            value={amountToPay}
+            onChange={setAmountToPay}
+            isEditable={isInvoiceEditable}
+            inputContainerStyles={styles.amountInput}
+          />
+          <Pressable disabled={!isInvoiceEditable} onPress={handlePayment}>
+            <View style={styles.paymentBtn}>
+              <Text style={styles.paymentBtnText}>Payment</Text>
+            </View>
+          </Pressable>
+        </View>
+
         {/* Buttons for Downloading and Sharing */}
         <View style={styles.buttonGroup}>
           <Pressable onPress={handleDownload}>
@@ -149,21 +165,6 @@ function InvoicePayment({ navigation }) {
             invoiceId={invoiceId}
             setPdfHtmlContent={setPdfHtmlContent}
           />
-        </View>
-
-        {/* Footer Container */}
-        <View style={styles.footerContainer}>
-          <AmountInput
-            value={amountToPay}
-            onChange={setAmountToPay}
-            isEditable={isInvoiceEditable}
-            inputContainerStyles={styles.amountInput}
-          />
-          <Pressable disabled={!isInvoiceEditable} onPress={handlePayment}>
-            <View style={styles.paymentBtn}>
-              <Text style={styles.paymentBtnText}>Payment</Text>
-            </View>
-          </Pressable>
         </View>
 
         <SuccessDialog
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 170,
+    marginTop: 140,
   },
   btn: {
     justifyContent: "center",
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 10,
-    marginTop: 120,
+    marginTop: 20,
   },
   amountInput: {
     width: 230,

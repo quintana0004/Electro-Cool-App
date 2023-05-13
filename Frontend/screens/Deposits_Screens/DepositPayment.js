@@ -10,7 +10,7 @@ import Colors from "../../constants/Colors/Colors";
 import { useDepositStore } from "../../Store/depositStore";
 import PaymentInput from "../../components/UI/PaymentInput";
 import DepositPaymentPDF from "../../components/DepositPayment/DepositPaymentPDF";
-import { useState } from "react";
+import React, { useState } from "react";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { useCustomerInfoStore } from "../../Store/JobOrderStore";
@@ -67,6 +67,15 @@ function DepositPayment({ navigation }) {
         />
       </Appbar.Header>
       <View style={styles.container}>
+        {/* Footer Container */}
+        <View style={styles.footerContainer}>
+          <PaymentInput value={120.64} />
+
+          <View style={styles.paymentBtn}>
+            <Text style={styles.paymentBtnText}>Total Paid</Text>
+          </View>
+        </View>
+
         {/* Buttons for Downloading and Sharing */}
         <View style={styles.buttonGroup}>
           <Pressable onPress={handleDownload}>
@@ -90,11 +99,6 @@ function DepositPayment({ navigation }) {
             setPdfHtmlContent={setPdfHtmlContent}
           />
         </View>
-
-        {/* Footer Container */}
-        <View style={styles.footerContainer}>
-          <PaymentInput value={120.64} />
-        </View>
       </View>
     </View>
   );
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 170,
+    marginTop: 140,
   },
   btn: {
     justifyContent: "center",
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 120,
+    marginTop: 20,
   },
   paymentBtn: {
     flexDirection: "row",

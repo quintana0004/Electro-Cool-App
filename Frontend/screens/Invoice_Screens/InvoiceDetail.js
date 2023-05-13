@@ -34,8 +34,6 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
-  const { invoiceId = null } = route.params || {};
-
   // --- Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
@@ -71,11 +69,13 @@ function InvoiceDetail({ route, navigation }) {
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
+  const invoiceId = useInvoiceStore((state) => state.id);
   const setInvoice = useInvoiceStore((state) => state.setInvoice);
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
+  const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
   const clientSelectedDeposits = useDepositStore(
     (state) => state.clientSelectedDeposits
   );
@@ -120,6 +120,7 @@ function InvoiceDetail({ route, navigation }) {
     return totalAmount - amountPaid;
   }, [totalAmount, amountPaid]);
 
+  console.log("Invoice Id: ", invoiceId);
   // --- Data Fetching
   const { isLoading, isError, error } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId, reloadInvoiceList],
@@ -181,6 +182,7 @@ function InvoiceDetail({ route, navigation }) {
 
   function navigateCancel() {
     resetSelectedDeposits();
+    resetInvoice();
     const pageAction = StackActions.popToTop();
     navigation.dispatch(pageAction);
   }
