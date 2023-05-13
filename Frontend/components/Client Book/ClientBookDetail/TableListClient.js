@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, View, Text } from "react-native";
 import TableHeaderClient from "./TableHeaderClient";
 import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     });
 
   async function getClientBookScreenData({ pageParam = 0 }) {
-    setErrorMessage("Error loading Appointments. Please try again later.");
+    setErrorMessage("Error loading Clients. Please try again later.");
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
     if (searchLoading) {
       setSearchLoading(false);
@@ -50,7 +50,6 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     for (const items of data.pages.map((p) => p.data).flat()) {
       tableData.push(...items.data);
     }
-
     return tableData;
   }
 
@@ -72,7 +71,11 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     setReloadClientBookList();
   }
   if (isLoading) {
-    return <LoadingOverlay />;
+    return (
+      <View style={{ height: 800 }}>
+        <LoadingOverlay />
+      </View>
+    );
   }
   if (isError) {
     console.log("Error Message:", error.response.data.error.erroMessage);
@@ -80,6 +83,35 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     return (
       <View style={{}}>
         <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
+  }
+
+  function renderEmptyData() {
+    // If there are no appointments on the day, show this message
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: 600,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 10,
+          }}
+        >
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
+            No Clients Stored.
+          </Text>
+        </View>
       </View>
     );
   }
@@ -98,6 +130,9 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
           renderItem={clientBookItem}
           keyExtractor={(item) => item.id}
           onEndReached={loadMoreData}
+          ListEmptyComponent={() => {
+            return renderEmptyData();
+          }}
         />
       )}
     </View>

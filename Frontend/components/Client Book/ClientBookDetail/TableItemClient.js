@@ -26,7 +26,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
       }}
     >
       <View style={styles.content}>
-        <View style={styles.groups}>
+        <View style={styles.group1}>
           <View>
             <Avatar.Text
               size={45}
@@ -61,7 +61,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
             </View>
           </View>
         </View>
-        <View style={styles.groups}>
+        <View style={styles.group2}>
           <View
             style={{
               flexDirection: "row",
@@ -159,7 +159,13 @@ const styles = StyleSheet.create({
     color: Colors.white,
     marginLeft: 60,
   },
-  groups: {
+  group1: {
+    //flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: 250,
+  },
+  group2: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
