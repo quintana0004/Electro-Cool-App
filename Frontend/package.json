@@ -46,7 +46,9 @@
     "react-native-step-indicator": "^1.0.3",
     "yup": "^1.0.2",
     "zustand": "^4.3.6",
-    "@react-native-community/datetimepicker": "6.5.2"
+    "@react-native-community/datetimepicker": "6.5.2",
+    "expo-sharing": "~11.0.1",
+    "expo-file-system": "~15.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

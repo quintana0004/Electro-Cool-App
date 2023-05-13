@@ -17,6 +17,9 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import InvoicePaymentPDF from "../../components/InvoicePayment/InvoicePaymentPDF";
 import { httpUpsertInvoice } from "../../api/invoices.api";
 import AmountInput from "../../components/UI/AmountInput";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function InvoicePayment({ navigation }) {
   const invoiceId = useInvoiceStore((state) => state.id);
@@ -31,6 +34,8 @@ function InvoicePayment({ navigation }) {
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
+  const firstName = useCustomerInfoStore((state) => state.firstName);
+  const lastName = useCustomerInfoStore((state) => state.lastName);
 
   const [pdfHtmlContent, setPdfHtmlContent] = useState("");
   const [amountToPay, setAmountToPay] = useState(0);
@@ -80,12 +85,21 @@ function InvoicePayment({ navigation }) {
     await Print.printAsync({ html: pdfHtmlContent });
   }
 
-  function handleShare() {
-    console.log("Handle Share");
-  }
+  async function handleShare() {
+    const { uri } = await Print.printToFileAsync({ html: pdfHtmlContent });
 
-  function handleQRCode() {
-    console.log("Handle QR Code");
+    const newUri =
+      FileSystem.documentDirectory + `Invoice-${firstName}-${lastName}`;
+    await FileSystem.copyAsync({
+      from: uri,
+      to: newUri,
+    });
+
+    if (!(await Sharing.isAvailableAsync())) {
+      return Alert.alert("Error", "Sharing isn't available on your platform.");
+    }
+
+    await Sharing.shareAsync(newUri);
   }
 
   function navigateBack() {
@@ -130,12 +144,6 @@ function InvoicePayment({ navigation }) {
               <Text style={styles.btnText}>Share</Text>
             </View>
           </Pressable>
-          <Pressable onPress={handleQRCode}>
-            <View style={styles.btn}>
-              <MaterialCommunityIcons name="qrcode" size={50} color="white" />
-              <Text style={styles.btnText}>QR Code</Text>
-            </View>
-          </Pressable>
         </View>
 
         {/* Main Content */}
@@ -177,7 +185,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 170,
   },
   btn: {
     justifyContent: "center",
@@ -208,7 +216,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 10,
-    marginTop: 30,
+    marginTop: 120,
   },
   amountInput: {
     width: 230,

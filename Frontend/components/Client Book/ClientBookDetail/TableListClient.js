@@ -75,8 +75,6 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     return <LoadingOverlay />;
   }
   if (isError) {
-    console.log("Error Message:", error.response.data.error.erroMessage);
-
     return (
       <View style={{}}>
         <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />

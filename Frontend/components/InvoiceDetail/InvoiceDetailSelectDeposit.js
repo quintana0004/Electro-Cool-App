@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "../../constants/Colors/Colors";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetDepositsByInvoiceId } from "../../api/deposits.api";
@@ -45,7 +45,6 @@ function InvoiceDetailSelectDeposit({ isInvoiceEditable, invoiceId }) {
   }
 
   if (isError) {
-    console.log("Error Fetching Deposit Count: ", error);
     Alert.alert(
       "Error",
       "There was an error fetching the deposits for this invoice. Please reload app."

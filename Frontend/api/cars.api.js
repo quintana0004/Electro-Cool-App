@@ -3,7 +3,6 @@ import axios from "./axios";
 async function httpGetAllCars(take, page, searchTerm) {
   const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
   const response = await axios("/cars" + queryParams);
-  console.log("API", response);
   return response;
 }
 

@@ -24,7 +24,6 @@ async function httpUpsertAppointments(appointmentInfo) {
     const errorResponse = error.response.data;
     responseToReturn.hasError = true;
     responseToReturn.errorMessage = errorResponse.error.errorMessage;
-    console.log("ERROR: ", errorResponse.error.errorMessage);
   }
   return responseToReturn;
 }

@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dimensions, FlatList, View } from "react-native";
+import { Alert, Dimensions, FlatList, View } from "react-native";
 
 import { httpGetInvoiceByCustomerId } from "../../../../api/invoices.api";
 import TableHeaderCB from "./TableHeaderInvoicesCB";
@@ -83,7 +83,6 @@ function InvoiceListCB({
   }
 
   if (isError) {
-    console.log("Error Fetching Invoice & Deposit Items: ", error);
     Alert.alert(
       "Error",
       "There was an error fetching the invoice & deposit items. Please try again later."

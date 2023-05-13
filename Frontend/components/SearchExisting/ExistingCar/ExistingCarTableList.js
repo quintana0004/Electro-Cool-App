@@ -76,7 +76,6 @@ function ExistingCarTableList({
   }
 
   if (isError) {
-    console.log("Error Fetching Existing Cars: ", error);
     Alert.alert(
       "Error",
       "There was an error fetching existing cars. Please try again later."

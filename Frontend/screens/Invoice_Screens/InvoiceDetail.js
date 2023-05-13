@@ -33,6 +33,11 @@ import { useDepositStore } from "../../Store/depositStore";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import { StackActions } from "@react-navigation/native";
 
+// TODO:
+// * Need to fix the select options for the invoice Details Rows
+// * Need to develop the "Share" functionality
+// * Need to develop the QR Code functionality
+
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
 
@@ -50,6 +55,9 @@ function InvoiceDetail({ route, navigation }) {
       email: state.email,
     };
   });
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
   const car = useVehicleInfoStore((state) => {
     return {
       id: state.id,
@@ -65,6 +73,9 @@ function InvoiceDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
   const setInvoice = useInvoiceStore((state) => state.setInvoice);
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
@@ -125,7 +136,7 @@ function InvoiceDetail({ route, navigation }) {
     return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
   }
 
-  function navigateToPayment() {
+  function setStoreInformation() {
     const invoiceInfo = {
       id: invoiceId,
       status: invoiceStatus,
@@ -139,6 +150,31 @@ function InvoiceDetail({ route, navigation }) {
     };
     setInvoice(invoiceInfo);
 
+    setCustomerInfo(
+      clientInfo.id,
+      clientInfo.firstName,
+      clientInfo.lastName,
+      clientInfo.phone,
+      clientInfo.email
+    );
+
+    setVehicleInformation(
+      carInfo.id,
+      carInfo.brand,
+      carInfo.licensePlate,
+      carInfo.model,
+      carInfo.year,
+      carInfo.mileage,
+      carInfo.color,
+      carInfo.vinNumber,
+      carInfo.carHasItems,
+      carInfo.carItemsDescription,
+      carInfo.customerId
+    );
+  }
+
+  function navigateToPayment() {
+    setStoreInformation();
     const pageAction = StackActions.push("InvoicePayment");
     navigation.dispatch(pageAction);
   }

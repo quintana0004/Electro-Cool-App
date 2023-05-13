@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -11,9 +11,15 @@ import { useDepositStore } from "../../Store/depositStore";
 import PaymentInput from "../../components/UI/PaymentInput";
 import DepositPaymentPDF from "../../components/DepositPayment/DepositPaymentPDF";
 import { useState } from "react";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function DepositPayment({ navigation }) {
   const depositId = useDepositStore((state) => state.id);
+  const firstName = useCustomerInfoStore((state) => state.firstName);
+  const lastName = useCustomerInfoStore((state) => state.lastName);
+
   const [pdfHtmlContent, setPdfHtmlContent] = useState("");
 
   function navigateBack() {
@@ -26,12 +32,21 @@ function DepositPayment({ navigation }) {
     navigation.dispatch(pageGoHomeAction);
   }
 
-  function handleShare() {
-    console.log("Handle Share");
-  }
+  async function handleShare() {
+    const { uri } = await Print.printToFileAsync({ html: pdfHtmlContent });
 
-  function handleQRCode() {
-    console.log("Handle QR Code");
+    const newUri =
+      FileSystem.documentDirectory + `Deposit-${firstName}-${lastName}`;
+    await FileSystem.copyAsync({
+      from: uri,
+      to: newUri,
+    });
+
+    if (!(await Sharing.isAvailableAsync())) {
+      return Alert.alert("Error", "Sharing isn't available on your platform.");
+    }
+
+    await Sharing.shareAsync(newUri);
   }
 
   async function handleDownload() {
@@ -66,12 +81,6 @@ function DepositPayment({ navigation }) {
               <Text style={styles.btnText}>Share</Text>
             </View>
           </Pressable>
-          <Pressable onPress={handleQRCode}>
-            <View style={styles.btn}>
-              <MaterialCommunityIcons name="qrcode" size={50} color="white" />
-              <Text style={styles.btnText}>QR Code</Text>
-            </View>
-          </Pressable>
         </View>
 
         {/* Main Content */}
@@ -103,7 +112,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 170,
   },
   btn: {
     justifyContent: "center",
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 40,
+    marginTop: 120,
   },
   paymentBtn: {
     flexDirection: "row",
