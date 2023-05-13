@@ -290,7 +290,7 @@ function VehicleInformation({ route, navigation }) {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled
-            keyboardVerticalOffset={-100}
+            keyboardVerticalOffset={20}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View

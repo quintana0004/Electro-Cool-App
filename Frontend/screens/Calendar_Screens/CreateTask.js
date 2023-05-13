@@ -162,7 +162,7 @@ function CreateTask() {
   }
 
   function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Task(s) created Successfully!", ToastAndroid.SHORT);
   }
 
   function showFailedMessage() {
@@ -199,8 +199,9 @@ function CreateTask() {
 
   const marked = useMemo(() => {
     return {
-      [getDate(0)]: {
+      [getDate(-1)]: {
         marked: true,
+        dotColor: Colors.darkGreen,
       },
       [selected]: {
         selected: true,
@@ -214,9 +215,8 @@ function CreateTask() {
   const onDayPress = useCallback((dateObj) => {
     setSelected(dateObj.dateString);
     const newDateObj = dateObj.dateString + "T04:00:00.000Z";
-    console.log("owO ?1: ", newDateObj);
+
     setDate(newDateObj);
-    console.log("owO ?2: ", typeof date);
   }, []);
 
   const todaysDate = new Date();
@@ -343,8 +343,7 @@ function CreateTask() {
             </Dialog.Title>
             <Dialog.Content>
               <Text style={styles.textAlert}>
-                The tasks were added for the employees to see! You can now
-                proceed to the home page.
+                The tasks were added! You can now proceed to the home page.
               </Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -379,8 +378,11 @@ function CreateTask() {
                 current={Date()}
                 style={styles.calendar}
                 onDayPress={onDayPress}
-                disableArrowLeft={true}
                 markedDates={marked}
+                theme={{
+                  todayTextColor: Colors.darkBlack,
+                  arrowColor: Colors.darkGreen,
+                }}
               />
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -401,7 +403,6 @@ function CreateTask() {
           data={tasks}
           renderItem={cTaskItem}
           keyExtractor={(item) => {
-            console.log("Pollo: ", item);
             return item.id;
           }}
           style={{ flexGrow: 1 }}
@@ -411,7 +412,6 @@ function CreateTask() {
         <Pressable
           style={[styles.button, { backgroundColor: Colors.darkGreyAsh }]}
           onPress={async () => {
-            console.log("-w-");
             clearAllTasks();
             setReloadTaskList();
           }}
@@ -421,7 +421,6 @@ function CreateTask() {
         <Pressable
           style={[styles.button, { backgroundColor: Colors.darkGreen }]}
           onPress={async () => {
-            console.log("UwU");
             setDialogVisible1(true);
             setReloadTaskList();
           }}
