@@ -11,7 +11,6 @@ import ErrorOverlay from "../UI/ErrorOverlay";
 import LoadingOverlay from "../UI/LoadingOverlay";
 
 function settingRender(itemData) {
-  console.log(itemData.item);
   return <TableItemSetting data={itemData.item} />;
 }
 

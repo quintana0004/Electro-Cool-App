@@ -124,7 +124,6 @@ function CarModal({ activateModal, setSearchIcon }) {
       showSuccessMessage();
       setReloadClientBookCarList();
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }

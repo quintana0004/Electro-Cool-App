@@ -38,6 +38,9 @@ function DepositDetail({ route, navigation }) {
       email: state.email,
     };
   });
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
   const car = useVehicleInfoStore((state) => {
     return {
       id: state.id,
@@ -53,6 +56,9 @@ function DepositDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
   const setDeposit = useDepositStore((state) => state.setDeposit);
   const toggleReloadDepositList = useDepositStore(
     (state) => state.toggleReloadDepositList
@@ -73,7 +79,32 @@ function DepositDetail({ route, navigation }) {
     enabled: !!depositId,
   });
 
+  function setStoreInformation() {
+    setCustomerInfo(
+      clientInfo.id,
+      clientInfo.firstName,
+      clientInfo.lastName,
+      clientInfo.phone,
+      clientInfo.email
+    );
+
+    setVehicleInformation(
+      carInfo.id,
+      carInfo.brand,
+      carInfo.licensePlate,
+      carInfo.model,
+      carInfo.year,
+      carInfo.mileage,
+      carInfo.color,
+      carInfo.vinNumber,
+      carInfo.carHasItems,
+      carInfo.carItemsDescription,
+      carInfo.customerId
+    );
+  }
+
   function navigateToPayment() {
+    setStoreInformation();
     const pageAction = StackActions.push("DepositPayment");
     navigation.dispatch(pageAction);
   }
@@ -148,7 +179,7 @@ function DepositDetail({ route, navigation }) {
   }
 
   async function handleDepositPayment() {
-    await saveDeposit(depositStatus);
+    await saveDeposit("Paid");
     setDepositStatus("Paid");
     setIsDepositEditable(false);
 

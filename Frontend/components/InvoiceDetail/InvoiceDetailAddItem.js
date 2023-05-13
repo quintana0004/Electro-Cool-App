@@ -2,12 +2,17 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "../../constants/Colors/Colors";
 
-function InvoiceDetailAddItem({ onPress }) {
+function InvoiceDetailAddItem({ isInvoiceEditable, onPress }) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} disabled={!isInvoiceEditable}>
       <View style={styles.container}>
         <Text style={styles.buttonText}>Add Item</Text>
-        <AntDesign name="pluscircle" style={styles.buttonIcon} size={24} color="white" />
+        <AntDesign
+          name="pluscircle"
+          style={styles.buttonIcon}
+          size={24}
+          color="white"
+        />
       </View>
     </Pressable>
   );

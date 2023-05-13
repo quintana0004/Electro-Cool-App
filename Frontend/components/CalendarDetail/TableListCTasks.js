@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import TableHeaderTasks from "./TableHeaderCTasks";
 import TableItemCTasks from "./TableItemCTasks";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -6,7 +6,6 @@ import { httpGetAllTasks } from "../../api/tasks.api";
 import { format } from "date-fns";
 
 function cTaskItem(itemData) {
-  //console.log("ITEAM DATA: ", itemData);
   return (
     <TableItemCTasks
       id={itemData.item.id}
@@ -23,8 +22,6 @@ function TableListCTasks({ searchTerm }) {
   }
 
   searchTerm = `${DateText()}T00:00:00.000Z`;
-  console.log("dori dori dori dori dori", searchTerm);
-  console.log("-----------------------");
 
   const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["TasksHomePage", searchTerm],
@@ -38,8 +35,7 @@ function TableListCTasks({ searchTerm }) {
   });
 
   async function getTasksScreenData({ pageParam = 0 }) {
-    let data = await httpGetAllTasks(TAKE, pageParam, searchTerm);
-    return data;
+    return await httpGetAllTasks(TAKE, pageParam, searchTerm);
   }
 
   function getTableData() {
@@ -48,7 +44,7 @@ function TableListCTasks({ searchTerm }) {
     for (const items of data.pages.map((p) => p.data).flat()) {
       tableData.push(...items.data);
     }
-    console.log(tableData);
+
     return tableData;
   }
 
