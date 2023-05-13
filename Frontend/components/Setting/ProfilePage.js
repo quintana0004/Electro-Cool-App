@@ -46,6 +46,10 @@ const ValidationUser = Yup.object().shape({
       "^[A-Za-z0-9]{2,50}$",
       "Username must contain letters and digits."
     ),
+  role: Yup.string(),
+});
+
+const ValidationPassword = Yup.object().shape({
   password: Yup.string()
     .required("Password is Required")
     .matches(
@@ -58,7 +62,6 @@ const ValidationUser = Yup.object().shape({
       "^[A-Za-z0-9@._]{8,50}$",
       "Password must contain letters, digits and special character. Need a eight charaters or more."
     ),
-  role: Yup.string(),
 });
 
 function ProfilePage({}) {
@@ -137,19 +140,23 @@ function ProfilePage({}) {
 
   function isUserProfileValidation() {
     // Start to validating there is no error on input page
-    const TouchedObject =
-      Object.keys(refAccountInformation.current.touched).length > 0;
 
     let Valid = true;
-    if (
-      refAccountInformation.current &&
-      refAccountInformation.current.isValid
-    ) {
+    if (refAccountInformation.current.isValid) {
       Valid = true;
     } else {
       Valid = false;
     }
 
+    console.log(
+      "VALIDATION OF USER INFO (1): ",
+      !refAccountInformation.current.value
+    );
+
+    console.log(
+      "VALIDATION OF USER INFO (2): ",
+      refAccountInformation.current.isValid
+    );
     return Valid;
   }
 
@@ -459,10 +466,9 @@ function ProfilePage({}) {
       </View>
       <View>
         <Formik
-          validationSchema={ValidationUser}
+          validationSchema={ValidationPassword}
           innerRef={refCredentialInformation}
           initialValues={{
-            username: "",
             password: "",
             passwordConfirm: "",
           }}

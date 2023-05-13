@@ -17,6 +17,7 @@
     "@formatjs/intl-numberformat": "^8.3.5",
     "@formatjs/intl-pluralrules": "^5.1.10",
     "@formatjs/intl-relativetimeformat": "^11.1.10",
+    "@react-native-community/datetimepicker": "6.5.2",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/native": "^6.0.16",
     "@react-navigation/stack": "^6.3.7",
@@ -26,6 +27,7 @@
     "date-fns": "^2.29.3",
     "expo": "~47.0.8",
     "expo-localization": "~14.0.0",
+    "expo-print": "~12.0.0",
     "expo-secure-store": "~12.0.0",
     "expo-status-bar": "~1.4.2",
     "formik": "^2.2.9",
@@ -44,9 +46,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-step-indicator": "^1.0.3",
     "yup": "^1.0.2",
-    "zustand": "^4.3.6",
-    "@react-native-community/datetimepicker": "6.5.2",
-    "expo-print": "~12.0.0"
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
