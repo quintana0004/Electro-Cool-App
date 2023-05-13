@@ -1,9 +1,10 @@
-import { StyleSheet, Text, ToastAndroid, View } from "react-native";
+import { StyleSheet, Text, ToastAndroid, View, Pressable } from "react-native";
 import { format } from "date-fns";
 import { Appbar, Card } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
 import { httpDeleteAppointment } from "../../api/appointments.api";
 import { useCalendarStore } from "../../Store/calendarStore";
+import { Entypo } from "@expo/vector-icons";
 
 function TableItemAppointments({ itemData }) {
   const { id, customername, arrivalDateTime, service, brand, licensePlate } =
@@ -18,7 +19,7 @@ function TableItemAppointments({ itemData }) {
   }
 
   function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Appointment Completed!", ToastAndroid.SHORT);
   }
 
   function showFailedMessage() {
@@ -34,10 +35,13 @@ function TableItemAppointments({ itemData }) {
       showFailedMessage();
     }
   }
+  const formattedCustomerName = customername
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
   return (
     <View>
-      {/* <Pressable onPress={() => console.log("PRESSED ITEM")}> */}
       <Card
         style={{
           marginTop: 15,
@@ -51,17 +55,24 @@ function TableItemAppointments({ itemData }) {
         <Card.Content>
           <View style={styles.cardContentContainer}>
             <View style={styles.serviceContainer}>
-              <View style={{ width: 130 }}>
-                <Text style={styles.boldText}>{customername}</Text>
+              <View style={{ width: 160 }}>
+                <Text style={styles.boldText}>{formattedCustomerName}</Text>
                 <Text style={styles.boldText}>{DateText()}</Text>
               </View>
             </View>
             <View style={styles.serviceContainer}>
-              <View style={{ width: 160 }}>
-                <Text style={styles.boldText}>{service}</Text>
-                <Text style={styles.boldText}>
-                  {brand} {licensePlate}
-                </Text>
+              <View style={{ width: 220 }}>
+                <View style={{ paddingBottom: 5 }}>
+                  <Text style={styles.boldText}>
+                    <Text style={styles.underline}>Service</Text>: {service}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={styles.boldText}>
+                    <Text style={styles.underline}>Car</Text>: {brand}-
+                    {licensePlate}
+                  </Text>
+                </View>
               </View>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -70,16 +81,20 @@ function TableItemAppointments({ itemData }) {
                 icon="check-circle"
                 onPress={async () => handleConfirmORDeleteApp()}
               />
-              <Appbar.Action
-                color="grey" //El Rojo no brega xd
-                icon="delete"
-                onPress={async () => handleConfirmORDeleteApp()}
-              />
+              <Pressable
+                onPress={handleConfirmORDeleteApp}
+                style={{
+                  borderRadius: 50,
+                }}
+              >
+                <View style={{ top: 12 }}>
+                  <Entypo name="trash" size={24} color="black" />
+                </View>
+              </Pressable>
             </View>
           </View>
         </Card.Content>
       </Card>
-      {/* </Pressable> */}
     </View>
   );
 }
@@ -91,6 +106,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginVertical: 10,
   },
   serviceContainer: {
     flexDirection: "column",
@@ -98,5 +114,8 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: "bold",
+  },
+  underline: {
+    textDecorationLine: "underline",
   },
 });
