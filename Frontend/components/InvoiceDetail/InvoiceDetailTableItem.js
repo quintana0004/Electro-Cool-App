@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   descText: {
-    maxWidth: 100,
-    minWidth: 100,
+    maxWidth: 95,
+    minWidth: 95,
   },
   selectContainer: {
     position: "absolute",
