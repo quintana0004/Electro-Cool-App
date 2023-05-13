@@ -87,7 +87,6 @@ function CustomerItemCB({ onUpdateFullName }) {
       setReloadClientBookList();
       onUpdateFullName(info.firstName, info.lastName);
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }

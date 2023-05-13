@@ -1,8 +1,8 @@
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
 import React from "react";
-import {ScrollView, StyleSheet, View} from "react-native";
-import {Appbar} from "react-native-paper";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { Appbar } from "react-native-paper";
 import DashboardCurrentVehicles from "../components/Dashboard/DashboardCurrentVehicles";
 import DashboardVehiclesInShopAndNotStarted from "../components/Dashboard/DashboardVehiclesInShopAndNotStarted";
 import DashboardNewVehiclesReceived from "../components/Dashboard/DashboardNewVehiclesReceived";
@@ -38,15 +38,15 @@ function Dashboard({ navigation }) {
         showsHorizontalScrollIndicator={false}
       >
         <View style={styles.scrollableContainer}>
-          <DashboardCurrentVehicles/>
+          <DashboardCurrentVehicles />
           <DashboardVehiclesInShopAndNotStarted />
-          <DashboardNewVehiclesReceived/>
-          <DashboardFinishedVehiclesToday/>
+          <DashboardNewVehiclesReceived />
+          <DashboardFinishedVehiclesToday />
 
-          <DashboardTotalAmountPaid/>
-          <DashboardTotalAmountDraft/>
-          <DashboardTotalAmountPending/>
-          <DashboardTotalAmountCancelled/>
+          <DashboardTotalAmountPaid />
+          <DashboardTotalAmountDraft />
+          <DashboardTotalAmountPending />
+          <DashboardTotalAmountCancelled />
         </View>
       </ScrollView>
 

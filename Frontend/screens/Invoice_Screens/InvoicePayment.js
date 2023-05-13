@@ -1,22 +1,20 @@
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  ToastAndroid,
-  View,
-} from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { StackActions } from "@react-navigation/native";
-import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 import { Appbar } from "react-native-paper";
 import * as Print from "expo-print";
 
 import Colors from "../../constants/Colors/Colors";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import InvoicePaymentPDF from "../../components/InvoicePayment/InvoicePaymentPDF";
 import { httpUpsertInvoice } from "../../api/invoices.api";
 import AmountInput from "../../components/UI/AmountInput";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import { useCustomerInfoStore } from "../../Store/JobOrderStore";
+import SuccessDialog from "../../components/UI/SuccessDialog";
+import { useDepositStore } from "../../Store/depositStore";
 
 function InvoicePayment({ navigation }) {
   const invoiceId = useInvoiceStore((state) => state.id);
@@ -31,10 +29,20 @@ function InvoicePayment({ navigation }) {
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
+  const setInvoiceId = useInvoiceStore((state) => state.setInvoiceId);
+  const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
+  const resetSelectedDeposits = useDepositStore(
+    (state) => state.resetSelectedDeposits
+  );
+  const firstName = useCustomerInfoStore((state) => state.firstName);
+  const lastName = useCustomerInfoStore((state) => state.lastName);
 
   const [pdfHtmlContent, setPdfHtmlContent] = useState("");
   const [amountToPay, setAmountToPay] = useState(0);
   const [isInvoiceEditable, setIsInvoiceEditable] = useState(status !== "Paid");
+  const [successDialogVisible, setSuccessDialogVisible] = useState(false);
+
+  const pageTitle = !!invoiceId ? `#${invoiceId}` : "";
 
   async function handlePayment() {
     const amountDue = amountTotal - amountPaid - amountToPay;
@@ -44,10 +52,9 @@ function InvoicePayment({ navigation }) {
 
   async function saveInvoice(status) {
     const invoiceInfo = {
-      id: invoiceId,
       status: status,
       amountTotal: +amountTotal,
-      amountPaid: +amountToPay,
+      amountPaid: Number(amountPaid) + Number(amountToPay),
       amountDue: amountTotal - amountPaid - amountToPay,
       customerId: customerId,
       carId: carId,
@@ -55,12 +62,10 @@ function InvoicePayment({ navigation }) {
       depositIds: depositIds,
     };
 
+    if (!!invoiceId) invoiceInfo.id = invoiceId;
+
     const response = await httpUpsertInvoice(invoiceInfo);
     if (response.hasError) {
-      console.log(
-        "Error message on invoice payment save: ",
-        response.errorMessage
-      );
       return Alert.alert(
         "Error",
         "There was an error saving the invoice. Please try again later."
@@ -68,9 +73,11 @@ function InvoicePayment({ navigation }) {
     }
 
     // After Save refresh invoice list and return to main page
-    toggleReloadInvoiceList();
-    showSuccessMessage();
+    setInvoiceId(response.data.id);
+    setSuccessDialogVisible(true);
+    setAmountToPay(0);
     setIsInvoiceEditable(status !== "Paid");
+    toggleReloadInvoiceList();
     setInvoice(invoiceInfo);
   }
 
@@ -78,12 +85,21 @@ function InvoicePayment({ navigation }) {
     await Print.printAsync({ html: pdfHtmlContent });
   }
 
-  function handleShare() {
-    console.log("Handle Share");
-  }
+  async function handleShare() {
+    const { uri } = await Print.printToFileAsync({ html: pdfHtmlContent });
 
-  function handleQRCode() {
-    console.log("Handle QR Code");
+    const newUri =
+      FileSystem.documentDirectory + `Invoice-${firstName}-${lastName}`;
+    await FileSystem.copyAsync({
+      from: uri,
+      to: newUri,
+    });
+
+    if (!(await Sharing.isAvailableAsync())) {
+      return Alert.alert("Error", "Sharing isn't available on your platform.");
+    }
+
+    await Sharing.shareAsync(newUri);
   }
 
   function navigateBack() {
@@ -92,28 +108,42 @@ function InvoicePayment({ navigation }) {
   }
 
   function navigateToHome() {
+    resetInvoice();
+    resetSelectedDeposits();
     const pageGoHomeAction = StackActions.popToTop();
     navigation.dispatch(pageGoHomeAction);
-  }
-
-  function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
   }
 
   return (
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction onPress={navigateBack} />
-        <Appbar.Content
-          title={`Invoice Payment #${invoiceId}`}
-        ></Appbar.Content>
+        <Appbar.Content title={`Invoice Payment ${pageTitle}`}></Appbar.Content>
         <Appbar.Action
           icon="home"
           iconColor={Colors.black}
           onPress={navigateToHome}
         />
       </Appbar.Header>
+
       <View style={styles.container}>
+        <View style={styles.footerContainer}>
+          <AmountInput
+            value={amountToPay}
+            onChange={setAmountToPay}
+            isEditable={isInvoiceEditable}
+            inputContainerStyles={styles.amountInput}
+          />
+          <Pressable
+            disabled={!isInvoiceEditable || amountToPay === 0}
+            onPress={handlePayment}
+          >
+            <View style={styles.paymentBtn}>
+              <Text style={styles.paymentBtnText}>Payment</Text>
+            </View>
+          </Pressable>
+        </View>
+
         {/* Buttons for Downloading and Sharing */}
         <View style={styles.buttonGroup}>
           <Pressable onPress={handleDownload}>
@@ -128,12 +158,6 @@ function InvoicePayment({ navigation }) {
               <Text style={styles.btnText}>Share</Text>
             </View>
           </Pressable>
-          <Pressable onPress={handleQRCode}>
-            <View style={styles.btn}>
-              <MaterialCommunityIcons name="qrcode" size={50} color="white" />
-              <Text style={styles.btnText}>QR Code</Text>
-            </View>
-          </Pressable>
         </View>
 
         {/* Main Content */}
@@ -144,20 +168,14 @@ function InvoicePayment({ navigation }) {
           />
         </View>
 
-        {/* Footer Container */}
-        <View style={styles.footerContainer}>
-          <AmountInput
-            value={amountToPay}
-            onChange={setAmountToPay}
-            isEditable={isInvoiceEditable}
-            inputContainerStyles={styles.amountInput}
-          />
-          <Pressable disabled={!isInvoiceEditable} onPress={handlePayment}>
-            <View style={styles.paymentBtn}>
-              <Text style={styles.paymentBtnText}>Payment</Text>
-            </View>
-          </Pressable>
-        </View>
+        <SuccessDialog
+          dialogVisible={successDialogVisible}
+          setDialogVisible={setSuccessDialogVisible}
+          headerText={"Invoice Payment has been received."}
+          subHeaderText={
+            "The payment has been applied to the invoice. If the amount was completely paid, the Invoice should transition to be completely paid. If not you can proceed to register payments for this invoice."
+          }
+        />
       </View>
     </View>
   );
@@ -175,7 +193,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 140,
   },
   btn: {
     justifyContent: "center",
@@ -206,7 +224,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 10,
-    marginTop: 30,
+    marginTop: 20,
   },
   amountInput: {
     width: 230,

@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Modal } from "react-native";
 import { Card } from "react-native-paper";
 import Figures from "../../constants/figures/Figures";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetTotalAmountTasksToday } from "../../api/metrics.api";
-
-function DashboardCardTask() {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import DashboardErrorOverlay from "./DashboardErrorOverlay";
+function DashboardCardTask({}) {
   const { isLoading, isError, refetch, data } = useQuery({
     queryKey: ["DashboardTotalTasksToday"],
     queryFn: getDashboardTotalTasksToday,
@@ -16,43 +17,65 @@ function DashboardCardTask() {
     const response = await httpGetTotalAmountTasksToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
-    <Card style={styles.ButtonSmall}>
-      <View
-        style={{
-          flexDirection: "row",
-          width: 170,
-          marginTop: 8,
-        }}
-      >
-        <Image
-          source={Figures.totalAmountTasks}
+    <View>
+      {isLoading ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <Modal visible={isLoading} animationType="fade">
+          <LoadingOverlay />
+        </Modal>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
           style={{
-            height: 40,
-            width: 40,
-          }}
-        />
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
 
-        <View style={{ width: 190, marginLeft: 5 }}>
-          <Text style={[styles.ButtonTextBig, { fontSize: 16 }]}>
-            Total Amount of Task Today
-          </Text>
+            backgroundColor: "#fff",
+          }}
+        >
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
         </View>
-      </View>
-      <View style={{ width: 250, height: 200, marginBottom: 0 }}>
-        {isLoading || (
-          <Text
-            style={[
-              styles.ButtonTextBig,
-              { fontSize: 80, alignSelf: "center", marginTop: 30 },
-            ]}
+      ) : (
+        <Card style={styles.ButtonSmall}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: 170,
+              marginTop: 8,
+            }}
           >
-            {data.metric}
-          </Text>
-        )}
-      </View>
-    </Card>
+            <Image
+              source={Figures.totalAmountTasks}
+              style={{
+                height: 40,
+                width: 40,
+              }}
+            />
+
+            <View style={{ width: 190, marginLeft: 5 }}>
+              <Text style={[styles.ButtonTextBig, { fontSize: 16 }]}>
+                Total Amount of Task Today
+              </Text>
+            </View>
+          </View>
+          <View style={{ width: 250, height: 200, marginBottom: 0 }}>
+            {isLoading || (
+              <Text
+                style={[
+                  styles.ButtonTextBig,
+                  { fontSize: 80, alignSelf: "center", marginTop: 30 },
+                ]}
+              >
+                {data.metric}
+              </Text>
+            )}
+          </View>
+        </Card>
+      )}
+    </View>
   );
 }
 
