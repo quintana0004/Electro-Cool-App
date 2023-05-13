@@ -102,13 +102,12 @@ function CarList({
         <ActivityIndicator size={100} color={Colors.brightYellow} />
       </View>
     );
-  console.log("isError", isError);
+
   if (isError)
     return (
       <View
         style={{
           alignSelf: "center",
-          bottom: 300,
         }}
       >
         <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
