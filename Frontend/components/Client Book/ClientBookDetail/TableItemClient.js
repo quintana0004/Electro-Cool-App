@@ -32,6 +32,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
               size={45}
               label={Array.from(firstName)[0] + Array.from(lastName)[0]}
               style={styles.circle}
+              color="black"
             />
             <View style={styles.nameRec}>
               <Text style={styles.boldWhite}>
@@ -149,14 +150,14 @@ const styles = StyleSheet.create({
     height: 35,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 15,
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.darkGreen,
     justifyContent: "space-evenly",
     marginRight: 5,
   },
   boldWhite: {
     fontWeight: "500",
     fontSize: 12,
-    color: Colors.white,
+    color: Colors.black,
     marginLeft: 60,
   },
   group1: {
