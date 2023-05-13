@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Modal } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetTotalAmountPendingToday } from "../../api/metrics.api";
@@ -6,8 +6,9 @@ import DashboardCardInvoice from "./DashboardCardInvoice";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
-
-function DashboardTotalAmountPending() {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
+function DashboardTotalAmountPending({}) {
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
   useEffect(() => {
@@ -25,10 +26,28 @@ function DashboardTotalAmountPending() {
     const response = await httpGetTotalAmountPendingToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <View>
-      {isLoading || (
+      {isLoading ? (
+        <Modal visible={isLoading} animationType="fade">
+          <LoadingOverlay />
+        </Modal>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+
+            backgroundColor: "#fff",
+          }}
+        >
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
+        </View>
+      ) : (
         <DashboardCardInvoice
           Title={"Total Amount in Pending Today"}
           ImageIcon={Figures.totalAmountPending}

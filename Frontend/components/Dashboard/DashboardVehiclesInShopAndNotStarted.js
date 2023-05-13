@@ -3,13 +3,15 @@ import {
   httpGetVehiclesInShop,
   httpGetVehiclesNotStarted,
 } from "../../api/metrics.api";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Modal } from "react-native";
 import { Card } from "react-native-paper";
 import Figures from "../../constants/figures/Figures";
 import { useEffect } from "react";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
-
-function DashboardVehiclesInShopAndNotStarted() {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import DashboardErrorOverlay from "./DashboardErrorOverlay";
+const hideModal = () => setModalVisible(false);
+function DashboardVehiclesInShopAndNotStarted({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
   );
@@ -34,10 +36,27 @@ function DashboardVehiclesInShopAndNotStarted() {
       notStarted: vehiclesNotStartedResponse.data.metric,
     };
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
     <View>
-      {isLoading || (
+      {isLoading ? (
+        <Modal visible={isLoading} animationType="fade">
+          <LoadingOverlay />
+        </Modal>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+            backgroundColor: "#fff",
+          }}
+        >
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
+        </View>
+      ) : (
         <>
           <Card style={styles.ButtonSmall}>
             <Card.Cover
