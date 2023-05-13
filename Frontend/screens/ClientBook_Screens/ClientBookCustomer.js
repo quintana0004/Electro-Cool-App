@@ -14,8 +14,6 @@ import {
 } from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import FilterBanner from "../../components/UI/FilterBanner";
-import { useVehicleInfoStore } from "../../Store/JobOrderStore";
-
 
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
