@@ -192,7 +192,6 @@ function ProfilePage({}) {
   async function handleProfileSubmission() {
     //Verify that personal user information is not being
     if (disableInputs === false) {
-      console.log("ENTERED HERE");
       return;
     }
 

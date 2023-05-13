@@ -1,14 +1,15 @@
-import {View} from "react-native";
-import {useQuery} from "@tanstack/react-query";
+import { View, Modal } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
-import {httpGetNewVehiclesReceivedToday} from "../../api/metrics.api";
-import {useJobOrderStore} from "../../Store/JobOrderStore";
-import {useEffect} from "react";
+import { httpGetNewVehiclesReceivedToday } from "../../api/metrics.api";
+import { useJobOrderStore } from "../../Store/JobOrderStore";
+import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
-
-function DashboardNewVehiclesReceived() {
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
+function DashboardNewVehiclesReceived({}) {
   const reloadJobOrderList = useJobOrderStore(
-      (state) => state.reloadJobOrderList
+    (state) => state.reloadJobOrderList
   );
 
   useEffect(() => {
@@ -26,20 +27,38 @@ function DashboardNewVehiclesReceived() {
     const response = await httpGetNewVehiclesReceivedToday();
     return response.data;
   }
-
+  if (isError === true && isLoading === true) {
+    isLoading = false;
+  }
   return (
-      <View>
-        {isLoading || (
-            <DashboardCard
-                Title={"New Vehicles Received Today"}
-                ImageIcon={Figures.NewIconDashboard}
-                HeightIcon={52}
-                WidthIcon={50}
-                CountFontSize={55}
-                CountToDisplay={data.metric}
-            />
-        )}
-      </View>
+    <View>
+      {isLoading ? (
+        <Modal visible={isLoading} animationType="fade">
+          <LoadingOverlay />
+        </Modal>
+      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <View
+          style={{
+            zIndex: 10,
+            margin: 0,
+            position: "relative",
+
+            backgroundColor: "#fff",
+          }}
+        >
+          <DashboardErrorOverlay message={"Error"} onConfirm={refetch} />
+        </View>
+      ) : (
+        <DashboardCard
+          Title={"New Vehicles Received Today"}
+          ImageIcon={Figures.NewIconDashboard}
+          HeightIcon={52}
+          WidthIcon={50}
+          CountFontSize={55}
+          CountToDisplay={data.metric}
+        />
+      )}
+    </View>
   );
 }
 

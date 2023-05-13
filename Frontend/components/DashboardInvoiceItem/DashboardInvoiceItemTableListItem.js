@@ -1,10 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import { MaskedText } from "react-native-mask-text";
 import Colors from "../../constants/Colors/Colors";
-import InvoiceDetailSelect from "../InvoiceDetail/InvoiceDetailSelect";
 
 function DashboardInvoiceItemTableListItem({ invoiceItemInfo }) {
-  console.log("INVOICE INFORMATION ITEM: ", invoiceItemInfo);
   const formattedTotalAmount =
     invoiceItemInfo.unitPrice * invoiceItemInfo.quantity * 100;
   const formattedPrice = (invoiceItemInfo.unitPrice * 100)
@@ -14,7 +12,7 @@ function DashboardInvoiceItemTableListItem({ invoiceItemInfo }) {
   return (
     <View style={styles.container}>
       <View style={styles.descContainer}>
-        <View>
+        <View style={{ overflow: "scroll", width: 105 }}>
           <Text style={styles.descText}>{invoiceItemInfo.description}</Text>
         </View>
         <View style={styles.warrantyContainer}>

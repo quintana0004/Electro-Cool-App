@@ -18,6 +18,7 @@ function DashboardInvoiceItemModal({
   const [clientInfo, setClientInfo] = useState(null);
   const [carInfo, setCarInfo] = useState(null);
   const [invoiceItems, setInvoiceItems] = useState([]);
+  const hideModal = () => setModalVisible(false);
 
   const { isLoading, isError, error } = useQuery({
     queryKey: ["DashboardInvoiceItemsData", invoiceId],
@@ -44,7 +45,7 @@ function DashboardInvoiceItemModal({
       <Modal
         visible={!isLoading && modalVisible}
         animationType="fade"
-        transparent={true}
+        onDismiss={hideModal}
       >
         <Card style={[styles.modalContainer]}>
           <View style={styles.headerContainer}>

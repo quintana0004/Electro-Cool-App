@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
   KeyboardAvoidingView,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { MaskedTextInput } from "react-native-mask-text";
 import Colors from "../../constants/Colors/Colors";
@@ -32,8 +32,7 @@ function AmountInput({ onChange, value, isEditable, inputContainerStyles }) {
 
   function convertToDecimal(num) {
     let str = num.toString();
-    let result = str.slice(0, -2) + "." + str.slice(-2);
-    return result;
+    return str.slice(0, -2) + "." + str.slice(-2);
   }
 
   return (

@@ -26,9 +26,7 @@ export const useTaskStore = create((set) => ({
   addTask: (taskItem) =>
     set(
       produce((draftState) => {
-        console.log("DATA STORE: ", taskItem);
         draftState.tasks.push(taskItem);
-        console.log("DATA DRAFT: ", draftState.tasks);
       })
     ),
   deleteTasks: (taskID) =>

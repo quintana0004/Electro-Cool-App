@@ -34,8 +34,6 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import { StackActions } from "@react-navigation/native";
 
 function InvoiceDetail({ route, navigation }) {
-  const { invoiceId = null } = route.params || {};
-
   // --- Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
@@ -50,6 +48,9 @@ function InvoiceDetail({ route, navigation }) {
       email: state.email,
     };
   });
+  const setCustomerInfo = useCustomerInfoStore(
+    (state) => state.setCustomerInfo
+  );
   const car = useVehicleInfoStore((state) => {
     return {
       id: state.id,
@@ -65,11 +66,16 @@ function InvoiceDetail({ route, navigation }) {
       customerId: state.customerId,
     };
   });
+  const setVehicleInformation = useVehicleInfoStore(
+    (state) => state.setVehicleInformation
+  );
+  const invoiceId = useInvoiceStore((state) => state.id);
   const setInvoice = useInvoiceStore((state) => state.setInvoice);
   const toggleReloadInvoiceList = useInvoiceStore(
     (state) => state.toggleReloadInvoiceList
   );
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
+  const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
   const clientSelectedDeposits = useDepositStore(
     (state) => state.clientSelectedDeposits
   );
@@ -86,6 +92,7 @@ function InvoiceDetail({ route, navigation }) {
   const [carInfo, setCarInfo] = useState(car);
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [invoiceStatus, setInvoiceStatus] = useState("");
+  const [invoiceAmountPaid, setInvoiceAmountPaid] = useState(0);
   const [isInvoiceEditable, setIsInvoiceEditable] = useState(true);
 
   // --- Calculated Variables
@@ -100,18 +107,14 @@ function InvoiceDetail({ route, navigation }) {
   }, [invoiceItems]);
 
   const amountPaid = useMemo(() => {
-    let amount = 0;
+    let amount = invoiceAmountPaid;
 
     for (let deposit of clientSelectedDeposits) {
       amount += Number(deposit.amountTotal);
     }
 
-    for (let deposit of serverSelectedDeposits) {
-      amount += Number(deposit.amountTotal);
-    }
-
     return amount * 100;
-  }, [clientSelectedDeposits, serverSelectedDeposits]);
+  }, [clientSelectedDeposits, serverSelectedDeposits, invoiceAmountPaid]);
 
   const amountDue = useMemo(() => {
     return totalAmount - amountPaid;
@@ -128,7 +131,7 @@ function InvoiceDetail({ route, navigation }) {
     return "Invoice" + (invoiceId ? ` #${invoiceId}` : "");
   }
 
-  function navigateToPayment() {
+  function setStoreInformation() {
     const invoiceInfo = {
       id: invoiceId,
       status: invoiceStatus,
@@ -142,6 +145,31 @@ function InvoiceDetail({ route, navigation }) {
     };
     setInvoice(invoiceInfo);
 
+    setCustomerInfo(
+      clientInfo.id,
+      clientInfo.firstName,
+      clientInfo.lastName,
+      clientInfo.phone,
+      clientInfo.email
+    );
+
+    setVehicleInformation(
+      carInfo.id,
+      carInfo.brand,
+      carInfo.licensePlate,
+      carInfo.model,
+      carInfo.year,
+      carInfo.mileage,
+      carInfo.color,
+      carInfo.vinNumber,
+      carInfo.carHasItems,
+      carInfo.carItemsDescription,
+      carInfo.customerId
+    );
+  }
+
+  function navigateToPayment() {
+    setStoreInformation();
     const pageAction = StackActions.push("InvoicePayment");
     navigation.dispatch(pageAction);
   }
@@ -153,6 +181,7 @@ function InvoiceDetail({ route, navigation }) {
 
   function navigateCancel() {
     resetSelectedDeposits();
+    resetInvoice();
     const pageAction = StackActions.popToTop();
     navigation.dispatch(pageAction);
   }
@@ -189,6 +218,7 @@ function InvoiceDetail({ route, navigation }) {
     }));
     setInvoiceItems(items);
     setInvoiceStatus(data.status);
+    setInvoiceAmountPaid(data.amountPaid);
     setIsInvoiceEditable(data.status !== "Paid");
   }
 
@@ -294,19 +324,27 @@ function InvoiceDetail({ route, navigation }) {
                 <CarCard car={carInfo} />
               </View>
               <View style={styles.buttonGroup}>
-                <InvoiceDetailAddItem onPress={onAddItem} />
-                <InvoiceDetailSelectDeposit invoiceId={invoiceId} />
+                <InvoiceDetailAddItem
+                  onPress={onAddItem}
+                  isInvoiceEditable={isInvoiceEditable}
+                />
+                <InvoiceDetailSelectDeposit
+                  invoiceId={invoiceId}
+                  isInvoiceEditable={isInvoiceEditable}
+                />
               </View>
               <InvoiceDetailTableHeader />
               <InvoiceDetailTableList
                 invoiceItems={invoiceItems}
                 setInvoiceItems={setInvoiceItems}
+                isInvoiceEditable={isInvoiceEditable}
               />
             </View>
             <View style={styles.invoiceSummary}>
               <ImageBackground
                 source={Figures.InvoiceSummaryImage}
                 style={styles.imageBackgroundContainer}
+                resizeMode="stretch"
               >
                 <View>
                   <Text style={[styles.amountsText, styles.totalAmountText]}>
@@ -428,7 +466,6 @@ const styles = StyleSheet.create({
   imageBackgroundContainer: {
     height: 150,
     width: 500,
-    resizeMode: "contain",
     flexDirection: "row",
     justifyContent: "center",
     padding: 10,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Appbar } from "react-native-paper";
 
 import Colors from "../../constants/Colors/Colors";
@@ -8,10 +8,14 @@ import CBToggleButtons from "../../components/Client Book/ClientBook CBI/ClientB
 import CarList from "../../components/Client Book/ClientBook CBI/CarItem/TableListCarCB";
 import CustomerItemCB from "../../components/Client Book/ClientBook CBI/CustomerItem/CustomerItemClienBook";
 import InvoiceListCB from "../../components/Client Book/ClientBook CBI/InvoiceItem/InvoiceListClientBook";
-import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
+import {
+  CBCustomerInfoStore,
+  useVehicleInfoStore,
+} from "../../Store/JobOrderStore";
 import { StackActions } from "@react-navigation/native";
 import FilterBanner from "../../components/UI/FilterBanner";
 import { useVehicleInfoStore } from "../../Store/JobOrderStore";
+
 
 function ClientBookCustomer({ navigation }) {
   const client = CBCustomerInfoStore((state) => {
@@ -28,7 +32,7 @@ function ClientBookCustomer({ navigation }) {
     (state) => state.resetVehicleInformation
   );
 
-  const cutomerId = client.id;
+  const customerId = client.id;
   const [searchTerm, setSearchTerm] = useState("");
   const [searchIcon, setSearchIcon] = useState(true);
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
@@ -43,7 +47,7 @@ function ClientBookCustomer({ navigation }) {
     Paid: false,
     Pending: false,
     Canceled: false,
-    InDraft: false,
+    "In Draft": false,
   });
 
   function updateActiveCategory(category) {
@@ -63,7 +67,7 @@ function ClientBookCustomer({ navigation }) {
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
           searchTerm={searchTerm}
-          customerId={cutomerId}
+          customerId={customerId}
           setSearchIcon={setSearchIcon}
         />
       );
@@ -72,7 +76,7 @@ function ClientBookCustomer({ navigation }) {
         <InvoiceListCB
           searchLoading={searchLoading}
           setSearchLoading={setSearchLoading}
-          customerId={cutomerId}
+          customerId={customerId}
           filters={filters}
         />
       );
@@ -121,7 +125,7 @@ function ClientBookCustomer({ navigation }) {
         <View
           style={{ justifyContent: "flex-end", flexDirection: "row", flex: 1 }}
         >
-          {activeCategory == "Vehicles" && searchIcon && (
+          {activeCategory === "Vehicles" && searchIcon && (
             <Appbar.Action
               icon="magnify"
               onPress={() => {
@@ -130,7 +134,7 @@ function ClientBookCustomer({ navigation }) {
               }}
             />
           )}
-          {activeCategory == "Invoices" && (
+          {activeCategory === "Invoices" && (
             <Appbar.Action
               icon="filter"
               onPress={() => {

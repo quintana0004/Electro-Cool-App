@@ -40,7 +40,6 @@ import { useCalendarStore } from "../../Store/calendarStore";
 import { Calendar, CalendarUtils } from "react-native-calendars";
 
 function cTaskItem(itemData) {
-  //console.log("ITEAM DATA: ", itemData);
   return (
     <TableItemCTasks
       id={itemData.item.id}
@@ -129,40 +128,26 @@ function CreateTask() {
       text: text,
       dueDate: new Date(parsedDueDate),
     };
-    console.log("TASK DATA: ", task);
 
-    //taskData.push(task);
-    //setTaskData([...taskData]);
     addTask(task);
-    console.log(tasks);
   }
-
-  // async function popAllTasks() {
-  //   for (const items in taskData) {
-  //   console.log(taskData[items]);
-  //     taskData.pop();
-  //   }
-  // }
 
   async function pushTask() {
     try {
       for (const items in tasks) {
-        console.log(tasks[items]);
         const beans = await httpCreateTask(tasks[items]);
-        console.log(beans);
         showSuccessMessage();
         setDialogVisible1(false);
         setDialogVisible2(true);
         clearAllTasks();
       }
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }
 
   function showSuccessMessage() {
-    ToastAndroid.show("Saved Successfully!", ToastAndroid.SHORT);
+    ToastAndroid.show("Task(s) created Successfully!", ToastAndroid.SHORT);
   }
 
   function showFailedMessage() {
@@ -199,8 +184,9 @@ function CreateTask() {
 
   const marked = useMemo(() => {
     return {
-      [getDate(0)]: {
+      [getDate(-1)]: {
         marked: true,
+        dotColor: Colors.darkGreen,
       },
       [selected]: {
         selected: true,
@@ -342,8 +328,7 @@ function CreateTask() {
             </Dialog.Title>
             <Dialog.Content>
               <Text style={styles.textAlert}>
-                The tasks were added for the employees to see! You can now
-                proceed to the home page.
+                The tasks were added! You can now proceed to the home page.
               </Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
@@ -378,8 +363,11 @@ function CreateTask() {
                 current={Date()}
                 style={styles.calendar}
                 onDayPress={onDayPress}
-
-                // markedDates={marked}
+                markedDates={marked}
+                theme={{
+                  todayTextColor: Colors.darkBlack,
+                  arrowColor: Colors.darkGreen,
+                }}
               />
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>

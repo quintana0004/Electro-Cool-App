@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, View } from "react-native";
+import { Alert, Dimensions, FlatList, View } from "react-native";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { httpGetAllClients } from "../../../api/clients.api";
@@ -97,7 +97,6 @@ function ExistingClientTableList({
   }
 
   if (isError) {
-    console.log("Error Fetching Existing Clients: ", error);
     Alert.alert(
       "Error",
       "There was an error fetching existing clients. Please try again later."

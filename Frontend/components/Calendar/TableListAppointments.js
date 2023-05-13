@@ -7,10 +7,10 @@ import { useCalendarStore } from "../../Store/calendarStore";
 import { useQuery } from "@tanstack/react-query";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../../constants/Colors/Colors";
-import ErrorOverlayAppointment from "../UI/ErrorOverlayAppointment";
 import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
 
-function TableListAppointments({ searchTerm }) {
+function TableListAppointments() {
   const [errorMessage, setErrorMessage] = useState("");
   const todaysDate = new Date();
   const minDate = new Date(
@@ -25,13 +25,12 @@ function TableListAppointments({ searchTerm }) {
   );
   const minDate1 = minDate.toISOString();
   const maxDate1 = maxDate.toISOString();
-  const [modalVisible, setModalVisible] = useState(false);
 
   const reloadCalendarList = useCalendarStore(
     (state) => state.reloadCalendarList
   );
 
-  const { isLoading, data, isError, error } = useQuery({
+  const { isLoading, data, isError } = useQuery({
     queryKey: ["CalendarAppointmentsData", reloadCalendarList],
     queryFn: getAllAppointments,
     enabled: true,
@@ -40,14 +39,8 @@ function TableListAppointments({ searchTerm }) {
   async function getAllAppointments() {
     setErrorMessage("Error loading Appointments. Please try again later.");
 
-    //const response = await httpGetAllAppointments(minDate.toJSON());
+    const response = await httpGetAllAppointments(minDate.toJSON());
     const responseData = response.data;
-
-    if (responseData && responseData.length === 0) {
-      setModalVisible(true);
-    } else {
-      setModalVisible(false);
-    }
 
     return responseData;
   }
@@ -57,14 +50,11 @@ function TableListAppointments({ searchTerm }) {
   if (isError) {
     return (
       <View style={{ paddingVertical: 370 }}>
-        <ErrorOverlayAppointment
-          message={errorMessage}
-          onConfirm={errorHandler}
-        />
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
       </View>
     );
   }
-  if (true) {
+  if (isLoading) {
     return (
       <View style={{ paddingVertical: 370 }}>
         <LoadingOverlay />
@@ -136,11 +126,9 @@ function TableListAppointments({ searchTerm }) {
           maxDate={maxDate1}
           selected={minDate1}
           futureScrollRange={3}
-          pastScrollRange={3}
+          pastScrollRange={1}
           showOnlySelectedDayItems={true}
           theme={{
-            backgroundColor: Colors.white,
-            calendarBackground: Colors.white,
             selectedDayBackgroundColor: Colors.brightGreen,
             agendaDayTextColor: Colors.black,
             agendaDayNumColor: Colors.black,
@@ -159,15 +147,7 @@ function TableListAppointments({ searchTerm }) {
 const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
-    height: 850,
     width: Dimensions.get("screen").width,
-  },
-  modalContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
   },
 });
 

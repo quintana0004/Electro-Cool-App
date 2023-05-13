@@ -27,6 +27,10 @@ export const useInvoiceStore = create((set) => ({
       invoiceItems: invoice.invoiceItems,
       depositIds: invoice.depositIds,
     })),
+  setInvoiceId: (id) =>
+    set((state) => ({
+      id: id,
+    })),
   resetInvoice: () =>
     set((state) => ({
       id: "",
