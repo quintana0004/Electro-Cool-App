@@ -1,13 +1,6 @@
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  ToastAndroid,
-  View,
-} from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { StackActions } from "@react-navigation/native";
-import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 import { Appbar } from "react-native-paper";
 import * as Print from "expo-print";
 
@@ -21,6 +14,7 @@ import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 import SuccessDialog from "../../components/UI/SuccessDialog";
+import { useDepositStore } from "../../Store/depositStore";
 
 function InvoicePayment({ navigation }) {
   const invoiceId = useInvoiceStore((state) => state.id);
@@ -36,6 +30,10 @@ function InvoicePayment({ navigation }) {
     (state) => state.toggleReloadInvoiceList
   );
   const setInvoiceId = useInvoiceStore((state) => state.setInvoiceId);
+  const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
+  const resetSelectedDeposits = useDepositStore(
+    (state) => state.resetSelectedDeposits
+  );
   const firstName = useCustomerInfoStore((state) => state.firstName);
   const lastName = useCustomerInfoStore((state) => state.lastName);
 
@@ -43,6 +41,8 @@ function InvoicePayment({ navigation }) {
   const [amountToPay, setAmountToPay] = useState(0);
   const [isInvoiceEditable, setIsInvoiceEditable] = useState(status !== "Paid");
   const [successDialogVisible, setSuccessDialogVisible] = useState(false);
+
+  const pageTitle = !!invoiceId ? `#${invoiceId}` : "";
 
   async function handlePayment() {
     const amountDue = amountTotal - amountPaid - amountToPay;
@@ -72,14 +72,12 @@ function InvoicePayment({ navigation }) {
       );
     }
 
-    console.log("Invoice Response: ", response.data.id);
-
     // After Save refresh invoice list and return to main page
-    toggleReloadInvoiceList();
+    setInvoiceId(response.data.id);
     setSuccessDialogVisible(true);
     setAmountToPay(0);
     setIsInvoiceEditable(status !== "Paid");
-    setInvoiceId(response.data.id);
+    toggleReloadInvoiceList();
     setInvoice(invoiceInfo);
   }
 
@@ -110,6 +108,8 @@ function InvoicePayment({ navigation }) {
   }
 
   function navigateToHome() {
+    resetInvoice();
+    resetSelectedDeposits();
     const pageGoHomeAction = StackActions.popToTop();
     navigation.dispatch(pageGoHomeAction);
   }
@@ -118,9 +118,7 @@ function InvoicePayment({ navigation }) {
     <View>
       <Appbar.Header style={styles.header} mode="center-aligned">
         <Appbar.BackAction onPress={navigateBack} />
-        <Appbar.Content
-          title={`Invoice Payment #${invoiceId}`}
-        ></Appbar.Content>
+        <Appbar.Content title={`Invoice Payment ${pageTitle}`}></Appbar.Content>
         <Appbar.Action
           icon="home"
           iconColor={Colors.black}
@@ -136,7 +134,10 @@ function InvoicePayment({ navigation }) {
             isEditable={isInvoiceEditable}
             inputContainerStyles={styles.amountInput}
           />
-          <Pressable disabled={!isInvoiceEditable} onPress={handlePayment}>
+          <Pressable
+            disabled={!isInvoiceEditable || amountToPay === 0}
+            onPress={handlePayment}
+          >
             <View style={styles.paymentBtn}>
               <Text style={styles.paymentBtnText}>Payment</Text>
             </View>
