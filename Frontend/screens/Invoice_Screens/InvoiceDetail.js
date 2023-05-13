@@ -120,7 +120,6 @@ function InvoiceDetail({ route, navigation }) {
     return totalAmount - amountPaid;
   }, [totalAmount, amountPaid]);
 
-  console.log("Invoice Id: ", invoiceId);
   // --- Data Fetching
   const { isLoading, isError, error } = useQuery({
     queryKey: ["InvoiceDetailData", invoiceId, reloadInvoiceList],
