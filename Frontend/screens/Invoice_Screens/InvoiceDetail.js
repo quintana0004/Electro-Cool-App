@@ -33,11 +33,6 @@ import { useDepositStore } from "../../Store/depositStore";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import { StackActions } from "@react-navigation/native";
 
-// TODO:
-// * Need to fix the select options for the invoice Details Rows
-// * Need to develop the "Share" functionality
-// * Need to develop the QR Code functionality
-
 function InvoiceDetail({ route, navigation }) {
   const { invoiceId = null } = route.params || {};
 

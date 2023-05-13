@@ -12,7 +12,7 @@ import { Appbar } from "react-native-paper";
 import * as Print from "expo-print";
 
 import Colors from "../../constants/Colors/Colors";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useInvoiceStore } from "../../Store/invoiceStore";
 import InvoicePaymentPDF from "../../components/InvoicePayment/InvoicePaymentPDF";
 import { httpUpsertInvoice } from "../../api/invoices.api";
@@ -20,6 +20,7 @@ import AmountInput from "../../components/UI/AmountInput";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { useCustomerInfoStore } from "../../Store/JobOrderStore";
+import SuccessDialog from "../../components/UI/SuccessDialog";
 
 function InvoicePayment({ navigation }) {
   const invoiceId = useInvoiceStore((state) => state.id);
@@ -40,6 +41,7 @@ function InvoicePayment({ navigation }) {
   const [pdfHtmlContent, setPdfHtmlContent] = useState("");
   const [amountToPay, setAmountToPay] = useState(0);
   const [isInvoiceEditable, setIsInvoiceEditable] = useState(status !== "Paid");
+  const [successDialogVisible, setSuccessDialogVisible] = useState(false);
 
   async function handlePayment() {
     const amountDue = amountTotal - amountPaid - amountToPay;
@@ -74,8 +76,7 @@ function InvoicePayment({ navigation }) {
 
     // After Save refresh invoice list and return to main page
     toggleReloadInvoiceList();
-    // TODO: Switch for the success overlay developed in Jessicas branch when she pushes the changes.
-    showSuccessMessage();
+    setSuccessDialogVisible(true);
     setAmountToPay(0);
     setIsInvoiceEditable(status !== "Paid");
     setInvoice(invoiceInfo);
@@ -110,10 +111,6 @@ function InvoicePayment({ navigation }) {
   function navigateToHome() {
     const pageGoHomeAction = StackActions.popToTop();
     navigation.dispatch(pageGoHomeAction);
-  }
-
-  function showSuccessMessage() {
-    ToastAndroid.show("Payment Received Successfully!", ToastAndroid.LONG);
   }
 
   return (
@@ -168,6 +165,15 @@ function InvoicePayment({ navigation }) {
             </View>
           </Pressable>
         </View>
+
+        <SuccessDialog
+          dialogVisible={successDialogVisible}
+          setDialogVisible={setSuccessDialogVisible}
+          headerText={"Invoice Payment has been received."}
+          subHeaderText={
+            "The payment has been applied to the invoice. If the amount was completely paid, the Invoice should transition to be completely paid. If not you can proceed to register payments for this invoice."
+          }
+        />
       </View>
     </View>
   );
