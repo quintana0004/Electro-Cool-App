@@ -34,17 +34,20 @@ function Invoices({ navigation }) {
   );
   const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
   const resetDeposit = useDepositStore((state) => state.resetDeposit);
+  const resetSelectedDeposits = useDepositStore(
+    (state) => state.resetSelectedDeposits
+  );
 
   function navigateToCreateInvoiceFlow() {
     resetInvoice();
     resetDeposit();
+    resetSelectedDeposits();
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("InvoiceDetail");
     navigation.navigate("ExistingClients");
   }
 
   function navigateToCreateDepositFlow() {
-    resetInvoice();
     resetDeposit();
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("DepositDetail");
