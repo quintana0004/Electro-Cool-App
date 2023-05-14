@@ -145,6 +145,51 @@ export const useJobOrderStore = create((set) => ({
     })),
   setReloadJobOrderList: () =>
     set((state) => ({
-      reloadJobOrderList: !state.reloadJobOrderList
-      })),
+      reloadJobOrderList: !state.reloadJobOrderList,
+    })),
+}));
+
+// ClietBook Store
+export const CBCustomerInfoStore = create((set) => ({
+  id: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  email: "",
+  date: "",
+  reloadClientBookList: false,
+  setCBCustomerInfo: (id, firstName, lastName, phone, email, date) =>
+    set((state) => ({
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      date: date,
+    })),
+  resetClientInformation: () =>
+    set((state) => ({
+      id: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      date: "",
+    })),
+  setReloadClientBookList: () =>
+    set((state) => ({
+      reloadClientBookList: !state.reloadClientBookList,
+    })),
+  setReloadClientBookCarList: () =>
+    set((state) => ({
+      reloadClientBookCarList: !state.reloadClientBookCarList,
+    })),
+  setReloadClientBookCarInfo: () =>
+    set((state) => ({
+      reloadClientBookCarInfo: !state.reloadClientBookCarInfo,
+    })),
+  setReloadClientBookInvoice: () =>
+    set((state) => ({
+      reloadClientBookInvoice: !state.reloadClientBookInvoice,
+    })),
 }));

@@ -13,12 +13,41 @@ function titleCase(str: string): string {
 }
 
 function formatPhoneNumber(phoneNumberString: string): string {
-  var cleaned = ("" + phoneNumberString).replace(/\D/g, "");
-  var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return "(" + match[1] + ") " + match[2] + "-" + match[3];
+  //checks if empty, null, or undefined
+  if (phoneNumberString && phoneNumberString.trim() !== "") {
+    var cleaned = phoneNumberString.replace(/\D/g, "");
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+    if (match) {
+      return match[1] + match[2] + match[3];
+    }
   }
-  return "";
+  return "NaPN";
 }
 
-export { titleCase, formatPhoneNumber };
+function formatName(fullName: string): string {
+  if (!fullName) {
+    return "";
+  }
+
+  return fullName
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/(^|[\s.])\S/g, (match: string) => match.toUpperCase())
+    .replace(/[\s.](\S)/g, (match: string) => match.toLowerCase());
+}
+
+function formatLicensePlate(licensePlate: string): string {
+  const validCharacters = /[^A-Za-z0-9]/g;
+  const formattedString = licensePlate
+    .toUpperCase()
+    .replace(validCharacters, "");
+
+  if (formattedString.length === 0) {
+    return "";
+  }
+
+  return formattedString;
+}
+
+export { titleCase, formatPhoneNumber, formatName, formatLicensePlate };

@@ -1,11 +1,18 @@
 import prisma from "../database/prisma";
-import { IJobOrder } from "../types";
+import { ICar, ICustomer, IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
+import { isNumeric } from "../utils/validators.utils";
 
-async function findAllJobOrders(page: number, take: number, searchTerm: string | undefined) {
+async function findAllJobOrders(
+  page: number,
+  take: number,
+  searchTerm: string | undefined
+) {
   try {
     const idSearch =
-      searchTerm != undefined && typeof searchTerm != "string" ? Number(searchTerm) : undefined;
+      searchTerm != undefined && isNumeric(searchTerm)
+        ? Number(searchTerm)
+        : undefined;
     const nameSearch = searchTerm ? searchTerm : undefined;
     const overFetchAmount = take * 2;
     const skipAmount = page * take;
@@ -13,6 +20,9 @@ async function findAllJobOrders(page: number, take: number, searchTerm: string |
     const jobOrders = await prisma.jobOrder.findMany({
       skip: skipAmount,
       take: overFetchAmount,
+      orderBy: {
+        id: "desc",
+      },
       where: {
         OR: [
           {
@@ -22,6 +32,7 @@ async function findAllJobOrders(page: number, take: number, searchTerm: string |
             customer: {
               fullName: {
                 contains: nameSearch,
+                mode: "insensitive",
               },
             },
           },
@@ -83,6 +94,161 @@ async function findJobOrderWithChildsById(id: number) {
     }
 
     return excludeFields(jobOrder, "customerId", "carId");
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllCurrentWorkingVehicles() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "Working",
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllVehiclesInShop() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        OR: [
+          {
+            status: "Working",
+          },
+          {
+            status: "New",
+          },
+        ],
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllVehiclesNotStarted() {
+  try {
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "New",
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllNewVehiclesToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "New",
+        createdDate: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function findAllFinishedVehiclesToday() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const jobOrders = await prisma.jobOrder.findMany({
+      where: {
+        status: "Complete",
+        lastModified: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return jobOrders.length;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function jobOrderTransaction(
+  jobInfo: IJobOrder,
+  customerInfo: ICustomer,
+  carInfo: ICar
+) {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
+
+      const customerCreate = await tx.customer.create({
+        data: {
+          fullName: fullName,
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          addressLine1: customerInfo.addressLine1,
+          addressLine2: customerInfo.addressLine2,
+          state: customerInfo.state,
+          city: customerInfo.city,
+          phone: customerInfo.phone,
+          email: customerInfo.email,
+          companyId: customerInfo.companyId,
+        },
+      });
+
+      const carCreate = await tx.car.create({
+        data: {
+          brand: carInfo.brand,
+          licensePlate: carInfo.licensePlate,
+          model: carInfo.model,
+          year: carInfo.year,
+          mileage: carInfo.mileage,
+          color: carInfo.color,
+          vinNumber: carInfo.vinNumber,
+          carHasItems: carInfo.carHasItems,
+          carItemsDescription: carInfo.carItemsDescription,
+          companyId: carInfo.companyId,
+          customerId: customerCreate.id,
+        },
+      });
+
+      const jobOrderCreate = await tx.jobOrder.create({
+        data: {
+          requestedService: jobInfo.requestedService,
+          serviceDetails: jobInfo.serviceDetails,
+          status: jobInfo.status,
+          jobLoadType: jobInfo.jobLoadType,
+          policySignature: jobInfo.policySignature,
+          carId: carCreate.id,
+          customerId: customerCreate.id,
+          companyId: jobInfo.companyId,
+        },
+      });
+
+      return jobOrderCreate;
+    });
   } catch (error) {
     throw error;
   }
@@ -158,7 +324,13 @@ export {
   findAllJobOrders,
   findJobOrderById,
   findJobOrderWithChildsById,
+  findAllCurrentWorkingVehicles,
+  findAllVehiclesInShop,
+  findAllVehiclesNotStarted,
+  findAllNewVehiclesToday,
+  findAllFinishedVehiclesToday,
   upsertJobOrder,
+  jobOrderTransaction,
   updateJobOrderStatus,
   deleteJobOrder,
 };

@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import SearchBanner from "../components/UI/SearchBanner";
-import TableListClient from "../components/ClientBookDetail/TableListClient";
-// import { useCustomerInfoStore } from "../Store/JobOrderStore";
+import TableListClient from "../components/Client Book/ClientBookDetail/TableListClient";
 
-function ClientBook() {
-  // call the store function
-  //const setClientBook = useCustomerInfoStore((state) => state.setClientBook);
-
+function ClientBook({ navigation }) {
   //Function that will toggle the state of searchBanner
   const [openBannerSearch, setOpenBannerSearch] = useState(false);
 

@@ -1,29 +1,80 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Header from "../components/UI/Header";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import MenuDropDown from "../components/UI/MenuDropDown";
 import Colors from "../constants/Colors/Colors";
+import { Appbar } from "react-native-paper";
+import ToggleBtnSetting from "../components/Setting/ToggleBtnSetting";
+import ProfilePage from "../components/Setting/ProfilePage";
+import TableListSetting from "../components/Setting/TableListSetting";
+import SearchBanner from "../components/UI/SearchBanner";
 
 function Setting({ navigation }) {
+  const [activeCategory, setActiveCategory] = useState("Profile");
+
+  function updateActiveCategory(category) {
+    setActiveCategory(category);
+  }
+
+  //Search Variables
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [openBannerSearch, setOpenBannerSearch] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <Header divideH={8} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.header}>
         <MenuDropDown />
-      </Header>
+
+        <ToggleBtnSetting
+          toggleActiveCategory={updateActiveCategory}
+          activeCategory={activeCategory}
+        />
+        <Appbar.Content></Appbar.Content>
+        {activeCategory === "RBAC" && (
+          <Appbar.Action
+            icon="magnify"
+            onPress={() => {
+              setOpenBannerSearch(!openBannerSearch);
+            }}
+          />
+        )}
+      </Appbar.Header>
+      {activeCategory === "RBAC" && (
+        <SearchBanner
+          visible={openBannerSearch}
+          loading={searchLoading}
+          placeholder={"Search by ID or Name"}
+          setLoading={setSearchLoading}
+          setSearchTerm={setSearchTerm}
+        />
+      )}
       <View style={styles.body}>
-        <Text>Settings Screen!</Text>
+        {activeCategory === "Profile" && <ProfilePage />}
+        {activeCategory === "RBAC" && (
+          <TableListSetting
+            searchLoading={searchLoading}
+            searchTerm={searchTerm}
+            setSearchLoading={setSearchLoading}
+          />
+        )}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
   body: {
     zIndex: -1,
+  },
+  header: {
+    backgroundColor: Colors.darkBlack,
+  },
+  textAlert: {
+    textAlign: "center",
+  },
+  textInputStyle: {
+    backgroundColor: Colors.white,
+    fontSize: 16,
   },
 });
 

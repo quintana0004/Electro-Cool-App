@@ -31,6 +31,7 @@ import { Button, Dialog, Portal, Provider } from "react-native-paper";
 import { httpGetJobOrder, httpUpsertJobOrder } from "../../api/jobOrders.api";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import { useRouterStore } from "../../Store/routerStore";
 
 const ValidationCustomer = Yup.object().shape({
   Description: Yup.string(),
@@ -51,6 +52,7 @@ function RequestedService({ navigation }) {
   const carId = useVehicleInfoStore((state) => state.id);
   const customerId = useCustomerInfoStore((state) => state.id);
   const id = useRequestedServiceStore((state) => state.id);
+  const [refresh, setRefresh] = useState(false);
 
   // Use Effect Hook that get the data
   useEffect(() => {
@@ -74,7 +76,7 @@ function RequestedService({ navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editRequestedService]);
+  }, [editRequestedService, refresh]);
 
   //Use State Hook
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -94,6 +96,12 @@ function RequestedService({ navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(
+    "There are missing required or need to correct information."
+  );
+  const RequestedServiceNextPage = useRouterStore(
+    (state) => state.NewRequestedServiceNextPage
+  );
 
   //funtion for the page navigation
   //? home
@@ -110,7 +118,7 @@ function RequestedService({ navigation }) {
 
   //? next
   function goNextAction() {
-    const pageAction = StackActions.push("CompanyPolicy");
+    const pageAction = StackActions.push(RequestedServiceNextPage);
     navigation.dispatch(pageAction);
   }
 
@@ -120,15 +128,15 @@ function RequestedService({ navigation }) {
     let valueChecked = [];
 
     if (checkedOilChange) {
-      valueChecked.push("OilChange");
+      valueChecked.push("Oil Change");
     }
 
     if (checkedTuneUp) {
-      valueChecked.push("TuneUp");
+      valueChecked.push("Tune Up");
     }
 
     if (checkedBreaks) {
-      valueChecked.push("Breaks");
+      valueChecked.push("Brakes");
     }
 
     if (checkedMotor) {
@@ -136,15 +144,15 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedElectricSystem) {
-      valueChecked.push("ElectricSystem");
+      valueChecked.push("Electric System");
     }
 
     if (checkedCoolingSystem) {
-      valueChecked.push("CoolingSystem");
+      valueChecked.push("Cooling System");
     }
 
     if (checkedSuspencion) {
-      valueChecked.push("Suspencion");
+      valueChecked.push("Suspension");
     }
 
     if (checkedScan) {
@@ -152,42 +160,43 @@ function RequestedService({ navigation }) {
     }
 
     if (checkedAirConditioning) {
-      valueChecked.push("AirConditioning");
+      valueChecked.push("Air Conditioning");
     }
 
-    return valueChecked.join(";");
+    return valueChecked.join(", ");
   }
 
   function CheckedServiceRequest(info) {
-    const val = info.data.requestedService.split(";");
+    const val = info.data.requestedService.split(", ");
     setChecked(info.data.jobLoadType);
 
     val.forEach((value) => {
-      if (value == "OilChange") {
+      console.log(value);
+      if (value == "Oil Change") {
         setCheckedOilChange(true);
       }
-      if (value == "TuneUp") {
+      if (value == "Tune Up") {
         setCheckedTuneUp(true);
       }
-      if (value == "Breaks") {
+      if (value == "Brakes") {
         setCheckedBreaks(true);
       }
       if (value == "Motor") {
         setCheckedMotor(true);
       }
-      if (value == "ElectricSystem") {
+      if (value == "Electric System") {
         setCheckedElectricSystem(true);
       }
-      if (value == "CoolingSystem") {
+      if (value == "Cooling System") {
         setCheckedCoolingSystem(true);
       }
-      if (value == "Suspencion") {
+      if (value == "Suspension") {
         setCheckedSuspencion(true);
       }
       if (value == "Scan") {
         setCheckedScan(true);
       }
-      if (value == "AirConditioning") {
+      if (value == "Air Conditioning") {
         setCheckedAirConditioning(true);
       }
     });
@@ -195,10 +204,15 @@ function RequestedService({ navigation }) {
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
@@ -288,7 +302,22 @@ function RequestedService({ navigation }) {
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => goHomeAction()}
+          onPress={() => {
+            if (pageSelection === "Edit" && editRequestedService) {
+              if (saveData === true) {
+                setMessageDialog(
+                  "Can't continue to next page until save changed data."
+                );
+                setDialogVisible(true);
+              } else {
+                goHomeAction();
+              }
+            }
+
+            if (pageSelection === "Create" && editRequestedService === false) {
+              goHomeAction();
+            }
+          }}
           iconColor={Colors.black}
         />
         {pageSelection === "Create" && (
@@ -323,7 +352,7 @@ function RequestedService({ navigation }) {
                     ref.current.values.Description,
                     "New",
                     checked,
-                    true, 
+                    true,
                     "",
                     ""
                   );
@@ -344,7 +373,9 @@ function RequestedService({ navigation }) {
       </View>
       <Formik
         initialValues={DataRespondFormik()}
-        onSubmit={(values) => console.log("Requested Service Values on Submit:", values)}
+        onSubmit={(values) =>
+          console.log("Requested Service Values on Submit:", values)
+        }
         validationSchema={ValidationCustomer}
         innerRef={ref}
         enableReinitialize={initilizeData}
@@ -672,7 +703,7 @@ function RequestedService({ navigation }) {
                           fontSize: 15,
                         }}
                       >
-                        Especification & Observations
+                        Specifications & Observations
                       </Text>
                       <View>
                         <TextInput
@@ -717,11 +748,9 @@ function RequestedService({ navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
+              <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button
@@ -739,9 +768,6 @@ function RequestedService({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "400",
     color: Colors.black,

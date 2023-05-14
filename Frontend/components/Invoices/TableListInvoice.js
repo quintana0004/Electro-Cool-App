@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Dimensions, FlatList, View } from "react-native";
+import { Alert, Dimensions, FlatList, View } from "react-native";
 import { httpGetAllDeposits } from "../../api/deposits.api";
 import { httpGetAllInvoices } from "../../api/invoices.api";
 
@@ -19,14 +19,23 @@ function TableListInvoice({
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
   const reloadDepositList = useDepositStore((state) => state.reloadDepositList);
 
-  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } = useInfiniteQuery({
-    queryKey: ["InvoicesHomeData", activeCategory, searchTerm, reloadInvoiceList, reloadDepositList],
-    queryFn: getInvoicesHomeScreenData,
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.isLastPage ? undefined : lastPage.data.currentPage + 1;
-    },
-    enabled: true,
-  });
+  const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
+    useInfiniteQuery({
+      queryKey: [
+        "InvoicesHomeData",
+        activeCategory,
+        searchTerm,
+        reloadInvoiceList,
+        reloadDepositList,
+      ],
+      queryFn: getInvoicesHomeScreenData,
+      getNextPageParam: (lastPage) => {
+        return lastPage.data.isLastPage
+          ? undefined
+          : lastPage.data.currentPage + 1;
+      },
+      enabled: true,
+    });
 
   async function getInvoicesHomeScreenData({ pageParam = 0 }) {
     let data = null;
@@ -94,8 +103,10 @@ function TableListInvoice({
   }
 
   if (isError) {
-    console.log("Error Fetching Invoice & Deposit Items: ", error);
-    Alert.alert("Error", "There was an error fetching the invoice & deposit items. Please try again later.");
+    Alert.alert(
+      "Error",
+      "There was an error fetching the invoice & deposit items. Please try again later."
+    );
   }
 
   return (

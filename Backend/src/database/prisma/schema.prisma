@@ -44,6 +44,9 @@ model User {
   username        String    @unique @db.VarChar(255)
   password        String    @unique @db.VarChar(65)
   passwordSalt    String    @db.VarChar(65)
+  temporaryPassword        String?    @db.VarChar(65)
+  temporaryPasswordSalt    String?    @db.VarChar(65)
+  temporaryPasswordExpiration    DateTime?
   accessToken     String?
   refreshToken    String?
   accessState     String    @default("Pending") @db.VarChar(25)
@@ -178,7 +181,7 @@ model Appointment {
   color           String    @db.VarChar(50)
   licensePlate    String    @db.VarChar(255)
   customerName    String    @db.VarChar(255)
-  phone           String    @db.VarChar(10)
+  phone           String    @db.VarChar(15)
   email           String    @db.VarChar(255)
   createdDate     DateTime  @default(now()) @db.Timestamptz(6)
   lastModified    DateTime  @default(now()) @db.Timestamptz(6)

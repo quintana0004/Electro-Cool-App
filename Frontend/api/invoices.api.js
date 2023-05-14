@@ -6,13 +6,22 @@ export async function httpGetAllInvoices(take, page, searchTerm) {
   return response;
 }
 
+export async function httpGetAllPendingInvoices() {
+  return await axios("/invoices/pending");
+}
+
 export async function httpGetInvoice(id) {
   const response = await axios(`/invoices/${id}`);
   return response;
 }
 
+export async function httpGetInvoiceByCustomerId(take, page, customerId) {
+  const queryParams = `?take=${take}&page=${page}&customerId=${customerId}`;
+  const response = await axios("/invoices/customer" + queryParams);
+  return response;
+}
+
 export async function httpUpsertInvoice(invoiceInfo) {
-  
   let responseToReturn = {
     hasError: false,
     data: null,
@@ -22,13 +31,11 @@ export async function httpUpsertInvoice(invoiceInfo) {
   try {
     const response = await axios.post("/invoices", invoiceInfo);
     responseToReturn.data = response.data;
-  }
-  catch (error) {
+  } catch (error) {
     const errorResponse = error.response.data;
     responseToReturn.hasError = true;
     responseToReturn.errorMessage = errorResponse.error.errorMessage;
   }
 
   return responseToReturn;
-
 }

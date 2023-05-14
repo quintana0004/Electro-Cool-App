@@ -25,7 +25,7 @@ function MenuStack() {
         options={{ headerShown: false, animationEnabled: false }}
       />
       <Stack.Screen
-        name="SignUn"
+        name="SignUp"
         component={SignUp}
         options={{ headerShown: false, animationEnabled: false }}
       />

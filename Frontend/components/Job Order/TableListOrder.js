@@ -4,19 +4,20 @@ import TableItemOrder from "./TableItemOrder";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { httpGetAllJobOrders } from "../../api/jobOrders.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
+import LoadingOverlay from "../UI/LoadingOverlay";
+import ErrorOverlay from "../UI/ErrorOverlay";
 
 function jobOrderItem(itemData) {
-
+  const item = itemData.item;
   return (
     <TableItemOrder
-      ID={itemData.item.id}
-      date={itemData.item.createdDate}
-      firstName={itemData.item.customer.firstName}
-      lastName={itemData.item.customer.lastName}
-      status={itemData.item.status}
-      carId={itemData.item.carId}
-      customerId={itemData.item.customerId}
-      requestedId={itemData.item.id}
+      ID={item.id}
+      firstName={item.customer.firstName}
+      lastName={item.customer.lastName}
+      date={item.createdDate}
+      status={item.status}
+      carId={item.carId}
+      customerId={item.customerId}
     />
   );
 }
@@ -32,16 +33,21 @@ function TableListOrder({
     (state) => state.reloadJobOrderList
   );
 
-  const { isLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["JobOrderHomePage", searchTerm, reloadJobOrderList],
-    queryFn: getJobOrderScreenData,
-    getNextPageParam: (lastPage) => {
-      return lastPage.data.isLastPage
-        ? undefined
-        : lastPage.data.currentPage + 1;
-    },
-    enabled: true,
-  });
+  const setReloadJobOrderList = useJobOrderStore(
+    (state) => state.setReloadJobOrderList
+  );
+
+  const { isLoading, data, hasNextPage, fetchNextPage, isError } =
+    useInfiniteQuery({
+      queryKey: ["JobOrderHomePage", searchTerm, reloadJobOrderList],
+      queryFn: getJobOrderScreenData,
+      getNextPageParam: (lastPage) => {
+        return lastPage.data.isLastPage
+          ? undefined
+          : lastPage.data.currentPage + 1;
+      },
+      enabled: true,
+    });
 
   async function getJobOrderScreenData({ pageParam = 0 }) {
     let data = await httpGetAllJobOrders(TAKE, pageParam, searchTerm);
@@ -75,7 +81,10 @@ function TableListOrder({
     let filteredData = tableData;
     if (activeFilters.length > 0) {
       const activeFilterChecker = (data) => {
-        return activeFilters.some((element) => data.status.includes(element));
+        return activeFilters.some(
+          (element) =>
+            data.status.includes(element) || data.jobLoadType.includes(element)
+        );
       };
 
       filteredData = tableData.filter(activeFilterChecker);
@@ -88,6 +97,25 @@ function TableListOrder({
     if (hasNextPage) {
       fetchNextPage();
     }
+  }
+
+  if (isLoading) {
+    return (
+      <View style={{ marginTop: 350 }}>
+        <LoadingOverlay />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={{ marginTop: 150 }}>
+        <ErrorOverlay
+          message={"There was an error on server, try again."}
+          onConfirm={setReloadJobOrderList}
+        />
+      </View>
+    );
   }
 
   return (

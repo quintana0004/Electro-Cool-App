@@ -10,6 +10,8 @@ import ToggleButtons from "../components/Invoices/ToggleButtons";
 import ActionBtn from "../components/UI/ActionBtn";
 import Colors from "../constants/Colors/Colors";
 import { useRouterStore } from "../Store/routerStore";
+import { useInvoiceStore } from "../Store/invoiceStore";
+import { useDepositStore } from "../Store/depositStore";
 
 function Invoices({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,18 +25,30 @@ function Invoices({ navigation }) {
     "In Draft": false,
   });
   const [filterBannerVisibility, setFilterBannerVisibility] = useState(false);
-  
-  // Store For Management of Routers
-  const setExistingClientNextPage = useRouterStore((state) => state.setExistingClientNextPage);
-  const setExistingCarNextPage = useRouterStore((state) => state.setExistingCarNextPage);
+
+  const setExistingClientNextPage = useRouterStore(
+    (state) => state.setExistingClientNextPage
+  );
+  const setExistingCarNextPage = useRouterStore(
+    (state) => state.setExistingCarNextPage
+  );
+  const resetInvoice = useInvoiceStore((state) => state.resetInvoice);
+  const resetDeposit = useDepositStore((state) => state.resetDeposit);
+  const resetSelectedDeposits = useDepositStore(
+    (state) => state.resetSelectedDeposits
+  );
 
   function navigateToCreateInvoiceFlow() {
+    resetInvoice();
+    resetDeposit();
+    resetSelectedDeposits();
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("InvoiceDetail");
     navigation.navigate("ExistingClients");
   }
 
   function navigateToCreateDepositFlow() {
+    resetDeposit();
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("DepositDetail");
     navigation.navigate("ExistingClients");
@@ -71,12 +85,20 @@ function Invoices({ navigation }) {
         setLoading={setSearchLoading}
         setSearchTerm={setSearchTerm}
       />
-      <FilterBanner visible={filterBannerVisibility} filters={filters} updateFilters={setFilters} />
+      <FilterBanner
+        visible={filterBannerVisibility}
+        filters={filters}
+        updateFilters={setFilters}
+      />
 
       <View style={styles.body}>
         <View style={styles.actionButtonGroup}>
-          <ActionBtn onPress={navigateToCreateDepositFlow}>Create Deposit</ActionBtn>
-          <ActionBtn onPress={navigateToCreateInvoiceFlow}>Create Invoice</ActionBtn>
+          <ActionBtn onPress={navigateToCreateDepositFlow}>
+            Create Deposit
+          </ActionBtn>
+          <ActionBtn onPress={navigateToCreateInvoiceFlow}>
+            Create Invoice
+          </ActionBtn>
         </View>
 
         <View>

@@ -17,11 +17,35 @@ import NewCarIcon from "../../assets/images/NewCarIcon.png";
 import NewCarSelectedIcon from "../../assets/images/NewCarSelectedIcon.png";
 import ExistingCarIcon from "../../assets/images/ExistingCarIcon.png";
 import ExistingCarSelectedIcon from "../../assets/images/ExistingCarSelectedIcon.png";
+import UserIcon from "../../assets/images/UserIcon.png";
+import ClientInvoicesIcon from "../../assets/images/ClientInvoicesIcon.png";
+import ClientCarsIcon from "../../assets/images/ClientCarsIcon.png";
+import ClientBookEachCar from "../../assets/images/ClientCarsIcon.png";
 import InvoiceSummaryImage from "../../assets/images/Invoice-Summary.png";
 import Vector from "../../assets/images/Vector.png";
 import VectorWhite from "../../assets/images/VectorWhite.png";
 import AppointmentWhite from "../../assets/images/AppointmentWhite.png";
 import Appointment from "../../assets/images/Appointment.png";
+import AppointmentCardIcon from "../../assets/images/AppointmentCardIcon.png";
+import DateforAppointmentCardIcon from "../../assets/images/DateforAppointmentCardIcon.png";
+import Wheel from "../../assets/images/Wheel.png";
+import NewIconDashboard from "../../assets/images/NewIconDashboard.png";
+import CarsPendingConfirmation from "../../assets/images/CarsPendingConfirmation.png";
+import Vehicle from "../../assets/images/Vehicle.png";
+import MoneyHand from "../../assets/images/MoneyHand.png";
+import totalDraft from "../../assets/images/totalDraft.png";
+import totalAmountPending from "../../assets/images/totalAmountPending.png";
+import totalAmountCancelled from "../../assets/images/totalAmountCancelled.png";
+import VehicleInShop from "../../assets/images/VehicleInShop.png";
+import totalAmountAppointments from "../../assets/images/totalAmountAppointments.png";
+import totalAmountTasks from "../../assets/images/totalAmountTasks.png";
+
+import BackGroundLogIn from "../../assets/images/backgroundLogIn.png";
+import logoCompany from "../../assets/images/LOGO.png";
+import Arrow from "../../assets/images/arrow.png";
+import SignUpLogo from "../../assets/images/SignUpLogo.png";
+import UserRole from "../../assets/images/user-card-id_svgrepo.com.png";
+import User from "../../assets/images/user_svgrepo.com.png";
 
 const Figures = {
   CalendarIcon,
@@ -43,11 +67,34 @@ const Figures = {
   NewCarSelectedIcon,
   ExistingCarIcon,
   ExistingCarSelectedIcon,
-  InvoiceSummaryImage,
   Vector,
   VectorWhite,
   Appointment,
   AppointmentWhite,
+  ClientBookEachCar,
+  UserIcon,
+  ClientInvoicesIcon,
+  ClientCarsIcon,
+  InvoiceSummaryImage,
+  AppointmentCardIcon,
+  DateforAppointmentCardIcon,
+  Wheel,
+  NewIconDashboard,
+  CarsPendingConfirmation,
+  Vehicle,
+  MoneyHand,
+  totalDraft,
+  totalAmountPending,
+  totalAmountCancelled,
+  VehicleInShop,
+  totalAmountAppointments,
+  totalAmountTasks,
+  BackGroundLogIn,
+  logoCompany,
+  Arrow,
+  SignUpLogo,
+  UserRole,
+  User,
 };
 
 export default Figures;

@@ -113,7 +113,7 @@ function CompanyPolicy({ navigation }) {
     try {
       response = await httpUpsertCar(carInfo);
     } catch (error) {
-      console.log("Error at Handle Save Car: ", error);
+      console.log("Error at Handle Save Car: ", error.response.data);
     }
 
     return response;
@@ -172,7 +172,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", 
+          carHasItems: vehicleInformation.carHasItems === "Yes",
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -186,7 +186,7 @@ function CompanyPolicy({ navigation }) {
           mileage: vehicleInformation.mileage,
           color: vehicleInformation.color,
           vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes", 
+          carHasItems: vehicleInformation.carHasItems === "Yes",
           carItemsDescription: vehicleInformation.carItemsDescription,
           customerId: customerInfoResponse.data.id,
         };
@@ -204,9 +204,9 @@ function CompanyPolicy({ navigation }) {
         customerId: customerInfoResponse.data.id,
       };
 
-      response = await handleSaveJobOrder(jobOrderResponse);
+      await handleSaveJobOrder(jobOrderResponse);
     } catch (error) {
-      console.log("Error at Handle Save: ", error);
+      console.log("Error at Handle Save: ", error.response.data);
     }
   }
 
@@ -342,9 +342,6 @@ function CompanyPolicy({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Colors.darkGreen,
-  },
   instruction: {
     fontWeight: "800",
     color: Colors.black,

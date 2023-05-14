@@ -5,10 +5,16 @@ import { useNavigation } from "@react-navigation/native";
 import Colors from "../../constants/Colors/Colors";
 import MenuBtnNav from "./MenuBtnNav";
 import { useRouterStore } from "../../Store/routerStore";
+import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function MenuDropDown() {
   //Navigate to the corresponding pages
   const navigation = useNavigation();
+
+  //Reloads the client book list
+  const setReloadClientBookList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookList
+  );
 
   // Store For Management of Routers
   const setExistingClientNextPage = useRouterStore(
@@ -16,6 +22,10 @@ function MenuDropDown() {
   );
   const setExistingCarNextPage = useRouterStore(
     (state) => state.setExistingCarNextPage
+  );
+  const setNewCarNextPage = useRouterStore((state) => state.setNewCarNextPage);
+  const setRequestedServiceNextPage = useRouterStore(
+    (state) => state.setRequestedServiceNextPage
   );
 
   //Set the toggle btn when closed or open
@@ -53,25 +63,32 @@ function MenuDropDown() {
   function navJobOrder() {
     setExistingClientNextPage("CarSelection");
     setExistingCarNextPage("RequestedService");
-
+    setNewCarNextPage("RequestedService");
+    setRequestedServiceNextPage("CompanyPolicy");
     navigation.navigate("JobOrders");
+
     setToggleBtn(false);
   }
 
   function navInvoices() {
     setExistingClientNextPage("ExistingCars");
     setExistingCarNextPage("InvoiceDetail");
-
     navigation.navigate("Invoices");
     setToggleBtn(false);
   }
 
   function navClientBook() {
+    setReloadClientBookList();
     navigation.navigate("ClientBook");
     setToggleBtn(false);
   }
 
   function navCalendar() {
+    setExistingClientNextPage("CarSelection");
+    setExistingCarNextPage("RequestedService");
+    setNewCarNextPage("RequestedService");
+    setRequestedServiceNextPage("CreateAppointments");
+
     navigation.navigate("Calendar");
     setToggleBtn(false);
   }

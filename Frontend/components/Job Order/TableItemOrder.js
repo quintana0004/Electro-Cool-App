@@ -88,7 +88,7 @@ function TableItemOrder({
           setJobOrder("Edit", true, true, true);
           setCustomerInfo(customerId, "", "", "", "");
           setVehicleInformation(carId, "", "", "", "", "", "", "", "", "", "");
-          setRequestedService(requestedId, "", "", "", "", "", "", "");
+          setRequestedService(ID, "", "", "", "", "", "", "");
         }}
       >
         <View style={{ width: 50, marginLeft: 15 }}>

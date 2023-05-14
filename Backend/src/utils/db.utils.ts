@@ -23,6 +23,22 @@ function sha512(password: string, salt: string) {
   return hashedPassword;
 }
 
+function generateRandomString(length: number) {
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=_+[]{}|;:,.<>/?";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += charset[Math.floor(Math.random() * charset.length)];
+  }
+  return result;
+}
+
+function generateExpirationDate(hours: number) {
+  const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() + hours);
+  return currentDate;
+}
+
 // --- Temporary Dummy Data Inserts ---
 async function createDummyCompany() {
   const existingCompany = await findCompanyByName("Electro Cool");
@@ -50,4 +66,12 @@ async function getDummyCompanyId(): Promise<string> {
   return company?.id ?? "";
 }
 
-export { excludeFields, generateSalt, sha512, createDummyCompany, getDummyCompanyId };
+export {
+  excludeFields,
+  generateSalt,
+  sha512,
+  generateRandomString,
+  generateExpirationDate,
+  createDummyCompany,
+  getDummyCompanyId,
+};

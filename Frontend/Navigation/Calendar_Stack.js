@@ -2,8 +2,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CarSelection from "../screens/BtnSelection/CarSelection";
 import ClientSelection from "../screens/BtnSelection/CustomerSelection";
 import Calendar from "../screens/Calendar";
-import TaskScreen from "../screens/Calendar_Screens/TaskScreen";
 import CalendarSelection from "../screens/BtnSelection/CalendarSelection";
+import VehicleInformation from "../screens/JobOrder_Screens/Vehicle_Information";
+import ClientInformation from "../screens/JobOrder_Screens/Client_Information";
+import ExistingClient from "../screens/SearchExisting/ExistingClient";
+import ExistingCar from "../screens/SearchExisting/ExistingCar";
+import CreateAppointments from "../screens/Calendar_Screens/CreateAppointments";
+import RequestedService from "../screens/JobOrder_Screens/Requested_Service";
+import CreateTask from "../screens/Calendar_Screens/CreateTask";
 const CalendarStack = createStackNavigator();
 
 function CalendarStackOption() {
@@ -12,7 +18,7 @@ function CalendarStackOption() {
       screenOptions={{ cardStyle: { backgroundColor: "white" } }}
     >
       <CalendarStack.Screen
-        name="Calendar"
+        name="CalendarMain"
         component={Calendar}
         options={{ headerShown: false, animationEnabled: false }}
       />
@@ -22,13 +28,18 @@ function CalendarStackOption() {
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen
-        name="TaskScreen"
-        component={TaskScreen}
+        name="CarSelection"
+        component={CarSelection}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen
-        name="CarSelection"
-        component={CarSelection}
+        name="ClientInformation"
+        component={ClientInformation}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="VehicleInformation"
+        component={VehicleInformation}
         options={{ headerShown: false, animationEnabled: false }}
       />
       <CalendarStack.Screen
@@ -36,8 +47,32 @@ function CalendarStackOption() {
         component={CalendarSelection}
         options={{ headerShown: false, animationEnabled: false }}
       />
+      <CalendarStack.Screen
+        name="ExistingClient"
+        component={ExistingClient}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="ExistingCar"
+        component={ExistingCar}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="RequestedService"
+        component={RequestedService}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="CreateAppointments"
+        component={CreateAppointments}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="CreateTask"
+        component={CreateTask}
+        options={{ headerShown: false, animationEnabled: false }}
+      />
     </CalendarStack.Navigator>
-
   );
 }
 

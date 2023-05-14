@@ -1,51 +1,82 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import MenuBtnNav from "../components/UI/MenuBtnNav";
 import MenuDropDown from "../components/UI/MenuDropDown";
-import Header from "../components/UI/Header";
 import Colors from "../constants/Colors/Colors";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { Appbar } from "react-native-paper";
+import DashboardCurrentVehicles from "../components/Dashboard/DashboardCurrentVehicles";
+import DashboardVehiclesInShopAndNotStarted from "../components/Dashboard/DashboardVehiclesInShopAndNotStarted";
+import DashboardNewVehiclesReceived from "../components/Dashboard/DashboardNewVehiclesReceived";
+import DashboardFinishedVehiclesToday from "../components/Dashboard/DashboardFinishedVehiclesToday";
+import DashboardTotalAmountPaid from "../components/Dashboard/DashboardTotalAmountPaid";
+import DashboardTotalAmountDraft from "../components/Dashboard/DashboardTotalAmountDraft";
+import DashboardTotalAmountPending from "../components/Dashboard/DashboardTotalAmountPending";
+import DashboardTotalAmountCancelled from "../components/Dashboard/DashboardTotalAmountCancelled";
+import DashboardCardAppointment from "../components/Dashboard/DashboardCardAppointment";
+import DashboardCardTask from "../components/Dashboard/DashboardCardTask";
+import DashboardCarsPendingConfirmation from "../components/Dashboard/DashboardCarsPendingConfirmation";
 
 function Dashboard({ navigation }) {
+  const currentDate = new Date();
+
   return (
-    <View style={styles.container}>
-      <Header divideH={3.5} divideW={1} colorHeader={Colors.darkBlack}>
+    <View>
+      <Appbar.Header style={styles.HeaderContent} mode="center-aligned">
         <MenuDropDown />
-        <View style={styles.content}>
-          <Text style={styles.greeting}>Welcome back,</Text>
-          <Text style={styles.user}>Code-eX</Text>
+
+        <Appbar.Content
+          title="Welcome Back!"
+          titleStyle={{ color: "white" }}
+        ></Appbar.Content>
+        <Appbar.Content
+          title={currentDate.toDateString()}
+          titleStyle={{ color: "white" }}
+        ></Appbar.Content>
+      </Appbar.Header>
+      <ScrollView
+        horizontal={true}
+        pagingEnabled={true}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={styles.scrollableContainer}>
+          <DashboardCurrentVehicles />
+          <DashboardVehiclesInShopAndNotStarted />
+          <DashboardNewVehiclesReceived />
+          <DashboardFinishedVehiclesToday />
+
+          <DashboardTotalAmountPaid />
+          <DashboardTotalAmountDraft />
+          <DashboardTotalAmountPending />
+          <DashboardTotalAmountCancelled />
         </View>
-      </Header>
-      <View style={styles.body}>
-        <Text>Dashboard Screen!</Text>
+      </ScrollView>
+
+      <View style={styles.scrollableContainer}>
+        <DashboardCarsPendingConfirmation />
+
+        <View>
+          <DashboardCardAppointment />
+          <DashboardCardTask />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollableContainer: {
     flex: 1,
     justifyContent: "center",
+    marginBottom: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
-  greeting: {
-    fontSize: 40,
-    color: Colors.white,
-    fontWeight: "600",
-    textAlign: "right",
-  },
-  user: {
-    fontSize: 40,
-    color: Colors.brightYellow,
-    fontWeight: "600",
-    textAlign: "right",
-  },
-  content: {
-    position: "absolute",
-    top: 90,
-    left: 255,
-  },
-  body: {
-    zIndex: -1,
+
+  HeaderContent: {
+    justifyContent: "center",
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: Colors.black,
+    zIndex: 8,
   },
 });
 
