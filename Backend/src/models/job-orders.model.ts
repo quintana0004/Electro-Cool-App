@@ -200,62 +200,58 @@ async function jobOrderTransaction(
   carInfo: ICar
 ) {
   try {
-    const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
+    return await prisma.$transaction(async (tx) => {
+      const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
 
-    const customerCreate = prisma.customer.create({
-      data: {
-        id: customerInfo?.id ?? -1,
-        fullName: fullName,
-        firstName: customerInfo.firstName,
-        lastName: customerInfo.lastName,
-        addressLine1: customerInfo.addressLine1,
-        addressLine2: customerInfo.addressLine2,
-        state: customerInfo.state,
-        city: customerInfo.city,
-        phone: customerInfo.phone,
-        email: customerInfo.email,
-        companyId: customerInfo.companyId,
-      },
+      const customerCreate = await tx.customer.create({
+        data: {
+          id: customerInfo?.id ?? -1,
+          fullName: fullName,
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          addressLine1: customerInfo.addressLine1,
+          addressLine2: customerInfo.addressLine2,
+          state: customerInfo.state,
+          city: customerInfo.city,
+          phone: customerInfo.phone,
+          email: customerInfo.email,
+          companyId: customerInfo.companyId,
+        },
+      });
+
+      const carCreate = await tx.car.create({
+        data: {
+          id: carInfo?.id ?? -1,
+          brand: carInfo.brand,
+          licensePlate: carInfo.licensePlate,
+          model: carInfo.model,
+          year: carInfo.year,
+          mileage: carInfo.mileage,
+          color: carInfo.color,
+          vinNumber: carInfo.vinNumber,
+          carHasItems: carInfo.carHasItems,
+          carItemsDescription: carInfo.carItemsDescription,
+          companyId: carInfo.companyId,
+          customerId: Number(carInfo.customerId),
+        },
+      });
+
+      const jobOrderCreate = await tx.jobOrder.create({
+        data: {
+          id: jobInfo?.id ? Number(jobInfo.id) : -1,
+          requestedService: jobInfo.requestedService,
+          serviceDetails: jobInfo.serviceDetails,
+          status: jobInfo.status,
+          jobLoadType: jobInfo.jobLoadType,
+          policySignature: jobInfo.policySignature,
+          carId: Number(jobInfo.carId),
+          customerId: Number(jobInfo.customerId),
+          companyId: jobInfo.companyId,
+        },
+      });
+
+      return jobOrderCreate;
     });
-
-    const carCreate = prisma.car.create({
-      data: {
-        id: carInfo?.id ?? -1,
-        brand: carInfo.brand,
-        licensePlate: carInfo.licensePlate,
-        model: carInfo.model,
-        year: carInfo.year,
-        mileage: carInfo.mileage,
-        color: carInfo.color,
-        vinNumber: carInfo.vinNumber,
-        carHasItems: carInfo.carHasItems,
-        carItemsDescription: carInfo.carItemsDescription,
-        companyId: carInfo.companyId,
-        customerId: Number(carInfo.customerId),
-      },
-    });
-
-    const jobOrderCreate = prisma.jobOrder.create({
-      data: {
-        id: jobInfo?.id ? Number(jobInfo.id) : -1,
-        requestedService: jobInfo.requestedService,
-        serviceDetails: jobInfo.serviceDetails,
-        status: jobInfo.status,
-        jobLoadType: jobInfo.jobLoadType,
-        policySignature: jobInfo.policySignature,
-        carId: Number(jobInfo.carId),
-        customerId: Number(jobInfo.customerId),
-        companyId: jobInfo.companyId,
-      },
-    });
-
-    const [customer, car, job] = await prisma.$transaction([
-      customerCreate,
-      carCreate,
-      jobOrderCreate,
-    ]);
-
-    return { customer, car, job };
   } catch (error) {
     throw error;
   }
