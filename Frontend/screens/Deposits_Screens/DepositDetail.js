@@ -22,8 +22,6 @@ import { StackActions } from "@react-navigation/native";
 import PaymentConfirmationDialog from "../../components/UI/PaymentConfirmationDialog";
 
 function DepositDetail({ route, navigation }) {
-  const { depositId = null } = route.params || {};
-
   // Store Variables
   const client = useCustomerInfoStore((state) => {
     return {
@@ -59,6 +57,7 @@ function DepositDetail({ route, navigation }) {
   const setVehicleInformation = useVehicleInfoStore(
     (state) => state.setVehicleInformation
   );
+  const depositId = useDepositStore((state) => state.id);
   const setDeposit = useDepositStore((state) => state.setDeposit);
   const toggleReloadDepositList = useDepositStore(
     (state) => state.toggleReloadDepositList

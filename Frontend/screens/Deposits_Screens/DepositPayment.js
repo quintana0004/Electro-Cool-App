@@ -17,6 +17,7 @@ import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function DepositPayment({ navigation }) {
   const depositId = useDepositStore((state) => state.id);
+  const amount = useDepositStore((state) => state.amount);
   const firstName = useCustomerInfoStore((state) => state.firstName);
   const lastName = useCustomerInfoStore((state) => state.lastName);
 
@@ -69,7 +70,7 @@ function DepositPayment({ navigation }) {
       <View style={styles.container}>
         {/* Footer Container */}
         <View style={styles.footerContainer}>
-          <PaymentInput value={120.64} />
+          <PaymentInput value={amount} />
 
           <View style={styles.paymentBtn}>
             <Text style={styles.paymentBtnText}>Total Paid</Text>

@@ -247,6 +247,7 @@ function CarModal({ activateModal, setSearchIcon }) {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             enabled
+            keyboardVerticalOffset={220}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View
