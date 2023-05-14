@@ -167,35 +167,36 @@ function RequestedService({ navigation }) {
   }
 
   function CheckedServiceRequest(info) {
-    const val = info.data.requestedService.split(";");
+    const val = info.data.requestedService.split(", ");
     setChecked(info.data.jobLoadType);
 
     val.forEach((value) => {
-      if (value == "OilChange") {
+      console.log(value);
+      if (value == "Oil Change") {
         setCheckedOilChange(true);
       }
-      if (value == "TuneUp") {
+      if (value == "Tune Up") {
         setCheckedTuneUp(true);
       }
-      if (value == "Breaks") {
+      if (value == "Brakes") {
         setCheckedBreaks(true);
       }
       if (value == "Motor") {
         setCheckedMotor(true);
       }
-      if (value == "ElectricSystem") {
+      if (value == "Electric System") {
         setCheckedElectricSystem(true);
       }
-      if (value == "CoolingSystem") {
+      if (value == "Cooling System") {
         setCheckedCoolingSystem(true);
       }
-      if (value == "Suspencion") {
+      if (value == "Suspension") {
         setCheckedSuspencion(true);
       }
       if (value == "Scan") {
         setCheckedScan(true);
       }
-      if (value == "AirConditioning") {
+      if (value == "Air Conditioning") {
         setCheckedAirConditioning(true);
       }
     });
