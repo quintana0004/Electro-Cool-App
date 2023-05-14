@@ -7,9 +7,10 @@ const { manifest } = Constants;
 // The base url is "http://10.0.2.2" because in our android simulator
 // we cannot reach "http://localhost" directly.
 // Axios.create({ baseURL: "http://10.0.2.2:8000" }); Old way in case the above doesn't work.
+// baseURL: `http://${manifest.debuggerHost.split(":").shift()}:8000`,
 
 const axios = Axios.create({
-  baseURL: `http://${manifest.debuggerHost.split(":").shift()}:8000`,
+  baseURL: `https://electro-cool-76omc.ondigitalocean.app`,
 });
 
 axios.interceptors.request.use(async (config) => {
