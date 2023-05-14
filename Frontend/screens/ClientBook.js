@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Colors from "../constants/Colors/Colors";
 import { Appbar } from "react-native-paper";
 import MenuDropDown from "../components/UI/MenuDropDown";

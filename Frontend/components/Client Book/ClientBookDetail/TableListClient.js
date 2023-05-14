@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, Text, View } from "react-native";
 import TableHeaderClient from "./TableHeaderClient";
 import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -10,13 +10,14 @@ import { useState } from "react";
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isErrorRefreshLoading, setIsErrorRefreshLoading] = useState(false);
   const reloadClientBookList = CBCustomerInfoStore(
     (state) => state.reloadClientBookList
   );
   const setReloadClientBookList = CBCustomerInfoStore(
     (state) => state.setReloadClientBookList
   );
+
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
       queryKey: ["ClientBookHomePage", searchTerm, reloadClientBookList],
@@ -30,11 +31,13 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     });
 
   async function getClientBookScreenData({ pageParam = 0 }) {
-    setErrorMessage("Error loading Appointments. Please try again later.");
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
+
     if (searchLoading) {
       setSearchLoading(false);
     }
+
+    setIsErrorRefreshLoading(false);
     return data;
   }
 
@@ -68,16 +71,58 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   }
 
   function errorHandler() {
-    setErrorMessage(null);
+    setIsErrorRefreshLoading(true);
     setReloadClientBookList();
   }
-  if (isLoading) {
-    return <LoadingOverlay />;
-  }
+
   if (isError) {
+    if (isErrorRefreshLoading) {
+      setIsErrorRefreshLoading(false);
+    }
+
     return (
       <View style={{}}>
-        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+        <ErrorOverlay
+          message={"Error loading Clients. Please try again later."}
+          onConfirm={errorHandler}
+        />
+      </View>
+    );
+  }
+
+  if (isLoading || isErrorRefreshLoading) {
+    return (
+      <View style={{ height: 800 }}>
+        <LoadingOverlay />
+      </View>
+    );
+  }
+
+  function renderEmptyData() {
+    // If there are no appointments on the day, show this message
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: 600,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 10,
+          }}
+        >
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
+            No Clients Stored.
+          </Text>
+        </View>
       </View>
     );
   }
@@ -96,6 +141,9 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
           renderItem={clientBookItem}
           keyExtractor={(item) => item.id}
           onEndReached={loadMoreData}
+          ListEmptyComponent={() => {
+            return renderEmptyData();
+          }}
         />
       )}
     </View>

@@ -26,12 +26,13 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
       }}
     >
       <View style={styles.content}>
-        <View style={styles.groups}>
+        <View style={styles.group1}>
           <View>
             <Avatar.Text
-              size={65}
+              size={45}
               label={Array.from(firstName)[0] + Array.from(lastName)[0]}
               style={styles.circle}
+              color="black"
             />
             <View style={styles.nameRec}>
               <Text style={styles.boldWhite}>
@@ -61,7 +62,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
             </View>
           </View>
         </View>
-        <View style={styles.groups}>
+        <View style={styles.group2}>
           <View
             style={{
               flexDirection: "row",
@@ -130,12 +131,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   boldText: {
-    fontWeight: "bold",
-    fontSize: 15,
+    fontWeight: "500",
+    fontSize: 12,
   },
   circle: {
     backgroundColor: "#EFE2BF",
-    marginTop: 5,
+    marginTop: 10,
     marginHorizontal: 8,
     borderWidth: 0.5,
     borderColor: "#EFE2BF",
@@ -146,20 +147,26 @@ const styles = StyleSheet.create({
   nameRec: {
     flexDirection: "column",
     marginTop: 15,
-    height: 45,
-    borderTopRightRadius: 15,
+    height: 35,
+    borderTopRightRadius: 10,
     borderBottomRightRadius: 15,
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.darkGreen,
     justifyContent: "space-evenly",
     marginRight: 5,
   },
   boldWhite: {
     fontWeight: "500",
-    fontSize: 18,
-    color: Colors.white,
-    marginLeft: 80,
+    fontSize: 12,
+    color: Colors.black,
+    marginLeft: 60,
   },
-  groups: {
+  group1: {
+    //flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: 250,
+  },
+  group2: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",

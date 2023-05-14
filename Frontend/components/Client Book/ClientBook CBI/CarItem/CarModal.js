@@ -9,7 +9,7 @@ import {
   Platform,
   ToastAndroid,
 } from "react-native";
-import { Appbar } from "react-native-paper";
+import { Appbar, ActivityIndicator } from "react-native-paper";
 import Colors from "../../../../constants/Colors/Colors";
 import { Formik } from "formik";
 import { TextInput, HelperText } from "react-native-paper";
@@ -20,8 +20,8 @@ import {
 } from "../../../../Store/JobOrderStore";
 import { Button, Dialog, Portal } from "react-native-paper";
 import ErrorOverlay from "../../../../components/UI/ErrorOverlay";
-import LoadingOverlay from "../../../../components/UI/LoadingOverlay";
 import { httpGetCar, httpUpsertCar } from "../../../../api/cars.api";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const ValidationCustomer = Yup.object().shape({
   Brand: Yup.string()
@@ -61,50 +61,59 @@ function CarModal({ activateModal, setSearchIcon }) {
   const setReloadClientBookCarList = CBCustomerInfoStore(
     (state) => state.setReloadClientBookCarList
   );
+  const setReloadClientBookCarInfo = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookCarInfo
+  );
+  const reloadClientBookCarInfo = CBCustomerInfoStore(
+    (state) => state.reloadClientBookCarInfo
+  );
 
-  //Use Effect Hook to get the data
-  useEffect(() => {
-    async function handleGetVehicleInfo() {
-      try {
-        const vehicleInfo = await httpGetCar(id);
-        setVehicleData(vehicleInfo);
-      } catch (error) {
-        setErrorMessage("Could not fetch vehicle information.");
-      }
-      setIsFetching(false);
-      setInitializeData(true);
-      setDisableInput(true);
-      setDataFetched(true);
-    }
-    if (!dataFetched) {
-      handleGetVehicleInfo();
-    } else {
-      setDisableInput(false);
-      setIsFetching(false);
-    }
-  }, [dataFetched]);
-  //Other Hooks
-
-  const [dataFetched, setDataFetched] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const ref = useRef(null);
   const [vehicleData, setVehicleData] = useState();
   const [errorMessage, setErrorMessage] = useState("");
-  const [isFetching, setIsFetching] = useState(true);
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
 
-  function errorHandler() {
-    setErrorMessage(null);
+  const { data, isError, error, isFetching } = useInfiniteQuery({
+    queryKey: ["ClientBookCarSelected", reloadClientBookCarInfo],
+    queryFn: getClientBookScreenData,
+    enabled: true,
+  });
+
+  async function getClientBookScreenData() {
+    setErrorMessage("Error loading Car Infomation. Please try again later.");
+    setInitializeData(true);
+    setDisableInput(true);
+    let vehicleInfo = await httpGetCar(id);
+    setVehicleData(vehicleInfo);
+    return data;
   }
 
-  if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+  function errorHandler() {
+    setErrorMessage(null);
+    setReloadClientBookCarInfo();
+  }
+
+  if (isError) {
+    console.log("CB CarModal:", error);
+    return (
+      <View
+        style={{
+          backgroundColor: "white",
+          margin: 30,
+          borderRadius: 20,
+          marginHorizontal: 60,
+        }}
+      >
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
-    return <LoadingOverlay />;
+    return <ActivityIndicator size={"large"} color={Colors.brightYellow} />;
   }
   //Update the data of the Client
   async function handleUpdateCar() {
@@ -124,6 +133,7 @@ function CarModal({ activateModal, setSearchIcon }) {
       showSuccessMessage();
       setReloadClientBookCarList();
     } catch (error) {
+      console.log("ERROR MESSAGE CAR INFO: ", error);
       showFailedMessage();
     }
   }
@@ -187,6 +197,7 @@ function CarModal({ activateModal, setSearchIcon }) {
       handleUpdateCar();
       setSaveData(!saveData);
       setDisableInput(true);
+      activateModal(false);
     } else {
       setDialogVisible(true);
     }
