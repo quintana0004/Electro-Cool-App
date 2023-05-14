@@ -36,7 +36,7 @@ function DepositPayment({ navigation }) {
     const { uri } = await Print.printToFileAsync({ html: pdfHtmlContent });
 
     const newUri =
-      FileSystem.documentDirectory + `Deposit-${firstName}-${lastName}`;
+      FileSystem.documentDirectory + `Deposit-${firstName}-${lastName}.pdf`;
     await FileSystem.copyAsync({
       from: uri,
       to: newUri,
