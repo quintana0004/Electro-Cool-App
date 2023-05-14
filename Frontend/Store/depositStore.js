@@ -15,13 +15,17 @@ export const useDepositStore = create((set) => ({
       amount: amount,
       createdDate: createdDate,
     })),
+  setDepositId: (id) =>
+    set((state) => ({
+      id: id,
+    })),
   setServerSelectedDeposits: (deposits) =>
     set((state) => ({
-      serverSelectedDeposits: deposits
+      serverSelectedDeposits: deposits,
     })),
   setClientSelectedDeposits: (deposits) =>
     set((state) => ({
-      clientSelectedDeposits: deposits
+      clientSelectedDeposits: deposits,
     })),
   toggleReloadDepositList: () =>
     set((state) => ({
@@ -32,11 +36,11 @@ export const useDepositStore = create((set) => ({
       clientSelectedDeposits: [],
       serverSelectedDeposits: [],
     })),
-  resetDeposit: () => 
+  resetDeposit: () =>
     set((state) => ({
       id: "",
       description: "",
       amount: 0,
-      createdDate: ""
+      createdDate: "",
     })),
 }));
