@@ -1,35 +1,36 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { Appbar } from "react-native-paper";
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
+import { Appbar, Button, Checkbox, Dialog, Portal } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
 import {
   useCustomerInfoStore,
+  useJobOrderStore,
   useRequestedServiceStore,
   useVehicleInfoStore,
-  useJobOrderStore,
 } from "../../Store/JobOrderStore";
-import { Checkbox } from "react-native-paper";
 import { StackActions } from "@react-navigation/native";
-import { Button, Dialog, Portal, Provider } from "react-native-paper";
-import { httpUpsertClient } from "../../api/clients.api";
-import { httpUpsertJobOrder } from "../../api/jobOrders.api";
-import { httpUpsertCar } from "../../api/cars.api";
+import { httpCreateJobOrderTransaction } from "../../api/jobOrders.api";
 
 function CompanyPolicy({ navigation }) {
-  //funtion for the page navigation
-  //? home
+  // PAGE NAVIGATION FUNCTIONS
   function goHomeAction() {
     const pageAction = StackActions.popToTop();
     navigation.dispatch(pageAction);
   }
 
-  //? go back
   function goBackAction() {
     const pageAction = StackActions.pop(1);
     navigation.dispatch(pageAction);
   }
 
-  //Values needed for the alert and the checked box
+  // Values needed for the alert and the checked box
   const [checked, setChecked] = useState(false);
   const [visibleErrorDialog, setVisibleErrorDialog] = useState(false);
   const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
@@ -95,119 +96,64 @@ function CompanyPolicy({ navigation }) {
     },
   ];
 
-  async function handleSaveClient(clientInfo) {
-    let response;
-
-    try {
-      response = await httpUpsertClient(clientInfo);
-    } catch (error) {
-      console.log("Error at Handle Save Client: ", error);
-    }
-
-    return response;
-  }
-
-  async function handleSaveCar(carInfo) {
-    let response;
-
-    try {
-      response = await httpUpsertCar(carInfo);
-    } catch (error) {
-      console.log("Error at Handle Save Car: ", error.response.data);
-    }
-
-    return response;
-  }
-
-  async function handleSaveJobOrder(jobOrderInfo) {
-    let response;
-
-    try {
-      response = await httpUpsertJobOrder(jobOrderInfo);
-      setReloadJobOrderList();
-    } catch (error) {
-      console.log("Error at Handle Save Job Order: ", error);
-    }
-
-    return response;
-  }
-
-  // The client, car and job order info could also be variables in Use State not only parameters
   async function handleSave() {
-    let customerInfoResponse;
-    let carInfoResponse;
-    let jobOrderResponse;
-    //Okay, let's get to business
-    //Start to verify that each data has is new or is updated
-    //?Start with Customers Info
-    if (!clientInfo.id) {
-      customerInfoResponse = {
-        firstName: clientInfo.firstName,
-        lastName: clientInfo.lastName,
-        phone: clientInfo.phone,
-        email: clientInfo.email,
-      };
-    } else {
-      customerInfoResponse = {
-        id: clientInfo.id,
-        firstName: clientInfo.firstName,
-        lastName: clientInfo.lastName,
-        phone: clientInfo.phone,
-        email: clientInfo.email,
-      };
+    let customerToCreate = {
+      firstName: clientInfo.firstName,
+      lastName: clientInfo.lastName,
+      phone: clientInfo.phone,
+      email: clientInfo.email,
+    };
+
+    let carToCreate = {
+      brand: vehicleInformation.brand,
+      licensePlate: vehicleInformation.licensePlate,
+      model: vehicleInformation.model,
+      year: vehicleInformation.year,
+      mileage: vehicleInformation.mileage,
+      color: vehicleInformation.color,
+      vinNumber: vehicleInformation.vinNumber,
+      carHasItems: vehicleInformation.carHasItems === "Yes",
+      carItemsDescription: vehicleInformation.carItemsDescription,
+    };
+
+    let jobOrderToCreate = {
+      requestedService: jobOrderInfo.requestedService,
+      serviceDetails: jobOrderInfo.serviceDetails,
+      status: "New",
+      jobLoadType: jobOrderInfo.jobLoadType,
+      policySignature: checked,
+    };
+
+    const response = await httpCreateJobOrderTransaction(
+      customerToCreate,
+      carToCreate,
+      jobOrderToCreate
+    );
+
+    if (response.hasError) {
+      setVisibleConfirmDialog(false);
+      return handleErrorResponse(response.errorMessage);
     }
 
-    try {
-      // Make the call for the API
-      //Take into consideration there are two routes one is the new info and existing info
-      customerInfoResponse = await handleSaveClient(customerInfoResponse);
+    showSuccessMessage();
+    setReloadJobOrderList();
+    setVisibleConfirmDialog(false);
+    goHomeAction();
+  }
 
-      //?When customer passes the value need their ID
-      if (!vehicleInformation.id) {
-        carInfoResponse = {
-          brand: vehicleInformation.brand,
-          licensePlate: vehicleInformation.licensePlate,
-          model: vehicleInformation.model,
-          year: vehicleInformation.year,
-          mileage: vehicleInformation.mileage,
-          color: vehicleInformation.color,
-          vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes",
-          carItemsDescription: vehicleInformation.carItemsDescription,
-          customerId: customerInfoResponse.data.id,
-        };
-      } else {
-        carInfoResponse = {
-          id: vehicleInformation.id,
-          brand: vehicleInformation.brand,
-          licensePlate: vehicleInformation.licensePlate,
-          model: vehicleInformation.model,
-          year: vehicleInformation.year,
-          mileage: vehicleInformation.mileage,
-          color: vehicleInformation.color,
-          vinNumber: vehicleInformation.vinNumber,
-          carHasItems: vehicleInformation.carHasItems === "Yes",
-          carItemsDescription: vehicleInformation.carItemsDescription,
-          customerId: customerInfoResponse.data.id,
-        };
-      }
-      carInfoResponse = await handleSaveCar(carInfoResponse);
-
-      //?When customer and car has been sent then need to create the jobOrder
-      jobOrderResponse = {
-        requestedService: jobOrderInfo.requestedService,
-        serviceDetails: jobOrderInfo.serviceDetails,
-        status: "New",
-        jobLoadType: jobOrderInfo.jobLoadType,
-        policySignature: checked,
-        carId: carInfoResponse.data.id,
-        customerId: customerInfoResponse.data.id,
-      };
-
-      await handleSaveJobOrder(jobOrderResponse);
-    } catch (error) {
-      console.log("Error at Handle Save: ", error.response.data);
+  function handleErrorResponse(errorPayload) {
+    if (errorPayload.errorCode === 500) {
+      return Alert.alert("An Error Has Occurred.", errorPayload.errorMessage);
     }
+
+    return Alert.alert(
+      "Insufficient or Invalid Data Submission Error",
+      errorPayload.errorMessage
+    );
+  }
+
+  function showSuccessMessage() {
+    ToastAndroid.show("Saved Successfully!", ToastAndroid.LONG);
   }
 
   return (
@@ -321,8 +267,6 @@ function CompanyPolicy({ navigation }) {
                 textColor={Colors.darkGreen}
                 onPress={async () => {
                   await handleSave();
-                  setVisibleConfirmDialog(false);
-                  goHomeAction();
                 }}
               >
                 Confirm
