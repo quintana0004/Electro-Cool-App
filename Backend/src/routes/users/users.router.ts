@@ -14,27 +14,23 @@ import {
 
 const router = express.Router();
 
-// router.get(
-//   "/",
-//   authenticateJWTMiddleWare,
-//   verifyAdminPrivilagesMiddleware,
-//   httpGetAllUsers
-// );
-
-router.get("/", httpGetAllUsers);
+router.get(
+  "/",
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+  httpGetAllUsers
+);
 
 router.get("/profile", authenticateJWTMiddleWare, httpGetUserById);
 
 router.post("/profile", authenticateJWTMiddleWare, httpUpdateUserProfile);
 
-// router.post(
-//   "/access",
-//   authenticateJWTMiddleWare,
-//   verifyAdminPrivilagesMiddleware,
-//   httpUpdateUserAccess
-// );
-
-router.post("/access", httpUpdateUserAccess);
+router.post(
+  "/access",
+  authenticateJWTMiddleWare,
+  verifyAdminPrivilagesMiddleware,
+  httpUpdateUserAccess
+);
 
 router.post("/updateState", authenticateJWTMiddleWare, httpUpdateUserState);
 
