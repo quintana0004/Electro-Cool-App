@@ -4,22 +4,32 @@ import {
   findAllCurrentWorkingVehicles,
   findAllJobOrders,
   findJobOrderWithChildsById,
+  jobOrderTransaction,
   updateJobOrderStatus,
   upsertJobOrder,
 } from "../../models/job-orders.model";
-import { IJobOrder } from "../../types";
+import { ICar, ICustomer, IJobOrder } from "../../types";
 import {
+  hasRequiredCarFields,
+  hasRequiredCustomerFields,
   hasRequiredJobOrderFields,
   isValidCarId,
   isValidCompanyId,
   isValidCustomerId,
   isValidJobOrderId,
+  isValidPhoneNumber,
 } from "../../utils/validators.utils";
 import {
   handleBadResponse,
   handleExceptionErrorResponse,
 } from "../../utils/errors.utils";
 import { getDummyCompanyId } from "../../utils/db.utils";
+import {
+  formatLicensePlate,
+  formatName,
+  formatPhoneNumber,
+} from "../../utils/formatters.utils";
+import { isUniqueCar } from "../../models/cars.model";
 
 async function httpGetAllJobOrders(req: Request, res: Response) {
   try {
@@ -116,6 +126,138 @@ async function httpUpsertJobOrder(req: Request, res: Response) {
   }
 }
 
+async function httpJobOrderTransaction(req: Request, res: Response) {
+  try {
+    // Temporary Dummy Id
+    const companyId = await getDummyCompanyId();
+
+    const customerInfo: ICustomer = {
+      id: req.body.id,
+      firstName: formatName(req.body.firstName),
+      lastName: formatName(req.body.lastName),
+      addressLine1: req.body.addressLine1,
+      addressLine2: req.body.addressLine2,
+      state: req.body.state,
+      city: req.body.city,
+      phone: formatPhoneNumber(req.body.phone),
+      email: req.body.email,
+      companyId: companyId,
+    };
+
+    const carInfo: ICar = {
+      id: req.body.id,
+      brand: req.body.brand,
+      licensePlate: formatLicensePlate(req.body.licensePlate),
+      model: req.body.model,
+      year: req.body.year,
+      mileage: req.body.mileage,
+      color: req.body.color,
+      vinNumber: formatLicensePlate(req.body.vinNumber),
+      carHasItems: req.body.carHasItems,
+      carItemsDescription: req.body.carItemsDescription,
+      companyId: companyId,
+      customerId: req.body.customerId,
+    };
+
+    const jobOrderInfo: IJobOrder = {
+      id: req.body.id,
+      requestedService: req.body.requestedService,
+      serviceDetails: req.body.serviceDetails,
+      status: req.body.status,
+      jobLoadType: req.body.jobLoadType,
+      policySignature: req.body.policySignature,
+      carId: req.body.carId,
+      companyId: companyId,
+      customerId: req.body.customerId,
+    };
+
+    const isCompanyIdValid = await isValidCompanyId(customerInfo.companyId);
+    if (!isCompanyIdValid) {
+      return handleBadResponse(
+        400,
+        "The company Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const hasCustomerRequiredFields = hasRequiredCustomerFields(customerInfo);
+    if (!hasCustomerRequiredFields) {
+      return handleBadResponse(
+        400,
+        "Missing required fields to create/update customer. Please provide the following fields: firstName, lastName, addressLine1, city, phone and companyId.",
+        res
+      );
+    }
+
+    const hasCarRequiredFields = hasRequiredCarFields(carInfo);
+    if (!hasCarRequiredFields) {
+      return handleBadResponse(
+        400,
+        "Missing required fields to create/update car. Please provide the following fields: brand, licensePlate, model, year, mileage, color, vinNumber, companyId, customerId. Additionally assure that your numeric ids are in number format.",
+        res
+      );
+    }
+
+    const isCarUnique = await isUniqueCar(
+      carInfo.licensePlate,
+      carInfo.vinNumber,
+      carInfo.id
+    );
+    if (!isCarUnique) {
+      return handleBadResponse(
+        400,
+        "Car does not have a unique license plate and/or vin number.",
+        res
+      );
+    }
+
+    const isPhoneNumberFormatValid = isValidPhoneNumber(customerInfo.phone);
+    if (!isPhoneNumberFormatValid) {
+      return handleBadResponse(
+        400,
+        "The phone number provided is not valid. Please provide a phone number with 10 digits.",
+        res
+      );
+    }
+
+    const hasRequiredFields = hasRequiredJobOrderFields(jobOrderInfo);
+    if (!hasRequiredFields) {
+      return handleBadResponse(
+        400,
+        "Missing required fields to create job order. Please provide the following fields: requestedService, serviceDetails, status, jobLoadType, carId, companyId and customerId.",
+        res
+      );
+    }
+
+    const isCustomerIdValid = await isValidCustomerId(jobOrderInfo.customerId);
+    if (!isCustomerIdValid) {
+      return handleBadResponse(
+        400,
+        "The customer Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const isCarIdValid = await isValidCarId(jobOrderInfo.carId);
+    if (!isCarIdValid) {
+      return handleBadResponse(
+        400,
+        "The car Id provided is invalid or does not exist in the database. Please try again with a valid Id.",
+        res
+      );
+    }
+
+    const upsertedJob = await jobOrderTransaction(
+      jobOrderInfo,
+      customerInfo,
+      carInfo
+    );
+    return res.status(200).json(upsertedJob);
+  } catch (error) {
+    return handleExceptionErrorResponse("job order transaction", error, res);
+  }
+}
+
 async function httpUpdateJobOrderStatus(req: Request, res: Response) {
   try {
     const jobOrderId = req.body.id;
@@ -161,6 +303,7 @@ export {
   httpGetAllJobOrders,
   httpGetJobOrder,
   httpUpsertJobOrder,
+  httpJobOrderTransaction,
   httpUpdateJobOrderStatus,
   httpDeleteJobOrder,
 };
