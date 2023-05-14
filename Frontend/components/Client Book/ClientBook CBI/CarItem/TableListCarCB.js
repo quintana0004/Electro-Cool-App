@@ -1,21 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Pressable,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import CarModal from "./CarModal";
 
 import { httpGetAllOfCustomer } from "../../../../api/cars.api";
 import CarItemCB from "./CarsItemClientBook";
 import { useState } from "react";
-import { Card, Modal, Portal } from "react-native-paper";
+import { Modal, Portal, ActivityIndicator } from "react-native-paper";
 import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
+import ErrorOverlay from "../../../UI/ErrorOverlay";
+import Colors from "../../../../constants/Colors/Colors";
 
 function CarList({
   searchLoading,
@@ -26,23 +20,28 @@ function CarList({
 }) {
   const [VehicleData, setVehicleData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
   const hideModal = () => setModalVisible(false);
   const reloadClientBookCarList = CBCustomerInfoStore(
     (state) => state.reloadClientBookCarList
   );
-
-  const { isLoading, data, hasNextPage, fetchNextPage } = useQuery({
-    queryKey: [
-      "ClientBookHomeData",
-      customerId,
-      searchTerm,
-      reloadClientBookCarList,
-    ],
-    queryFn: getClientBookHomeScreenData,
-    enabled: true,
-  });
+  const setReloadClientBookCarList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookCarList
+  );
+  const { isLoading, data, hasNextPage, fetchNextPage, error, isError } =
+    useQuery({
+      queryKey: [
+        "ClientBookHomeData",
+        customerId,
+        searchTerm,
+        reloadClientBookCarList,
+      ],
+      queryFn: getClientBookHomeScreenData,
+      enabled: true,
+    });
   async function getClientBookHomeScreenData() {
     let data = null;
+    setErrorMessage("Error Occurred while Loading Data.");
     data = await httpGetAllOfCustomer(searchTerm, customerId);
     setVehicleData(data.data);
     if (searchLoading) {
@@ -84,6 +83,58 @@ function CarList({
     setSearchIcon(icon);
   }
 
+  function errorHandler() {
+    setReloadClientBookCarList();
+    setErrorMessage(null);
+  }
+
+  if (isLoading)
+    return (
+      <View style={{ top: 200 }}>
+        <ActivityIndicator size={100} color={Colors.brightYellow} />
+      </View>
+    );
+
+  if (isError)
+    return (
+      <View
+        style={{
+          alignSelf: "center",
+        }}
+      >
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
+
+  function renderEmptyData() {
+    // If there are no appointments on the day, show this message
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: 600,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 10,
+          }}
+        >
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
+            No Cars Stored.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={[modalVisible ? styles.ModalContiner : styles.itemsContainer]}>
       <View style={{ alignItems: "center" }}>
@@ -93,11 +144,20 @@ function CarList({
             renderItem={renderCarTableItem}
             onEndReached={loadMoreData}
             numColumns={2}
+            ListEmptyComponent={() => {
+              return renderEmptyData();
+            }}
           />
         )}
       </View>
       <Portal>
-        <Modal visible={modalVisible} onDismiss={hideModal}>
+        <Modal
+          visible={modalVisible}
+          onDismiss={() => {
+            hideModal();
+            setSearchIcon(true);
+          }}
+        >
           <CarModal
             activateModal={setModalVisible}
             setSearchIcon={SearchIcon}

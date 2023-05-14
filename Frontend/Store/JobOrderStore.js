@@ -157,6 +157,7 @@ export const CBCustomerInfoStore = create((set) => ({
   phone: "",
   email: "",
   date: "",
+  reloadClientBookList: false,
   setCBCustomerInfo: (id, firstName, lastName, phone, email, date) =>
     set((state) => ({
       id: id,
@@ -182,5 +183,13 @@ export const CBCustomerInfoStore = create((set) => ({
   setReloadClientBookCarList: () =>
     set((state) => ({
       reloadClientBookCarList: !state.reloadClientBookCarList,
+    })),
+  setReloadClientBookCarInfo: () =>
+    set((state) => ({
+      reloadClientBookCarInfo: !state.reloadClientBookCarInfo,
+    })),
+  setReloadClientBookInvoice: () =>
+    set((state) => ({
+      reloadClientBookInvoice: !state.reloadClientBookInvoice,
     })),
 }));

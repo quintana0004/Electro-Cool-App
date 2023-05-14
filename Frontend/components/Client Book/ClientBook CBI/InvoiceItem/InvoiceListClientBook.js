@@ -1,9 +1,14 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Alert, Dimensions, FlatList, View } from "react-native";
+import { Dimensions, FlatList, View, Text } from "react-native";
 
 import { httpGetInvoiceByCustomerId } from "../../../../api/invoices.api";
 import TableHeaderCB from "./TableHeaderInvoicesCB";
 import InvoiceItemClientBook from "./InvoiceItemClientBook";
+import { useState } from "react";
+import ErrorOverlay from "../../../UI/ErrorOverlay";
+import LoadingOverlay from "../../../UI/LoadingOverlay";
+import { CBCustomerInfoStore } from "../../../../Store/JobOrderStore";
+import { State } from "react-native-gesture-handler";
 
 function InvoiceListCB({
   searchLoading,
@@ -12,9 +17,17 @@ function InvoiceListCB({
   filters,
 }) {
   const TAKE = 15;
+  const [errorMessage, setErrorMessage] = useState("");
+  const setReloadClientBookInvoice = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookInvoice
+  );
+  const reloadClientBookInvoice = CBCustomerInfoStore(
+    (state) => state.reloadClientBookInvoice
+  );
+
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
-      queryKey: ["InvoicesHomeData", customerId],
+      queryKey: ["InvoicesHomeData", customerId, reloadClientBookInvoice],
       queryFn: getInvoicesHomeScreenData,
       getNextPageParam: (lastPage) => {
         return lastPage.data.isLastPage
@@ -25,6 +38,7 @@ function InvoiceListCB({
     });
 
   async function getInvoicesHomeScreenData({ pageParam = 0 }) {
+    setErrorMessage("Error loading Inovices. Please try again later.");
     let data = await httpGetInvoiceByCustomerId(TAKE, pageParam, customerId);
 
     // After data is returned, stop search loading if it was active
@@ -68,7 +82,10 @@ function InvoiceListCB({
       fetchNextPage();
     }
   }
-
+  function ErrorHandler() {
+    setErrorMessage(null);
+    setReloadClientBookInvoice();
+  }
   function renderTableItem({ item }) {
     const itemInfo = {
       id: item.id,
@@ -82,10 +99,45 @@ function InvoiceListCB({
     return <InvoiceItemClientBook itemData={itemInfo} />;
   }
 
+  if (isLoading) {
+    return (
+      <View style={{ height: 600 }}>
+        <LoadingOverlay />
+      </View>
+    );
+  }
+
   if (isError) {
-    Alert.alert(
-      "Error",
-      "There was an error fetching the invoice & deposit items. Please try again later."
+    console.log("CB Invoice Error:", errorMessage);
+    return <ErrorOverlay message={errorMessage} onConfirm={ErrorHandler} />;
+  }
+
+  function renderEmptyData() {
+    // If there are no appointments on the day, show this message
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: 600,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 20,
+            borderRadius: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 10,
+          }}
+        >
+          <Text style={{ fontSize: 25, textAlign: "center" }}>
+            No Invoice Created.
+          </Text>
+        </View>
+      </View>
     );
   }
 
@@ -98,6 +150,9 @@ function InvoiceListCB({
           renderItem={renderTableItem}
           estimatedItemSize={10}
           onEndReached={loadMoreData}
+          ListEmptyComponent={() => {
+            return renderEmptyData();
+          }}
         />
       )}
     </View>

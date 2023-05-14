@@ -5,10 +5,16 @@ import { useNavigation } from "@react-navigation/native";
 import Colors from "../../constants/Colors/Colors";
 import MenuBtnNav from "./MenuBtnNav";
 import { useRouterStore } from "../../Store/routerStore";
+import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function MenuDropDown() {
   //Navigate to the corresponding pages
   const navigation = useNavigation();
+
+  //Reloads the client book list
+  const setReloadClientBookList = CBCustomerInfoStore(
+    (state) => state.setReloadClientBookList
+  );
 
   // Store For Management of Routers
   const setExistingClientNextPage = useRouterStore(
@@ -72,6 +78,7 @@ function MenuDropDown() {
   }
 
   function navClientBook() {
+    setReloadClientBookList();
     navigation.navigate("ClientBook");
     setToggleBtn(false);
   }
