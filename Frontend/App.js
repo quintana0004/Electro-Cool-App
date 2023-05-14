@@ -8,7 +8,8 @@ import { registerTranslation, enGB } from "react-native-paper-dates";
 import { navigationRef } from "./utils/navigationRef.util";
 
 const queryClient = new QueryClient();
-registerTranslation("en-GB", enGB); //Brayan
+registerTranslation("en-GB", enGB);
+
 export default function App() {
   return (
     <>
