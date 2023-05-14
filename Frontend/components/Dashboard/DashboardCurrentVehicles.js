@@ -1,5 +1,6 @@
-import { View, Modal } from "react-native";
+import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
+import { Modal, Portal } from "react-native-paper";
 import DashboardCard from "./DashboardCard";
 import { httpGetCurrentVehicles } from "../../api/metrics.api";
 import { useJobOrderStore } from "../../Store/JobOrderStore";
@@ -7,6 +8,7 @@ import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 import LoadingOverlay from "../UI/LoadingOverlay";
 import DashboardErrorOverlay from "./DashboardErrorOverlay";
+
 function DashboardCurrentVehicles({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
@@ -33,10 +35,19 @@ function DashboardCurrentVehicles({}) {
   return (
     <View>
       {isLoading ? (
-        <Modal visible={isLoading} animationType="fade">
-          <LoadingOverlay />
-        </Modal>
-      ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
+        <Portal>
+          <Modal
+            visible={isLoading}
+            contentContainerStyle={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+            }}
+          >
+            <LoadingOverlay />
+          </Modal>
+        </Portal>
+      ) : isError ? (
         <View
           style={{
             zIndex: 10,

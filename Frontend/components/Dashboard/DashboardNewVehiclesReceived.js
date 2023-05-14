@@ -1,4 +1,4 @@
-import { View, Modal } from "react-native";
+import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetNewVehiclesReceivedToday } from "../../api/metrics.api";
@@ -6,7 +6,7 @@ import { useJobOrderStore } from "../../Store/JobOrderStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 import LoadingOverlay from "../UI/LoadingOverlay";
-import ErrorOverlay from "../UI/ErrorOverlay";
+import { Portal, Modal } from "react-native-paper";
 function DashboardNewVehiclesReceived({}) {
   const reloadJobOrderList = useJobOrderStore(
     (state) => state.reloadJobOrderList
@@ -33,9 +33,18 @@ function DashboardNewVehiclesReceived({}) {
   return (
     <View>
       {isLoading ? (
-        <Modal visible={isLoading} animationType="fade">
-          <LoadingOverlay />
-        </Modal>
+        <Portal>
+          <Modal
+            visible={isLoading}
+            contentContainerStyle={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+            }}
+          >
+            <LoadingOverlay />
+          </Modal>
+        </Portal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{

@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, Image, Modal } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { Card } from "react-native-paper";
 import Figures from "../../constants/figures/Figures";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetTotalAmountTasksToday } from "../../api/metrics.api";
 import LoadingOverlay from "../UI/LoadingOverlay";
 import DashboardErrorOverlay from "./DashboardErrorOverlay";
+import { Modal, Portal } from "react-native-paper";
 function DashboardCardTask({}) {
   const { isLoading, isError, refetch, data } = useQuery({
     queryKey: ["DashboardTotalTasksToday"],
@@ -23,9 +24,18 @@ function DashboardCardTask({}) {
   return (
     <View>
       {isLoading ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
-        <Modal visible={isLoading} animationType="fade">
-          <LoadingOverlay />
-        </Modal>
+        <Portal>
+          <Modal
+            visible={isLoading}
+            contentContainerStyle={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+            }}
+          >
+            <LoadingOverlay />
+          </Modal>
+        </Portal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{

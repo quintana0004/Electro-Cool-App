@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Modal } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { Card } from "react-native-paper";
 import Figures from "../../constants/figures/Figures";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import { httpGetTotalAmountAppointmentsToday } from "../../api/metrics.api";
 import { useCalendarStore } from "../../Store/calendarStore";
 import { useEffect } from "react";
 import LoadingOverlay from "../UI/LoadingOverlay";
-import ErrorOverlay from "../UI/ErrorOverlay";
+import { Modal, Portal } from "react-native-paper";
 function DashboardCardAppointment({}) {
   const reloadAppointments = useCalendarStore(
     (state) => state.reloadCalendarList
@@ -33,9 +33,18 @@ function DashboardCardAppointment({}) {
   return (
     <View>
       {isLoading ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
-        <Modal visible={isLoading} animationType="fade">
-          <LoadingOverlay />
-        </Modal>
+        <Portal>
+          <Modal
+            visible={isLoading}
+            contentContainerStyle={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+            }}
+          >
+            <LoadingOverlay />
+          </Modal>
+        </Portal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{

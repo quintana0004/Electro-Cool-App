@@ -1,4 +1,4 @@
-import { View, Modal } from "react-native";
+import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import DashboardCard from "./DashboardCard";
 import { httpGetTotalAmountPendingToday } from "../../api/metrics.api";
@@ -7,7 +7,7 @@ import { useInvoiceStore } from "../../Store/invoiceStore";
 import { useEffect } from "react";
 import Figures from "../../constants/figures/Figures";
 import LoadingOverlay from "../UI/LoadingOverlay";
-import ErrorOverlay from "../UI/ErrorOverlay";
+import { Modal, Portal } from "react-native-paper";
 function DashboardTotalAmountPending({}) {
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
 
@@ -32,9 +32,18 @@ function DashboardTotalAmountPending({}) {
   return (
     <View>
       {isLoading ? (
-        <Modal visible={isLoading} animationType="fade">
-          <LoadingOverlay />
-        </Modal>
+        <Portal>
+          <Modal
+            visible={isLoading}
+            contentContainerStyle={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: "white",
+            }}
+          >
+            <LoadingOverlay />
+          </Modal>
+        </Portal>
       ) : isError ? ( //si isLoading es true va hacerle render al overlay y cuando isLoading sea false pues ahi le hace render al component perse.
         <View
           style={{
