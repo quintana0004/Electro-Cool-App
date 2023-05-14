@@ -157,6 +157,7 @@ export const CBCustomerInfoStore = create((set) => ({
   phone: "",
   email: "",
   date: "",
+  reloadClientBookList: false,
   setCBCustomerInfo: (id, firstName, lastName, phone, email, date) =>
     set((state) => ({
       id: id,

@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, View, Text } from "react-native";
+import { Dimensions, FlatList, Text, View } from "react-native";
 import TableHeaderClient from "./TableHeaderClient";
 import TableItemClient from "./TableItemClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -10,13 +10,14 @@ import { useState } from "react";
 
 function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   const TAKE = 15;
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isErrorRefreshLoading, setIsErrorRefreshLoading] = useState(false);
   const reloadClientBookList = CBCustomerInfoStore(
     (state) => state.reloadClientBookList
   );
   const setReloadClientBookList = CBCustomerInfoStore(
     (state) => state.setReloadClientBookList
   );
+
   const { isLoading, data, hasNextPage, fetchNextPage, isError, error } =
     useInfiniteQuery({
       queryKey: ["ClientBookHomePage", searchTerm, reloadClientBookList],
@@ -30,11 +31,13 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     });
 
   async function getClientBookScreenData({ pageParam = 0 }) {
-    setErrorMessage("Error loading Clients. Please try again later.");
     let data = await httpGetAllClients(TAKE, pageParam, searchTerm);
+
     if (searchLoading) {
       setSearchLoading(false);
     }
+
+    setIsErrorRefreshLoading(false);
     return data;
   }
 
@@ -50,6 +53,7 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
     for (const items of data.pages.map((p) => p.data).flat()) {
       tableData.push(...items.data);
     }
+
     return tableData;
   }
 
@@ -67,20 +71,29 @@ function TableListClient({ setSearchLoading, searchTerm, searchLoading }) {
   }
 
   function errorHandler() {
-    setErrorMessage(null);
+    setIsErrorRefreshLoading(true);
     setReloadClientBookList();
   }
-  if (isLoading) {
+
+  if (isError) {
+    if (isErrorRefreshLoading) {
+      setIsErrorRefreshLoading(false);
+    }
+
     return (
-      <View style={{ height: 800 }}>
-        <LoadingOverlay />
+      <View style={{}}>
+        <ErrorOverlay
+          message={"Error loading Clients. Please try again later."}
+          onConfirm={errorHandler}
+        />
       </View>
     );
   }
-  if (isError) {
+
+  if (isLoading || isErrorRefreshLoading) {
     return (
-      <View style={{}}>
-        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      <View style={{ height: 800 }}>
+        <LoadingOverlay />
       </View>
     );
   }
