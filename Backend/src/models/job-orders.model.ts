@@ -205,7 +205,6 @@ async function jobOrderTransaction(
 
       const customerCreate = await tx.customer.create({
         data: {
-          id: customerInfo?.id ?? -1,
           fullName: fullName,
           firstName: customerInfo.firstName,
           lastName: customerInfo.lastName,
@@ -221,7 +220,6 @@ async function jobOrderTransaction(
 
       const carCreate = await tx.car.create({
         data: {
-          id: carInfo?.id ?? -1,
           brand: carInfo.brand,
           licensePlate: carInfo.licensePlate,
           model: carInfo.model,
@@ -232,20 +230,19 @@ async function jobOrderTransaction(
           carHasItems: carInfo.carHasItems,
           carItemsDescription: carInfo.carItemsDescription,
           companyId: carInfo.companyId,
-          customerId: Number(carInfo.customerId),
+          customerId: customerCreate.id,
         },
       });
 
       const jobOrderCreate = await tx.jobOrder.create({
         data: {
-          id: jobInfo?.id ? Number(jobInfo.id) : -1,
           requestedService: jobInfo.requestedService,
           serviceDetails: jobInfo.serviceDetails,
           status: jobInfo.status,
           jobLoadType: jobInfo.jobLoadType,
           policySignature: jobInfo.policySignature,
-          carId: Number(jobInfo.carId),
-          customerId: Number(jobInfo.customerId),
+          carId: carCreate.id,
+          customerId: customerCreate.id,
           companyId: jobInfo.companyId,
         },
       });
