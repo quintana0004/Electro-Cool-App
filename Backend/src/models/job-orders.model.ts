@@ -1,5 +1,5 @@
 import prisma from "../database/prisma";
-import { IJobOrder } from "../types";
+import { ICar, ICustomer, IJobOrder } from "../types";
 import { excludeFields } from "../utils/db.utils";
 import { isNumeric } from "../utils/validators.utils";
 
@@ -194,6 +194,66 @@ async function findAllFinishedVehiclesToday() {
   }
 }
 
+async function jobOrderTransaction(
+  jobInfo: IJobOrder,
+  customerInfo: ICustomer,
+  carInfo: ICar
+) {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
+
+      const customerCreate = await tx.customer.create({
+        data: {
+          fullName: fullName,
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          addressLine1: customerInfo.addressLine1,
+          addressLine2: customerInfo.addressLine2,
+          state: customerInfo.state,
+          city: customerInfo.city,
+          phone: customerInfo.phone,
+          email: customerInfo.email,
+          companyId: customerInfo.companyId,
+        },
+      });
+
+      const carCreate = await tx.car.create({
+        data: {
+          brand: carInfo.brand,
+          licensePlate: carInfo.licensePlate,
+          model: carInfo.model,
+          year: carInfo.year,
+          mileage: carInfo.mileage,
+          color: carInfo.color,
+          vinNumber: carInfo.vinNumber,
+          carHasItems: carInfo.carHasItems,
+          carItemsDescription: carInfo.carItemsDescription,
+          companyId: carInfo.companyId,
+          customerId: customerCreate.id,
+        },
+      });
+
+      const jobOrderCreate = await tx.jobOrder.create({
+        data: {
+          requestedService: jobInfo.requestedService,
+          serviceDetails: jobInfo.serviceDetails,
+          status: jobInfo.status,
+          jobLoadType: jobInfo.jobLoadType,
+          policySignature: jobInfo.policySignature,
+          carId: carCreate.id,
+          customerId: customerCreate.id,
+          companyId: jobInfo.companyId,
+        },
+      });
+
+      return jobOrderCreate;
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function upsertJobOrder(jobInfo: IJobOrder) {
   try {
     const job = await prisma.jobOrder.upsert({
@@ -270,6 +330,7 @@ export {
   findAllNewVehiclesToday,
   findAllFinishedVehiclesToday,
   upsertJobOrder,
+  jobOrderTransaction,
   updateJobOrderStatus,
   deleteJobOrder,
 };

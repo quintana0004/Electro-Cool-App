@@ -4,6 +4,7 @@ import {
   httpDeleteJobOrder,
   httpGetAllJobOrders,
   httpGetJobOrder,
+  httpJobOrderTransaction,
   httpUpdateJobOrderStatus,
   httpUpsertJobOrder,
 } from "./job-orders.controller";
@@ -15,6 +16,8 @@ router.get("/", httpGetAllJobOrders);
 router.get("/:id", httpGetJobOrder);
 
 router.post("/", httpUpsertJobOrder);
+
+router.post("/transaction", httpJobOrderTransaction);
 
 router.post("/status", httpUpdateJobOrderStatus);
 
