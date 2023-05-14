@@ -23,6 +23,8 @@ import { MaskedText, MaskedTextInput } from "react-native-mask-text";
 import { httpGetClient, httpUpsertClient } from "../../api/clients.api";
 import ErrorOverlay from "../../components/UI/ErrorOverlay";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
+import { useQuery } from "@tanstack/react-query";
+import ErrorDialog from "../../components/UI/ErrorDialog";
 
 const ValidationCustomer = Yup.object().shape({
   firstName: Yup.string()
@@ -51,7 +53,8 @@ function ClientInformation({ route, navigation }) {
     (state) => state.setReloadJobOrderList
   );
 
-  //Use Effect Hook to get the data
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     async function handleGetClientInfo() {
       try {
@@ -71,7 +74,7 @@ function ClientInformation({ route, navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editClientInformation]);
+  }, [editClientInformation, refresh]);
 
   //Other Hooks
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -82,13 +85,21 @@ function ClientInformation({ route, navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(
+    "There are missing required or need to correct information."
+  );
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
@@ -211,7 +222,14 @@ function ClientInformation({ route, navigation }) {
             const TouchedObject = Object.keys(ref.current.touched).length > 0;
 
             if (pageSelection === "Edit" && editClientInformation) {
-              goNextOption();
+              if (saveData === true) {
+                setMessageDialog(
+                  "Can't continue to next page until save changed data."
+                );
+                setDialogVisible(true);
+              } else {
+                goNextOption();
+              }
             }
 
             if (pageSelection === "Create" && editClientInformation === false) {
@@ -225,6 +243,9 @@ function ClientInformation({ route, navigation }) {
                 );
                 goNext();
               } else {
+                setMessageDialog(
+                  "There are missing required or need to correct information."
+                );
                 setDialogVisible(true);
               }
             }
@@ -380,11 +401,9 @@ function ClientInformation({ route, navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
+              <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button

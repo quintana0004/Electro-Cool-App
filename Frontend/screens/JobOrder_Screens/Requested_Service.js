@@ -52,6 +52,7 @@ function RequestedService({ navigation }) {
   const carId = useVehicleInfoStore((state) => state.id);
   const customerId = useCustomerInfoStore((state) => state.id);
   const id = useRequestedServiceStore((state) => state.id);
+  const [refresh, setRefresh] = useState(false);
 
   // Use Effect Hook that get the data
   useEffect(() => {
@@ -75,7 +76,7 @@ function RequestedService({ navigation }) {
       setDisableInput(false);
       setIsFetching(false);
     }
-  }, [editRequestedService]);
+  }, [editRequestedService, refresh]);
 
   //Use State Hook
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -95,6 +96,9 @@ function RequestedService({ navigation }) {
   const [saveData, setSaveData] = useState(false);
   const [initilizeData, setInitializeData] = useState(false);
   const [disableInput, setDisableInput] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(
+    "There are missing required or need to correct information."
+  );
   const RequestedServiceNextPage = useRouterStore(
     (state) => state.NewRequestedServiceNextPage
   );
@@ -163,35 +167,36 @@ function RequestedService({ navigation }) {
   }
 
   function CheckedServiceRequest(info) {
-    const val = info.data.requestedService.split(";");
+    const val = info.data.requestedService.split(", ");
     setChecked(info.data.jobLoadType);
 
     val.forEach((value) => {
-      if (value == "OilChange") {
+      console.log(value);
+      if (value == "Oil Change") {
         setCheckedOilChange(true);
       }
-      if (value == "TuneUp") {
+      if (value == "Tune Up") {
         setCheckedTuneUp(true);
       }
-      if (value == "Breaks") {
+      if (value == "Brakes") {
         setCheckedBreaks(true);
       }
       if (value == "Motor") {
         setCheckedMotor(true);
       }
-      if (value == "ElectricSystem") {
+      if (value == "Electric System") {
         setCheckedElectricSystem(true);
       }
-      if (value == "CoolingSystem") {
+      if (value == "Cooling System") {
         setCheckedCoolingSystem(true);
       }
-      if (value == "Suspencion") {
+      if (value == "Suspension") {
         setCheckedSuspencion(true);
       }
       if (value == "Scan") {
         setCheckedScan(true);
       }
-      if (value == "AirConditioning") {
+      if (value == "Air Conditioning") {
         setCheckedAirConditioning(true);
       }
     });
@@ -199,10 +204,15 @@ function RequestedService({ navigation }) {
 
   function errorHandler() {
     setErrorMessage(null);
+    setRefresh(!refresh);
   }
 
   if (errorMessage && !isFetching) {
-    return <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />;
+    return (
+      <View style={{ marginTop: 200 }}>
+        <ErrorOverlay message={errorMessage} onConfirm={errorHandler} />
+      </View>
+    );
   }
 
   if (isFetching) {
@@ -292,7 +302,22 @@ function RequestedService({ navigation }) {
         <Appbar.Content title="Requested Service"></Appbar.Content>
         <Appbar.Action
           icon="home"
-          onPress={() => goHomeAction()}
+          onPress={() => {
+            if (pageSelection === "Edit" && editRequestedService) {
+              if (saveData === true) {
+                setMessageDialog(
+                  "Can't continue to next page until save changed data."
+                );
+                setDialogVisible(true);
+              } else {
+                goHomeAction();
+              }
+            }
+
+            if (pageSelection === "Create" && editRequestedService === false) {
+              goHomeAction();
+            }
+          }}
           iconColor={Colors.black}
         />
         {pageSelection === "Create" && (
@@ -723,11 +748,9 @@ function RequestedService({ navigation }) {
               size={80}
               color={Colors.darkRed}
             />
-            <Dialog.Title style={styles.textAlert}>Invalid Inputs</Dialog.Title>
+            <Dialog.Title style={styles.textAlert}>Invalid</Dialog.Title>
             <Dialog.Content>
-              <Text style={styles.textAlert}>
-                There are missing required or need to correct information.
-              </Text>
+              <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button
