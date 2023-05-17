@@ -2,10 +2,10 @@
   "expo": {
     "name": "electro-cool",
     "slug": "electro-cool",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/electrocoolicon.png",
-    "userInterfaceStyle": "automatic"   ,
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/electrocool.png",
       "resizeMode": "cover",
@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.quintana0004.electrocool"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1ac509be-c0ad-4148-b168-a39d697016c9"
+      }
     }
   }
 }
