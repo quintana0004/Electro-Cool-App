@@ -137,7 +137,6 @@ function verifyRefreshToken(
 function getUserIdFromToken(token: string): string {
   const decodedToken = jwt.decode(token, { complete: true });
 
-  console.log("Token from Get User Id From Token: ", decodedToken);
   if (!decodedToken) {
     return "";
   }
