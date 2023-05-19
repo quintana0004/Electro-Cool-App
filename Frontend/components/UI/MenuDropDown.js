@@ -6,6 +6,7 @@ import Colors from "../../constants/Colors/Colors";
 import MenuBtnNav from "./MenuBtnNav";
 import { useRouterStore } from "../../Store/routerStore";
 import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
+import { httpLogin } from "../../api/auth.api";
 
 function MenuDropDown() {
   //Navigate to the corresponding pages
@@ -98,6 +99,15 @@ function MenuDropDown() {
     setToggleBtn(false);
   }
 
+  async function navLogOut() {
+    navigation.navigate("LogIn");
+    const response = await httpLogin("", "");
+
+    if (response.hasError) {
+      console.log("THERE WAS AN ERROR!", response.errorMessage);
+    }
+  }
+
   return (
     <Pressable
       onPress={() => {
@@ -113,6 +123,7 @@ function MenuDropDown() {
           <MenuBtnNav choice={"Client Book"} nav={navClientBook} />
           <MenuBtnNav choice={"Calendar"} nav={navCalendar} />
           <MenuBtnNav choice={"Settings"} nav={navSettings} />
+          <MenuBtnNav choice={"Log Out"} nav={navLogOut} />
         </View>
       )}
     </Pressable>

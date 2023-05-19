@@ -65,6 +65,9 @@ function LogIn({ navigation }) {
   // Visibility of the Error Dialog
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
+  //Touched Text Input
+  const [touchedDescription, setTouchedDescription] = useState(false);
+
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
 
@@ -120,13 +123,13 @@ function LogIn({ navigation }) {
             >
               {({ handleChange, handleBlur, values, errors, touched }) => (
                 <KeyboardAvoidingView
-                  behavior="padding"
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
                   enabled
-                  keyboardVerticalOffset={-100}
+                  keyboardVerticalOffset={300}
                 >
                   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.containerText}>
-                      <View style={{ width: 400, marginTop: 50 }}>
+                      <View style={{ width: 400, marginTop: 15 }}>
                         <TextInput
                           mode="outlined"
                           label="Username"
@@ -152,7 +155,12 @@ function LogIn({ navigation }) {
                           {errors.username}
                         </HelperText>
                       </View>
-                      <View style={{ width: 400, marginTop: 50 }}>
+                      <View
+                        style={{
+                          width: 400,
+                          marginTop: 30,
+                        }}
+                      >
                         <TextInput
                           mode="outlined"
                           label="Password"

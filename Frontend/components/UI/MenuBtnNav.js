@@ -1,7 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors/Colors";
-import { MaterialCommunityIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  FontAwesome5,
+  Ionicons,
+  AntDesign,
+} from "@expo/vector-icons";
 
 function MenuBtnNav({ choice, nav }) {
   let icon;
@@ -13,26 +18,58 @@ function MenuBtnNav({ choice, nav }) {
       // imageSizeW = 30;
       // imageSizeH = 29;
       paddingBox = 20;
-      icon = <MaterialCommunityIcons name="view-dashboard" size={24} color={Colors.yellowDark} />;
+      icon = (
+        <MaterialCommunityIcons
+          name="view-dashboard"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
       break;
     case "Job Orders":
-      icon = <FontAwesome5 name="clipboard-list" size={24} color={Colors.yellowDark} />;
+      icon = (
+        <FontAwesome5
+          name="clipboard-list"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
       paddingBox = 50;
       break;
     case "Invoices":
-      icon = <FontAwesome5 name="file-invoice-dollar" size={24} color={Colors.yellowDark} />;
+      icon = (
+        <FontAwesome5
+          name="file-invoice-dollar"
+          size={24}
+          color={Colors.yellowDark}
+        />
+      );
       paddingBox = 50;
       break;
     case "Client Book":
-      icon = <FontAwesome5 name="address-book" size={24} color={Colors.yellowDark} />;
+      icon = (
+        <FontAwesome5 name="address-book" size={24} color={Colors.yellowDark} />
+      );
       paddingBox = 50;
       break;
     case "Calendar":
-      icon = <MaterialCommunityIcons name="calendar" size={28} color={Colors.yellowDark} />;
+      icon = (
+        <MaterialCommunityIcons
+          name="calendar"
+          size={28}
+          color={Colors.yellowDark}
+        />
+      );
       paddingBox = 50;
       break;
     case "Settings":
-      icon = <Ionicons name="settings-sharp" size={24} color={Colors.yellowDark} />;
+      icon = (
+        <Ionicons name="settings-sharp" size={24} color={Colors.yellowDark} />
+      );
+      paddingBox = 50;
+      break;
+    case "Log Out":
+      icon = <AntDesign name="logout" size={24} color={Colors.yellowDark} />;
       paddingBox = 50;
       break;
   }
