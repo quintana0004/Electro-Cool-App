@@ -2,6 +2,7 @@ import express from "express";
 import { authenticateJWTMiddleWare } from "../../services/auth.service";
 import {
   httpLogin,
+  httpLogout,
   httpRefreshToken,
   httpRequestTemporaryPassword,
   httpSignUp,
@@ -10,6 +11,8 @@ import {
 const router = express.Router();
 
 router.post("/login", httpLogin);
+
+router.post("/logout", authenticateJWTMiddleWare, httpLogout);
 
 router.post("/signup", httpSignUp);
 

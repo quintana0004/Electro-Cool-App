@@ -9,12 +9,12 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllCustomers);
+router.get("/", authenticateJWTMiddleWare, httpGetAllCustomers);
 
-router.get("/:id", httpGetCustomerById);
+router.get("/:id", authenticateJWTMiddleWare, httpGetCustomerById);
 
-router.post("/", httpUpsertCustomer);
+router.post("/", authenticateJWTMiddleWare, httpUpsertCustomer);
 
-router.delete("/:id", httpDeleteCustomer);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteCustomer);
 
 export default router;
