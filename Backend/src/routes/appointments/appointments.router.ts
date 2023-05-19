@@ -9,12 +9,12 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllAppointments);
+router.get("/", authenticateJWTMiddleWare, httpGetAllAppointments);
 
-router.get("/:id", httpGetAppointmentById);
+router.get("/:id", authenticateJWTMiddleWare, httpGetAppointmentById);
 
-router.post("/", httpUpsertAppointment);
+router.post("/", authenticateJWTMiddleWare, httpUpsertAppointment);
 
-router.delete("/:id", httpDeleteAppointment);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteAppointment);
 
 export default router;

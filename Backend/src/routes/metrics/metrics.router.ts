@@ -16,23 +16,55 @@ import {
 
 const router = express.Router();
 
-router.get("/currentVehiclesWorking", httpGetCurrentWorkingVehicles);
+router.get(
+  "/currentVehiclesWorking",
+  authenticateJWTMiddleWare,
+  httpGetCurrentWorkingVehicles
+);
 
-router.get("/vehiclesInShop", httpGetVehiclesInShop);
+router.get("/vehiclesInShop", authenticateJWTMiddleWare, httpGetVehiclesInShop);
 
-router.get("/vehiclesNotStarted", httpGetVehiclesNotStarted);
+router.get(
+  "/vehiclesNotStarted",
+  authenticateJWTMiddleWare,
+  httpGetVehiclesNotStarted
+);
 
-router.get("/newVehiclesReceivedToday", httpGetNewVehiclesReceivedToday);
+router.get(
+  "/newVehiclesReceivedToday",
+  authenticateJWTMiddleWare,
+  httpGetNewVehiclesReceivedToday
+);
 
-router.get("/finishedVehiclesToday", httpGetFinishedVehiclesToday);
+router.get(
+  "/finishedVehiclesToday",
+  authenticateJWTMiddleWare,
+  httpGetFinishedVehiclesToday
+);
 
-router.get("/totalAmountPaidToday", httpGetTotalAmountPaidToday);
+router.get(
+  "/totalAmountPaidToday",
+  authenticateJWTMiddleWare,
+  httpGetTotalAmountPaidToday
+);
 
-router.get("/totalAmountInDraftsToday", httpGetTotalAmountInDraftsToday);
+router.get(
+  "/totalAmountInDraftsToday",
+  authenticateJWTMiddleWare,
+  httpGetTotalAmountInDraftsToday
+);
 
-router.get("/totalAmountPendingToday", httpGetTotalAmountPendingToday);
+router.get(
+  "/totalAmountPendingToday",
+  authenticateJWTMiddleWare,
+  httpGetTotalAmountPendingToday
+);
 
-router.get("/totalAmountCanceledToday", httpGetTotalAmountCanceledToday);
+router.get(
+  "/totalAmountCanceledToday",
+  authenticateJWTMiddleWare,
+  httpGetTotalAmountCanceledToday
+);
 
 router.get(
   "/totalAmountAppointmentsToday",

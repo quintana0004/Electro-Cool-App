@@ -7,7 +7,7 @@ import {
   handleExceptionErrorResponse,
 } from "../utils/errors.utils";
 import { findUserByToken } from "../models/users.model";
-import { IErrorResponse } from "./../types/index.d";
+import { IErrorResponse } from "../types";
 
 async function authenticateJWTMiddleWare(
   req: Request,
@@ -137,6 +137,7 @@ function verifyRefreshToken(
 function getUserIdFromToken(token: string): string {
   const decodedToken = jwt.decode(token, { complete: true });
 
+  console.log("Token from Get User Id From Token: ", decodedToken);
   if (!decodedToken) {
     return "";
   }
