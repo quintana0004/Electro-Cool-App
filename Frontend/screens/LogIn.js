@@ -129,7 +129,7 @@ function LogIn({ navigation }) {
                 >
                   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.containerText}>
-                      <View style={{ width: 400, marginTop: 15 }}>
+                      <View style={{ width: 400 }}>
                         <TextInput
                           mode="outlined"
                           label="Username"
@@ -158,7 +158,7 @@ function LogIn({ navigation }) {
                       <View
                         style={{
                           width: 400,
-                          marginTop: 30,
+                          marginTop: 10,
                         }}
                       >
                         <TextInput

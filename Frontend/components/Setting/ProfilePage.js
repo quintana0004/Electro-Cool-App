@@ -191,6 +191,7 @@ function ProfilePage({}) {
 
   async function handleProfileSubmission() {
     if (disableInputs === false) {
+      console.log("I AM FALSE!");
       return;
     }
 
@@ -214,6 +215,7 @@ function ProfilePage({}) {
       return;
     }
 
+    console.log("I AM TRUE!, ", response);
     showSuccessMessage();
   }
 
