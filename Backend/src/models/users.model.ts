@@ -110,13 +110,11 @@ async function findUserByToken(token: string) {
   try {
     const userId = getUserIdFromToken(token);
 
-    const user = await prisma.user.findUnique({
+    return await prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
-
-    return user;
   } catch (error) {
     throw error;
   }
@@ -139,7 +137,6 @@ async function getUserTokens(token: string) {
     throw error;
   }
 }
-
 
 async function isUserAuthorized(
   email: string,
@@ -165,7 +162,6 @@ async function isUserAuthorized(
       hashedPasswordFromRequest !== user.password &&
       hashedTemporaryPasswordFromRequest !== user.temporaryPassword
     ) {
-
       return buildErrorObject(
         401,
         "Provided password is incorrect for this user."
@@ -216,14 +212,12 @@ async function updateUser(userInfo: IUser) {
       },
     });
 
-
     const mergedUserUpdate = {
       ...user,
       accessToken: updatedUserCredentials?.accessToken,
       refreshToken: updatedUserCredentials?.refreshToken,
     };
     return excludeFields(mergedUserUpdate, "id", "password", "passwordSalt");
-
   } catch (error) {
     throw error;
   }
@@ -279,7 +273,6 @@ async function updateUserAccess(
       "accessToken",
       "refreshToken"
     );
-
   } catch (error) {
     throw error;
   }
@@ -295,7 +288,6 @@ async function updateUserState(id: string, accessState: string) {
         accessState: accessState,
       },
     });
-
   } catch (error) {
     throw error;
   }

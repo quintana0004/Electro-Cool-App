@@ -11,16 +11,16 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllJobOrders);
+router.get("/", authenticateJWTMiddleWare, httpGetAllJobOrders);
 
-router.get("/:id", httpGetJobOrder);
+router.get("/:id", authenticateJWTMiddleWare, httpGetJobOrder);
 
-router.post("/", httpUpsertJobOrder);
+router.post("/", authenticateJWTMiddleWare, httpUpsertJobOrder);
 
-router.post("/transaction", httpJobOrderTransaction);
+router.post("/transaction", authenticateJWTMiddleWare, httpJobOrderTransaction);
 
-router.post("/status", httpUpdateJobOrderStatus);
+router.post("/status", authenticateJWTMiddleWare, httpUpdateJobOrderStatus);
 
-router.delete("/:id", httpDeleteJobOrder);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteJobOrder);
 
 export default router;

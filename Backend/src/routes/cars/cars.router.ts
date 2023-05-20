@@ -10,14 +10,14 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllCars);
+router.get("/", authenticateJWTMiddleWare, httpGetAllCars);
 
-router.get("/customer", httpGetCarsByCustomer);
+router.get("/customer", authenticateJWTMiddleWare, httpGetCarsByCustomer);
 
-router.get("/:id", httpGetCarById);
+router.get("/:id", authenticateJWTMiddleWare, httpGetCarById);
 
-router.post("/", httpUpsertCar);
+router.post("/", authenticateJWTMiddleWare, httpUpsertCar);
 
-router.delete("/:id", httpDeleteCar);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteCar);
 
 export default router;
