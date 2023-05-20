@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo } from "react";
-import { StyleSheet, Text, View, Keyboard } from "react-native";
+import { StyleSheet, Text, View, Keyboard, Pressable } from "react-native";
 import ClientCard from "../../components/UI/ClientCard";
 import CarCard from "../../components/UI/CarCard";
 import Appbar from "react-native-paper/src/components/Appbar";
@@ -406,23 +406,24 @@ function CreateAppointments({ navigation }) {
                 Is this the final statement of the Appointment?
               </Text>
             </Dialog.Content>
-            <Dialog.Actions>
-              <Button
-                textColor={Colors.darkGreen}
+            <Dialog.Actions style={{ justifyContent: "space-between" }}>
+              <Pressable
                 onPress={async () => {
                   await handleSave();
                   setVisibleConfirmDialog(false);
                   goHomeAction();
                 }}
               >
-                Confirm
-              </Button>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setVisibleConfirmDialog(false)}
-              >
-                Cancel
-              </Button>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Confirm</Text>
+                </View>
+              </Pressable>
+
+              <Pressable onPress={() => setVisibleConfirmDialog(false)}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Cancel</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -486,14 +487,11 @@ function CreateAppointments({ navigation }) {
                     />
                   </Dialog.Content>
                   <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-                    <Button
-                      onPress={() => setDialogVisible3(false)}
-                      textColor="white"
-                      buttonColor="#99C1C1"
-                      width="30%"
-                    >
-                      Select Date
-                    </Button>
+                    <Pressable onPress={() => setDialogVisible3(false)}>
+                      <View style={styles.confirmBtn}>
+                        <Text style={styles.confirmText}>Select Date</Text>
+                      </View>
+                    </Pressable>
                   </Dialog.Actions>
                 </Dialog>
               </Portal>
@@ -560,5 +558,22 @@ const styles = StyleSheet.create({
   },
   calendar: {
     marginBottom: 10,
+  },
+  confirmBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 10,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });

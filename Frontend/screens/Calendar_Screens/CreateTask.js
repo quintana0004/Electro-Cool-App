@@ -297,16 +297,17 @@ function CreateTask() {
               </Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                title="Cancel"
-                color={Colors.yellowDark}
-                onPress={() => setDialogVisible1(false)}
-              ></Button>
-              <Button
-                title="Confirm"
-                color={Colors.darkGreen}
-                onPress={() => pushTask()}
-              ></Button>
+              <Pressable onPress={() => setDialogVisible1(false)}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Cancel</Text>
+                </View>
+              </Pressable>
+
+              <Pressable onPress={() => pushTask()}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Confirm</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -332,15 +333,17 @@ function CreateTask() {
               </Text>
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                title="Done"
-                color={Colors.brightGreen}
+              <Pressable
                 onPress={() => {
                   setDialogVisible2(false);
                   navigation.navigate("CalendarMain");
                   setReloadCalendarList();
                 }}
-              ></Button>
+              >
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Done</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -371,13 +374,15 @@ function CreateTask() {
               />
             </Dialog.Content>
             <Dialog.Actions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                title="Done"
-                color={Colors.brightGreen}
+              <Pressable
                 onPress={() => {
                   setDialogVisible3(false);
                 }}
-              ></Button>
+              >
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Done</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -395,7 +400,7 @@ function CreateTask() {
       </View>
       <View style={styles.box}>
         <Pressable
-          style={[styles.button, { backgroundColor: Colors.darkGreyAsh }]}
+          style={[styles.button, { backgroundColor: Colors.brightGreen }]}
           onPress={async () => {
             clearAllTasks();
             setReloadTaskList();
@@ -404,7 +409,7 @@ function CreateTask() {
           <Text style={styles.buttonText}>Clear All</Text>
         </Pressable>
         <Pressable
-          style={[styles.button, { backgroundColor: Colors.darkGreen }]}
+          style={[styles.button, { backgroundColor: Colors.brightGreen }]}
           onPress={async () => {
             setDialogVisible1(true);
             setReloadTaskList();
@@ -494,6 +499,23 @@ const styles = StyleSheet.create({
   },
   calendar: {
     marginBottom: 10,
+  },
+  confirmBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 10,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 
