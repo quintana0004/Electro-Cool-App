@@ -203,8 +203,11 @@ async function jobOrderTransaction(
     return await prisma.$transaction(async (tx) => {
       const fullName = `${customerInfo.firstName} ${customerInfo.lastName}`;
 
-      const customerCreate = await tx.customer.create({
-        data: {
+      const customer = await tx.customer.upsert({
+        where: {
+          id: customerInfo?.id ?? -1,
+        },
+        create: {
           fullName: fullName,
           firstName: customerInfo.firstName,
           lastName: customerInfo.lastName,
@@ -216,10 +219,25 @@ async function jobOrderTransaction(
           email: customerInfo.email,
           companyId: customerInfo.companyId,
         },
+        update: {
+          fullName: fullName,
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          addressLine1: customerInfo.addressLine1,
+          addressLine2: customerInfo.addressLine2,
+          state: customerInfo.state,
+          city: customerInfo.city,
+          phone: customerInfo.phone,
+          email: customerInfo.email,
+          lastModified: new Date(),
+        },
       });
 
-      const carCreate = await tx.car.create({
-        data: {
+      const car = await tx.car.upsert({
+        where: {
+          id: carInfo?.id ?? -1,
+        },
+        create: {
           brand: carInfo.brand,
           licensePlate: carInfo.licensePlate,
           model: carInfo.model,
@@ -230,24 +248,37 @@ async function jobOrderTransaction(
           carHasItems: carInfo.carHasItems,
           carItemsDescription: carInfo.carItemsDescription,
           companyId: carInfo.companyId,
-          customerId: customerCreate.id,
+          customerId: customer.id,
+        },
+        update: {
+          brand: carInfo.brand,
+          licensePlate: carInfo.licensePlate,
+          model: carInfo.model,
+          year: carInfo.year,
+          mileage: carInfo.mileage,
+          color: carInfo.color,
+          vinNumber: carInfo.vinNumber,
+          carHasItems: carInfo.carHasItems,
+          carItemsDescription: carInfo.carItemsDescription,
+          customerId: customer.id,
+          lastModified: new Date(),
         },
       });
 
-      const jobOrderCreate = await tx.jobOrder.create({
+      const jobOrder = await tx.jobOrder.create({
         data: {
           requestedService: jobInfo.requestedService,
           serviceDetails: jobInfo.serviceDetails,
           status: jobInfo.status,
           jobLoadType: jobInfo.jobLoadType,
           policySignature: jobInfo.policySignature,
-          carId: carCreate.id,
-          customerId: customerCreate.id,
+          carId: car.id,
+          customerId: customer.id,
           companyId: jobInfo.companyId,
         },
       });
 
-      return jobOrderCreate;
+      return jobOrder;
     });
   } catch (error) {
     throw error;

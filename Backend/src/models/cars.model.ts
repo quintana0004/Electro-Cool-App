@@ -1,6 +1,5 @@
-import { ICar } from "./../types/index.d";
+import { ICar } from "../types";
 import prisma from "../database/prisma";
-import { formatLicensePlate } from "../utils/formatters.utils";
 
 async function isUniqueCar(
   licensePlate: string,
@@ -21,13 +20,11 @@ async function isUniqueCar(
       },
     });
 
-    if (!car) {
-      return true;
-    } else if (car.id === id) {
-      return true;
-    } else {
-      return false;
-    }
+    // If car doesn't exist with this licence
+    if (!car) return true;
+
+    // If it exist but is from the same incoming car
+    return car.id === id;
   } catch (error) {
     throw error;
   }

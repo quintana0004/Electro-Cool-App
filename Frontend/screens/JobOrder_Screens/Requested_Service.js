@@ -172,7 +172,6 @@ function RequestedService({ navigation }) {
     setChecked(info.data.jobLoadType);
 
     val.forEach((value) => {
-      console.log(value);
       if (value == "Oil Change") {
         setCheckedOilChange(true);
       }
@@ -241,7 +240,6 @@ function RequestedService({ navigation }) {
       showSuccessMessage();
       setReloadJobOrderList();
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }

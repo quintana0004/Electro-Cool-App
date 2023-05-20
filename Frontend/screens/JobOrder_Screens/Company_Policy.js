@@ -98,14 +98,18 @@ function CompanyPolicy({ navigation }) {
   ];
 
   async function handleSave() {
-    let customerToCreate = {
+    let customerToUpsert = {
       firstName: clientInfo.firstName,
       lastName: clientInfo.lastName,
       phone: clientInfo.phone,
       email: clientInfo.email,
     };
 
-    let carToCreate = {
+    if (clientInfo.id) {
+      customerToUpsert.id = clientInfo.id;
+    }
+
+    let carToUpsert = {
       brand: vehicleInformation.brand,
       licensePlate: vehicleInformation.licensePlate,
       model: vehicleInformation.model,
@@ -117,6 +121,10 @@ function CompanyPolicy({ navigation }) {
       carItemsDescription: vehicleInformation.carItemsDescription,
     };
 
+    if (vehicleInformation.id) {
+      carToUpsert.id = vehicleInformation.id;
+    }
+
     let jobOrderToCreate = {
       requestedService: jobOrderInfo.requestedService,
       serviceDetails: jobOrderInfo.serviceDetails,
@@ -126,8 +134,8 @@ function CompanyPolicy({ navigation }) {
     };
 
     const response = await httpCreateJobOrderTransaction(
-      customerToCreate,
-      carToCreate,
+      customerToUpsert,
+      carToUpsert,
       jobOrderToCreate
     );
 

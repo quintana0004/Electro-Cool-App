@@ -108,7 +108,6 @@ function LogIn({ navigation }) {
     if (responseRole.hasError) {
       return Alert.alert("Error", responseRole.errorMessage);
     }
-    console.log("USER ROLE FROM LOGIN: ", responseRole.data);
     setRoleUser(responseRole.data.role);
     navigation.navigate("Dashboard");
   }

@@ -132,6 +132,7 @@ async function httpJobOrderTransaction(req: Request, res: Response) {
     const companyId = await getDummyCompanyId();
 
     const customerInfo: ICustomer = {
+      id: req.body.customer.id,
       firstName: formatName(req.body.customer.firstName),
       lastName: formatName(req.body.customer.lastName),
       addressLine1: req.body.customer.addressLine1,
@@ -144,6 +145,7 @@ async function httpJobOrderTransaction(req: Request, res: Response) {
     };
 
     const carInfo: ICar = {
+      id: req.body.car.id,
       brand: req.body.car.brand,
       licensePlate: formatLicensePlate(req.body.car.licensePlate),
       model: req.body.car.model,
