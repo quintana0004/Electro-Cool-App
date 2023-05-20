@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import {
   createUser,
   findUserByEmailOrUserName,
-  findUserById,
   findUserByToken,
   getUserTokens,
   isUserAuthorized,
@@ -12,12 +11,10 @@ import {
 import {
   generateAccessToken,
   generateRefreshToken,
-
   verifyRefreshToken,
 } from "../../services/auth.service";
 import { sendTemporaryPasswordEmail } from "../../services/mail.service";
 import { IUser } from "../../types";
-import { sha512 } from "../../utils/db.utils";
 import {
   buildErrorObject,
   handleBadResponse,
@@ -59,7 +56,11 @@ async function httpLogin(req: Request, res: Response) {
       userResponse.id,
       userResponse.companyId
     );
-    await updateUserTokens(userResponse.id, accessToken);
+    const refreshToken = generateRefreshToken(
+      userResponse.id,
+      userResponse.companyId
+    );
+    await updateUserTokens(userResponse.id, accessToken, refreshToken);
 
     const user = await findUserByToken(accessToken);
     return res.status(200).json({
@@ -72,6 +73,16 @@ async function httpLogin(req: Request, res: Response) {
     });
   } catch (error) {
     return handleExceptionErrorResponse("login", error, res);
+  }
+}
+
+async function httpLogout(req: Request, res: Response) {
+  try {
+    const userId = req.userId;
+    await updateUserTokens(userId, "", "");
+    return res.status(200).json("User has been logged out.");
+  } catch (error) {
+    return handleExceptionErrorResponse("logout", error, res);
   }
 }
 
@@ -193,6 +204,7 @@ async function httpRequestTemporaryPassword(req: Request, res: Response) {
 
 export {
   httpLogin,
+  httpLogout,
   httpSignUp,
   httpRefreshToken,
   httpRequestTemporaryPassword,

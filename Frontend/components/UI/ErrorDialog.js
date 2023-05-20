@@ -15,9 +15,7 @@ function ErrorDialog({ dialogVisible, setDialogVisible, errorMSG }) {
           size={80}
           color={Colors.darkRed}
         />
-        <Dialog.Title style={styles.textAlert}>
-          An Error Has Occurred
-        </Dialog.Title>
+        <Dialog.Title style={styles.textAlert}>Error</Dialog.Title>
         <Dialog.Content>
           <Text style={styles.textAlert}>{errorMSG}</Text>
         </Dialog.Content>

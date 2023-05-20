@@ -1,33 +1,48 @@
 import axios from "./axios";
 
-async function httpGetAllJobOrders(take, page, searchTerm) {
+export async function httpGetAllJobOrders(take, page, searchTerm) {
   const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
-  const response = await axios("/job-orders" + queryParams);
-  return response;
+  return await axios("/job-orders" + queryParams);
 }
 
-//?Must include an id in the jobOrderInfo for it to be update it
-async function httpUpsertJobOrder(jobOrderInfo) {
-  const response = await axios.post("/job-orders", jobOrderInfo);
-  return response;
+export async function httpUpsertJobOrder(jobOrderInfo) {
+  return await axios.post("/job-orders", jobOrderInfo);
 }
 
-async function httpUpdateStatusJobOrder(id, status) {
-  const response = await axios.post("/job-orders/status", {
+export async function httpCreateJobOrderTransaction(
+  customerInfo,
+  carInfo,
+  jobOrderInfo
+) {
+  let responseToReturn = {
+    hasError: false,
+    data: null,
+    errorMessage: "",
+  };
+
+  try {
+    const response = await axios.post("/job-orders/transaction", {
+      customer: customerInfo,
+      car: carInfo,
+      jobOrder: jobOrderInfo,
+    });
+    responseToReturn.data = response.data;
+  } catch (error) {
+    const errorResponse = error.response.data;
+    responseToReturn.hasError = true;
+    responseToReturn.errorMessage = errorResponse.error;
+  }
+
+  return responseToReturn;
+}
+
+export async function httpUpdateStatusJobOrder(id, status) {
+  return await axios.post("/job-orders/status", {
     id: id,
     status: status,
   });
-  return response;
 }
 
-async function httpGetJobOrder(id) {
-  const response = await axios(`/job-orders/${id}`);
-  return response;
+export async function httpGetJobOrder(id) {
+  return await axios(`/job-orders/${id}`);
 }
-
-export {
-  httpGetAllJobOrders,
-  httpUpsertJobOrder,
-  httpUpdateStatusJobOrder,
-  httpGetJobOrder,
-};

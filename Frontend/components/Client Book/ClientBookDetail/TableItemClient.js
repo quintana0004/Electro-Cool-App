@@ -43,7 +43,7 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-evenly",
+              marginLeft: 10,
               marginBottom: 10,
             }}
           >
@@ -54,10 +54,10 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
                 style={{ backgroundColor: "#D9D9D9" }}
               />
             </View>
-            <View>
+            <View style={{ marginTop: 5, marginRight: 10, marginLeft: 10 }}>
               <Text style={styles.boldText}>Date Created:</Text>
             </View>
-            <View>
+            <View style={{ marginTop: 5 }}>
               <Text style={styles.boldText}>{DateText()}</Text>
             </View>
           </View>
@@ -78,10 +78,14 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
               />
             </View>
             <View>
-              <Text style={styles.boldText}>Phone Number:</Text>
+              <Text style={[styles.boldText, { marginTop: 5 }]}>
+                Phone Number:
+              </Text>
             </View>
             <View>
-              <Text style={[styles.boldText, { marginHorizontal: 5 }]}>
+              <Text
+                style={[styles.boldText, { marginHorizontal: 5, marginTop: 5 }]}
+              >
                 {phone}
               </Text>
             </View>
@@ -104,10 +108,12 @@ function TableItemClient({ id, firstName, lastName, date, phone, email }) {
               />
             </View>
             <View>
-              <Text style={styles.boldText}>Email:</Text>
+              <Text style={[styles.boldText, { marginTop: 5 }]}>Email:</Text>
             </View>
             <View>
-              <Text style={[styles.boldText, { marginHorizontal: 5 }]}>
+              <Text
+                style={[styles.boldText, { marginHorizontal: 5, marginTop: 5 }]}
+              >
                 {email}
               </Text>
             </View>

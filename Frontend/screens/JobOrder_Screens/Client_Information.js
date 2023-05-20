@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ToastAndroid,
+  Pressable,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import Colors from "../../constants/Colors/Colors";
@@ -143,7 +144,6 @@ function ClientInformation({ route, navigation }) {
       showSuccessMessage();
       setReloadJobOrderList();
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }
@@ -406,12 +406,11 @@ function ClientInformation({ route, navigation }) {
               <Text style={styles.textAlert}>{messageDialog}</Text>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setDialogVisible(false)}
-              >
-                Okay
-              </Button>
+              <Pressable onPress={() => setDialogVisible(false)}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Okay</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -454,6 +453,23 @@ const styles = StyleSheet.create({
   textInputStyle: {
     backgroundColor: Colors.white,
     fontSize: 16,
+  },
+  confirmBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 10,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

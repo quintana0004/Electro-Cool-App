@@ -14,9 +14,12 @@ import DashboardTotalAmountCancelled from "../components/Dashboard/DashboardTota
 import DashboardCardAppointment from "../components/Dashboard/DashboardCardAppointment";
 import DashboardCardTask from "../components/Dashboard/DashboardCardTask";
 import DashboardCarsPendingConfirmation from "../components/Dashboard/DashboardCarsPendingConfirmation";
+import { useAccountUser } from "../Store/AccountStore";
 
 function Dashboard({ navigation }) {
   const currentDate = new Date();
+
+  const role = useAccountUser((state) => state.role);
 
   return (
     <View>
@@ -43,10 +46,10 @@ function Dashboard({ navigation }) {
           <DashboardNewVehiclesReceived />
           <DashboardFinishedVehiclesToday />
 
-          <DashboardTotalAmountPaid />
-          <DashboardTotalAmountDraft />
-          <DashboardTotalAmountPending />
-          <DashboardTotalAmountCancelled />
+          {role === "Admin" && <DashboardTotalAmountPaid />}
+          {role === "Admin" && <DashboardTotalAmountDraft />}
+          {role === "Admin" && <DashboardTotalAmountPending />}
+          {role === "Admin" && <DashboardTotalAmountCancelled />}
         </View>
       </ScrollView>
 

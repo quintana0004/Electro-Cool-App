@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/electrocoolicon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.quintana0004.electrocool"

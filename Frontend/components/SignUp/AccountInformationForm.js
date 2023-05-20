@@ -151,7 +151,7 @@ function AccountInformationForm({ setPage }) {
                   </View>
                 </View>
                 <View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 20 }}>
                     <TextInput
                       label="Phone Number"
                       mode="outlined"
@@ -177,7 +177,7 @@ function AccountInformationForm({ setPage }) {
                       {errors.phoneNumber}
                     </HelperText>
                   </View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 20 }}>
                     <TextInput
                       label="E-mail Address"
                       mode="outlined"

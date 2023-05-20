@@ -6,6 +6,9 @@ import Colors from "../../constants/Colors/Colors";
 import MenuBtnNav from "./MenuBtnNav";
 import { useRouterStore } from "../../Store/routerStore";
 import { CBCustomerInfoStore } from "../../Store/JobOrderStore";
+import { httpLogOut } from "../../api/auth.api";
+import ErrorDialog from "./ErrorDialog";
+import { storeTokens } from "../../Store/secureStore";
 
 function MenuDropDown() {
   //Navigate to the corresponding pages
@@ -27,6 +30,9 @@ function MenuDropDown() {
   const setRequestedServiceNextPage = useRouterStore(
     (state) => state.setRequestedServiceNextPage
   );
+
+  const [visible, setVisible] = useState(false);
+  const [errorMSG, setErrorMSG] = useState("");
 
   //Set the toggle btn when closed or open
   const [toggle, setToggleBtn] = useState(false);
@@ -98,6 +104,18 @@ function MenuDropDown() {
     setToggleBtn(false);
   }
 
+  async function navLogOut() {
+    const response = await httpLogOut();
+    await storeTokens("", "");
+
+    if (response.hasError) {
+      setVisible(true);
+      setErrorMSG(response.errorMessage);
+    }
+
+    navigation.navigate("LogIn");
+  }
+
   return (
     <Pressable
       onPress={() => {
@@ -113,8 +131,14 @@ function MenuDropDown() {
           <MenuBtnNav choice={"Client Book"} nav={navClientBook} />
           <MenuBtnNav choice={"Calendar"} nav={navCalendar} />
           <MenuBtnNav choice={"Settings"} nav={navSettings} />
+          <MenuBtnNav choice={"Log Out"} nav={navLogOut} />
         </View>
       )}
+      <ErrorDialog
+        dialogVisible={visible}
+        setDialogVisible={setVisible}
+        errorMSG={errorMSG}
+      />
     </Pressable>
   );
 }

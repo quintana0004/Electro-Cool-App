@@ -10,14 +10,18 @@ import {
 
 const router = express.Router();
 
-router.get("/", httpGetAllDeposits);
+router.get("/", authenticateJWTMiddleWare, httpGetAllDeposits);
 
-router.get("/invoice/:invoiceId", httpGetDepositsByInvoiceId);
+router.get(
+  "/invoice/:invoiceId",
+  authenticateJWTMiddleWare,
+  httpGetDepositsByInvoiceId
+);
 
-router.get("/:id", httpGetDepoist);
+router.get("/:id", authenticateJWTMiddleWare, httpGetDepoist);
 
-router.post("/", httpUpsertDeposit);
+router.post("/", authenticateJWTMiddleWare, httpUpsertDeposit);
 
-router.delete("/:id", httpDeleteDeposit);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteDeposit);
 
 export default router;

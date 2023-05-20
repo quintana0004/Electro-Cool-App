@@ -7,7 +7,7 @@ import {
   handleExceptionErrorResponse,
 } from "../utils/errors.utils";
 import { findUserByToken } from "../models/users.model";
-import { IErrorResponse } from "./../types/index.d";
+import { IErrorResponse } from "../types";
 
 async function authenticateJWTMiddleWare(
   req: Request,

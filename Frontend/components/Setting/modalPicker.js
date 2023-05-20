@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, ToastAndroid } from "react-native";
+import { StyleSheet, View, Text, ToastAndroid, Pressable } from "react-native";
 import {
   TextInput,
   HelperText,
@@ -63,8 +63,6 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
         userId: ID,
         role: "Admin",
         accessState: "Active",
-        startDate: "",
-        endDate: "",
       };
     }
 
@@ -78,6 +76,7 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
         endDate: new Date(dateSelectedSecond),
       };
     }
+
     const response = await httpUpsertUsers(dataUser);
 
     if (response.hasError) {
@@ -332,27 +331,33 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
           </View>
           <Dialog.Actions>
             {pickedRole === 2 && (
-              <Button
-                textColor={Colors.darkGreen}
+              <Pressable
                 onPress={() => {
                   setCounter(0);
                   setDateSelectedFirst("");
                   setDateSelectedSecond("");
                 }}
               >
-                Refresh Data
-              </Button>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Refresh</Text>
+                </View>
+              </Pressable>
             )}
-            <Button
-              textColor={Colors.darkGreen}
-              onPress={() => setVisible(false)}
-            >
-              Cancel
-            </Button>
+            <Pressable onPress={() => setVisible(false)}>
+              <View style={styles.confirmBtn}>
+                <Text style={styles.confirmText}>Cancel</Text>
+              </View>
+            </Pressable>
 
-            <Button textColor={Colors.darkGreen} onPress={assignRoleUser}>
-              Submit
-            </Button>
+            <Pressable
+              onPress={async () => {
+                await assignRoleUser();
+              }}
+            >
+              <View style={styles.confirmBtn}>
+                <Text style={styles.confirmText}>Submit</Text>
+              </View>
+            </Pressable>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -365,6 +370,24 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  confirmBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 10,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+});
 
 export default ModalPicker;

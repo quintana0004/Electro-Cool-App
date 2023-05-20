@@ -97,7 +97,6 @@ function CarModal({ activateModal, setSearchIcon }) {
   }
 
   if (isError) {
-    console.log("CB CarModal:", error);
     return (
       <View
         style={{
@@ -133,7 +132,6 @@ function CarModal({ activateModal, setSearchIcon }) {
       showSuccessMessage();
       setReloadClientBookCarList();
     } catch (error) {
-      console.log("ERROR MESSAGE CAR INFO: ", error);
       showFailedMessage();
     }
   }
@@ -257,7 +255,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                 }}
               >
                 <View style={[styles.containerText]}>
-                  <View style={{ width: 220 }}>
+                  <View style={{ width: 220, marginBottom: 15 }}>
                     <TextInput
                       label="Brand"
                       mode="outlined"
@@ -278,7 +276,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                       {errors.Brand}
                     </HelperText>
                   </View>
-                  <View style={{ width: 250 }}>
+                  <View style={{ width: 250, marginBottom: 15 }}>
                     <TextInput
                       label="License Plate"
                       mode="outlined"
@@ -306,7 +304,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                     justifyContent: "space-between",
                   }}
                 >
-                  <View style={{ width: 170 }}>
+                  <View style={{ width: 170, marginBottom: 15 }}>
                     <TextInput
                       label="Model"
                       mode="outlined"
@@ -327,7 +325,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                       {errors.Model}
                     </HelperText>
                   </View>
-                  <View style={{ width: 120 }}>
+                  <View style={{ width: 120, marginBottom: 15 }}>
                     <TextInput
                       label="Year"
                       mode="outlined"
@@ -348,7 +346,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                       {errors.Year}
                     </HelperText>
                   </View>
-                  <View style={{ width: 200 }}>
+                  <View style={{ width: 200, marginBottom: 15 }}>
                     <TextInput
                       label="Color"
                       mode="outlined"
@@ -371,7 +369,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                   </View>
                 </View>
                 <View style={[styles.containerText]}>
-                  <View style={{ width: 200 }}>
+                  <View style={{ width: 200, marginBottom: 15 }}>
                     <TextInput
                       label="Milage"
                       mode="outlined"
@@ -392,7 +390,7 @@ function CarModal({ activateModal, setSearchIcon }) {
                       {errors.Milage}
                     </HelperText>
                   </View>
-                  <View style={{ width: 250 }}>
+                  <View style={{ width: 250, marginBottom: 15 }}>
                     <TextInput
                       label="Vin Number"
                       mode="outlined"

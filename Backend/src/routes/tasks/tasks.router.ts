@@ -1,12 +1,17 @@
 import express from "express";
-import { httpCreateTask, httpDeleteTask, httpGetAllTasks } from "./tasks.controller";
+import {
+  httpCreateTask,
+  httpDeleteTask,
+  httpGetAllTasks,
+} from "./tasks.controller";
+import { authenticateJWTMiddleWare } from "../../services/auth.service";
 
 const router = express.Router();
 
-router.get("/", httpGetAllTasks);
+router.get("/", authenticateJWTMiddleWare, httpGetAllTasks);
 
-router.post("/", httpCreateTask);
+router.post("/", authenticateJWTMiddleWare, httpCreateTask);
 
-router.delete("/:id", httpDeleteTask);
+router.delete("/:id", authenticateJWTMiddleWare, httpDeleteTask);
 
 export default router;
