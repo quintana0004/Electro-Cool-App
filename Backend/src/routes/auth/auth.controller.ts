@@ -56,7 +56,11 @@ async function httpLogin(req: Request, res: Response) {
       userResponse.id,
       userResponse.companyId
     );
-    await updateUserTokens(userResponse.id, accessToken);
+    const refreshToken = generateRefreshToken(
+      userResponse.id,
+      userResponse.companyId
+    );
+    await updateUserTokens(userResponse.id, accessToken, refreshToken);
 
     const user = await findUserByToken(accessToken);
     return res.status(200).json({
