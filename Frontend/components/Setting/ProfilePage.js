@@ -148,15 +148,6 @@ function ProfilePage({}) {
       Valid = false;
     }
 
-    console.log(
-      "VALIDATION OF USER INFO (1): ",
-      !refAccountInformation.current.value
-    );
-
-    console.log(
-      "VALIDATION OF USER INFO (2): ",
-      refAccountInformation.current.isValid
-    );
     return Valid;
   }
 
@@ -178,10 +169,7 @@ function ProfilePage({}) {
       password: "",
     };
 
-    console.log("DATA: ", userPersonalInfo);
     const response = await httpUpdateUserProfile(userPersonalInfo);
-
-    console.log("response: ", response.data);
 
     if (response.hasError) {
       setErrorMSG(response.errorMessage);
@@ -195,7 +183,6 @@ function ProfilePage({}) {
 
   async function handleProfileSubmission() {
     if (disableInputs === false) {
-      console.log("I AM FALSE!");
       return;
     }
 
@@ -219,7 +206,6 @@ function ProfilePage({}) {
       return;
     }
 
-    console.log("I AM TRUE!, ", response);
     showSuccessMessage();
   }
 

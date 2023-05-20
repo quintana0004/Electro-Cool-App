@@ -144,7 +144,6 @@ function ClientInformation({ route, navigation }) {
       showSuccessMessage();
       setReloadJobOrderList();
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }

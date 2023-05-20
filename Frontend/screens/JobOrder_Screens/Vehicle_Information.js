@@ -146,7 +146,6 @@ function VehicleInformation({ route, navigation }) {
       showSuccessMessage();
       setReloadJobOrderList();
     } catch (error) {
-      console.log("ERROR MESSAGE CLIENT: ", error);
       showFailedMessage();
     }
   }
@@ -629,7 +628,7 @@ function VehicleInformation({ route, navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: Colors.darkGreen,
+    backgroundColor: Colors.yellowDark,
   },
   instruction: {
     fontWeight: "400",
@@ -655,9 +654,6 @@ const styles = StyleSheet.create({
   },
   navCancelBtn: { marginRight: 10 },
   navNextBtn: { marginLeft: 10 },
-  header: {
-    backgroundColor: Colors.yellowDark,
-  },
   textInputStyle: {
     backgroundColor: Colors.white,
     fontSize: 16,

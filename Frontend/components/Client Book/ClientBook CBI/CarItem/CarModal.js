@@ -97,7 +97,6 @@ function CarModal({ activateModal, setSearchIcon }) {
   }
 
   if (isError) {
-    console.log("CB CarModal:", error);
     return (
       <View
         style={{
@@ -133,7 +132,6 @@ function CarModal({ activateModal, setSearchIcon }) {
       showSuccessMessage();
       setReloadClientBookCarList();
     } catch (error) {
-      console.log("ERROR MESSAGE CAR INFO: ", error);
       showFailedMessage();
     }
   }
