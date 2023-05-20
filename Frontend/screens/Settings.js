@@ -7,6 +7,7 @@ import ToggleBtnSetting from "../components/Setting/ToggleBtnSetting";
 import ProfilePage from "../components/Setting/ProfilePage";
 import TableListSetting from "../components/Setting/TableListSetting";
 import SearchBanner from "../components/UI/SearchBanner";
+import { useAccountUser } from "../Store/AccountStore";
 
 function Setting({ navigation }) {
   const [activeCategory, setActiveCategory] = useState("Profile");
@@ -14,6 +15,8 @@ function Setting({ navigation }) {
   function updateActiveCategory(category) {
     setActiveCategory(category);
   }
+
+  const role = useAccountUser((state) => state.role);
 
   //Search Variables
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,7 +33,7 @@ function Setting({ navigation }) {
           activeCategory={activeCategory}
         />
         <Appbar.Content></Appbar.Content>
-        {activeCategory === "RBAC" && (
+        {activeCategory === "RBAC" && role === "Admin" && (
           <Appbar.Action
             icon="magnify"
             onPress={() => {
@@ -39,7 +42,7 @@ function Setting({ navigation }) {
           />
         )}
       </Appbar.Header>
-      {activeCategory === "RBAC" && (
+      {activeCategory === "RBAC" && role === "Admin" && (
         <SearchBanner
           visible={openBannerSearch}
           loading={searchLoading}
@@ -50,7 +53,7 @@ function Setting({ navigation }) {
       )}
       <View style={styles.body}>
         {activeCategory === "Profile" && <ProfilePage />}
-        {activeCategory === "RBAC" && (
+        {activeCategory === "RBAC" && role === "Admin" && (
           <TableListSetting
             searchLoading={searchLoading}
             searchTerm={searchTerm}

@@ -27,6 +27,8 @@ import { storeTokens } from "../Store/secureStore";
 import RecoveryPasswordModal from "../components/LogIn/RecoveryPasswordModal";
 import ErrorDialog from "../components/UI/ErrorDialog";
 import SuccessDialog from "../components/UI/SuccessDialog";
+import { httpGetUserProfile } from "../api/users.api";
+import { useAccountUser } from "../Store/AccountStore";
 
 const validatorUser = Yup.object().shape({
   username: Yup.string()
@@ -71,6 +73,9 @@ function LogIn({ navigation }) {
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
 
+  //Calling of the store account
+  const setRoleUser = useAccountUser((state) => state.setRoleUser);
+
   function handleInputValidation() {
     // Check Validation of the user login
     const TouchedObject = Object.keys(ref.current.touched).length > 0;
@@ -97,6 +102,14 @@ function LogIn({ navigation }) {
     }
 
     await storeTokens(response.data.accessToken, response.data.refreshToken);
+
+    const responseRole = await httpGetUserProfile();
+
+    if (responseRole.hasError) {
+      return Alert.alert("Error", responseRole.errorMessage);
+    }
+    console.log("USER ROLE FROM LOGIN: ", responseRole.data);
+    setRoleUser(responseRole.data.role);
     navigation.navigate("Dashboard");
   }
 

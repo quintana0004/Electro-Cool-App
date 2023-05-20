@@ -63,8 +63,6 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
         userId: ID,
         role: "Admin",
         accessState: "Active",
-        startDate: "",
-        endDate: "",
       };
     }
 
@@ -78,6 +76,8 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
         endDate: new Date(dateSelectedSecond),
       };
     }
+
+    console.log("USER DATA: ", dataUser);
     const response = await httpUpsertUsers(dataUser);
 
     if (response.hasError) {
