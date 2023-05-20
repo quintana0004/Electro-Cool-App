@@ -175,9 +175,13 @@ function ProfilePage({}) {
       lastName: refAccountInformation.current.values.lastName,
       phone: refAccountInformation.current.values.phoneNumber,
       username: refAccountInformation.current.values.username,
+      password: "",
     };
 
-    const response = await httpGetUserProfile(userPersonalInfo);
+    console.log("DATA: ", userPersonalInfo);
+    const response = await httpUpdateUserProfile(userPersonalInfo);
+
+    console.log("response: ", response.data);
 
     if (response.hasError) {
       setErrorMSG(response.errorMessage);
@@ -191,6 +195,7 @@ function ProfilePage({}) {
 
   async function handleProfileSubmission() {
     if (disableInputs === false) {
+      console.log("I AM FALSE!");
       return;
     }
 
@@ -214,6 +219,7 @@ function ProfilePage({}) {
       return;
     }
 
+    console.log("I AM TRUE!, ", response);
     showSuccessMessage();
   }
 
@@ -246,7 +252,7 @@ function ProfilePage({}) {
             fontWeight: "400",
             marginLeft: 20,
             marginBottom: 10,
-            marginTop: 20,
+            marginTop: 10,
           }}
         >
           Personal Information
@@ -273,9 +279,9 @@ function ProfilePage({}) {
             touched,
           }) => (
             <KeyboardAvoidingView
-              behavior="padding"
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
               enabled
-              keyboardVerticalOffset={-100}
+              keyboardVerticalOffset={200}
             >
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View
@@ -455,8 +461,8 @@ function ProfilePage({}) {
             fontSize: 20,
             fontWeight: "400",
             marginLeft: 20,
-            marginBottom: 10,
-            marginTop: 30,
+            marginBottom: 5,
+            marginTop: 15,
           }}
         >
           Change Password
@@ -473,9 +479,9 @@ function ProfilePage({}) {
         >
           {({ handleChange, handleBlur, values, errors, touched }) => (
             <KeyboardAvoidingView
-              behavior="padding"
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
               enabled
-              keyboardVerticalOffset={-100}
+              keyboardVerticalOffset={200}
             >
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View

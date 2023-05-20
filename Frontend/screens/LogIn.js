@@ -27,6 +27,8 @@ import { storeTokens } from "../Store/secureStore";
 import RecoveryPasswordModal from "../components/LogIn/RecoveryPasswordModal";
 import ErrorDialog from "../components/UI/ErrorDialog";
 import SuccessDialog from "../components/UI/SuccessDialog";
+import { httpGetUserProfile } from "../api/users.api";
+import { useAccountUser } from "../Store/AccountStore";
 
 const validatorUser = Yup.object().shape({
   username: Yup.string()
@@ -65,8 +67,14 @@ function LogIn({ navigation }) {
   // Visibility of the Error Dialog
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
+  //Touched Text Input
+  const [touchedDescription, setTouchedDescription] = useState(false);
+
   //Error Message of the user
   const [errorMSG, setErrorMSG] = useState("");
+
+  //Calling of the store account
+  const setRoleUser = useAccountUser((state) => state.setRoleUser);
 
   function handleInputValidation() {
     // Check Validation of the user login
@@ -94,6 +102,14 @@ function LogIn({ navigation }) {
     }
 
     await storeTokens(response.data.accessToken, response.data.refreshToken);
+
+    const responseRole = await httpGetUserProfile();
+
+    if (responseRole.hasError) {
+      return Alert.alert("Error", responseRole.errorMessage);
+    }
+    console.log("USER ROLE FROM LOGIN: ", responseRole.data);
+    setRoleUser(responseRole.data.role);
     navigation.navigate("Dashboard");
   }
 
@@ -120,13 +136,13 @@ function LogIn({ navigation }) {
             >
               {({ handleChange, handleBlur, values, errors, touched }) => (
                 <KeyboardAvoidingView
-                  behavior="padding"
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
                   enabled
-                  keyboardVerticalOffset={-100}
+                  keyboardVerticalOffset={300}
                 >
                   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.containerText}>
-                      <View style={{ width: 400, marginTop: 50 }}>
+                      <View style={{ width: 400 }}>
                         <TextInput
                           mode="outlined"
                           label="Username"
@@ -152,7 +168,12 @@ function LogIn({ navigation }) {
                           {errors.username}
                         </HelperText>
                       </View>
-                      <View style={{ width: 400, marginTop: 50 }}>
+                      <View
+                        style={{
+                          width: 400,
+                          marginTop: 10,
+                        }}
+                      >
                         <TextInput
                           mode="outlined"
                           label="Password"

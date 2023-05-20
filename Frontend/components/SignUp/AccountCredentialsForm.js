@@ -139,7 +139,7 @@ function AccountCredentialsForm({ setVisibilityAccountConfirm }) {
                 }}
               >
                 <View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 20 }}>
                     <TextInput
                       label="Username"
                       mode="outlined"
@@ -167,7 +167,7 @@ function AccountCredentialsForm({ setVisibilityAccountConfirm }) {
                   </View>
                 </View>
                 <View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 20 }}>
                     <TextInput
                       label="Password"
                       mode="outlined"
@@ -193,7 +193,7 @@ function AccountCredentialsForm({ setVisibilityAccountConfirm }) {
                       {errors.password}
                     </HelperText>
                   </View>
-                  <View style={{ marginVertical: 30 }}>
+                  <View style={{ marginVertical: 20 }}>
                     <TextInput
                       label="Password Confirmation"
                       mode="outlined"

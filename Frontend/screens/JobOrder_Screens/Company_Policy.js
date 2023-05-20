@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   ToastAndroid,
+  Pressable,
   View,
 } from "react-native";
 import { Appbar, Button, Checkbox, Dialog, Portal } from "react-native-paper";
@@ -232,12 +233,11 @@ function CompanyPolicy({ navigation }) {
               </Text>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setVisibleErrorDialog(false)}
-              >
-                Okay
-              </Button>
+              <Pressable onPress={() => setVisibleErrorDialog(false)}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Okay</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -262,21 +262,21 @@ function CompanyPolicy({ navigation }) {
                 Is this the final statement of the Job Order?
               </Text>
             </Dialog.Content>
-            <Dialog.Actions>
-              <Button
-                textColor={Colors.darkGreen}
+            <Dialog.Actions style={{ justifyContent: "space-between" }}>
+              <Pressable
                 onPress={async () => {
                   await handleSave();
                 }}
               >
-                Confirm
-              </Button>
-              <Button
-                textColor={Colors.yellowDark}
-                onPress={() => setVisibleConfirmDialog(false)}
-              >
-                Cancel
-              </Button>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Confirm</Text>
+                </View>
+              </Pressable>
+              <Pressable onPress={() => setVisibleConfirmDialog(false)}>
+                <View style={styles.confirmBtn}>
+                  <Text style={styles.confirmText}>Cancel</Text>
+                </View>
+              </Pressable>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -315,6 +315,23 @@ const styles = StyleSheet.create({
   },
   textAlert: {
     textAlign: "center",
+  },
+  confirmBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 10,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  confirmText: {
+    color: Colors.white,
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

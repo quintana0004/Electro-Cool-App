@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { useAccountUser } from "../../Store/AccountStore";
 
 import Figures from "../../constants/figures/Figures";
 import Colors from "../../constants/Colors/Colors";
@@ -9,6 +10,8 @@ function ToggleBtnSetting({ toggleActiveCategory, activeCategory }) {
     activeCategory === "Profile"
   );
   const [isRBACActive, setIsRBACActive] = useState(activeCategory === "RBAC");
+
+  const role = useAccountUser((state) => state.role);
 
   function toggleButtonState(id) {
     if (id === "Profile" && isProfileActive === false) {
@@ -49,13 +52,18 @@ function ToggleBtnSetting({ toggleActiveCategory, activeCategory }) {
           <Text style={styles.toggleButtonText}>Profile</Text>
         </Pressable>
 
-        <Pressable
-          style={toggleDepositButtonStyles()}
-          onPress={toggleButtonState.bind(this, "RBAC")}
-        >
-          <Image source={Figures.UserRole} style={{ width: 30, height: 30 }} />
-          <Text style={styles.toggleButtonText}>Role</Text>
-        </Pressable>
+        {role === "Admin" && (
+          <Pressable
+            style={toggleDepositButtonStyles()}
+            onPress={toggleButtonState.bind(this, "RBAC")}
+          >
+            <Image
+              source={Figures.UserRole}
+              style={{ width: 30, height: 30 }}
+            />
+            <Text style={styles.toggleButtonText}>Role</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
