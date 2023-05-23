@@ -207,6 +207,15 @@ function InvoiceDetail({ route, navigation }) {
   }
 
   function setInvoiceInfo(data) {
+    // Set Customer in the store
+    setCustomerInfo(
+      data.customer.id,
+      data.customer.firstName,
+      data.customer.lastName,
+      data.customer.phone,
+      data.customer.email
+    );
+
     // Set Client and Car data
     setClientInfo(data.customer);
     setCarInfo(data.car);
