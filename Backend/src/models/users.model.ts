@@ -254,6 +254,18 @@ async function updateUserAccess(
   endDate?: string
 ) {
   try {
+    // Update the user approval to Active if it's within the time range.
+    if (startDate && endDate) {
+      let requestDateTime = new Date();
+      let startDateTime = new Date(startDate);
+      let endDateTime = new Date(endDate);
+
+      approval =
+        requestDateTime >= startDateTime && requestDateTime <= endDateTime
+          ? "Active"
+          : approval;
+    }
+
     const user = await prisma.user.update({
       where: {
         id: userId,
