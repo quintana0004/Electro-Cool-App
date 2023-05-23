@@ -4,6 +4,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import InvoiceDetailModalListItem from "./InvoiceDetailModalListItem";
 import { useInvoiceStore } from "../../Store/invoiceStore";
+import { useCustomerInfoStore } from "../../Store/JobOrderStore";
 
 function InvoiceDetailModalList({
   searchTerm,
@@ -15,10 +16,16 @@ function InvoiceDetailModalList({
 }) {
   const TAKE = 15;
   const reloadInvoiceList = useInvoiceStore((state) => state.reloadInvoiceList);
+  const customerId = useCustomerInfoStore((state) => state.id);
 
   const { isLoading, data, fetchNextPage, hasNextPage, isError, error } =
     useInfiniteQuery({
-      queryKey: ["SelectDepositModalList", searchTerm, reloadInvoiceList],
+      queryKey: [
+        "SelectDepositModalList",
+        searchTerm,
+        reloadInvoiceList,
+        customerId,
+      ],
       queryFn: getDepositItemsData,
       getNextPageParam: (lastPage) => {
         return lastPage.data.isLastPage
@@ -30,7 +37,12 @@ function InvoiceDetailModalList({
     });
 
   async function getDepositItemsData({ pageParam = 0 }) {
-    let data = await httpGetAllAvailableDeposits(TAKE, pageParam, searchTerm);
+    let data = await httpGetAllAvailableDeposits(
+      TAKE,
+      pageParam,
+      searchTerm,
+      customerId
+    );
 
     // After data is returned, stop search loading if it was active
     if (searchLoading) setSearchLoading(false);

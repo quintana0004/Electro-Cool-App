@@ -7,14 +7,24 @@ export async function httpGetAllDeposits(take, page, searchTerm) {
   return deposits;
 }
 
-export async function httpGetAllAvailableDeposits(take, page, searchTerm) {
+export async function httpGetAllAvailableDeposits(
+  take,
+  page,
+  searchTerm,
+  customerId
+) {
   const queryParams = `?take=${take}&page=${page}&searchTerm=${searchTerm}`;
   const deposits = await axios("/deposits" + queryParams);
 
   let depositLength = deposits.data.data.length;
   if (depositLength > 0) {
     let filteredDesposits = deposits.data.data;
-    filteredDesposits = filteredDesposits.filter((d) => d.isAvailable === true);
+    filteredDesposits = filteredDesposits.filter(
+      (d) =>
+        d.isAvailable === true &&
+        d.status === "Paid" &&
+        d.customer.id === customerId
+    );
     deposits.data.data = filteredDesposits;
   }
 
@@ -32,7 +42,6 @@ export async function httpGetDeposit(id) {
 }
 
 export async function httpUpsertDeposit(depositInfo) {
-  
   let responseToReturn = {
     hasError: false,
     data: null,
