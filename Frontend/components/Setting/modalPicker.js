@@ -338,7 +338,7 @@ function ModalPicker({ visible, setVisible, firstName, lastName, ID }) {
                   setDateSelectedSecond("");
                 }}
               >
-                <View style={styles.confirmBtn}>
+                <View style={styles.confirmRefreshBtn}>
                   <Text style={styles.confirmText}>Refresh</Text>
                 </View>
               </Pressable>
@@ -380,7 +380,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brightGreen,
     borderRadius: 15,
     marginRight: 10,
-    marginLeft: 15,
+    marginLeft: 5,
+    marginTop: 20,
+  },
+  confirmRefreshBtn: {
+    height: 50,
+    width: 150,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.brightGreen,
+    borderRadius: 15,
+    marginRight: 5,
+    marginLeft: 5,
     marginTop: 20,
   },
   confirmText: {
