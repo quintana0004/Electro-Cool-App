@@ -2,7 +2,7 @@
   "expo": {
     "name": "electro-cool",
     "slug": "electro-cool",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/electrocoolicon.png",
     "userInterfaceStyle": "automatic",
